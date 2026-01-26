@@ -1,0 +1,48 @@
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+    <uses-permission android:name="android.permission.INTERNET" />
+
+    <!-- 关键：声明 SDK 版本 -->
+    <uses-sdk android:minSdkVersion="26" android:targetSdkVersion="34" />
+
+    <application
+        android:name=".App"
+        android:allowBackup="true"
+        android:label="ZhihuHook"
+    >
+
+	    <!-- 这里的 android:exported="true" 是 Android 12+ 必须的 -->
+	    <activity
+            android:name=".MainActivity"
+            android:exported="true"
+            android:theme="@style/Theme.Webrecorder"
+        >
+	        <intent-filter>
+	            <!-- 这两行决定了它会显示在桌面上 -->
+	            <action android:name="android.intent.action.MAIN" />
+	            <category android:name="android.intent.category.LAUNCHER" />
+	        </intent-filter>
+	    </activity>
+
+        <meta-data android:name="xposedmodule" android:value="true" />
+
+        <meta-data
+            android:name="xposedscope"
+            android:resource="@array/xposed_scope"
+        />
+
+        <meta-data
+            android:name="xposeddescription"
+            android:value="Hook Zhihu network JSON"
+        />
+
+        <meta-data android:name="xposedminversion" android:value="93" />
+        <!-- exported=true 允许外部进程（Zhihu）访问 -->
+        <provider
+            android:name=".provider.HookDataProvider"
+            android:authorities="me.melon.record.provider"
+            android:exported="true"
+            android:enabled="true"
+        />
+    </application>
+
+</manifest>

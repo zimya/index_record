@@ -1,0 +1,105 @@
+{
+    "admin_closed_comment": false,
+    "answer_type": "normal",
+    "attached_info": "ogEPCAQQAxj84pGVDSCUs7N/kgIlCgk2NzI2MTU4NDUSCjM1MzM5OTIzMTYYBCIKSU1BR0VfVEVYVA==",
+    "author": {
+        "avatar_url": "https://picx.zhimg.com/v2-41ab0720ccfc31e114562e3ab6750a44_l.jpg?source=2c26e567",
+        "avatar_url_template": "https://pic1.zhimg.com/v2-41ab0720ccfc31e114562e3ab6750a44.jpg?source=2c26e567",
+        "badge": [],
+        "badge_v2": {
+            "detail_badges": [],
+            "icon": "",
+            "merged_badges": [],
+            "night_icon": "",
+            "title": "文字的拾荒者"
+        },
+        "exposed_medal": {
+            "avatar_url": "https://pic1.zhimg.com/v2-cdc7c578bc7555f8113a409eaf2704b8_l.png?source=2c26e567",
+            "description": "累计登录 365 天",
+            "medal_id": "972480281613197312",
+            "medal_name": "每天逛逛",
+            "mini_avatar_url": "https://picx.zhimg.com/v2-cdc7c578bc7555f8113a409eaf2704b8_r.png?source=2c26e567"
+        },
+        "gender": 0,
+        "headline": "文字的拾荒者",
+        "id": "24e473ce77c06ef8d56a95066973e46f",
+        "is_advertiser": false,
+        "is_followed": false,
+        "is_following": false,
+        "is_org": false,
+        "is_privacy": false,
+        "name": "祁河",
+        "type": "people",
+        "url": "https://api.zhihu.com/people/24e473ce77c06ef8d56a95066973e46f",
+        "url_token": "han-han-gua-zi",
+        "user_type": "people"
+    },
+    "biz_ext": {
+        "share_guide": {
+            "has_positive_bubble": false,
+            "has_time_bubble": false,
+            "hit_share_guide_cluster": false
+        }
+    },
+    "can_comment": { "reason": "", "status": true },
+    "comment_count": 102,
+    "comment_permission": "all",
+    "content_need_truncated": false,
+    "editable_content": "",
+    "excerpt": "我：“我的人生就像骆驼祥子” 同桌：“但是你没有北京户口”",
+    "force_login_when_click_read_more": false,
+    "has_publishing_draft": false,
+    "has_sync_club_post": false,
+    "id": 3533992316,
+    "is_collapsed": false,
+    "is_copyable": true,
+    "is_jump_native": false,
+    "is_mine": false,
+    "mcn_fp_show": -1,
+    "question": {
+        "admin_closed_comment": false,
+        "created": 1518674130,
+        "id": 267180436,
+        "mute_info": { "type": "" },
+        "question_type": "normal",
+        "relationship": {},
+        "title": "你这辈子听过最诛心的话是什么？",
+        "type": "question",
+        "updated_time": 1695222358,
+        "url": "https://api.zhihu.com/questions/267180436"
+    },
+    "reaction_instruction": {},
+    "relationship": { "is_thanked": false, "upvoted_followees": [] },
+    "relevant_info": {
+        "is_relevant": false,
+        "relevant_text": "",
+        "relevant_type": ""
+    },
+    "reward_info": {
+        "can_open_reward": false,
+        "is_rewardable": false,
+        "reward_member_count": 0,
+        "reward_total_money": 0,
+        "tagline": ""
+    },
+    "suggest_edit": {
+        "reason": "",
+        "status": false,
+        "tip": "",
+        "title": "",
+        "unnormal_details": {
+            "description": "",
+            "note": "",
+            "reason": "",
+            "reason_id": 0,
+            "status": ""
+        },
+        "url": ""
+    },
+    "thanks_count": 110,
+    "thumbnail": "",
+    "type": "answer",
+    "url": "https://api.zhihu.com/answers/3533992316",
+    "visible_only_to_author": false,
+    "voteup_count": 13268
+}

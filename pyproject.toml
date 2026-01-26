@@ -1,0 +1,10 @@
+[project]
+name = "web-recorder"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "frida==16.2.1",
+    "frida-tools==12.3.0",
+]

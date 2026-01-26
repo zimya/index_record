@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<resources>
+    <!-- 这个名字必须和 Manifest 里的 android:theme 一致 -->
+    <style
+        name="Theme.Webrecorder"
+        parent="android:Theme.Material.Light.NoActionBar"
+    >
+        <!-- 状态栏颜色 -->
+        <item name="android:statusBarColor">@android:color/white</item>
+        <!-- 状态栏文字深色 -->
+        <item name="android:windowLightStatusBar">true</item>
+    </style>
+</resources>

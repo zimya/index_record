@@ -1,0 +1,85 @@
+version = 1
+revision = 3
+requires-python = ">=3.12"
+
+[[package]]
+name = "colorama"
+version = "0.4.6"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/d8/53/6f443c9a4a8358a93a6792e2acffb9d9d5cb0a5cfd8802644b7b1c9a02e4/colorama-0.4.6.tar.gz", hash = "sha256:08695f5cb7ed6e0531a20572697297273c47b8cae5a63ffc6d6ed5c201be6e44", size = 27697, upload-time = "2022-10-25T02:36:22.414Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/d1/d6/3965ed04c63042e047cb6a3e6ed1a63a35087b6a609aa3a15ed8ac56c221/colorama-0.4.6-py2.py3-none-any.whl", hash = "sha256:4f1d9991f5acc0ca119f9d443620b77f9d6b33703e51011c16baf57afb285fc6", size = 25335, upload-time = "2022-10-25T02:36:20.889Z" },
+]
+
+[[package]]
+name = "frida"
+version = "16.2.1"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/5c/ec/679b3b195167f2f12cdd39aca93c0ea0cc204c205c0f35cae19b7fb6df71/frida-16.2.1.tar.gz", hash = "sha256:64a011825ea21a5ed3e3d7589f04c1dec473e1a083beb4c57895dddf32caa7c9", size = 41099, upload-time = "2024-02-16T21:05:58.832Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/c7/1c/0137d84a52ffe1ad36c28cd7aa31a3e881956f0e81f7b41058865eca63ca/frida-16.2.1-cp37-abi3-macosx_10_9_x86_64.whl", hash = "sha256:df1cc56a494aa045bf3b48a6609658b992801b41b929e9013c7319b8301c6450", size = 20568098, upload-time = "2024-02-16T21:05:14.224Z" },
+    { url = "https://files.pythonhosted.org/packages/42/38/f9ceabbc659f75ae52e6741eb138d8340790847efc47afe01ff6dd9b59e8/frida-16.2.1-cp37-abi3-macosx_11_0_arm64.whl", hash = "sha256:2bf69733d56d6d15260f94a4b68551d758c77e3dd36ad5a71df18ba9852e44ce", size = 30565894, upload-time = "2024-02-16T21:05:21.22Z" },
+    { url = "https://files.pythonhosted.org/packages/df/70/3ebc37dcff55c026e5422c8ba18b932cea25e61a4cdab8b914ec8da31e7a/frida-16.2.1-cp37-abi3-manylinux_2_17_aarch64.whl", hash = "sha256:4b4db71b9317086ad188f91de8b00aceb9fd8a4d89c353bd06587eaf6bb410a2", size = 19122209, upload-time = "2024-02-16T21:05:26.344Z" },
+    { url = "https://files.pythonhosted.org/packages/6c/81/366942c01b76a24387190cb13395bbebb25859f842009e1aa90c88ecb1cf/frida-16.2.1-cp37-abi3-manylinux_2_17_armv7l.whl", hash = "sha256:e15d612767493b29795522ee3e763b2dfcf8610dab8a1e337b936adc55991c55", size = 17948276, upload-time = "2024-02-16T21:05:32.045Z" },
+    { url = "https://files.pythonhosted.org/packages/cc/af/e0097ccd8de04f8fef6d6f2fc909568b5dca47c0098ae6a7eca84cf6ede7/frida-16.2.1-cp37-abi3-manylinux_2_5_i686.whl", hash = "sha256:51ca64ffd29c6df70429e2d96a6651f3d0a752223f55a0187181370391a28cba", size = 18679256, upload-time = "2024-02-16T21:05:37.133Z" },
+    { url = "https://files.pythonhosted.org/packages/11/1c/39d57720f103733b362b81f12d184d7583596946e6fa4bc8e2a4e4c4df77/frida-16.2.1-cp37-abi3-manylinux_2_5_x86_64.whl", hash = "sha256:2b549a18bfd09e5b67168bc890cfdc53b3ca01eb9fab99b0d06c3ffc530788ec", size = 19109551, upload-time = "2024-02-16T21:05:42.128Z" },
+    { url = "https://files.pythonhosted.org/packages/9e/51/14a132b9a7c2a2f0d511bb24ba1279bbe06d2c40cfb449658b25adbac4eb/frida-16.2.1-cp37-abi3-win32.whl", hash = "sha256:ee3e63fa16bf494f840bcacaa955a6a2e793a25f84dc3ea5bd92885f8526aa7a", size = 32153177, upload-time = "2024-02-16T21:05:48.215Z" },
+    { url = "https://files.pythonhosted.org/packages/48/42/c34c7c687e59c9534fb10e46465da78d9546ad5cf17192879e12ec669442/frida-16.2.1-cp37-abi3-win_amd64.whl", hash = "sha256:0363340ab678b75045426529b4a7061b32f8095c01ae0e196f8764e9ee404e26", size = 32695478, upload-time = "2024-02-16T21:05:54.332Z" },
+]
+
+[[package]]
+name = "frida-tools"
+version = "12.3.0"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "colorama" },
+    { name = "frida" },
+    { name = "prompt-toolkit" },
+    { name = "pygments" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/ab/42/7823de1787e4c13c88c5de4caaf315365687d5425c9b484df2917bb6ca75/frida-tools-12.3.0.tar.gz", hash = "sha256:8edc67d1ae3792ff5b2dc63508cde4d247f92b7d0d7bf153d74a21a6d58dc045", size = 200509, upload-time = "2023-10-04T08:49:43.48Z" }
+
+[[package]]
+name = "prompt-toolkit"
+version = "3.0.52"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "wcwidth" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/a1/96/06e01a7b38dce6fe1db213e061a4602dd6032a8a97ef6c1a862537732421/prompt_toolkit-3.0.52.tar.gz", hash = "sha256:28cde192929c8e7321de85de1ddbe736f1375148b02f2e17edd840042b1be855", size = 434198, upload-time = "2025-08-27T15:24:02.057Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/84/03/0d3ce49e2505ae70cf43bc5bb3033955d2fc9f932163e84dc0779cc47f48/prompt_toolkit-3.0.52-py3-none-any.whl", hash = "sha256:9aac639a3bbd33284347de5ad8d68ecc044b91a762dc39b7c21095fcd6a19955", size = 391431, upload-time = "2025-08-27T15:23:59.498Z" },
+]
+
+[[package]]
+name = "pygments"
+version = "2.19.2"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/b0/77/a5b8c569bf593b0140bde72ea885a803b82086995367bf2037de0159d924/pygments-2.19.2.tar.gz", hash = "sha256:636cb2477cec7f8952536970bc533bc43743542f70392ae026374600add5b887", size = 4968631, upload-time = "2025-06-21T13:39:12.283Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/c7/21/705964c7812476f378728bdf590ca4b771ec72385c533964653c68e86bdc/pygments-2.19.2-py3-none-any.whl", hash = "sha256:86540386c03d588bb81d44bc3928634ff26449851e99741617ecb9037ee5ec0b", size = 1225217, upload-time = "2025-06-21T13:39:07.939Z" },
+]
+
+[[package]]
+name = "wcwidth"
+version = "0.2.14"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/24/30/6b0809f4510673dc723187aeaf24c7f5459922d01e2f794277a3dfb90345/wcwidth-0.2.14.tar.gz", hash = "sha256:4d478375d31bc5395a3c55c40ccdf3354688364cd61c4f6adacaa9215d0b3605", size = 102293, upload-time = "2025-09-22T16:29:53.023Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/af/b5/123f13c975e9f27ab9c0770f514345bd406d0e8d3b7a0723af9d43f710af/wcwidth-0.2.14-py2.py3-none-any.whl", hash = "sha256:a7bb560c8aee30f9957e5f9895805edd20602f2d7f720186dfd906e82b4982e1", size = 37286, upload-time = "2025-09-22T16:29:51.641Z" },
+]
+
+[[package]]
+name = "web-recorder"
+version = "0.1.0"
+source = { virtual = "." }
+dependencies = [
+    { name = "frida" },
+    { name = "frida-tools" },
+]
+
+[package.metadata]
+requires-dist = [
+    { name = "frida", specifier = "==16.2.1" },
+    { name = "frida-tools", specifier = "==12.3.0" },
+]

@@ -1,0 +1,7 @@
+<resources>
+    <string-array name="xposed_scope">
+        <item>com.zhihu.android</item>
+        <item>com.douban.frodo</item>
+        <item>com.twitter.android</item>
+    </string-array>
+</resources>

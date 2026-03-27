@@ -5,14 +5,15 @@ import com.google.gson.Gson
 import com.google.gson.JsonObject
 import com.google.gson.JsonParser
 import me.melon.record.ObjectBox
-import me.melon.record.data.model.Article
 import me.melon.record.data.model.RawData
+import me.melon.record.data.model.UniversalRecord
+import me.melon.record.data.model.UniversalRecord_
 import org.jsoup.Jsoup
 import java.util.regex.Pattern
 
 object DataProcessor {
 
-    private const val TAG = "ZhihuProcessor" // 定义日志标签
+    private const val TAG = "DataProcessor"
 
     // 1. JSON 类型的文章接口
     private val PATTERN_JSON_ARTICLE = Pattern.compile("https?://api\\.zhihu\\.com/articles/[^/]+/?")
@@ -21,130 +22,118 @@ object DataProcessor {
 
     private val gson = Gson()
 
+    @Synchronized
     fun processPendingData() {
         val rawBox = ObjectBox.store.boxFor(RawData::class.java)
-        val articleBox = ObjectBox.store.boxFor(Article::class.java)
+        val recordBox = ObjectBox.store.boxFor(UniversalRecord::class.java)
 
         val allRawData = rawBox.all
         if (allRawData.isEmpty()) {
-            Log.d(TAG, "No pending data to process.")
             return
         }
 
         Log.i(TAG, "Found ${allRawData.size} raw records. Starting process...")
 
-        val newArticles = mutableListOf<Article>()
         val processedRawIds = mutableListOf<Long>()
 
-        for (raw in allRawData) {
-            // 打印正在处理的 URL
-            Log.d(TAG, ">>> Processing ID: ${raw.id} | URL: ${raw.url}")
+        ObjectBox.store.runInTx {
+            for (raw in allRawData) {
+                try {
+                    val cleanUrl = if (raw.url.contains("?")) raw.url.substringBefore("?") else raw.url
+                    var record: UniversalRecord? = null
 
-            try {
-                // 去参数
-                val cleanUrl = if (raw.url.contains("?")) raw.url.substringBefore("?") else raw.url
-                Log.d(TAG, "    Clean URL: $cleanUrl")
+                    if (PATTERN_JSON_ARTICLE.matcher(cleanUrl).matches()) {
+                        record = parseJsonArticle(raw, cleanUrl)
+                    } else if (PATTERN_HTML_ANSWER.matcher(cleanUrl).matches()) {
+                        record = parseHtmlAnswer(raw, cleanUrl)
+                    } else {
+                        Log.w(TAG, "No Regex matched for: $cleanUrl")
+                    }
 
-                var article: Article? = null
-
-                if (PATTERN_JSON_ARTICLE.matcher(cleanUrl).matches()) {
-                    Log.d(TAG, "    Matched Type: JSON Article")
-                    article = parseJsonArticle(raw)
-                } else if (PATTERN_HTML_ANSWER.matcher(cleanUrl).matches()) {
-                    Log.d(TAG, "    Matched Type: HTML Answer")
-                    article = parseHtmlAnswer(raw, cleanUrl)
-                } else {
-                    Log.w(TAG, "    [WARNING] No Regex matched for: $cleanUrl")
-                }
-
-                if (article != null) {
-                    newArticles.add(article)
-                    Log.d(TAG, "    Parse SUCCESS: ${article.title}")
-                    // 只有解析成功才删除？或者你想不管成不成功都删除，就把下面这行移到 finally 块里
+                    if (record != null) {
+                        // 【去重逻辑】检查是否已经存过该 platformId
+                        val existing = recordBox.query()
+                            .equal(UniversalRecord_.platformId, record.platformId, io.objectbox.query.QueryBuilder.StringOrder.CASE_SENSITIVE)
+                            .build()
+                            .findFirst()
+                        
+                        if (existing != null) {
+                            record.id = existing.id // 复用现有主键，触发 Update 而不是 Insert
+                        }
+                        recordBox.put(record)
+                        Log.d(TAG, "Parse SUCCESS & Saved: ${record.title} [${record.platformId}]")
+                    }
+                    // 无论是否匹配/成功，都标记为已处理以防卡死队列（视需求也可保留失败的）
                     processedRawIds.add(raw.id)
+                } catch (e: Exception) {
+                    Log.e(TAG, "Failed to process ID: ${raw.id}", e)
+                    // 解析失败的记录也删掉，防止无限重试崩溃。如果想调试可以注释下行。
+                    processedRawIds.add(raw.id) 
                 }
-
-            } catch (e: Exception) {
-                // 打印详细错误堆栈！！！
-                Log.e(TAG, "    [ERROR] Failed to process ID: ${raw.id}", e)
             }
+            rawBox.remove(*processedRawIds.toLongArray())
         }
-
-        if (newArticles.isNotEmpty()) {
-            ObjectBox.store.runInTx {
-                articleBox.put(newArticles)
-                // 注意这里的 * 号
-                rawBox.remove(*processedRawIds.toLongArray())
-            }
-            Log.i(TAG, "Saved ${newArticles.size} new articles and cleaned up RawData.")
-        } else {
-            Log.i(TAG, "No valid articles parsed.")
-        }
+        Log.i(TAG, "Cleaned up ${processedRawIds.size} RawData.")
     }
 
-    private fun parseJsonArticle(raw: RawData): Article {
+    private fun parseJsonArticle(raw: RawData, cleanUrl: String): UniversalRecord {
         val jsonParams = JsonParser.parseString(raw.json).asJsonObject
-
+        
+        val articleId = cleanUrl.trimEnd('/').substringAfterLast('/')
         val title = jsonParams.safeString("title")
         val content = jsonParams.safeString("content")
-        val createTime = raw.timestamp
-
+        
         val authorObj = jsonParams.getAsJsonObject("author")
-        val authorName = if (authorObj != null) authorObj.safeString("name") else "Unknown"
+        val authorName = authorObj?.safeString("name") ?: "Unknown"
+        val authorId = authorObj?.safeString("id") ?: ""
 
         val extraJson = JsonObject()
         val fieldsToExtract = listOf("url", "created", "updated", "ip_info", "voteup_count", "comment_count", "favlists_count")
-
         for (field in fieldsToExtract) {
-            if (jsonParams.has(field)) {
-                extraJson.add(field, jsonParams.get(field))
-            }
+            if (jsonParams.has(field)) extraJson.add(field, jsonParams.get(field))
         }
 
-        return Article(
+        return UniversalRecord(
+            platform = "zhihu",
+            recordType = "article",
+            platformId = "zhihu_article_$articleId",
             title = title,
-            contentMarkdown = content,
-            author = authorName,
-            createTime = createTime,
+            content = content,
+            authorId = authorId,
+            authorName = authorName,
             sourceUrl = raw.url,
-            extraData = gson.toJson(extraJson)
+            publishTime = jsonParams.get("created")?.asLong?.times(1000) ?: raw.timestamp,
+            captureTime = raw.timestamp,
+            extraMetadata = gson.toJson(extraJson)
         )
     }
 
-    private fun parseHtmlAnswer(raw: RawData, cleanUrl: String): Article {
+    private fun parseHtmlAnswer(raw: RawData, cleanUrl: String): UniversalRecord {
         val answerId = cleanUrl.trimEnd('/').substringAfterLast('/')
-        Log.d(TAG, "    Target Answer ID: $answerId")
-
-        // 检查 HTML 内容长度
-        Log.d(TAG, "    HTML Length: ${raw.json.length}")
-
         val doc = Jsoup.parse(raw.json)
         val scriptTag = doc.select("script#js-initialData[type=\"text/json\"]").first()
+            ?: throw Exception("script#js-initialData tag NOT found in HTML!")
 
-        if (scriptTag == null) {
-            // 如果这里报错，说明抓下来的 HTML 不对，可能是登录页或者验证码页
-            throw Exception("Critical: script#js-initialData tag NOT found in HTML!")
-        }
-
-        val jsonText = scriptTag.html()
-        if (jsonText.isEmpty()) throw Exception("js-initialData is empty")
-
-        val fullJson = JsonParser.parseString(jsonText).asJsonObject
-
+        val fullJson = JsonParser.parseString(scriptTag.html()).asJsonObject
         val answerData = fullJson
             .getAsJsonObject("initialState")
             ?.getAsJsonObject("answers")
             ?.getAsJsonObject(answerId)
-
-        if (answerData == null) {
-            // 打印一下 keys 看看有哪些 ID，方便调试
-            val availableIds = fullJson.getAsJsonObject("initialState")
-                ?.getAsJsonObject("entities")?.getAsJsonObject("answers")?.keySet()
-            throw Exception("Answer data not found for id: $answerId. Available IDs: $availableIds")
-        }
+            ?: throw Exception("Answer data not found for id: $answerId")
 
         val content = answerData.safeString("content")
-        val authorName = answerData.safeString("author") ?: "知乎用户"
+        
+        // 知乎新版的 author 可能是个对象或者字符串，这里做兼容
+        var authorName = "知乎用户"
+        var authorId = ""
+        if (answerData.has("author") && answerData.get("author").isJsonObject) {
+            val authorObj = answerData.getAsJsonObject("author")
+            authorName = authorObj.safeString("name")
+            authorId = authorObj.safeString("id")
+        } else {
+            authorName = answerData.safeString("author")
+        }
+
         val questionData = answerData.getAsJsonObject("question")
         val questionTitle = questionData?.safeString("title") ?: "知乎回答 $answerId"
 
@@ -152,23 +141,25 @@ object DataProcessor {
         extraJson.addProperty("parse_mode", "html_script")
         if (answerData.has("voteupCount")) extraJson.add("voteup_count", answerData.get("voteupCount"))
         if (answerData.has("commentCount")) extraJson.add("comment_count", answerData.get("commentCount"))
-        if (answerData.has("createdTime")) extraJson.add("created", answerData.get("createdTime"))
 
-        return Article(
+        val createdTime = if (answerData.has("createdTime")) answerData.get("createdTime").asLong * 1000 else raw.timestamp
+
+        return UniversalRecord(
+            platform = "zhihu",
+            recordType = "answer",
+            platformId = "zhihu_answer_$answerId",
             title = questionTitle,
-            contentMarkdown = content,
-            author = authorName,
-            createTime = raw.timestamp,
+            content = content,
+            authorId = authorId,
+            authorName = authorName,
             sourceUrl = raw.url,
-            extraData = gson.toJson(extraJson)
+            publishTime = createdTime,
+            captureTime = raw.timestamp,
+            extraMetadata = gson.toJson(extraJson)
         )
     }
 
     private fun JsonObject.safeString(key: String): String {
-        return if (this.has(key) && !this.get(key).isJsonNull) {
-            this.get(key).asString
-        } else {
-            ""
-        }
+        return if (this.has(key) && !this.get(key).isJsonNull) this.get(key).asString else ""
     }
 }

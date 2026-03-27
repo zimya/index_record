@@ -4,32 +4,34 @@ import android.content.ContentProvider
 import android.content.ContentValues
 import android.database.Cursor
 import android.net.Uri
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import me.melon.record.ObjectBox
 import me.melon.record.data.model.RawData
 import io.objectbox.Box
+import me.melon.record.logic.DataProcessor
 
 class HookDataProvider : ContentProvider() {
 
     companion object {
-        // 定义 URI，Xposed 模块需要用到这个
         const val AUTHORITY = "me.melon.record.provider"
         val URI: Uri = Uri.parse("content://$AUTHORITY/raw_data")
     }
 
     private lateinit var rawDataBox: Box<RawData>
+    private val providerScope = CoroutineScope(Dispatchers.IO)
 
     override fun onCreate(): Boolean {
-	    // 关键修复：获取 Context 并初始化 ObjectBox
-	    // 因为 Provider 启动比 Application 早，必须在这里先初始化
-	    context?.let { ctx ->
-	        ObjectBox.init(ctx)
-	        rawDataBox = ObjectBox.store.boxFor(RawData::class.java)
-	    }
+        context?.let { ctx ->
+            ObjectBox.init(ctx)
+            rawDataBox = ObjectBox.store.boxFor(RawData::class.java)
+        }
         return true
     }
 
     override fun insert(uri: Uri, values: ContentValues?): Uri? {
-    	if (!::rawDataBox.isInitialized) return null
+        if (!::rawDataBox.isInitialized) return null
         values ?: return null
         try {
             val url = values.getAsString("url")
@@ -42,6 +44,16 @@ class HookDataProvider : ContentProvider() {
                 hostApp = host
             )
             val id = rawDataBox.put(entity)
+            
+            // 【核心改进】异步触发数据解析，不需要等 UI 启动
+            providerScope.launch {
+                try {
+                    DataProcessor.processPendingData()
+                } catch (e: Exception) {
+                    e.printStackTrace()
+                }
+            }
+
             return Uri.withAppendedPath(uri, id.toString())
         } catch (e: Exception) {
             e.printStackTrace()
@@ -49,7 +61,6 @@ class HookDataProvider : ContentProvider() {
         return null
     }
 
-    // 其他方法虽然不用，但必须实现
     override fun query(uri: Uri, projection: Array<out String>?, selection: String?, selectionArgs: Array<out String>?, sortOrder: String?): Cursor? = null
     override fun getType(uri: Uri): String? = null
     override fun delete(uri: Uri, selection: String?, selectionArgs: Array<out String>?): Int = 0

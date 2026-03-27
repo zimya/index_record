@@ -1,13 +1,13 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
     <uses-permission android:name="android.permission.INTERNET" />
-
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS"/>
     <!-- 关键：声明 SDK 版本 -->
     <uses-sdk android:minSdkVersion="26" android:targetSdkVersion="34" />
 
     <application
         android:name=".App"
         android:allowBackup="true"
-        android:label="ZhihuHook"
+        android:label="index_record"
     >
 
 	    <!-- 这里的 android:exported="true" 是 Android 12+ 必须的 -->

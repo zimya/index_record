@@ -4,48 +4,6 @@
   "_note3": "If you have VCS merge conflicts, you must resolve them according to ObjectBox docs.",
   "entities": [
     {
-      "id": "1:8055320621126367126",
-      "lastPropertyId": "6:4365916967896765555",
-      "name": "Article",
-      "properties": [
-        {
-          "id": "1:2169101128849896500",
-          "name": "id",
-          "type": 6,
-          "flags": 1
-        },
-        {
-          "id": "2:6274530900788738375",
-          "name": "title",
-          "type": 9
-        },
-        {
-          "id": "3:5251180235446087421",
-          "name": "contentMarkdown",
-          "type": 9
-        },
-        {
-          "id": "4:4513386282721873718",
-          "name": "author",
-          "type": 9
-        },
-        {
-          "id": "5:3584877729490341743",
-          "name": "createTime",
-          "type": 6
-        },
-        {
-          "id": "6:4365916967896765555",
-          "name": "rawDataId",
-          "indexId": "1:3714068147844364401",
-          "type": 11,
-          "flags": 520,
-          "relationTarget": "RawData"
-        }
-      ],
-      "relations": []
-    },
-    {
       "id": "2:4131280258147828829",
       "lastPropertyId": "6:2700540303606336758",
       "name": "RawData",
@@ -83,17 +41,117 @@
         }
       ],
       "relations": []
+    },
+    {
+      "id": "3:8433786629959691282",
+      "lastPropertyId": "14:8085499973247860820",
+      "name": "UniversalRecord",
+      "properties": [
+        {
+          "id": "1:4114813350553952643",
+          "name": "id",
+          "type": 6,
+          "flags": 1
+        },
+        {
+          "id": "2:810952959604021457",
+          "name": "platform",
+          "indexId": "2:8092723331314431397",
+          "type": 9,
+          "flags": 2048
+        },
+        {
+          "id": "3:4177446886575295625",
+          "name": "recordType",
+          "indexId": "3:349172273396713935",
+          "type": 9,
+          "flags": 2048
+        },
+        {
+          "id": "4:7862827489166285481",
+          "name": "platformId",
+          "indexId": "4:6668669972635074527",
+          "type": 9,
+          "flags": 2080
+        },
+        {
+          "id": "5:2624243577424463871",
+          "name": "title",
+          "type": 9
+        },
+        {
+          "id": "6:713579879119663385",
+          "name": "content",
+          "type": 9
+        },
+        {
+          "id": "7:2505525828981693556",
+          "name": "authorId",
+          "indexId": "5:2288551872669010541",
+          "type": 9,
+          "flags": 2048
+        },
+        {
+          "id": "8:2342246777337321546",
+          "name": "authorName",
+          "type": 9
+        },
+        {
+          "id": "9:2153321291531810410",
+          "name": "authorAvatar",
+          "type": 9
+        },
+        {
+          "id": "10:1330419535890606272",
+          "name": "sourceUrl",
+          "type": 9
+        },
+        {
+          "id": "11:6016689390868932702",
+          "name": "parentId",
+          "type": 9
+        },
+        {
+          "id": "12:2195156799706525800",
+          "name": "publishTime",
+          "type": 6
+        },
+        {
+          "id": "13:1561613818339126248",
+          "name": "captureTime",
+          "type": 6
+        },
+        {
+          "id": "14:8085499973247860820",
+          "name": "extraMetadata",
+          "type": 9
+        }
+      ],
+      "relations": []
     }
   ],
-  "lastEntityId": "2:4131280258147828829",
-  "lastIndexId": "1:3714068147844364401",
+  "lastEntityId": "3:8433786629959691282",
+  "lastIndexId": "5:2288551872669010541",
   "lastRelationId": "0:0",
   "lastSequenceId": "0:0",
   "modelVersion": 5,
   "modelVersionParserMinimum": 5,
-  "retiredEntityUids": [],
-  "retiredIndexUids": [],
-  "retiredPropertyUids": [],
+  "retiredEntityUids": [
+    8055320621126367126
+  ],
+  "retiredIndexUids": [
+    3714068147844364401
+  ],
+  "retiredPropertyUids": [
+    4365916967896765555,
+    2169101128849896500,
+    6274530900788738375,
+    5251180235446087421,
+    4513386282721873718,
+    3584877729490341743,
+    2859443244904691664,
+    8445856922668708767
+  ],
   "retiredRelationUids": [],
   "version": 1
 }

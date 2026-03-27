@@ -5,9 +5,8 @@
         name="Theme.Webrecorder"
         parent="android:Theme.Material.Light.NoActionBar"
     >
-        <!-- 状态栏颜色 -->
-        <item name="android:statusBarColor">@android:color/white</item>
-        <!-- 状态栏文字深色 -->
-        <item name="android:windowLightStatusBar">true</item>
+        <!-- Edge-to-edge support -->
+        <item name="android:statusBarColor">@android:color/transparent</item>
+        <item name="android:navigationBarColor">@android:color/transparent</item>
     </style>
 </resources>

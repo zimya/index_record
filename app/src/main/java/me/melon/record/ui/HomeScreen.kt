@@ -55,10 +55,19 @@ fun HomeScreen(viewModel: HomeViewModel = viewModel()) {
             BackHandler {
                 selectedRecord = null
             }
-            RecordDetailScreen(
-                record = targetRecord,
-                onBack = { selectedRecord = null }
-            )
+            if (targetRecord.recordType == "comment") {
+                CommentDetailScreen(
+                    record = targetRecord,
+                    onBack = { selectedRecord = null },
+                    onOpenParent = { selectedRecord = it }
+                )
+            } else {
+                RecordDetailScreen(
+                    record = targetRecord,
+                    onBack = { selectedRecord = null },
+                    onOpenRecord = { selectedRecord = it }
+                )
+            }
         } else {
             PullToRefreshListScreen(
                 records = records,

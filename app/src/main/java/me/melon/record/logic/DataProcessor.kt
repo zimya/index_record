@@ -19,6 +19,10 @@ object DataProcessor {
     private val PATTERN_JSON_ARTICLE = Pattern.compile("https?://api\\.zhihu\\.com/articles/[^/]+/?")
     // 2. HTML 类型的回答接口
     private val PATTERN_HTML_ANSWER = Pattern.compile("https?://www\\.zhihu\\.com/appview/v2/answer/[^/]+/?")
+    // 3. 知乎根评论接口 (支持 answers 和 articles)
+    private val PATTERN_ZHIHU_ROOT_COMMENT = Pattern.compile("https?://api\\.zhihu\\.com/comment_v5/(answers|articles)/(\\d+)/root_comment.*")
+    // 4. 知乎子评论接口
+    private val PATTERN_ZHIHU_CHILD_COMMENT = Pattern.compile("https?://api\\.zhihu\\.com/comment_v5/comment/(\\d+)/child_comment.*")
 
     private val gson = Gson()
 
@@ -46,29 +50,37 @@ object DataProcessor {
                     Log.d(TAG, ">>> Processing RawData from [${raw.hostApp}]: $cleanUrl")
                     Log.d(TAG, ">>> Content Snippet: ${debugJson.replace("\n", " ")}")
 
-                    var record: UniversalRecord? = null
+                    var records: List<UniversalRecord>? = null
 
                     if (PATTERN_JSON_ARTICLE.matcher(cleanUrl).matches()) {
-                        record = parseJsonArticle(raw, cleanUrl)
+                        val r = parseJsonArticle(raw, cleanUrl)
+                        records = listOf(r)
                     } else if (PATTERN_HTML_ANSWER.matcher(cleanUrl).matches()) {
-                        record = parseHtmlAnswer(raw, cleanUrl)
+                        val r = parseHtmlAnswer(raw, cleanUrl)
+                        records = listOf(r)
+                    } else if (PATTERN_ZHIHU_ROOT_COMMENT.matcher(cleanUrl).matches()) {
+                        records = parseZhihuComments(raw, cleanUrl, true)
+                    } else if (PATTERN_ZHIHU_CHILD_COMMENT.matcher(cleanUrl).matches()) {
+                        records = parseZhihuComments(raw, cleanUrl, false)
                     } else {
                         // 仅输出日志，不再存入数据库
                         Log.i(TAG, "Unmatched URL (Log Only): $cleanUrl")
                     }
 
-                    if (record != null) {
-                        // 【去重逻辑】检查是否已经存过该 platformId
-                        val existing = recordBox.query()
-                            .equal(UniversalRecord_.platformId, record.platformId, io.objectbox.query.QueryBuilder.StringOrder.CASE_SENSITIVE)
-                            .build()
-                            .findFirst()
+                    if (records != null) {
+                        for (record in records) {
+                            // 【去重逻辑】检查是否已经存过该 platformId
+                            val existing = recordBox.query()
+                                .equal(UniversalRecord_.platformId, record.platformId, io.objectbox.query.QueryBuilder.StringOrder.CASE_SENSITIVE)
+                                .build()
+                                .findFirst()
 
-                        if (existing != null) {
-                            record.id = existing.id // 复用现有主键，触发 Update 而不是 Insert
+                            if (existing != null) {
+                                record.id = existing.id // 复用现有主键，触发 Update 而不是 Insert
+                            }
+                            recordBox.put(record)
+                            Log.d(TAG, "Parse SUCCESS & Saved: ${record.title} [${record.platformId}]")
                         }
-                        recordBox.put(record)
-                        Log.d(TAG, "Parse SUCCESS & Saved: ${record.title} [${record.platformId}]")
                     }
                     // 无论是否匹配/成功，都标记为已处理以防卡死队列（视需求也可保留失败的）
                     processedRawIds.add(raw.id)
@@ -188,7 +200,90 @@ object DataProcessor {
         )
         }
 
-        private fun JsonObject.safeString(key: String): String {
+        private fun parseZhihuComments(raw: RawData, cleanUrl: String, isRoot: Boolean): List<UniversalRecord> {
+        val records = mutableListOf<UniversalRecord>()
+        val jsonParams = JsonParser.parseString(raw.json).asJsonObject
+
+        val dataArray = jsonParams.getAsJsonArray("data") ?: return records
+
+        var fallbackParentId = ""
+        if (isRoot) {
+            val matcher = PATTERN_ZHIHU_ROOT_COMMENT.matcher(cleanUrl)
+            if (matcher.find()) {
+                val resourceType = matcher.group(1)
+                val resourceId = matcher.group(2)
+                fallbackParentId = if (resourceType == "answers") "zhihu_answer_$resourceId" else "zhihu_article_$resourceId"
+            }
+        } else {
+            val matcher = PATTERN_ZHIHU_CHILD_COMMENT.matcher(cleanUrl)
+            if (matcher.find()) {
+                val commentId = matcher.group(1)
+                fallbackParentId = "zhihu_comment_$commentId"
+            }
+        }
+
+        fun parseComment(commentObj: JsonObject, parentFallback: String) {
+            val commentId = commentObj.safeString("id")
+            if (commentId.isEmpty()) return
+
+            val content = commentObj.safeString("content")
+
+            val authorObj = commentObj.getAsJsonObject("author")
+            val authorName = authorObj?.safeString("name") ?: "Unknown"
+            val authorId = authorObj?.safeString("id") ?: ""
+            val authorAvatar = authorObj?.safeString("avatar_url") ?: ""
+
+            val createdTime = if (commentObj.has("created_time")) commentObj.get("created_time").asLong * 1000 else raw.timestamp
+
+            val replyCommentId = commentObj.safeString("reply_comment_id")
+            val parentId = if (replyCommentId.isNotEmpty() && replyCommentId != "0") {
+                "zhihu_comment_$replyCommentId"
+            } else {
+                parentFallback
+            }
+
+            val extraJson = JsonObject()
+            val fieldsToExtract = listOf("like_count", "dislike_count", "child_comment_count", "score", "reply_comment_id", "reply_root_comment_id")
+            for (field in fieldsToExtract) {
+                if (commentObj.has(field)) extraJson.add(field, commentObj.get(field))
+            }
+
+            records.add(
+                UniversalRecord(
+                    platform = "zhihu",
+                    recordType = "comment",
+                    sourceApp = raw.hostApp,
+                    platformId = "zhihu_comment_$commentId",
+                    title = "评论: $authorName",
+                    content = content,
+                    authorId = authorId,
+                    authorName = authorName,
+                    authorAvatar = authorAvatar,
+                    sourceUrl = raw.url,
+                    parentId = parentId,
+                    publishTime = createdTime,
+                    captureTime = raw.timestamp,
+                    extraMetadata = gson.toJson(extraJson)
+                )
+            )
+
+            if (commentObj.has("child_comments") && commentObj.get("child_comments").isJsonArray) {
+                val childArray = commentObj.getAsJsonArray("child_comments")
+                for (childElem in childArray) {
+                    if (!childElem.isJsonObject) continue
+                    parseComment(childElem.asJsonObject, "zhihu_comment_$commentId")
+                }
+            }
+        }
+
+        for (elem in dataArray) {
+            if (!elem.isJsonObject) continue
+            parseComment(elem.asJsonObject, fallbackParentId)
+        }
+        return records
+    }
+
+    private fun JsonObject.safeString(key: String): String {
 
         return if (this.has(key) && !this.get(key).isJsonNull) this.get(key).asString else ""
     }

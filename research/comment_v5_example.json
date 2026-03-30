@@ -1,0 +1,457 @@
+{
+    "ad_plugin_infos": [],
+    "atmosphere_voting_config": {
+        "daily_frequency": 1,
+        "frequency_interval": 3,
+        "min_num_of_root_comment": 10,
+        "location": 3,
+        "title": "你对该内容下的评论氛围是否满意？",
+        "detail": [
+            {
+                "emoji_level": "dissatisfied",
+                "title": "不满",
+                "normal_icon": "https://picx.zhimg.com/v2-1d5d094f0cd71f7da08e7e54d037c0b5.png",
+                "selected_icon": "https://picx.zhimg.com/v2-9af3c8aa46b63f2f840138b0ee6b0a99.png"
+            },
+            {
+                "emoji_level": "fair",
+                "title": "一般",
+                "normal_icon": "https://pica.zhimg.com/v2-706985b9364429bc4842b1027a8217ed.png",
+                "selected_icon": "https://picx.zhimg.com/v2-1e8b3f0e735d3f2a98d4b43bfe793118.png"
+            },
+            {
+                "emoji_level": "satisfied",
+                "title": "满意",
+                "normal_icon": "https://pic1.zhimg.com/v2-b376d3b93058da535fbd47a79eb37d14.png",
+                "selected_icon": "https://pic1.zhimg.com/v2-626660f8a645e0a9af99e6b2ab7a1d44.png"
+            }
+        ]
+    },
+    "comment_status": {
+        "type": 0,
+        "text": "",
+        "induce_text": ""
+    },
+    "counts": {
+        "total_counts": 4,
+        "collapsed_counts": 0,
+        "reviewing_counts": 0,
+        "segment_comment_counts": 0
+    },
+    "data": [
+        {
+            "id": "11450762807",
+            "type": "comment",
+            "resource_type": "answer",
+            "member_id": 769378382,
+            "url": "https://api.zhihu.com/comment_v5/comments/11450762807",
+            "hot": false,
+            "top": false,
+            "content": "\u003cp\u003e像这么强的选手，一定有区域赛冠军吧[爱][爱][爱]\u003c/p\u003e",
+            "score": 0,
+            "created_time": 1774871035,
+            "is_delete": false,
+            "collapsed": false,
+            "reviewing": false,
+            "reply_comment_id": "0",
+            "reply_root_comment_id": "11450762807",
+            "liked": false,
+            "like_count": 0,
+            "disliked": false,
+            "dislike_count": 0,
+            "is_author": false,
+            "can_like": true,
+            "can_dislike": true,
+            "can_delete": false,
+            "can_reply": true,
+            "can_hot": false,
+            "can_author_top": false,
+            "is_author_top": false,
+            "can_collapse": false,
+            "can_share": true,
+            "can_unfold": false,
+            "can_truncate": false,
+            "can_more": true,
+            "author": {
+                "id": "bb252d166438a3229c652ef578c25c65",
+                "url_token": "bronya19c",
+                "name": "Bronya19C",
+                "avatar_url": "https://picx.zhimg.com/v2-43781f595e4c54a1ed99a83a2152d6dc_l.jpg?source=06d4cd63",
+                "avatar_url_template": "https://picx.zhimg.com/v2-43781f595e4c54a1ed99a83a2152d6dc_l.jpg?source=06d4cd63",
+                "is_org": false,
+                "type": "people",
+                "url": "https://api.zhihu.com/comment_v5/people/bb252d166438a3229c652ef578c25c65",
+                "user_type": "people",
+                "headline": "",
+                "gender": 2,
+                "is_advertiser": false,
+                "badge_v2": {
+                    "title": "",
+                    "merged_badges": null,
+                    "detail_badges": null
+                },
+                "exposed_medal": {
+                    "medal_id": "",
+                    "medal_name": "",
+                    "avatar_url": "",
+                    "description": "",
+                    "medal_avatar_frame": "",
+                    "can_click": false
+                },
+                "vip_info": {
+                    "is_vip": false,
+                    "target_url": null
+                },
+                "kvip_info": {
+                    "is_vip": false,
+                    "target_url": null
+                },
+                "level_info": null,
+                "is_anonymous": false,
+                "ring_info": null
+            },
+            "author_tag": [],
+            "reply_author_tag": [],
+            "content_tag": [],
+            "comment_tag": [
+                {
+                    "type": "ip_info",
+                    "text": "北京",
+                    "color": "#999999",
+                    "night_color": "#999999",
+                    "has_border": false
+                }
+            ],
+            "child_comment_count": 1,
+            "child_comment_next_offset": null,
+            "child_comments": [
+                {
+                    "id": "11450420504",
+                    "type": "comment",
+                    "resource_type": "answer",
+                    "member_id": 204290111,
+                    "url": "https://api.zhihu.com/comment_v5/comments/11450420504",
+                    "hot": false,
+                    "top": false,
+                    "content": "哎哟老八来了",
+                    "score": 0,
+                    "created_time": 1774873533,
+                    "is_delete": false,
+                    "collapsed": false,
+                    "reviewing": false,
+                    "reply_comment_id": "11450762807",
+                    "reply_root_comment_id": "11450762807",
+                    "liked": false,
+                    "like_count": 0,
+                    "disliked": false,
+                    "dislike_count": 0,
+                    "is_author": false,
+                    "can_like": true,
+                    "can_dislike": true,
+                    "can_delete": false,
+                    "can_reply": true,
+                    "can_hot": false,
+                    "can_author_top": false,
+                    "is_author_top": false,
+                    "can_collapse": false,
+                    "can_share": true,
+                    "can_unfold": false,
+                    "can_truncate": false,
+                    "can_more": true,
+                    "author": {
+                        "id": "c78f91b4872cd4e8feb803846e77c4d3",
+                        "url_token": "yao-yao-cha-32-67",
+                        "name": "云浅",
+                        "avatar_url": "https://pic1.zhimg.com/v2-6911b037b7adc41d232a0914302aa651_l.jpg?source=06d4cd63",
+                        "avatar_url_template": "https://pica.zhimg.com/v2-6911b037b7adc41d232a0914302aa651_l.jpg?source=06d4cd63",
+                        "is_org": false,
+                        "type": "people",
+                        "url": "https://api.zhihu.com/comment_v5/people/c78f91b4872cd4e8feb803846e77c4d3",
+                        "user_type": "people",
+                        "headline": "",
+                        "gender": 2,
+                        "is_advertiser": false,
+                        "badge_v2": {
+                            "title": "",
+                            "merged_badges": null,
+                            "detail_badges": null
+                        },
+                        "exposed_medal": {
+                            "medal_id": "",
+                            "medal_name": "",
+                            "avatar_url": "",
+                            "description": "",
+                            "medal_avatar_frame": "",
+                            "can_click": false
+                        },
+                        "vip_info": {
+                            "is_vip": true,
+                            "vip_icon": {
+                                "url": "https://picx.zhimg.com/v2-4812630bc27d642f7cafcd6cdeca3d7a.jpg?source=88ceefae",
+                                "night_mode_url": "https://picx.zhimg.com/v2-c9686ff064ea3579730756ac6c289978.jpg?source=88ceefae"
+                            },
+                            "target_url": null
+                        },
+                        "kvip_info": {
+                            "is_vip": false,
+                            "target_url": null
+                        },
+                        "level_info": null,
+                        "is_anonymous": false,
+                        "ring_info": null
+                    },
+                    "author_tag": [
+                        {
+                            "type": "content_author",
+                            "text": "作者",
+                            "color": "#999999",
+                            "night_color": "#999999",
+                            "has_border": true,
+                            "border_color": "#D3D3D3",
+                            "border_night_color": "#2E2E2E"
+                        }
+                    ],
+                    "reply_author_tag": [],
+                    "content_tag": [],
+                    "comment_tag": [
+                        {
+                            "type": "ip_info",
+                            "text": "北京",
+                            "color": "#999999",
+                            "night_color": "#999999",
+                            "has_border": false
+                        }
+                    ],
+                    "child_comment_count": 0,
+                    "child_comment_next_offset": null,
+                    "is_visible_only_to_myself": false,
+                    "_": null,
+                    "level_tag": 1,
+                    "is_gift": false,
+                    "disclaimer_info": null
+                }
+            ],
+            "is_visible_only_to_myself": false,
+            "_": null,
+            "level_tag": 2,
+            "is_gift": false,
+            "disclaimer_info": null
+        },
+        {
+            "id": "11450378991",
+            "type": "comment",
+            "resource_type": "answer",
+            "member_id": 1067873654,
+            "url": "https://api.zhihu.com/comment_v5/comments/11450378991",
+            "hot": false,
+            "top": false,
+            "content": "\u003cp\u003e云浅老师太强了[大哭]\u003c/p\u003e",
+            "score": 0,
+            "created_time": 1774845748,
+            "is_delete": false,
+            "collapsed": false,
+            "reviewing": false,
+            "reply_comment_id": "0",
+            "reply_root_comment_id": "11450378991",
+            "liked": false,
+            "like_count": 0,
+            "disliked": false,
+            "dislike_count": 0,
+            "is_author": false,
+            "can_like": true,
+            "can_dislike": true,
+            "can_delete": false,
+            "can_reply": true,
+            "can_hot": false,
+            "can_author_top": false,
+            "is_author_top": false,
+            "can_collapse": false,
+            "can_share": true,
+            "can_unfold": false,
+            "can_truncate": false,
+            "can_more": true,
+            "author": {
+                "id": "80db7dc2b2db3dc8a85a017a93751b2a",
+                "url_token": "--gnu-pbds",
+                "name": "__gnu_pbds",
+                "avatar_url": "https://picx.zhimg.com/v2-30e9851d85c4d665c122b55870fec0a8_l.jpg?source=06d4cd63",
+                "avatar_url_template": "https://pica.zhimg.com/v2-30e9851d85c4d665c122b55870fec0a8_l.jpg?source=06d4cd63",
+                "is_org": false,
+                "type": "people",
+                "url": "https://api.zhihu.com/comment_v5/people/80db7dc2b2db3dc8a85a017a93751b2a",
+                "user_type": "people",
+                "headline": "",
+                "gender": 0,
+                "is_advertiser": false,
+                "badge_v2": {
+                    "title": "",
+                    "merged_badges": null,
+                    "detail_badges": null
+                },
+                "exposed_medal": {
+                    "medal_id": "",
+                    "medal_name": "",
+                    "avatar_url": "",
+                    "description": "",
+                    "medal_avatar_frame": "",
+                    "can_click": false
+                },
+                "vip_info": {
+                    "is_vip": false,
+                    "target_url": null
+                },
+                "kvip_info": {
+                    "is_vip": false,
+                    "target_url": null
+                },
+                "level_info": null,
+                "is_anonymous": false,
+                "ring_info": null
+            },
+            "author_tag": [],
+            "reply_author_tag": [],
+            "content_tag": [],
+            "comment_tag": [
+                {
+                    "type": "ip_info",
+                    "text": "北京",
+                    "color": "#999999",
+                    "night_color": "#999999",
+                    "has_border": false
+                }
+            ],
+            "child_comment_count": 0,
+            "child_comment_next_offset": null,
+            "child_comments": [],
+            "is_visible_only_to_myself": false,
+            "_": null,
+            "level_tag": 2,
+            "is_gift": false,
+            "disclaimer_info": null
+        },
+        {
+            "id": "11450360599",
+            "type": "comment",
+            "resource_type": "answer",
+            "member_id": 52381562,
+            "url": "https://api.zhihu.com/comment_v5/comments/11450360599",
+            "hot": false,
+            "top": false,
+            "content": "云浅老师太强了[大哭]",
+            "score": 0,
+            "created_time": 1774864520,
+            "is_delete": false,
+            "collapsed": false,
+            "reviewing": false,
+            "reply_comment_id": "0",
+            "reply_root_comment_id": "11450360599",
+            "liked": false,
+            "like_count": 0,
+            "disliked": false,
+            "dislike_count": 0,
+            "is_author": false,
+            "can_like": true,
+            "can_dislike": true,
+            "can_delete": false,
+            "can_reply": true,
+            "can_hot": false,
+            "can_author_top": false,
+            "is_author_top": false,
+            "can_collapse": false,
+            "can_share": true,
+            "can_unfold": false,
+            "can_truncate": false,
+            "can_more": true,
+            "author": {
+                "id": "36f44cf1e8ac79c3dc8f184e5d69e408",
+                "url_token": "yzx-79-32",
+                "name": "修噶",
+                "avatar_url": "https://picx.zhimg.com/v2-d61624b7a96b6c2b0f70f0e09dc4aa57_l.jpg?source=06d4cd63",
+                "avatar_url_template": "https://picx.zhimg.com/v2-d61624b7a96b6c2b0f70f0e09dc4aa57_l.jpg?source=06d4cd63",
+                "is_org": false,
+                "type": "people",
+                "url": "https://api.zhihu.com/comment_v5/people/36f44cf1e8ac79c3dc8f184e5d69e408",
+                "user_type": "people",
+                "headline": "什么时候才能变强呢",
+                "gender": 0,
+                "is_advertiser": false,
+                "badge_v2": {
+                    "title": "",
+                    "merged_badges": null,
+                    "detail_badges": null
+                },
+                "exposed_medal": {
+                    "medal_id": "",
+                    "medal_name": "",
+                    "avatar_url": "",
+                    "description": "",
+                    "medal_avatar_frame": "",
+                    "can_click": false
+                },
+                "vip_info": {
+                    "is_vip": true,
+                    "vip_icon": {
+                        "url": "https://picx.zhimg.com/v2-4812630bc27d642f7cafcd6cdeca3d7a.jpg?source=88ceefae",
+                        "night_mode_url": "https://picx.zhimg.com/v2-c9686ff064ea3579730756ac6c289978.jpg?source=88ceefae"
+                    },
+                    "target_url": null
+                },
+                "kvip_info": {
+                    "is_vip": true,
+                    "vip_icon": {
+                        "url": "https://picx.zhimg.com/v2-57fe7feb4813331d5eca02ef731e12c9.jpg?source=88ceefae",
+                        "night_mode_url": "https://picx.zhimg.com/v2-57fe7feb4813331d5eca02ef731e12c9.jpg?source=88ceefae"
+                    },
+                    "target_url": "https://www.zhihu.com/kvip/purchase"
+                },
+                "level_info": null,
+                "is_anonymous": false,
+                "ring_info": null
+            },
+            "author_tag": [],
+            "reply_author_tag": [],
+            "content_tag": [],
+            "comment_tag": [
+                {
+                    "type": "ip_info",
+                    "text": "浙江",
+                    "color": "#999999",
+                    "night_color": "#999999",
+                    "has_border": false
+                }
+            ],
+            "child_comment_count": 0,
+            "child_comment_next_offset": null,
+            "child_comments": [],
+            "is_visible_only_to_myself": false,
+            "_": null,
+            "level_tag": 2,
+            "is_gift": false,
+            "disclaimer_info": null
+        }
+    ],
+    "edit_status": {
+        "can_reply": true,
+        "toast": "包容不同才有精彩的多样性"
+    },
+    "header": [],
+    "is_content_author": false,
+    "is_content_rewardable": false,
+    "paging": {
+        "is_end": true,
+        "is_start": true,
+        "next": "https://api.zhihu.com/comment_v5/answers/2021791597981910741/root_comment?limit=10\u0026offset=5_11450360599_0",
+        "previous": "https://api.zhihu.com/comment_v5/answers/2021791597981910741/root_comment?limit=10\u0026offset=5_11450762807_1",
+        "totals": 4
+    },
+    "sorter": [
+        {
+            "type": "score",
+            "text": "默认"
+        },
+        {
+            "type": "ts",
+            "text": "最新"
+        }
+    ]
+}

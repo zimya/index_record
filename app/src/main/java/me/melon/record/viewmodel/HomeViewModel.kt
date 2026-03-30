@@ -140,6 +140,7 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
 
         return data.asSequence()
             .filter { record ->
+                if (trimmedQuery.isEmpty() && record.recordType == "comment") return@filter false
                 if (start != null && record.captureTime < start) return@filter false
                 if (end != null && record.captureTime > end) return@filter false
                 val sourceApp = resolveSourceApp(record)

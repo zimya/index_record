@@ -40,6 +40,12 @@ object DataProcessor {
             for (raw in allRawData) {
                 try {
                     val cleanUrl = if (raw.url.contains("?")) raw.url.substringBefore("?") else raw.url
+
+                    // 调试输出：打印收到的所有原始数据，不分类型
+                    val debugJson = if (raw.json.length > 500) raw.json.take(500) + "..." else raw.json
+                    Log.d(TAG, ">>> Processing RawData from [${raw.hostApp}]: $cleanUrl")
+                    Log.d(TAG, ">>> Content Snippet: ${debugJson.replace("\n", " ")}")
+
                     var record: UniversalRecord? = null
 
                     if (PATTERN_JSON_ARTICLE.matcher(cleanUrl).matches()) {
@@ -47,7 +53,8 @@ object DataProcessor {
                     } else if (PATTERN_HTML_ANSWER.matcher(cleanUrl).matches()) {
                         record = parseHtmlAnswer(raw, cleanUrl)
                     } else {
-                        Log.w(TAG, "No Regex matched for: $cleanUrl")
+                        // 仅输出日志，不再存入数据库
+                        Log.i(TAG, "Unmatched URL (Log Only): $cleanUrl")
                     }
 
                     if (record != null) {
@@ -56,7 +63,7 @@ object DataProcessor {
                             .equal(UniversalRecord_.platformId, record.platformId, io.objectbox.query.QueryBuilder.StringOrder.CASE_SENSITIVE)
                             .build()
                             .findFirst()
-                        
+
                         if (existing != null) {
                             record.id = existing.id // 复用现有主键，触发 Update 而不是 Insert
                         }
@@ -68,7 +75,7 @@ object DataProcessor {
                 } catch (e: Exception) {
                     Log.e(TAG, "Failed to process ID: ${raw.id}", e)
                     // 解析失败的记录也删掉，防止无限重试崩溃。如果想调试可以注释下行。
-                    processedRawIds.add(raw.id) 
+                    processedRawIds.add(raw.id)
                 }
             }
             rawBox.remove(*processedRawIds.toLongArray())
@@ -78,11 +85,11 @@ object DataProcessor {
 
     private fun parseJsonArticle(raw: RawData, cleanUrl: String): UniversalRecord {
         val jsonParams = JsonParser.parseString(raw.json).asJsonObject
-        
+
         val articleId = cleanUrl.trimEnd('/').substringAfterLast('/')
         val title = jsonParams.safeString("title")
         val content = jsonParams.safeString("content")
-        
+
         val authorObj = jsonParams.getAsJsonObject("author")
         val authorName = authorObj?.safeString("name") ?: "Unknown"
         val authorId = authorObj?.safeString("id") ?: ""
@@ -96,6 +103,7 @@ object DataProcessor {
         return UniversalRecord(
             platform = "zhihu",
             recordType = "article",
+            sourceApp = raw.hostApp,
             platformId = "zhihu_article_$articleId",
             title = title,
             content = content,
@@ -122,7 +130,7 @@ object DataProcessor {
             ?: throw Exception("Answer data not found for id: $answerId")
 
         val content = answerData.safeString("content")
-        
+
         // 知乎新版的 author 可能是个对象或者字符串，这里做兼容
         var authorName = "知乎用户"
         var authorId = ""
@@ -139,27 +147,49 @@ object DataProcessor {
 
         val extraJson = JsonObject()
         extraJson.addProperty("parse_mode", "html_script")
-        if (answerData.has("voteupCount")) extraJson.add("voteup_count", answerData.get("voteupCount"))
-        if (answerData.has("commentCount")) extraJson.add("comment_count", answerData.get("commentCount"))
+
+        // 尝试提取更多元数据
+        val fieldsToExtract = listOf("voteupCount", "commentCount", "updatedTime", "createdTime", "ipInfo")
+        for (field in fieldsToExtract) {
+            if (answerData.has(field)) {
+                val value = answerData.get(field)
+                // 统一字段名风格
+                val targetField = when(field) {
+                    "voteupCount" -> "voteup_count"
+                    "commentCount" -> "comment_count"
+                    "updatedTime" -> "updated"
+                    "createdTime" -> "created"
+                    "ipInfo" -> "ip_info"
+                    else -> field
+                }
+                extraJson.add(targetField, value)
+            }
+        }
+
+        // 调试输出：打印提取到的元数据
+        Log.d(TAG, "Extracted extra metadata for answer $answerId: ${gson.toJson(extraJson)}")
 
         val createdTime = if (answerData.has("createdTime")) answerData.get("createdTime").asLong * 1000 else raw.timestamp
+        val updatedTime = if (answerData.has("updatedTime")) answerData.get("updatedTime").asLong * 1000 else createdTime
 
         return UniversalRecord(
             platform = "zhihu",
             recordType = "answer",
+            sourceApp = raw.hostApp,
             platformId = "zhihu_answer_$answerId",
             title = questionTitle,
             content = content,
             authorId = authorId,
             authorName = authorName,
             sourceUrl = raw.url,
-            publishTime = createdTime,
+            publishTime = updatedTime, // 使用更新时间作为发布时间参考
             captureTime = raw.timestamp,
             extraMetadata = gson.toJson(extraJson)
         )
-    }
+        }
 
-    private fun JsonObject.safeString(key: String): String {
+        private fun JsonObject.safeString(key: String): String {
+
         return if (this.has(key) && !this.get(key).isJsonNull) this.get(key).asString else ""
     }
 }

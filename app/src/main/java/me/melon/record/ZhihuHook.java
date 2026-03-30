@@ -1,9 +1,16 @@
 package me.melon.record;
 
+import android.annotation.SuppressLint;
 import android.app.Application;
+import android.content.BroadcastReceiver;
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.net.Uri;
+import android.os.Build;
+import android.os.ParcelFileDescriptor;
+
 import de.robv.android.xposed.IXposedHookLoadPackage;
 import de.robv.android.xposed.XC_MethodHook;
 import de.robv.android.xposed.XposedBridge;
@@ -24,242 +31,318 @@ import java.lang.reflect.Proxy;
 import java.nio.charset.StandardCharsets;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.regex.Pattern;
-
-import android.content.BroadcastReceiver;
-import android.content.Intent;
-import android.content.IntentFilter;
-import android.os.Build;
-import android.annotation.SuppressLint;
 
 public class ZhihuHook implements IXposedHookLoadPackage {
 
     private static Context mContext;
-    
-    // 【核心改进】使用单线程池处理本地缓存和跨进程同步，避免阻塞宿主 App 的网络请求
     private static final ExecutorService executor = Executors.newSingleThreadExecutor();
+    private static final String TAG = "ZhihuRecord: ";
+    private static final String LEGACY_CACHE_DIR = "index_record_cache";
+    private static final String QUEUE_DIR = "index_record_queue";
+@Override
+public void handleLoadPackage(final XC_LoadPackage.LoadPackageParam lpparam) throws Throwable {
+    if (!"com.zhihu.android".equals(lpparam.packageName)) return;
 
-    private static final Pattern[] WHITELIST_PATTERNS = {
-        Pattern.compile("https?://api\\.zhihu\\.com/answers/v2/[^/]+/?"),
-        Pattern.compile("https?://www\\.zhihu\\.com/appview/v2/answer/[^/]+/?"),
-        Pattern.compile("https?://api\\.zhihu\\.com/articles/v2/[^/]+/?"),
-        Pattern.compile("https?://api\\.zhihu\\.com/articles/[^/]+/?"),
-    };
+    XposedBridge.log(TAG + "Loading for " + lpparam.packageName + " in " + lpparam.processName);
+
+    XposedHelpers.findAndHookMethod(
+        Application.class,
+        "attach",
+        Context.class,
+        new XC_MethodHook() {
+            @Override
+            protected void afterHookedMethod(MethodHookParam param) throws Throwable {
+                if (mContext != null) return;
+                mContext = (Context) param.args[0];
+                if (mContext == null) return;
+                XposedBridge.log(TAG + "Context attached, setting up hook.");
+                setupOkHttpHook(mContext.getClassLoader());
+                setupSyncReceiver(mContext);
+            }
+        }
+    );
+}
+
 
     @SuppressLint("UnspecifiedRegisterReceiverFlag")
-    @Override
-    public void handleLoadPackage(final XC_LoadPackage.LoadPackageParam lpparam) throws Throwable {
-        XposedBridge.log("ZhihuHook: Loading for " + lpparam.processName);
-
-        XposedHelpers.findAndHookMethod(
-            Application.class,
-            "attach",
-            Context.class,
-            new XC_MethodHook() {
+    private void setupSyncReceiver(Context context) {
+        try {
+            BroadcastReceiver receiver = new BroadcastReceiver() {
                 @Override
-                protected void afterHookedMethod(MethodHookParam param) throws Throwable {
-                    mContext = (Context) param.args[0];
-                    ClassLoader classLoader = mContext.getClassLoader();
-                    setupOkHttpHook(classLoader);
-                    
-                    // 注册广播接收器，当小茵记录启动时主动推送积压的数据
-                    try {
-                        BroadcastReceiver receiver = new BroadcastReceiver() {
-                            @Override
-                            public void onReceive(Context context, Intent intent) {
-                                if ("me.melon.record.ACTION_SYNC".equals(intent.getAction())) {
-                                    XposedBridge.log("ZhihuHook: Received ACTION_SYNC from index_record, triggering sync.");
-                                    executor.submit(() -> trySyncToApp());
-                                }
-                            }
-                        };
-                        IntentFilter filter = new IntentFilter("me.melon.record.ACTION_SYNC");
-                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-                            mContext.registerReceiver(receiver, filter, Context.RECEIVER_EXPORTED);
-                        } else {
-                            mContext.registerReceiver(receiver, filter);
-                        }
-                    } catch (Throwable t) {
-                        XposedBridge.log("ZhihuHook: Register receiver failed: " + t.getMessage());
+                public void onReceive(Context context, Intent intent) {
+                    if ("me.melon.record.ACTION_SYNC".equals(intent.getAction())) {
+                        executor.submit(() -> trySyncToApp());
                     }
                 }
+            };
+            IntentFilter filter = new IntentFilter("me.melon.record.ACTION_SYNC");
+
+            // 解决 Android 14+ 必须指定导出标志的 Lint 错误
+            if (Build.VERSION.SDK_INT >= 33) { // TIRAMISU 及以上
+                int RECEIVER_EXPORTED = 2; // Context.RECEIVER_EXPORTED
+                try {
+                    Method regMethod = Context.class.getMethod("registerReceiver",
+                        BroadcastReceiver.class, IntentFilter.class, int.class);
+                    regMethod.invoke(context, receiver, filter, RECEIVER_EXPORTED);
+                } catch (Throwable e) {
+                    context.registerReceiver(receiver, filter);
+                }
+            } else {
+                context.registerReceiver(receiver, filter);
             }
-        );
+        } catch (Throwable ignored) {}
     }
 
     private void setupOkHttpHook(final ClassLoader classLoader) {
-        final String builderClassName = "okhttp3.OkHttpClient$Builder";
-        Class<?> okHttpBuilderClass = XposedHelpers.findClassIfExists(builderClassName, classLoader);
-
-        if (okHttpBuilderClass == null) return;
+        final Class<?> builderClass = XposedHelpers.findClassIfExists("okhttp3.OkHttpClient$Builder", classLoader);
+        if (builderClass == null) return;
 
         try {
-            XposedHelpers.findAndHookMethod(
-                okHttpBuilderClass,
-                "build",
-                new XC_MethodHook() {
-                    @Override
-                    protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
-                        installInterceptor(param.thisObject, classLoader);
-                    }
+            XposedHelpers.findAndHookMethod(builderClass, "build", new XC_MethodHook() {
+                @Override
+                protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
+                    installInterceptor(param.thisObject, classLoader);
                 }
-            );
+            });
         } catch (Throwable t) {
-            XposedBridge.log("ZhihuHook: Hook build() failed: " + t.getMessage());
+            XposedBridge.log(TAG + "Error hooking build(): " + t.getMessage());
         }
     }
 
-    private void installInterceptor(Object builderObject, ClassLoader classLoader) {
+    private void installInterceptor(Object builder, final ClassLoader classLoader) {
         try {
-            Class<?> interceptorClass = XposedHelpers.findClass("okhttp3.Interceptor", classLoader);
-            Object myInterceptor = Proxy.newProxyInstance(
-                classLoader,
-                new Class[] { interceptorClass },
-                new InvocationHandler() {
-                    @Override
-                    public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
-                        if (!"intercept".equals(method.getName())) return method.invoke(this, args);
+            final Class<?> interceptorClass = XposedHelpers.findClassIfExists("okhttp3.Interceptor", classLoader);
+            if (interceptorClass == null) return;
 
-                        Object chain = args[0];
-                        Object request = XposedHelpers.callMethod(chain, "request");
-                        String url = XposedHelpers.callMethod(request, "url").toString();
-
-                        Object response;
-                        try {
-                            response = XposedHelpers.callMethod(chain, "proceed", request);
-                        } catch (Throwable t) {
-                            Throwable cause = t.getCause();
-                            while (cause != null && cause != t) {
-                                if (cause instanceof IOException) throw cause;
-                                t = cause;
-                                cause = t.getCause();
-                            }
-                            throw t;
-                        }
-
-                        try {
-                            if (shouldCaptureUrl(url)) saveResponse(response, url);
-                        } catch (Throwable t) {
-                            XposedBridge.log("Error printing response: " + t.getMessage());
-                        }
-
-                        return response;
+            Object interceptor = Proxy.newProxyInstance(classLoader, new Class[]{interceptorClass}, new InvocationHandler() {
+                @Override
+                public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
+                    String name = method.getName();
+                    if ("intercept".equals(name)) {
+                        return handleIntercept(args[0]);
                     }
-                }
-            );
-            XposedHelpers.callMethod(builderObject, "addInterceptor", myInterceptor);
-        } catch (Throwable t) {
-            XposedBridge.log("ZhihuHook: Failed to install interceptor: " + t.getMessage());
-        }
-    }
+                    if ("toString".equals(name)) return "ZhihuRecordInterceptor";
+                    if ("equals".equals(name)) {
+                        return proxy == (args != null && args.length > 0 ? args[0] : null);
+                    }
+                    if ("hashCode".equals(name)) return System.identityHashCode(proxy);
 
-    private boolean shouldCaptureUrl(String url) {
-        if (url == null || url.isEmpty()) return false;
-        String cleanUrl = url.contains("?") ? url.substring(0, url.indexOf('?')) : url;
-
-        for (Pattern pattern : WHITELIST_PATTERNS) {
-            if (pattern.matcher(cleanUrl).matches()) return true;
-        }
-        return false;
-    }
-
-    private void saveResponse(Object response, String url) {
-        if (mContext == null) return;
-
-        try {
-            String contentType = (String) XposedHelpers.callMethod(response, "header", "Content-Type");
-            String encoding = (String) XposedHelpers.callMethod(response, "header", "Content-Encoding");
-
-            if (encoding != null) {
-                encoding = encoding.toLowerCase();
-                if (encoding.contains("gzip") || encoding.contains("br") || encoding.contains("deflate")) return;
-            }
-
-            boolean isText = contentType != null && (contentType.contains("json") || contentType.contains("text") || contentType.contains("xml") || contentType.contains("html"));
-            if (!isText) return;
-
-            Object responseBody = XposedHelpers.callMethod(response, "peekBody", 1024 * 1024 * 5L); // 允许最大 5MB
-            byte[] bytes = (byte[]) XposedHelpers.callMethod(responseBody, "bytes");
-
-            if (bytes != null && bytes.length > 0) {
-                final String content = new String(bytes, StandardCharsets.UTF_8);
-
-                // 【核心改进】异步存入本地缓存文件，再尝试同步
-                executor.submit(() -> {
                     try {
-                        JSONObject wrapper = new JSONObject();
-                        wrapper.put("url", url);
-                        wrapper.put("json", content);
-                        wrapper.put("hostApp", mContext.getPackageName());
-
-                        // 1. 建立在宿主App（如知乎）沙盒下的缓存目录
-                        File cacheDir = new File(mContext.getCacheDir(), "index_record_cache");
-                        if (!cacheDir.exists()) cacheDir.mkdirs();
-
-                        // 2. 写入缓存文件
-                        String fileName = System.currentTimeMillis() + "_" + System.nanoTime() + ".json";
-                        File cacheFile = new File(cacheDir, fileName);
-                        try (FileOutputStream fos = new FileOutputStream(cacheFile)) {
-                            fos.write(wrapper.toString().getBytes(StandardCharsets.UTF_8));
-                        }
-                        
-                        XposedBridge.log("ZhihuHook: Cached to disk -> " + fileName);
-
-                        // 3. 尝试将缓存目录中的文件同步到 小茵记录 App
-                        trySyncToApp();
-
-                    } catch (Exception e) {
-                        XposedBridge.log("ZhihuHook: Background cache task failed: " + e.getMessage());
+                        return method.invoke(this, args);
+                    } catch (Throwable t) {
+                        return null;
                     }
+                }
+
+                private Object handleIntercept(Object chain) throws Throwable {
+                    Object request = XposedHelpers.callMethod(chain, "request");
+                    Object response;
+                    try {
+                        response = XposedHelpers.callMethod(chain, "proceed", request);
+                    } catch (Throwable t) {
+                        // 【修复核心】解包 Xposed 的反射异常，确保 IOException 正确抛出
+                        Throwable cause = t;
+                        while (cause != null) {
+                            if (cause instanceof IOException) throw (IOException) cause;
+                            if (cause.getCause() == cause || cause.getCause() == null) break;
+                            cause = cause.getCause();
+                        }
+                        throw t;
+                    }
+
+                    if (response != null) {
+                        try {
+                            Object urlObj = XposedHelpers.callMethod(request, "url");
+                            String url = (urlObj != null) ? urlObj.toString() : "";
+                            if (url.contains("zhihu.com")) {
+                                saveResponseAsync(response, url);
+                            }
+                        } catch (Throwable ignored) {}
+                    }
+
+                    return response;
+                }
+            });
+
+            XposedHelpers.callMethod(builder, "addInterceptor", interceptor);
+        } catch (Throwable ignored) {}
+    }
+private void saveResponseAsync(Object response, final String url) {
+    try {
+        XposedBridge.log(TAG + "[Found URL] " + (url.length() > 100 ? url.substring(0, 100) : url));
+        String contentType = (String) XposedHelpers.callMethod(response, "header", "Content-Type");
+        if (contentType == null) return;
+        String ct = contentType.toLowerCase();
+        if (!ct.contains("json") && !ct.contains("text")) return;
+
+        // 限制截取大小，恢复到 5MB 以应对大型知乎数据包
+        Object peekedBody = XposedHelpers.callMethod(response, "peekBody", (long) (1024 * 1024 * 5));
+        if (peekedBody == null) return;
+        final byte[] bytes = (byte[]) XposedHelpers.callMethod(peekedBody, "bytes");
+
+        if (bytes != null && bytes.length > 0) {
+            XposedBridge.log(TAG + "[Capture OK] Size: " + bytes.length);
+            executor.submit(() -> {
+
+                    try {
+                        enqueueCapture(url, bytes, contentType);
+                        trySyncToApp();
+                    } catch (Exception ignored) {}
                 });
             }
-        } catch (Throwable t) {
-            XposedBridge.log("ZhihuHook: saveResponse exception: " + t.getMessage());
-        }
+        } catch (Throwable ignored) {}
     }
 
     private void trySyncToApp() {
-        File cacheDir = new File(mContext.getCacheDir(), "index_record_cache");
-        if (!cacheDir.exists()) return;
+        if (mContext == null) return;
+        try {
+            migrateLegacyCacheFilesIfAny();
 
-        File[] files = cacheDir.listFiles();
-        if (files == null || files.length == 0) return;
+            Uri uri = Uri.parse("content://me.melon.record.provider/raw_data");
+            File queueDir = new File(mContext.getCacheDir(), QUEUE_DIR);
+            if (!queueDir.exists()) return;
+            File[] metaFiles = queueDir.listFiles((dir, name) -> name != null && name.endsWith(".meta"));
+            if (metaFiles == null || metaFiles.length == 0) return;
 
-        Uri uri = Uri.parse("content://me.melon.record.provider/raw_data");
+            java.util.Arrays.sort(metaFiles, java.util.Comparator.comparing(File::getName));
 
-        for (File file : files) {
-            try {
-                // 读取文件内容
-                StringBuilder sb = new StringBuilder();
-                try (BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(file), StandardCharsets.UTF_8))) {
-                    String line;
-                    while ((line = br.readLine()) != null) sb.append(line);
+            for (File meta : metaFiles) {
+                String token = meta.getName().substring(0, meta.getName().length() - ".meta".length());
+                File payloadFile = new File(queueDir, token + ".bin");
+                if (!payloadFile.exists()) {
+                    meta.delete();
+                    continue;
+                }
+                String[] metaParts = readMeta(meta);
+                if (metaParts == null || metaParts.length < 2) {
+                    meta.delete();
+                    payloadFile.delete();
+                    continue;
+                }
+                String url = metaParts[0];
+                String hostApp = metaParts[1];
+
+                Uri payloadUri = Uri.parse("content://me.melon.record.provider/raw_payload/" + token);
+                ParcelFileDescriptor pfd = null;
+                try {
+                    pfd = mContext.getContentResolver().openFileDescriptor(payloadUri, "w");
+                    if (pfd == null) return;
+                    try (FileInputStream fis = new FileInputStream(payloadFile);
+                         FileOutputStream fos = new FileOutputStream(pfd.getFileDescriptor())) {
+                        byte[] buffer = new byte[16 * 1024];
+                        int read;
+                        while ((read = fis.read(buffer)) != -1) {
+                            fos.write(buffer, 0, read);
+                        }
+                        fos.flush();
+                    }
+                } catch (Throwable t) {
+                    return;
+                } finally {
+                    if (pfd != null) {
+                        try { pfd.close(); } catch (Throwable ignored) {}
+                    }
                 }
 
-                JSONObject wrapper = new JSONObject(sb.toString());
                 ContentValues values = new ContentValues();
-                values.put("url", wrapper.optString("url"));
-                values.put("json", wrapper.optString("json"));
-                values.put("hostApp", wrapper.optString("hostApp"));
+                values.put("url", url);
+                values.put("hostApp", hostApp);
+                values.put("payloadToken", token);
 
-                // 跨进程发送给小茵记录 App
-                Uri resultUri = mContext.getContentResolver().insert(uri, values);
-                
-                if (resultUri != null) {
-                    // 发送成功，删除本地缓存
-                    boolean deleted = file.delete();
-                    XposedBridge.log("ZhihuHook: Successfully synced and deleted " + file.getName());
+                if (mContext.getContentResolver().insert(uri, values) != null) {
+                    meta.delete();
+                    payloadFile.delete();
                 } else {
-                    XposedBridge.log("ZhihuHook: Sync failed (Provider returned null), stop syncing current batch.");
-                    break; // Provider 挂了/没权限唤醒，直接跳出循环，避免烧 CPU
+                    return;
                 }
-            } catch (Exception e) {
-                XposedBridge.log("ZhihuHook: Error syncing file " + file.getName() + " -> " + e.getMessage());
-                // 如果是 JSON 格式损坏导致抛异常，直接删掉避免死循环卡在这里
-                if (e instanceof org.json.JSONException) {
+            }
+        } catch (Throwable ignored) {}
+    }
+
+    private void enqueueCapture(String url, byte[] bytes, String contentType) throws IOException {
+        File queueDir = new File(mContext.getCacheDir(), QUEUE_DIR);
+        if (!queueDir.exists()) queueDir.mkdirs();
+        String token = System.currentTimeMillis() + "_" + System.nanoTime();
+        File payloadFile = new File(queueDir, token + ".bin");
+        try (FileOutputStream fos = new FileOutputStream(payloadFile)) {
+            fos.write(bytes);
+            fos.flush();
+        }
+
+        File metaFile = new File(queueDir, token + ".meta");
+        String hostApp = "com.zhihu.android";
+        String meta = safeLine(url) + "\n" + safeLine(hostApp) + "\n" + safeLine(contentType) + "\n";
+        try (FileOutputStream fos = new FileOutputStream(metaFile)) {
+            fos.write(meta.getBytes(StandardCharsets.UTF_8));
+            fos.flush();
+        }
+    }
+
+    private String safeLine(String s) {
+        if (s == null) return "";
+        return s.replace('\n', ' ').replace('\r', ' ');
+    }
+
+    private String[] readMeta(File metaFile) {
+        try {
+            StringBuilder sb = new StringBuilder();
+            try (BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(metaFile), StandardCharsets.UTF_8))) {
+                String line;
+                while ((line = br.readLine()) != null) {
+                    sb.append(line).append("\n");
+                }
+            }
+            String[] lines = sb.toString().split("\n", -1);
+            if (lines.length < 2) return null;
+            return new String[]{lines[0], lines[1], lines.length >= 3 ? lines[2] : ""};
+        } catch (Throwable t) {
+            return null;
+        }
+    }
+
+    private void migrateLegacyCacheFilesIfAny() {
+        try {
+            File cacheDir = new File(mContext.getCacheDir(), LEGACY_CACHE_DIR);
+            if (!cacheDir.exists()) return;
+            File[] files = cacheDir.listFiles();
+            if (files == null || files.length == 0) return;
+            for (File file : files) {
+                if (file == null || !file.isFile()) continue;
+                try {
+                    StringBuilder sb = new StringBuilder();
+                    try (BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(file), StandardCharsets.UTF_8))) {
+                        String line;
+                        while ((line = br.readLine()) != null) sb.append(line);
+                    }
+                    JSONObject wrapper = new JSONObject(sb.toString());
+                    String url = wrapper.optString("url", "");
+                    String json = wrapper.optString("json", "");
+                    String host = wrapper.optString("hostApp", "com.zhihu.android");
+                    if (json != null && !json.isEmpty()) {
+                        enqueueLegacy(url, json.getBytes(StandardCharsets.UTF_8), host);
+                    }
+                    file.delete();
+                } catch (Throwable t) {
                     file.delete();
                 }
             }
+        } catch (Throwable ignored) {}
+    }
+
+    private void enqueueLegacy(String url, byte[] payload, String hostApp) throws IOException {
+        File queueDir = new File(mContext.getCacheDir(), QUEUE_DIR);
+        if (!queueDir.exists()) queueDir.mkdirs();
+        String token = System.currentTimeMillis() + "_" + System.nanoTime();
+        File payloadFile = new File(queueDir, token + ".bin");
+        try (FileOutputStream fos = new FileOutputStream(payloadFile)) {
+            fos.write(payload);
+            fos.flush();
+        }
+        File metaFile = new File(queueDir, token + ".meta");
+        String meta = safeLine(url) + "\n" + safeLine(hostApp) + "\n" + "application/json" + "\n";
+        try (FileOutputStream fos = new FileOutputStream(metaFile)) {
+            fos.write(meta.getBytes(StandardCharsets.UTF_8));
+            fos.flush();
         }
     }
 }

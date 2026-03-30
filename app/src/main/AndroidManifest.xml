@@ -5,9 +5,11 @@
     <uses-sdk android:minSdkVersion="26" android:targetSdkVersion="34" />
 
     <application
+        android:icon="@mipmap/ic_launcher"
+        android:roundIcon="@mipmap/ic_launcher"
         android:name=".App"
         android:allowBackup="true"
-        android:label="index_record"
+        android:label="小茵记录"
     >
 
 	    <!-- 这里的 android:exported="true" 是 Android 12+ 必须的 -->

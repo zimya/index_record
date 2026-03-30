@@ -4,6 +4,8 @@ import android.content.ContentProvider
 import android.content.ContentValues
 import android.database.Cursor
 import android.net.Uri
+import android.os.Binder
+import android.os.ParcelFileDescriptor
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -11,12 +13,16 @@ import me.melon.record.ObjectBox
 import me.melon.record.data.model.RawData
 import io.objectbox.Box
 import me.melon.record.logic.DataProcessor
+import java.io.File
+import java.io.FileNotFoundException
+import java.nio.charset.StandardCharsets
 
 class HookDataProvider : ContentProvider() {
 
     companion object {
         const val AUTHORITY = "me.melon.record.provider"
         val URI: Uri = Uri.parse("content://$AUTHORITY/raw_data")
+        val PAYLOAD_URI: Uri = Uri.parse("content://$AUTHORITY/raw_payload")
     }
 
     private lateinit var rawDataBox: Box<RawData>
@@ -30,13 +36,41 @@ class HookDataProvider : ContentProvider() {
         return true
     }
 
+    override fun openFile(uri: Uri, mode: String): ParcelFileDescriptor? {
+        if (context == null) return null
+        val segments = uri.pathSegments ?: return null
+        if (segments.size != 2 || segments[0] != "raw_payload") return null
+        if (!mode.contains("w")) throw FileNotFoundException()
+        enforceCallerAllowed()
+
+        val token = segments[1]
+        val dir = File(context!!.cacheDir, "hook_payload")
+        if (!dir.exists()) dir.mkdirs()
+        val file = File(dir, "$token.bin")
+        return ParcelFileDescriptor.open(
+            file,
+            ParcelFileDescriptor.MODE_CREATE or ParcelFileDescriptor.MODE_TRUNCATE or ParcelFileDescriptor.MODE_WRITE_ONLY
+        )
+    }
+
     override fun insert(uri: Uri, values: ContentValues?): Uri? {
         if (!::rawDataBox.isInitialized) return null
         values ?: return null
         try {
-            val url = values.getAsString("url")
-            val json = values.getAsString("json")
-            val host = values.getAsString("hostApp")
+            enforceCallerAllowed()
+            val url = values.getAsString("url") ?: ""
+            val host = values.getAsString("hostApp") ?: ""
+            val payloadToken = values.getAsString("payloadToken")
+            val json = if (!payloadToken.isNullOrBlank()) {
+                val dir = File(context!!.cacheDir, "hook_payload")
+                val file = File(dir, "$payloadToken.bin")
+                if (!file.exists()) return null
+                val bytes = file.readBytes()
+                file.delete()
+                String(bytes, StandardCharsets.UTF_8)
+            } else {
+                values.getAsString("json") ?: ""
+            }
 
             val entity = RawData(
                 url = url,
@@ -44,7 +78,7 @@ class HookDataProvider : ContentProvider() {
                 hostApp = host
             )
             val id = rawDataBox.put(entity)
-            
+
             // 【核心改进】异步触发数据解析，不需要等 UI 启动
             providerScope.launch {
                 try {
@@ -59,6 +93,21 @@ class HookDataProvider : ContentProvider() {
             e.printStackTrace()
         }
         return null
+    }
+
+    private fun enforceCallerAllowed() {
+        val ctx = context ?: return
+        val uid = Binder.getCallingUid()
+        val pkgs = ctx.packageManager.getPackagesForUid(uid)?.toSet().orEmpty()
+        val allow = setOf(
+            "com.zhihu.android",
+            "com.douban.frodo",
+            "com.baidu.tieba",
+            "com.xingin.xhs",
+            "com.twitter.android",
+            ctx.packageName
+        )
+        if (pkgs.none { it in allow }) throw SecurityException("caller not allowed")
     }
 
     override fun query(uri: Uri, projection: Array<out String>?, selection: String?, selectionArgs: Array<out String>?, sortOrder: String?): Cursor? = null

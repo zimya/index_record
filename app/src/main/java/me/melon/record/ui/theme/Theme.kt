@@ -11,6 +11,12 @@ import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalView
 import androidx.core.view.WindowCompat
 
+enum class ThemeMode {
+    LIGHT,
+    DARK,
+    SYSTEM
+}
+
 private val DarkColorScheme = darkColorScheme(
     primary = IndexBlue,
     secondary = IndexGold,
@@ -32,11 +38,16 @@ private val LightColorScheme = lightColorScheme(
 
 @Composable
 fun IndexRecordTheme(
-    darkTheme: Boolean = isSystemInDarkTheme(),
+    themeMode: ThemeMode = ThemeMode.SYSTEM,
     // Dynamic color is available on Android 12+
     dynamicColor: Boolean = true,
     content: @Composable () -> Unit
 ) {
+    val darkTheme = when (themeMode) {
+        ThemeMode.DARK -> true
+        ThemeMode.LIGHT -> false
+        ThemeMode.SYSTEM -> isSystemInDarkTheme()
+    }
     val colorScheme = when {
         dynamicColor && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S -> {
             // val context = LocalContext.current

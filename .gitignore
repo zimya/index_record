@@ -11,6 +11,17 @@ wheels/
 *.apk
 /raw_apks
 /gradle-8.4
-/gradle
-.gradle
+/gradle/caches/
+/gradle/daemon/
+/gradle/native/
+/gradle/worker/
+
+# gradle-wrapper 需要提交
+!gradle/wrapper/gradle-wrapper.jar
+!gradle/wrapper/gradle-wrapper.properties
+
+.gradle/
 *.zip
+
+.kotlin/
+.DS_Store

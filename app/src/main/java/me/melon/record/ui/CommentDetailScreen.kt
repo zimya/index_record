@@ -7,9 +7,12 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.outlined.ThumbDownOffAlt
+import androidx.compose.material.icons.outlined.ThumbUpOffAlt
 import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -31,11 +34,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import com.google.gson.JsonObject
+import com.google.gson.JsonParser
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import me.melon.record.ObjectBox
 import me.melon.record.data.model.UniversalRecord
 import me.melon.record.data.model.UniversalRecord_
+import me.melon.record.ui.components.AvatarImage
 import org.jsoup.Jsoup
 import java.text.SimpleDateFormat
 import java.util.Date
@@ -79,6 +85,15 @@ fun CommentDetailScreen(
 
     val sdf = remember { SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.getDefault()) }
     val cleanContent = remember(record.content) { Jsoup.parse(record.content).text() }
+    val meta = remember(record.extraMetadata) {
+        try {
+            JsonParser.parseString(record.extraMetadata).asJsonObject
+        } catch (_: Exception) {
+            JsonObject()
+        }
+    }
+    val likeCount = if (meta.has("like_count") && !meta.get("like_count").isJsonNull) meta.get("like_count").asLong else 0L
+    val dislikeCount = if (meta.has("dislike_count") && !meta.get("dislike_count").isJsonNull) meta.get("dislike_count").asLong else 0L
 
     Scaffold(
         topBar = {
@@ -104,6 +119,8 @@ fun CommentDetailScreen(
         ) {
             Spacer(modifier = Modifier.height(16.dp))
             Row(verticalAlignment = Alignment.CenterVertically) {
+                AvatarImage(url = record.authorAvatar, size = 40.dp)
+                Spacer(modifier = Modifier.width(12.dp))
                 Text(
                     text = record.authorName,
                     style = MaterialTheme.typography.bodyMedium,
@@ -116,6 +133,36 @@ fun CommentDetailScreen(
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.outline
                 )
+                Spacer(modifier = Modifier.weight(1f))
+                if (likeCount > 0) {
+                    Icon(
+                        imageVector = Icons.Outlined.ThumbUpOffAlt,
+                        contentDescription = null,
+                        tint = MaterialTheme.colorScheme.outline,
+                        modifier = Modifier.size(14.dp)
+                    )
+                    Spacer(modifier = Modifier.width(4.dp))
+                    Text(
+                        text = likeCount.toString(),
+                        style = MaterialTheme.typography.labelSmall,
+                        color = MaterialTheme.colorScheme.outline
+                    )
+                }
+                if (dislikeCount > 0) {
+                    Spacer(modifier = Modifier.width(8.dp))
+                    Icon(
+                        imageVector = Icons.Outlined.ThumbDownOffAlt,
+                        contentDescription = null,
+                        tint = MaterialTheme.colorScheme.outline,
+                        modifier = Modifier.size(14.dp)
+                    )
+                    Spacer(modifier = Modifier.width(4.dp))
+                    Text(
+                        text = dislikeCount.toString(),
+                        style = MaterialTheme.typography.labelSmall,
+                        color = MaterialTheme.colorScheme.outline
+                    )
+                }
             }
             Spacer(modifier = Modifier.height(12.dp))
             Surface(

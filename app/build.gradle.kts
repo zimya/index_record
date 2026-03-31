@@ -72,6 +72,8 @@ dependencies {
     implementation("com.google.code.gson:gson:2.10.1")
     implementation("org.jsoup:jsoup:1.17.2")
 
+    implementation("io.coil-kt:coil-compose:2.6.0")
+
     // Material Icons Extended
     implementation("androidx.compose.material:material-icons-extended:1.6.0")
 

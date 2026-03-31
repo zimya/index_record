@@ -26,6 +26,8 @@ import me.melon.record.ui.components.FilterBottomSheet
 import me.melon.record.ui.components.RecordItem
 import me.melon.record.viewmodel.HomeViewModel
 
+private enum class NavAction { PUSH, POP }
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeScreen(viewModel: HomeViewModel = viewModel()) {
@@ -34,18 +36,18 @@ fun HomeScreen(viewModel: HomeViewModel = viewModel()) {
     val filter by viewModel.filter.collectAsState()
     val availableApps by viewModel.availableAppsFlow.collectAsState(initial = emptyList())
 
-    var selectedRecord by remember { mutableStateOf<UniversalRecord?>(null) }
+    val navStack = remember { mutableStateListOf<UniversalRecord>() }
+    val currentRecord = navStack.lastOrNull()
+    var lastNavAction by remember { mutableStateOf(NavAction.PUSH) }
     var isSearchActive by remember { mutableStateOf(false) }
     var showFilterSheet by remember { mutableStateOf(false) }
 
     AnimatedContent(
-        targetState = selectedRecord,
+        targetState = currentRecord,
         transitionSpec = {
-            if (targetState != null) {
-                // 进入详情页：从右向左滑入
+            if (lastNavAction == NavAction.PUSH) {
                 (slideInHorizontally { it } + fadeIn()).togetherWith(slideOutHorizontally { -it / 2 } + fadeOut())
             } else {
-                // 返回主页：从左向右滑入
                 (slideInHorizontally { -it / 2 } + fadeIn()).togetherWith(slideOutHorizontally { it } + fadeOut())
             }.using(SizeTransform(clip = false))
         },
@@ -53,19 +55,38 @@ fun HomeScreen(viewModel: HomeViewModel = viewModel()) {
     ) { targetRecord ->
         if (targetRecord != null) {
             BackHandler {
-                selectedRecord = null
+                if (navStack.isNotEmpty()) {
+                    lastNavAction = NavAction.POP
+                    navStack.removeAt(navStack.lastIndex)
+                }
             }
             if (targetRecord.recordType == "comment") {
                 CommentDetailScreen(
                     record = targetRecord,
-                    onBack = { selectedRecord = null },
-                    onOpenParent = { selectedRecord = it }
+                    onBack = {
+                        if (navStack.isNotEmpty()) {
+                            lastNavAction = NavAction.POP
+                            navStack.removeAt(navStack.lastIndex)
+                        }
+                    },
+                    onOpenParent = {
+                        lastNavAction = NavAction.PUSH
+                        navStack.add(it)
+                    }
                 )
             } else {
                 RecordDetailScreen(
                     record = targetRecord,
-                    onBack = { selectedRecord = null },
-                    onOpenRecord = { selectedRecord = it }
+                    onBack = {
+                        if (navStack.isNotEmpty()) {
+                            lastNavAction = NavAction.POP
+                            navStack.removeAt(navStack.lastIndex)
+                        }
+                    },
+                    onOpenRecord = {
+                        lastNavAction = NavAction.PUSH
+                        navStack.add(it)
+                    }
                 )
             }
         } else {
@@ -82,7 +103,10 @@ fun HomeScreen(viewModel: HomeViewModel = viewModel()) {
                 },
                 onRefresh = { viewModel.refreshData() },
                 onOpenFilter = { showFilterSheet = true },
-                onItemClick = { selectedRecord = it }
+                onItemClick = {
+                    lastNavAction = NavAction.PUSH
+                    navStack.add(it)
+                }
             )
         }
     }

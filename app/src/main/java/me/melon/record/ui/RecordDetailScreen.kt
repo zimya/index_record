@@ -10,11 +10,18 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.outlined.ChatBubbleOutline
+import androidx.compose.material.icons.outlined.Place
+import androidx.compose.material.icons.outlined.StarOutline
+import androidx.compose.material.icons.outlined.ThumbDownOffAlt
+import androidx.compose.material.icons.outlined.ThumbUp
+import androidx.compose.material.icons.outlined.ThumbUpOffAlt
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FilterChip
 import androidx.compose.material3.HorizontalDivider
@@ -31,6 +38,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -38,6 +46,9 @@ import com.google.gson.JsonObject
 import com.google.gson.JsonParser
 import me.melon.record.data.model.UniversalRecord
 import me.melon.record.ui.components.HtmlBodyWebView
+import me.melon.record.ui.components.AvatarImage
+import me.melon.record.ui.components.CoverImage
+import me.melon.record.ui.components.ImageViewerDialog
 import java.text.SimpleDateFormat
 import java.util.Date
 import androidx.compose.runtime.LaunchedEffect
@@ -54,17 +65,28 @@ import java.util.Locale
 private enum class CommentSort { DEFAULT, LATEST }
 
 @Composable
-private fun MetadataBadge(text: String) {
+private fun MetadataBadge(icon: ImageVector, text: String) {
     Surface(
         color = MaterialTheme.colorScheme.tertiaryContainer,
         shape = MaterialTheme.shapes.small
     ) {
-        Text(
-            text = text,
-            style = MaterialTheme.typography.labelMedium,
-            color = MaterialTheme.colorScheme.onTertiaryContainer,
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
             modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp)
-        )
+        ) {
+            Icon(
+                imageVector = icon,
+                contentDescription = null,
+                tint = MaterialTheme.colorScheme.onTertiaryContainer,
+                modifier = Modifier.size(14.dp)
+            )
+            Spacer(modifier = Modifier.width(6.dp))
+            Text(
+                text = text,
+                style = MaterialTheme.typography.labelMedium,
+                color = MaterialTheme.colorScheme.onTertiaryContainer
+            )
+        }
     }
 }
 
@@ -77,6 +99,8 @@ fun RecordDetailScreen(
 ) {
     var commentSort by remember { mutableStateOf(CommentSort.DEFAULT) }
     var allComments by remember { mutableStateOf<List<UniversalRecord>>(emptyList()) }
+    var viewerUrls by remember { mutableStateOf<List<String>>(emptyList()) }
+    var viewerIndex by remember { mutableStateOf(0) }
 
     LaunchedEffect(record.platformId) {
         withContext(Dispatchers.IO) {
@@ -167,6 +191,30 @@ fun RecordDetailScreen(
         ) {
             item {
                 Spacer(modifier = Modifier.height(16.dp))
+                val parsedMetadata = remember(record.extraMetadata) {
+                    try {
+                        JsonParser.parseString(record.extraMetadata).asJsonObject
+                    } catch (_: Exception) {
+                        JsonObject()
+                    }
+                }
+                val titleImage = parsedMetadata.get("title_image")?.asString ?: ""
+                if (titleImage.isNotBlank()) {
+                    Surface(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(180.dp)
+                            .clickable {
+                                viewerUrls = listOf(titleImage)
+                                viewerIndex = 0
+                            },
+                        color = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.3f),
+                        shape = MaterialTheme.shapes.medium
+                    ) {
+                        CoverImage(url = titleImage, modifier = Modifier.fillMaxSize())
+                    }
+                    Spacer(modifier = Modifier.height(12.dp))
+                }
                 if (record.title.isNotEmpty()) {
                     Text(
                         text = record.title,
@@ -176,17 +224,29 @@ fun RecordDetailScreen(
                     )
                     Spacer(modifier = Modifier.height(12.dp))
                 }
+                val authorHeadline = parsedMetadata.get("author_headline")?.asString ?: ""
                 Row(verticalAlignment = Alignment.CenterVertically) {
-                    Text(
-                        text = record.authorName,
-                        style = MaterialTheme.typography.bodyMedium,
-                        fontWeight = FontWeight.Medium,
-                        color = MaterialTheme.colorScheme.primary
-                    )
+                    AvatarImage(url = record.authorAvatar, size = 40.dp)
                     Spacer(modifier = Modifier.width(12.dp))
+                    Column(modifier = Modifier.weight(1f)) {
+                        Text(
+                            text = record.authorName,
+                            style = MaterialTheme.typography.bodyMedium,
+                            fontWeight = FontWeight.Medium,
+                            color = MaterialTheme.colorScheme.primary
+                        )
+                        if (authorHeadline.isNotBlank()) {
+                            Spacer(modifier = Modifier.height(2.dp))
+                            Text(
+                                text = authorHeadline,
+                                style = MaterialTheme.typography.bodySmall,
+                                color = MaterialTheme.colorScheme.outline
+                            )
+                        }
+                    }
                     val sdf = SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.getDefault())
                     Text(
-                        text = "发布于: " + sdf.format(Date(record.publishTime)),
+                        text = sdf.format(Date(record.publishTime)),
                         style = MaterialTheme.typography.bodySmall,
                         color = MaterialTheme.colorScheme.outline
                     )
@@ -202,7 +262,11 @@ fun RecordDetailScreen(
                 ) {
                     HtmlBodyWebView(
                         htmlBody = record.content,
-                        modifier = Modifier.padding(16.dp)
+                        modifier = Modifier.padding(16.dp),
+                        onImageClick = { urls, index ->
+                            viewerUrls = urls
+                            viewerIndex = index
+                        }
                     )
                 }
                 Spacer(modifier = Modifier.height(16.dp))
@@ -212,7 +276,7 @@ fun RecordDetailScreen(
                 val metadata = remember(record.extraMetadata) {
                     try {
                         JsonParser.parseString(record.extraMetadata).asJsonObject
-                    } catch (e: Exception) {
+                    } catch (_: Exception) {
                         JsonObject()
                     }
                 }
@@ -225,16 +289,16 @@ fun RecordDetailScreen(
                         verticalArrangement = Arrangement.spacedBy(8.dp)
                     ) {
                         metadata.get("voteup_count")?.let {
-                            MetadataBadge("👍 ${it.asString}")
+                            MetadataBadge(Icons.Outlined.ThumbUp, it.asString)
                         }
                         metadata.get("comment_count")?.let {
-                            MetadataBadge("💬 ${it.asString}")
+                            MetadataBadge(Icons.Outlined.ChatBubbleOutline, it.asString)
                         }
                         metadata.get("ip_info")?.let {
-                            MetadataBadge("📍 ${it.asString}")
+                            MetadataBadge(Icons.Outlined.Place, it.asString)
                         }
                         metadata.get("favlists_count")?.let {
-                            MetadataBadge("⭐ ${it.asString}")
+                            MetadataBadge(Icons.Outlined.StarOutline, it.asString)
                         }
                     }
                 }
@@ -284,12 +348,21 @@ fun RecordDetailScreen(
                         }
                     }
                 }
-                
+
                 items(commentRows.size) { index ->
                     val row = commentRows[index]
                     val comment = row.record
                     val depth = row.depth
-                    
+                    val commentMeta = remember(comment.extraMetadata) {
+                        try {
+                            JsonParser.parseString(comment.extraMetadata).asJsonObject
+                        } catch (_: Exception) {
+                            JsonObject()
+                        }
+                    }
+                    val likeCount = if (commentMeta.has("like_count") && !commentMeta.get("like_count").isJsonNull) commentMeta.get("like_count").asLong else 0L
+                    val dislikeCount = if (commentMeta.has("dislike_count") && !commentMeta.get("dislike_count").isJsonNull) commentMeta.get("dislike_count").asLong else 0L
+
                     Surface(
                         modifier = Modifier
                             .fillMaxWidth()
@@ -303,6 +376,8 @@ fun RecordDetailScreen(
                     ) {
                         Column(modifier = Modifier.padding(12.dp)) {
                             Row(verticalAlignment = Alignment.CenterVertically) {
+                                AvatarImage(url = comment.authorAvatar, size = 28.dp)
+                                Spacer(modifier = Modifier.width(8.dp))
                                 Text(
                                     text = comment.authorName,
                                     style = MaterialTheme.typography.labelLarge,
@@ -316,6 +391,36 @@ fun RecordDetailScreen(
                                     style = MaterialTheme.typography.labelSmall,
                                     color = MaterialTheme.colorScheme.outline
                                 )
+                                Spacer(modifier = Modifier.weight(1f))
+                                if (likeCount > 0) {
+                                    Icon(
+                                        imageVector = Icons.Outlined.ThumbUpOffAlt,
+                                        contentDescription = null,
+                                        tint = MaterialTheme.colorScheme.outline,
+                                        modifier = Modifier.size(14.dp)
+                                    )
+                                    Spacer(modifier = Modifier.width(4.dp))
+                                    Text(
+                                        text = likeCount.toString(),
+                                        style = MaterialTheme.typography.labelSmall,
+                                        color = MaterialTheme.colorScheme.outline
+                                    )
+                                }
+                                if (dislikeCount > 0) {
+                                    Spacer(modifier = Modifier.width(8.dp))
+                                    Icon(
+                                        imageVector = Icons.Outlined.ThumbDownOffAlt,
+                                        contentDescription = null,
+                                        tint = MaterialTheme.colorScheme.outline,
+                                        modifier = Modifier.size(14.dp)
+                                    )
+                                    Spacer(modifier = Modifier.width(4.dp))
+                                    Text(
+                                        text = dislikeCount.toString(),
+                                        style = MaterialTheme.typography.labelSmall,
+                                        color = MaterialTheme.colorScheme.outline
+                                    )
+                                }
                             }
                             Spacer(modifier = Modifier.height(4.dp))
                             val cleanContent = Jsoup.parse(comment.content).text()
@@ -327,11 +432,19 @@ fun RecordDetailScreen(
                         }
                     }
                 }
-                
+
                 item {
                     Spacer(modifier = Modifier.height(32.dp))
                 }
             }
         }
+    }
+
+    if (viewerUrls.isNotEmpty()) {
+        ImageViewerDialog(
+            urls = viewerUrls,
+            initialIndex = viewerIndex,
+            onDismiss = { viewerUrls = emptyList() }
+        )
     }
 }

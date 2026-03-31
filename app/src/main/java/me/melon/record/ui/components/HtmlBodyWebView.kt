@@ -1,8 +1,11 @@
 package me.melon.record.ui.components
 
 import android.view.ViewGroup
+import android.webkit.JavascriptInterface
 import android.webkit.WebView
 import android.webkit.WebViewClient
+import android.os.Handler
+import android.os.Looper
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.key
@@ -21,7 +24,8 @@ import androidx.compose.ui.viewinterop.AndroidView
 @Composable
 fun HtmlBodyWebView(
     htmlBody: String,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    onImageClick: (urls: List<String>, index: Int) -> Unit = { _, _ -> }
 ) {
     val context = LocalContext.current
     val onSurfaceColor = MaterialTheme.colorScheme.onSurface
@@ -67,6 +71,27 @@ fun HtmlBodyWebView(
                     settings.useWideViewPort = true
                     settings.loadWithOverviewMode = true
                     settings.loadsImagesAutomatically = true
+                    addJavascriptInterface(
+                        object {
+                            private val mainHandler = Handler(Looper.getMainLooper())
+
+                            @JavascriptInterface
+                            fun open(urlsJson: String, index: Int) {
+                                mainHandler.post {
+                                    val urls = try {
+                                        val arr = com.google.gson.JsonParser.parseString(urlsJson).asJsonArray
+                                        arr.mapNotNull { if (it.isJsonPrimitive) it.asString else null }
+                                    } catch (_: Exception) {
+                                        emptyList()
+                                    }
+                                    if (urls.isNotEmpty() && index in urls.indices) {
+                                        onImageClick(urls, index)
+                                    }
+                                }
+                            }
+                        },
+                        "AndroidImageViewer"
+                    )
                     webViewClient = object : WebViewClient() {
                         override fun onPageFinished(view: WebView?, url: String?) {
                             view?.evaluateJavascript(
@@ -89,6 +114,22 @@ fun HtmlBodyWebView(
                                     }
                                 }
                             }, 200)
+
+                            view?.evaluateJavascript(
+                                "(function(){" +
+                                        "var imgs=document.getElementsByTagName('img');" +
+                                        "var urls=[];" +
+                                        "for(var i=0;i<imgs.length;i++){" +
+                                        "var src=imgs[i].src;" +
+                                        "if(src){urls.push(src);}else{urls.push('');}" +
+                                        "(function(idx){" +
+                                        "imgs[idx].style.cursor='pointer';" +
+                                        "imgs[idx].onclick=function(){AndroidImageViewer.open(JSON.stringify(urls), idx); return false;};" +
+                                        "})(i);" +
+                                        "}" +
+                                        "return urls.length;" +
+                                        "})();"
+                            ) { _ -> }
                         }
 
                         override fun shouldOverrideUrlLoading(view: WebView?, url: String?): Boolean {

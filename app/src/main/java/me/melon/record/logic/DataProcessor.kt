@@ -105,12 +105,15 @@ object DataProcessor {
         val authorObj = jsonParams.getAsJsonObject("author")
         val authorName = authorObj?.safeString("name") ?: "Unknown"
         val authorId = authorObj?.safeString("id") ?: ""
+        val authorAvatar = authorObj?.safeString("avatar_url") ?: ""
+        val authorHeadline = authorObj?.safeString("headline") ?: ""
 
         val extraJson = JsonObject()
-        val fieldsToExtract = listOf("url", "created", "updated", "ip_info", "voteup_count", "comment_count", "favlists_count")
+        val fieldsToExtract = listOf("url", "created", "updated", "ip_info", "voteup_count", "comment_count", "favlists_count", "title_image")
         for (field in fieldsToExtract) {
             if (jsonParams.has(field)) extraJson.add(field, jsonParams.get(field))
         }
+        if (authorHeadline.isNotBlank()) extraJson.addProperty("author_headline", authorHeadline)
 
         return UniversalRecord(
             platform = "zhihu",
@@ -121,6 +124,7 @@ object DataProcessor {
             content = content,
             authorId = authorId,
             authorName = authorName,
+            authorAvatar = authorAvatar,
             sourceUrl = raw.url,
             publishTime = jsonParams.get("created")?.asLong?.times(1000) ?: raw.timestamp,
             captureTime = raw.timestamp,
@@ -143,15 +147,33 @@ object DataProcessor {
 
         val content = answerData.safeString("content")
 
-        // 知乎新版的 author 可能是个对象或者字符串，这里做兼容
+        val initialState = fullJson.getAsJsonObject("initialState")
+
         var authorName = "知乎用户"
         var authorId = ""
+        var authorAvatar = ""
+        var authorHeadline = ""
+
         if (answerData.has("author") && answerData.get("author").isJsonObject) {
             val authorObj = answerData.getAsJsonObject("author")
             authorName = authorObj.safeString("name")
             authorId = authorObj.safeString("id")
+            authorAvatar = authorObj.safeString("avatarUrl").ifBlank { authorObj.safeString("avatar_url") }
+            authorHeadline = authorObj.safeString("headline")
         } else {
-            authorName = answerData.safeString("author")
+            val authorToken = answerData.safeString("author")
+            if (authorToken.isNotBlank()) {
+                val userMap = initialState?.getAsJsonObject("user")
+                val userObj = userMap?.getAsJsonObject(authorToken)
+                if (userObj != null) {
+                    authorName = userObj.safeString("name").ifBlank { authorToken }
+                    authorId = userObj.safeString("id")
+                    authorAvatar = userObj.safeString("avatarUrl").ifBlank { userObj.safeString("avatar_url") }
+                    authorHeadline = userObj.safeString("headline")
+                } else {
+                    authorName = authorToken
+                }
+            }
         }
 
         val questionData = answerData.getAsJsonObject("question")
@@ -177,6 +199,7 @@ object DataProcessor {
                 extraJson.add(targetField, value)
             }
         }
+        if (authorHeadline.isNotBlank()) extraJson.addProperty("author_headline", authorHeadline)
 
         // 调试输出：打印提取到的元数据
         Log.d(TAG, "Extracted extra metadata for answer $answerId: ${gson.toJson(extraJson)}")
@@ -193,6 +216,7 @@ object DataProcessor {
             content = content,
             authorId = authorId,
             authorName = authorName,
+            authorAvatar = authorAvatar,
             sourceUrl = raw.url,
             publishTime = updatedTime, // 使用更新时间作为发布时间参考
             captureTime = raw.timestamp,

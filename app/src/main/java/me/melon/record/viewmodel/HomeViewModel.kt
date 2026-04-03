@@ -19,7 +19,9 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
     data class HomeFilter(
         val startMillis: Long? = null,
         val endMillis: Long? = null,
-        val apps: Set<String> = emptySet()
+        val apps: Set<String> = emptySet(),
+        val platforms: Set<String> = emptySet(),
+        val types: Set<String> = emptySet()
     )
 
     init {
@@ -58,6 +60,14 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
         _filter.value = _filter.value.copy(apps = apps)
     }
 
+    fun updatePlatforms(platforms: Set<String>) {
+        _filter.value = _filter.value.copy(platforms = platforms)
+    }
+
+    fun updateTypes(types: Set<String>) {
+        _filter.value = _filter.value.copy(types = types)
+    }
+
     fun clearFilters() {
         _filter.value = HomeFilter()
     }
@@ -84,6 +94,56 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
             .distinct()
             .sorted()
         trySend(initialApps)
+
+        awaitClose {
+            subscription.cancel()
+            query.close()
+        }
+    }.flowOn(Dispatchers.IO)
+
+    val availablePlatformsFlow: Flow<List<String>> = callbackFlow {
+        val query = recordBox.query().build()
+        val subscription = query.subscribe()
+            .on(AndroidScheduler.mainThread())
+            .observer { data ->
+                val platforms = data.map { it.platform }
+                    .filter { it.isNotBlank() }
+                    .distinct()
+                    .sorted()
+                trySend(platforms)
+            }
+
+        val initial = query.find()
+            .map { it.platform }
+            .filter { it.isNotBlank() }
+            .distinct()
+            .sorted()
+        trySend(initial)
+
+        awaitClose {
+            subscription.cancel()
+            query.close()
+        }
+    }.flowOn(Dispatchers.IO)
+
+    val availableTypesFlow: Flow<List<String>> = callbackFlow {
+        val query = recordBox.query().build()
+        val subscription = query.subscribe()
+            .on(AndroidScheduler.mainThread())
+            .observer { data ->
+                val types = data.map { it.recordType }
+                    .filter { it.isNotBlank() }
+                    .distinct()
+                    .sorted()
+                trySend(types)
+            }
+
+        val initial = query.find()
+            .map { it.recordType }
+            .filter { it.isNotBlank() }
+            .distinct()
+            .sorted()
+        trySend(initial)
 
         awaitClose {
             subscription.cancel()
@@ -137,6 +197,8 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
         val start = filterState.startMillis
         val end = filterState.endMillis
         val apps = filterState.apps
+        val platforms = filterState.platforms
+        val types = filterState.types
 
         return data.asSequence()
             .filter { record ->
@@ -145,6 +207,8 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
                 if (end != null && record.captureTime > end) return@filter false
                 val sourceApp = resolveSourceApp(record)
                 if (apps.isNotEmpty() && sourceApp !in apps) return@filter false
+                if (platforms.isNotEmpty() && record.platform !in platforms) return@filter false
+                if (types.isNotEmpty() && record.recordType !in types) return@filter false
                 true
             }
             .filter { record ->

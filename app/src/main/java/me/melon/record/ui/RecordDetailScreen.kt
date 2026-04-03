@@ -27,6 +27,7 @@ import androidx.compose.material3.FilterChip
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
@@ -101,6 +102,7 @@ fun RecordDetailScreen(
     var allComments by remember { mutableStateOf<List<UniversalRecord>>(emptyList()) }
     var viewerUrls by remember { mutableStateOf<List<String>>(emptyList()) }
     var viewerIndex by remember { mutableStateOf(0) }
+    var relatedRecord by remember { mutableStateOf<UniversalRecord?>(null) }
 
     LaunchedEffect(record.platformId) {
         withContext(Dispatchers.IO) {
@@ -130,6 +132,20 @@ fun RecordDetailScreen(
             }
 
             allComments = all
+        }
+    }
+
+    LaunchedEffect(record.platformId, record.parentId) {
+        withContext(Dispatchers.IO) {
+            if (record.platform == "zhihu" && record.recordType == "answer" && record.parentId.startsWith("zhihu_question_")) {
+                val box = ObjectBox.store.boxFor(UniversalRecord::class.java)
+                relatedRecord = box.query()
+                    .equal(UniversalRecord_.platformId, record.parentId, io.objectbox.query.QueryBuilder.StringOrder.CASE_SENSITIVE)
+                    .build()
+                    .findFirst()
+            } else {
+                relatedRecord = null
+            }
         }
     }
 
@@ -270,6 +286,19 @@ fun RecordDetailScreen(
                     )
                 }
                 Spacer(modifier = Modifier.height(16.dp))
+            }
+
+            item {
+                val target = relatedRecord
+                if (target != null) {
+                    Button(
+                        onClick = { onOpenRecord(target) },
+                        modifier = Modifier.fillMaxWidth()
+                    ) {
+                        Text("跳转到相关内容")
+                    }
+                    Spacer(modifier = Modifier.height(16.dp))
+                }
             }
 
             item {

@@ -1,0 +1,138 @@
+{
+    "type": "question",
+    "title": "禁止早恋的副作用是什么？",
+    "question_type": "normal",
+    "created": 1692838839,
+    "updated_time": 1752781804,
+    "url": "https://www.zhihu.com/api/v4/questions/618885757",
+    "is_editable": true,
+    "is_reportable": true,
+    "allow_delete": false,
+    "admin_closed_comment": false,
+    "has_publishing_draft": false,
+    "answer_count": 1365,
+    "comment_count": 38,
+    "follower_count": 3024,
+    "collapsed_answer_count": 15,
+    "except": "镜像问题 不禁止早恋会产生哪些副作用？",
+    "excerpt": "镜像问题 不禁止早恋会产生哪些副作用？",
+    "comment_permission": "all",
+    "detail": "\u003cp\u003e镜像问题\u003c/p\u003e\u003ca data-draft-node=\"block\" data-draft-type=\"link-card\" href=\"https://www.zhihu.com/question/1918314691148650297\" class=\"internal\"\u003e不禁止早恋会产生哪些副作用？\u003c/a\u003e\u003cp\u003e\u003c/p\u003e",
+    "editable_detail": "\u003cp\u003e镜像问题\u003c/p\u003e\u003ca data-draft-node=\"block\" data-draft-type=\"link-card\" href=\"https://www.zhihu.com/question/1918314691148650297\"\u003e不禁止早恋会产生哪些副作用？\u003c/a\u003e\u003cp\u003e\u003c/p\u003e",
+    "status": {
+        "is_locked": false,
+        "is_close": false,
+        "is_evaluate": false,
+        "is_suggest": false
+    },
+    "topics": [
+        {
+            "id": "19554405",
+            "type": "topic",
+            "url": "https://www.zhihu.com/api/v4/topics/19554405",
+            "name": "育儿",
+            "avatar_url": "https://picx.zhimg.com/v2-de0a48973c737e0421a8648da9342a5a_qhd.jpg?source=57bbeac9",
+            "topic_type": "NORMAL"
+        },
+        {
+            "id": "19564412",
+            "type": "topic",
+            "url": "https://www.zhihu.com/api/v4/topics/19564412",
+            "name": "恋爱",
+            "avatar_url": "https://picx.zhimg.com/v2-7cbf8dcc398a36674d25dbdc634cf7af_qhd.jpg?source=57bbeac9",
+            "topic_type": "NORMAL"
+        },
+        {
+            "id": "19669133",
+            "type": "topic",
+            "url": "https://www.zhihu.com/api/v4/topics/19669133",
+            "name": "早恋",
+            "avatar_url": "https://picx.zhimg.com/v2-b790cd6463da46fcd92990482344464b_qhd.jpg?source=57bbeac9",
+            "topic_type": "NORMAL"
+        },
+        {
+            "id": "19825451",
+            "type": "topic",
+            "url": "https://www.zhihu.com/api/v4/topics/19825451",
+            "name": "中学生早恋",
+            "avatar_url": "",
+            "topic_type": "NORMAL"
+        },
+        {
+            "id": "19855746",
+            "type": "topic",
+            "url": "https://www.zhihu.com/api/v4/topics/19855746",
+            "name": "亲子教育",
+            "avatar_url": "https://picx.zhimg.com/v2-52d4c90f82020ab9feb17fdf58567e54_qhd.jpg?source=57bbeac9",
+            "topic_type": "NORMAL"
+        }
+    ],
+    "author": {
+        "id": "47339d9bd7a7f836ba32eaa7403047bb",
+        "url_token": "7-73-32-98-22",
+        "name": "幻云",
+        "avatar_url": "https://pic1.zhimg.com/v2-b9f722b0658a8cf4584068ff70ff47a2_l.jpg?source=1def8aca",
+        "avatar_url_template": "https://pic1.zhimg.com/v2-b9f722b0658a8cf4584068ff70ff47a2.jpg?source=1def8aca",
+        "is_org": false,
+        "type": "people",
+        "url": "https://www.zhihu.com/api/v4/people/47339d9bd7a7f836ba32eaa7403047bb",
+        "user_type": "people",
+        "headline": "",
+        "badge": [],
+        "badge_v2": {
+            "title": "",
+            "merged_badges": [],
+            "detail_badges": [],
+            "icon": "",
+            "night_icon": ""
+        },
+        "gender": 1,
+        "is_advertiser": false,
+        "is_following": false,
+        "is_followed": false,
+        "is_privacy": false
+    },
+    "can_comment": {
+        "status": true,
+        "reason": ""
+    },
+    "suggest_edit": {
+        "status": false,
+        "reason": ""
+    },
+    "thumbnail_info": {
+        "count": 0,
+        "type": "thumbnail_info",
+        "thumbnails": []
+    },
+    "review_info": {
+        "type": "",
+        "tips": "",
+        "edit_tips": "",
+        "is_reviewing": false,
+        "edit_is_reviewing": false
+    },
+    "mute_info": {
+        "type": ""
+    },
+    "encourage_video_answer": {
+        "has_video_list": false,
+        "video_list_first": null,
+        "video_answer_count": 0,
+        "thumbnail": null,
+        "has_video_card": false
+    },
+    "is_labeled": false,
+    "is_bannered": false,
+    "is_on_billboard": false,
+    "ab_param": {},
+    "reaction_instruction": {},
+    "invisible_author": false,
+    "answer_count_description": "全部内容 1365",
+    "relationship": {
+        "is_author": false,
+        "is_following": false,
+        "is_anonymous": false
+    },
+    "id": "618885757"
+}

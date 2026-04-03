@@ -43,8 +43,10 @@ import java.util.Locale
 fun FilterBottomSheet(
     filter: HomeViewModel.HomeFilter,
     availableApps: List<String>,
+    availablePlatforms: List<String>,
+    availableTypes: List<String>,
     onDismiss: () -> Unit,
-    onApply: (startMillis: Long?, endMillis: Long?, apps: Set<String>) -> Unit,
+    onApply: (startMillis: Long?, endMillis: Long?, apps: Set<String>, platforms: Set<String>, types: Set<String>) -> Unit,
     onClear: () -> Unit
 ) {
     val context = LocalContext.current
@@ -53,6 +55,8 @@ fun FilterBottomSheet(
     var startMillis by remember { mutableStateOf(filter.startMillis) }
     var endMillis by remember { mutableStateOf(filter.endMillis) }
     var selectedApps by remember { mutableStateOf(filter.apps) }
+    var selectedPlatforms by remember { mutableStateOf(filter.platforms) }
+    var selectedTypes by remember { mutableStateOf(filter.types) }
 
     var pickingStart by remember { mutableStateOf(true) }
     var showDatePicker by remember { mutableStateOf(false) }
@@ -84,7 +88,57 @@ fun FilterBottomSheet(
 
             Spacer(modifier = Modifier.height(12.dp))
 
-            Text("App", style = MaterialTheme.typography.labelLarge, color = MaterialTheme.colorScheme.secondary)
+            Text("平台", style = MaterialTheme.typography.labelLarge, color = MaterialTheme.colorScheme.secondary)
+            Spacer(modifier = Modifier.height(8.dp))
+            if (availablePlatforms.isEmpty()) {
+                Text("暂无可筛选的平台", color = MaterialTheme.colorScheme.outline)
+            } else {
+                FlowRow(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.spacedBy(8.dp),
+                    verticalArrangement = Arrangement.spacedBy(8.dp)
+                ) {
+                    for (p in availablePlatforms) {
+                        val selected = p in selectedPlatforms
+                        FilterChip(
+                            selected = selected,
+                            onClick = {
+                                selectedPlatforms = if (selected) selectedPlatforms - p else selectedPlatforms + p
+                            },
+                            label = { Text(platformLabel(p)) }
+                        )
+                    }
+                }
+            }
+
+            Spacer(modifier = Modifier.height(12.dp))
+
+            Text("类型", style = MaterialTheme.typography.labelLarge, color = MaterialTheme.colorScheme.secondary)
+            Spacer(modifier = Modifier.height(8.dp))
+            if (availableTypes.isEmpty()) {
+                Text("暂无可筛选的类型", color = MaterialTheme.colorScheme.outline)
+            } else {
+                FlowRow(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.spacedBy(8.dp),
+                    verticalArrangement = Arrangement.spacedBy(8.dp)
+                ) {
+                    for (t in availableTypes) {
+                        val selected = t in selectedTypes
+                        FilterChip(
+                            selected = selected,
+                            onClick = {
+                                selectedTypes = if (selected) selectedTypes - t else selectedTypes + t
+                            },
+                            label = { Text(typeLabel(t)) }
+                        )
+                    }
+                }
+            }
+
+            Spacer(modifier = Modifier.height(12.dp))
+
+            Text("宿主 App", style = MaterialTheme.typography.labelLarge, color = MaterialTheme.colorScheme.secondary)
             Spacer(modifier = Modifier.height(8.dp))
             if (availableApps.isEmpty()) {
                 Text("暂无可筛选的 App（需要新记录写入后才会出现）", color = MaterialTheme.colorScheme.outline)
@@ -115,7 +169,7 @@ fun FilterBottomSheet(
             ) {
                 OutlinedButton(onClick = onClear, modifier = Modifier.weight(1f)) { Text("清空") }
                 Button(
-                    onClick = { onApply(startMillis, endMillis, selectedApps) },
+                    onClick = { onApply(startMillis, endMillis, selectedApps, selectedPlatforms, selectedTypes) },
                     modifier = Modifier.weight(1f)
                 ) { Text("应用") }
             }
@@ -178,5 +232,26 @@ private fun appLabel(pkg: String): String {
         "com.xingin.xhs" -> "小红书"
         "com.twitter.android" -> "Twitter(X)"
         else -> pkg
+    }
+}
+
+private fun platformLabel(platform: String): String {
+    return when (platform) {
+        "zhihu" -> "知乎"
+        "douban" -> "豆瓣"
+        "tieba" -> "贴吧"
+        "xiaohongshu" -> "小红书"
+        "twitter" -> "Twitter(X)"
+        else -> platform
+    }
+}
+
+private fun typeLabel(type: String): String {
+    return when (type) {
+        "question" -> "问题"
+        "answer" -> "回答"
+        "article" -> "文章"
+        "comment" -> "评论"
+        else -> type
     }
 }

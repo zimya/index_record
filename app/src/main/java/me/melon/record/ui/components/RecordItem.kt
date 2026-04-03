@@ -38,6 +38,13 @@ fun RecordItem(record: UniversalRecord, searchQuery: String, onClick: () -> Unit
         "xiaohongshu" -> "小红书"
         else -> record.platform.replaceFirstChar { it.uppercase() }
     }
+    val typeLabel = when (record.recordType) {
+        "question" -> "问题"
+        "answer" -> "回答"
+        "article" -> "文章"
+        "comment" -> "评论"
+        else -> record.recordType
+    }
 
     Card(
         modifier = Modifier
@@ -58,7 +65,7 @@ fun RecordItem(record: UniversalRecord, searchQuery: String, onClick: () -> Unit
                     shape = MaterialTheme.shapes.small
                 ) {
                     Text(
-                        text = "$platformLabel ${record.recordType}",
+                        text = "$platformLabel · $typeLabel",
                         style = MaterialTheme.typography.labelSmall,
                         modifier = Modifier.padding(horizontal = 6.dp, vertical = 2.dp),
                         color = MaterialTheme.colorScheme.onSecondaryContainer

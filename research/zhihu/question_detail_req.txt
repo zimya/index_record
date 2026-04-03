@@ -1,0 +1,32 @@
+GET /api/v4/questions/618885757?include=poll&is_appview=true h2
+host: www.zhihu.com
+x-hd: fc9c9fc37de03d9fb9d2e5d7595f65db
+x-ac-udid: _7aUPP8VDhxLBfQZefSp45DrQEu5IiJeRTg=
+x-zst-82: 2.09YVV4PSYFBwMAAAASwUAADIuMJNhz2kAAAAAJjGh1U357x9bP4WAjcHLVho-LVc=
+x-app-za: OS=Android&Release=13&Model=23078RKD5C&VersionName=10.73.0&VersionCode=27314&Product=com.zhihu.android&Width=1220&Height=2560&Installer=Google+Play&DeviceType=AndroidPhone&Brand=Redmi
+sec-ch-ua: "Chromium";v="146", "Not-A.Brand";v="24", "Android WebView";v="146"
+x-api-version: 3.0.93
+x-zse-96: 2.0_Or3ltofh8IaNRZKT9s8R/SwexgO8gj74UTRA3JHgLeeWeKm2DFNuvvNHYxbaTUf5
+sec-ch-ua-mobile: ?1
+sec-ch-ua-platform: "Android"
+x-ms-id: DUZ7kfGQVJs0T18xhzaw2OYqhkYzDTeCE3d5RFVaN2tmR1FWSnMwVDE4eGh6YXcyT1lxaGtZekRUZUNFM2Q1c2h1
+x-app-version: 10.73.0
+x-requested-with: fetch
+user-agent: ZhihuHybrid com.zhihu.android/Futureve/10.73.0 Mozilla/5.0 (Linux; Android 13; 23078RKD5C Build/TP1A.220624.014; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/146.0.7680.119 Mobile Safari/537.36
+x-zse-93: 101_4_3.0
+accept: */*
+sec-fetch-site: same-origin
+sec-fetch-mode: cors
+sec-fetch-dest: empty
+referer: https://www.zhihu.com/appview/question/618885757?appview=1&config=%7B%22content_padding_top%22%3A0%2C%22content_padding_bottom%22%3A0%2C%22content_padding_left%22%3A0%2C%22content_padding_right%22%3A0%2C%22title_font_size%22%3A24%2C%22font_resize%22%3A17%2C%22is_dark_theme%22%3Afalse%2C%22can_auto_load_image%22%3Atrue%2C%22app_info%22%3A%22OS%3DAndroid%26Release%3D13%26Model%3D23078RKD5C%26VersionName%3D10.73.0%26VersionCode%3D27314%26Product%3Dcom.zhihu.android%26Width%3D1220%26Height%3D2560%26Installer%3DGoogle%2BPlay%26DeviceType%3DAndroidPhone%26Brand%3DRedmi%22%2C%22X-SUGER%22%3A%22VURJRD1fN2FVUFA4VkRoeExCZlFaZWZTcDQ1RHJRRXU1SWlKZVJUZz07QU5EUk9JRF9JRD01YjI2YzhmYzgzZmY1NjRhO09BSUQ9MGNhNGNhNWZlMjk4NDE1MDtYLUFELUlQVjQ9MTcxLjIxOS4yMTcuMjA4O0FMSVNVVFM9MTc3NTE4Mjg4OC42NzMzMzI5ODg7QUxJU0JUUz1mN2U4MjRhNy0xYTNhLTQ1ZDgtYWE0MC04Mzg1ZmUwMzBhMTk%3D%22%7D&search_query=&expand_comm_red_packet_card=&sourceFrom=Answer-Detail&ad_pv_track=1
+accept-encoding: gzip, deflate, br, zstd
+accept-language: zh-CN,zh;q=0.9,en-US;q=0.8,en;q=0.7
+cookie: _xsrf=nEe7XAyQJIRPxGKg5ZjQU77UHPA3D0Zl
+cookie: ff_supports_webp=1
+cookie: z_c0=2|1:0|10:1774761656|4:z_c0|92:Mi4xN252WEJBQUFBQURfdHBROF94VU9IQXdBQUFCZ0FsVk51RVB3YVFCTHViV1pBZ0FKQzNHdVJ4YTd1VHI1bFdiNmlR|05b7fa35d08ee641f7e7bf0192473789968b405f74fe34d937f225d2dfba90ce
+cookie: _zap=29002c57-75a4-4bec-a9dc-fde8bc39e774
+cookie: zst_82=2.09YVV4PSYFBwMAAAASwUAADIuMJNhz2kAAAAAJjGh1U357x9bP4WAjcHLVho-LVc=
+cookie: d_c0=_7aUPP8VDhxLBfQZefSp45DrQEu5IiJeRTg=|1775198622
+cookie: BEC=5725bc0a8a749d6bef30389b0155cdd0
+priority: u=1, i
+

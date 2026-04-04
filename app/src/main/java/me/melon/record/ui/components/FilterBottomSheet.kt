@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowRow
+import androidx.compose.material3.Icon
 import androidx.compose.material3.Button
 import androidx.compose.material3.DatePicker
 import androidx.compose.material3.DatePickerDialog
@@ -21,6 +22,8 @@ import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.rememberDatePickerState
+import androidx.compose.material3.FilterChipDefaults
+import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -29,6 +32,13 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.foundation.layout.navigationBarsPadding
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Check
 import me.melon.record.viewmodel.HomeViewModel
 import java.text.SimpleDateFormat
 import java.time.Instant
@@ -51,6 +61,8 @@ fun FilterBottomSheet(
 ) {
     val context = LocalContext.current
     val zone = remember { ZoneId.systemDefault() }
+    val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
+    val scrollState = rememberScrollState()
 
     var startMillis by remember { mutableStateOf(filter.startMillis) }
     var endMillis by remember { mutableStateOf(filter.endMillis) }
@@ -64,110 +76,132 @@ fun FilterBottomSheet(
     val startText = remember(startMillis) { formatDateTime(startMillis) }
     val endText = remember(endMillis) { formatDateTime(endMillis) }
 
-    ModalBottomSheet(onDismissRequest = onDismiss) {
-        Column(modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp)) {
-            Text("过滤器", style = MaterialTheme.typography.titleMedium)
-            Spacer(modifier = Modifier.height(12.dp))
+    ModalBottomSheet(
+        onDismissRequest = onDismiss,
+        sheetState = sheetState
+    ) {
+        Column(modifier = Modifier
+            .fillMaxWidth()
+            .fillMaxHeight(0.6f)
+            .navigationBarsPadding()
+            .padding(horizontal = 16.dp, vertical = 12.dp)
+        ) {
+            Column(
+                modifier = Modifier
+                    .weight(1f)
+                    .verticalScroll(scrollState)
+            ) {
+                Text("过滤器", style = MaterialTheme.typography.titleMedium)
+                Spacer(modifier = Modifier.height(12.dp))
 
-            Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(12.dp)) {
-                OutlinedButton(
-                    onClick = {
-                        pickingStart = true
-                        showDatePicker = true
-                    },
-                    modifier = Modifier.weight(1f)
-                ) { Text("开始：$startText") }
-                OutlinedButton(
-                    onClick = {
-                        pickingStart = false
-                        showDatePicker = true
-                    },
-                    modifier = Modifier.weight(1f)
-                ) { Text("结束：$endText") }
-            }
-
-            Spacer(modifier = Modifier.height(12.dp))
-
-            Text("平台", style = MaterialTheme.typography.labelLarge, color = MaterialTheme.colorScheme.secondary)
-            Spacer(modifier = Modifier.height(8.dp))
-            if (availablePlatforms.isEmpty()) {
-                Text("暂无可筛选的平台", color = MaterialTheme.colorScheme.outline)
-            } else {
-                FlowRow(
+                Row(
                     modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.spacedBy(8.dp),
-                    verticalArrangement = Arrangement.spacedBy(8.dp)
+                    horizontalArrangement = Arrangement.spacedBy(12.dp)
                 ) {
-                    for (p in availablePlatforms) {
-                        val selected = p in selectedPlatforms
-                        FilterChip(
-                            selected = selected,
-                            onClick = {
-                                selectedPlatforms = if (selected) selectedPlatforms - p else selectedPlatforms + p
-                            },
-                            label = { Text(platformLabel(p)) }
-                        )
+                    OutlinedButton(
+                        onClick = {
+                            pickingStart = true
+                            showDatePicker = true
+                        },
+                        modifier = Modifier.weight(1f)
+                    ) { Text("开始：$startText") }
+
+                    OutlinedButton(
+                        onClick = {
+                            pickingStart = false
+                            showDatePicker = true
+                        },
+                        modifier = Modifier.weight(1f)
+                    ) { Text("结束：$endText") }
+                }
+
+                Spacer(modifier = Modifier.height(12.dp))
+
+                Text("平台", style = MaterialTheme.typography.labelLarge, color = MaterialTheme.colorScheme.secondary)
+                Spacer(modifier = Modifier.height(8.dp))
+                if (availablePlatforms.isEmpty()) {
+                    Text("暂无可筛选的平台", color = MaterialTheme.colorScheme.outline)
+                } else {
+                    FlowRow(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.spacedBy(8.dp),
+                        verticalArrangement = Arrangement.spacedBy(8.dp)
+                    ) {
+                        for (p in availablePlatforms) {
+                            val selected = p in selectedPlatforms
+                            FilterChipWithCheck(
+                                selected = selected,
+                                onClick = {
+                                    selectedPlatforms = if (selected) selectedPlatforms - p else selectedPlatforms + p
+                                },
+                                label = platformLabel(p)
+                            )
+                        }
+                    }
+                }
+
+                Spacer(modifier = Modifier.height(12.dp))
+
+                Text("类型", style = MaterialTheme.typography.labelLarge, color = MaterialTheme.colorScheme.secondary)
+                Spacer(modifier = Modifier.height(8.dp))
+                if (availableTypes.isEmpty()) {
+                    Text("暂无可筛选的类型", color = MaterialTheme.colorScheme.outline)
+                } else {
+                    FlowRow(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.spacedBy(8.dp),
+                        verticalArrangement = Arrangement.spacedBy(8.dp)
+                    ) {
+                        for (p in availableTypes) {
+                            val selected = p in selectedTypes
+                            FilterChipWithCheck(
+                                selected = selected,
+                                onClick = {
+                                    selectedTypes = if (selected) selectedTypes - p else selectedTypes + p
+                                },
+                                label = typeLabel(p)
+                            )
+                        }
+                    }
+                }
+
+                Spacer(modifier = Modifier.height(12.dp))
+
+                Text("宿主 App", style = MaterialTheme.typography.labelLarge, color = MaterialTheme.colorScheme.secondary)
+                Spacer(modifier = Modifier.height(8.dp))
+                if (availableApps.isEmpty()) {
+                    Text("暂无可筛选的 App（需要新记录写入后才会出现）", color = MaterialTheme.colorScheme.outline)
+                } else {
+                    FlowRow(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.spacedBy(8.dp),
+                        verticalArrangement = Arrangement.spacedBy(8.dp)
+                    ) {
+                        for (p in availableApps) {
+                            val selected = p in selectedApps
+                            FilterChipWithCheck(
+                                selected = selected,
+                                onClick = {
+                                    selectedApps = if (selected) selectedApps - p else selectedApps + p
+                                },
+                                label = appLabel(p)
+                            )
+                        }
                     }
                 }
             }
 
-            Spacer(modifier = Modifier.height(12.dp))
-
-            Text("类型", style = MaterialTheme.typography.labelLarge, color = MaterialTheme.colorScheme.secondary)
-            Spacer(modifier = Modifier.height(8.dp))
-            if (availableTypes.isEmpty()) {
-                Text("暂无可筛选的类型", color = MaterialTheme.colorScheme.outline)
-            } else {
-                FlowRow(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.spacedBy(8.dp),
-                    verticalArrangement = Arrangement.spacedBy(8.dp)
-                ) {
-                    for (t in availableTypes) {
-                        val selected = t in selectedTypes
-                        FilterChip(
-                            selected = selected,
-                            onClick = {
-                                selectedTypes = if (selected) selectedTypes - t else selectedTypes + t
-                            },
-                            label = { Text(typeLabel(t)) }
-                        )
-                    }
-                }
-            }
-
-            Spacer(modifier = Modifier.height(12.dp))
-
-            Text("宿主 App", style = MaterialTheme.typography.labelLarge, color = MaterialTheme.colorScheme.secondary)
-            Spacer(modifier = Modifier.height(8.dp))
-            if (availableApps.isEmpty()) {
-                Text("暂无可筛选的 App（需要新记录写入后才会出现）", color = MaterialTheme.colorScheme.outline)
-            } else {
-                FlowRow(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.spacedBy(8.dp),
-                    verticalArrangement = Arrangement.spacedBy(8.dp)
-                ) {
-                    for (pkg in availableApps) {
-                        val selected = pkg in selectedApps
-                        FilterChip(
-                            selected = selected,
-                            onClick = {
-                                selectedApps = if (selected) selectedApps - pkg else selectedApps + pkg
-                            },
-                            label = { Text(appLabel(pkg)) }
-                        )
-                    }
-                }
-            }
-
-            Spacer(modifier = Modifier.height(20.dp))
+            Spacer(modifier = Modifier.height(16.dp))
 
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.spacedBy(12.dp)
             ) {
-                OutlinedButton(onClick = onClear, modifier = Modifier.weight(1f)) { Text("清空") }
+                OutlinedButton(
+                    onClick = onClear,
+                    modifier = Modifier.weight(1f)
+                ) { Text("清空") }
+
                 Button(
                     onClick = { onApply(startMillis, endMillis, selectedApps, selectedPlatforms, selectedTypes) },
                     modifier = Modifier.weight(1f)
@@ -216,6 +250,30 @@ fun FilterBottomSheet(
             DatePicker(state = dateState)
         }
     }
+}
+
+@Composable
+private fun FilterChipWithCheck(
+    selected: Boolean,
+    onClick: () -> Unit,
+    label: String
+) {
+    FilterChip(
+        selected = selected,
+        onClick = onClick,
+        label = { Text(label) },
+        leadingIcon = if (selected) {
+            {
+                Icon(
+                    imageVector = Icons.Default.Check,
+                    contentDescription = null,
+                    modifier = Modifier.size(FilterChipDefaults.IconSize)
+                )
+            }
+        } else {
+            null
+        }
+    )
 }
 
 private fun formatDateTime(millis: Long?): String {

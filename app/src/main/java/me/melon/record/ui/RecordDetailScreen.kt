@@ -289,19 +289,6 @@ fun RecordDetailScreen(
             }
 
             item {
-                val target = relatedRecord
-                if (target != null) {
-                    Button(
-                        onClick = { onOpenRecord(target) },
-                        modifier = Modifier.fillMaxWidth()
-                    ) {
-                        Text("跳转到相关内容")
-                    }
-                    Spacer(modifier = Modifier.height(16.dp))
-                }
-            }
-
-            item {
                 val metadata = remember(record.extraMetadata) {
                     try {
                         JsonParser.parseString(record.extraMetadata).asJsonObject
@@ -332,26 +319,39 @@ fun RecordDetailScreen(
                     }
                 }
 
-                Text(
-                    text = "元数据 (Ext Data):",
-                    style = MaterialTheme.typography.labelLarge,
-                    color = MaterialTheme.colorScheme.secondary,
-                    modifier = Modifier.padding(top = 16.dp)
-                )
-                Spacer(modifier = Modifier.height(4.dp))
-                Surface(
-                    modifier = Modifier.fillMaxWidth(),
-                    color = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f),
-                    shape = MaterialTheme.shapes.small
-                ) {
-                    Text(
-                        text = record.extraMetadata,
-                        style = MaterialTheme.typography.bodySmall,
-                        fontFamily = FontFamily.Monospace,
-                        modifier = Modifier.padding(8.dp)
-                    )
-                }
+                // Text(
+                //     text = "元数据 (Ext Data):",
+                //     style = MaterialTheme.typography.labelLarge,
+                //     color = MaterialTheme.colorScheme.secondary,
+                //     modifier = Modifier.padding(top = 16.dp)
+                // )
+                // Spacer(modifier = Modifier.height(8.dp))
+                // Surface(
+                //     modifier = Modifier.fillMaxWidth(),
+                //     color = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f),
+                //     shape = MaterialTheme.shapes.small
+                // ) {
+                //     Text(
+                //         text = record.extraMetadata,
+                //         style = MaterialTheme.typography.bodySmall,
+                //         fontFamily = FontFamily.Monospace,
+                //         modifier = Modifier.padding(8.dp)
+                //     )
+                // }
                 Spacer(modifier = Modifier.height(32.dp))
+            }
+
+            item {
+                val target = relatedRecord
+                if (target != null) {
+                    Button(
+                        onClick = { onOpenRecord(target) },
+                        modifier = Modifier.fillMaxWidth()
+                    ) {
+                        Text("跳转到相关内容")
+                    }
+                    Spacer(modifier = Modifier.height(16.dp))
+                }
             }
 
             if (commentRows.isNotEmpty()) {

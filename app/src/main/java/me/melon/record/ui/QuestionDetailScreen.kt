@@ -233,7 +233,7 @@ fun QuestionDetailScreen(
                     FlowRow(
                         modifier = Modifier.fillMaxWidth(),
                         horizontalArrangement = Arrangement.spacedBy(8.dp),
-                        verticalArrangement = Arrangement.spacedBy(4.dp)
+                        // verticalArrangement = Arrangement.spacedBy(1.dp)
                     ) {
                         for (t in topics) {
                             FilterChip(

@@ -11,8 +11,10 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.*
 import me.melon.record.ObjectBox
+import me.melon.record.data.model.RawData
 import me.melon.record.data.model.UniversalRecord
 import me.melon.record.data.model.UniversalRecord_
+import me.melon.record.logic.DataProcessor
 
 class HomeViewModel(application: Application) : AndroidViewModel(application) {
 
@@ -40,6 +42,7 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
     }
 
     private val recordBox = ObjectBox.store.boxFor(UniversalRecord::class.java)
+    private val rawBox = ObjectBox.store.boxFor(RawData::class.java)
 
     // Search query state
     private val _searchQuery = MutableStateFlow("")
@@ -150,6 +153,24 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
             query.close()
         }
     }.flowOn(Dispatchers.IO)
+
+    val rawPendingCountFlow: Flow<Long> = callbackFlow {
+        val query = rawBox.query().build()
+        val subscription = query.subscribe()
+            .on(AndroidScheduler.mainThread())
+            .observer { data ->
+                trySend(data.size.toLong())
+            }
+
+        trySend(query.find().size.toLong())
+
+        awaitClose {
+            subscription.cancel()
+            query.close()
+        }
+    }.flowOn(Dispatchers.IO)
+
+    val syncProgress: StateFlow<DataProcessor.SyncProgress> = DataProcessor.syncProgress
 
     // 监听 UniversalRecord 数据库变化，并支持搜索过滤
     @OptIn(kotlinx.coroutines.ExperimentalCoroutinesApi::class)

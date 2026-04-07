@@ -3,9 +3,15 @@ package me.melon.record.ui
 import androidx.activity.compose.BackHandler
 import androidx.compose.animation.*
 import androidx.compose.animation.core.tween
+import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.gestures.detectVerticalDragGestures
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Close
@@ -19,14 +25,51 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.nestedscroll.nestedScroll
+import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.layout.onSizeChanged
+import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.text.AnnotatedString
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.buildAnnotatedString
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.text.withStyle
+import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.google.gson.JsonParser
 import me.melon.record.data.model.UniversalRecord
 import me.melon.record.ui.components.FilterBottomSheet
 import me.melon.record.ui.components.RecordItem
 import me.melon.record.viewmodel.HomeViewModel
+import org.jsoup.Jsoup
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
+import androidx.compose.runtime.saveable.rememberSaveable
+import kotlinx.coroutines.launch
+import me.melon.record.logic.DataProcessor
+import kotlin.math.max
+import kotlin.math.roundToInt
 
 private enum class NavAction { PUSH, POP }
+
+private sealed interface HomeListItem {
+    val key: String
+}
+
+private data class RecordListItem(val record: UniversalRecord) : HomeListItem {
+    override val key: String = "record_${record.id}"
+}
+
+private data class AnswerGroupListItem(
+    val questionKey: String,
+    val questionTitle: String,
+    val answers: List<UniversalRecord>,
+    val firstId: Long
+) : HomeListItem {
+    override val key: String = "answer_group_${questionKey}_$firstId"
+}
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -37,12 +80,15 @@ fun HomeScreen(viewModel: HomeViewModel = viewModel()) {
     val availableApps by viewModel.availableAppsFlow.collectAsState(initial = emptyList())
     val availablePlatforms by viewModel.availablePlatformsFlow.collectAsState(initial = emptyList())
     val availableTypes by viewModel.availableTypesFlow.collectAsState(initial = emptyList())
+    val rawPendingCount by viewModel.rawPendingCountFlow.collectAsState(initial = 0L)
+    val syncProgress by viewModel.syncProgress.collectAsState()
 
     val navStack = remember { mutableStateListOf<UniversalRecord>() }
     val currentRecord = navStack.lastOrNull()
     var lastNavAction by remember { mutableStateOf(NavAction.PUSH) }
     var isSearchActive by remember { mutableStateOf(false) }
     var showFilterSheet by remember { mutableStateOf(false) }
+    val homeListState = rememberSaveable(saver = LazyListState.Saver) { LazyListState() }
 
     AnimatedContent(
         targetState = currentRecord,
@@ -119,6 +165,9 @@ fun HomeScreen(viewModel: HomeViewModel = viewModel()) {
                 },
                 onRefresh = { viewModel.refreshData() },
                 onOpenFilter = { showFilterSheet = true },
+                listState = homeListState,
+                rawPendingCount = rawPendingCount,
+                syncProgress = syncProgress,
                 onItemClick = {
                     lastNavAction = NavAction.PUSH
                     navStack.add(it)
@@ -162,9 +211,20 @@ fun PullToRefreshListScreen(
     onSearchActiveChange: (Boolean) -> Unit,
     onRefresh: suspend () -> Unit,
     onOpenFilter: () -> Unit,
+    listState: LazyListState,
+    rawPendingCount: Long,
+    syncProgress: DataProcessor.SyncProgress,
     onItemClick: (UniversalRecord) -> Unit
 ) {
     val pullState = rememberPullToRefreshState()
+    val listItems = remember(records) { groupRecordsForHome(records) }
+
+    BackHandler(enabled = isSearchActive || searchQuery.isNotBlank()) {
+        if (searchQuery.isNotBlank()) {
+            onSearchQueryChange("")
+        }
+        onSearchActiveChange(false)
+    }
 
     LaunchedEffect(pullState.isRefreshing) {
         if (!pullState.isRefreshing) return@LaunchedEffect
@@ -243,27 +303,90 @@ fun PullToRefreshListScreen(
                 .fillMaxSize()
                 .nestedScroll(pullState.nestedScrollConnection)
         ) {
-            if (records.isEmpty()) {
-                Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                    Text(
-                        if (searchQuery.isNotEmpty()) "没有找到匹配的记录" else "暂无记录，去刷刷社交网络吧！",
-                        color = Color.Gray
-                    )
-                }
-            }
-
-            LazyColumn(modifier = Modifier.fillMaxSize()) {
-                items(records, key = { it.id }) { record ->
-                    AnimatedVisibility(
-                        visible = true,
-                        enter = fadeIn() + expandVertically(),
-                        exit = fadeOut() + shrinkVertically()
+            Column(modifier = Modifier.fillMaxSize()) {
+                val showSync = rawPendingCount > 0L || syncProgress.isRunning
+                if (showSync) {
+                    Surface(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 12.dp, vertical = 8.dp),
+                        color = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.35f),
+                        shape = MaterialTheme.shapes.medium
                     ) {
-                        RecordItem(record, searchQuery) {
-                            onItemClick(record)
+                        Column(modifier = Modifier.padding(horizontal = 12.dp, vertical = 10.dp)) {
+                            val determinate = syncProgress.total > 0
+                            val progress = if (determinate) {
+                                (syncProgress.processed.toFloat() / syncProgress.total.toFloat()).coerceIn(0f, 1f)
+                            } else {
+                                0f
+                            }
+                            if (determinate) {
+                                LinearProgressIndicator(
+                                    progress = { progress },
+                                    modifier = Modifier.fillMaxWidth()
+                                )
+                            } else {
+                                LinearProgressIndicator(modifier = Modifier.fillMaxWidth())
+                            }
+                            Spacer(modifier = Modifier.height(8.dp))
+                            val processedLabel = if (syncProgress.total > 0) "${syncProgress.processed}/${syncProgress.total}" else "…"
+                            Text(
+                                text = "同步中：剩余 ${rawPendingCount} 条 · 已处理 $processedLabel",
+                                style = MaterialTheme.typography.labelMedium,
+                                color = MaterialTheme.colorScheme.onSurfaceVariant
+                            )
                         }
                     }
                 }
+
+                if (records.isEmpty()) {
+                    Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                        Text(
+                            if (searchQuery.isNotEmpty()) "没有找到匹配的记录" else "暂无记录，去刷刷社交网络吧！",
+                            color = Color.Gray
+                        )
+                    }
+                } else {
+                    LazyColumn(
+                        modifier = Modifier.fillMaxSize(),
+                        state = listState
+                    ) {
+                        items(listItems, key = { it.key }) { item ->
+                            AnimatedVisibility(
+                                visible = true,
+                                enter = fadeIn() + expandVertically(),
+                                exit = fadeOut() + shrinkVertically()
+                            ) {
+                                when (item) {
+                                    is RecordListItem -> {
+                                        RecordItem(item.record, searchQuery) {
+                                            onItemClick(item.record)
+                                        }
+                                    }
+                                    is AnswerGroupListItem -> {
+                                        AnswerGroupItem(
+                                            questionTitle = item.questionTitle,
+                                            answers = item.answers,
+                                            searchQuery = searchQuery,
+                                            onOpenAnswer = onItemClick
+                                        )
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
+            if (listItems.size >= 2) {
+                DateFastScroller(
+                    items = listItems,
+                    listState = listState,
+                    modifier = Modifier
+                        .align(Alignment.CenterEnd)
+                        .fillMaxHeight()
+                        .padding(end = 0.dp, top = 10.dp, bottom = 10.dp)
+                )
             }
 
             if (pullState.isRefreshing || pullState.verticalOffset > 0) {
@@ -272,6 +395,318 @@ fun PullToRefreshListScreen(
                     modifier = Modifier.align(Alignment.TopCenter)
                 )
             }
+        }
+    }
+}
+
+private fun homeItemTimeMillis(item: HomeListItem): Long {
+    return when (item) {
+        is RecordListItem -> item.record.captureTime
+        is AnswerGroupListItem -> item.answers.firstOrNull()?.captureTime ?: 0L
+    }
+}
+
+@Composable
+private fun DateFastScroller(
+    items: List<HomeListItem>,
+    listState: LazyListState,
+    modifier: Modifier = Modifier
+) {
+    val scope = rememberCoroutineScope()
+    val sdf = remember { SimpleDateFormat("yyyy年M月d日", Locale.getDefault()) }
+    val density = LocalDensity.current
+
+    var heightPx by remember { mutableStateOf(1) }
+    var isDragging by remember { mutableStateOf(false) }
+    var dragYPx by remember { mutableStateOf(0f) }
+    var hoverIndex by remember { mutableStateOf(0) }
+
+    val currentIndex = listState.firstVisibleItemIndex.coerceIn(0, items.lastIndex)
+    val thumbFraction = if (items.size <= 1) 0f else currentIndex.toFloat() / (items.size - 1).toFloat()
+    val thumbYPx = if (isDragging) dragYPx else thumbFraction * heightPx.toFloat()
+
+    val trackWidth = 26.dp
+    val edgePadding = 0.dp          // 想更贴边就用 0.dp
+    val bubbleGap = 8.dp            // 气泡离滚动条的距离
+
+    fun scrollToY(y: Float) {
+        val safeY = y.coerceIn(0f, heightPx.toFloat())
+        val fraction = if (heightPx <= 1) 0f else safeY / heightPx.toFloat()
+        val idx = ((items.size - 1) * fraction).roundToInt().coerceIn(0, items.lastIndex)
+        hoverIndex = idx
+        dragYPx = safeY
+        scope.launch {
+            listState.scrollToItem(idx)
+        }
+    }
+
+    Box(
+        modifier = modifier.fillMaxSize()
+    ) {
+        Box(
+            modifier = Modifier
+                .align(Alignment.CenterEnd)
+                .padding(end = edgePadding)
+                .fillMaxHeight()
+                .width(trackWidth)
+                .onSizeChanged { heightPx = it.height.coerceAtLeast(1) }
+                .pointerInput(items.size, heightPx) {
+                    detectVerticalDragGestures(
+                        onDragStart = {
+                            isDragging = true
+                            scrollToY(it.y)
+                        },
+                        onVerticalDrag = { change, _ ->
+                            change.consume()
+                            scrollToY(change.position.y)
+                        },
+                        onDragEnd = { isDragging = false },
+                        onDragCancel = { isDragging = false }
+                    )
+                }
+        ) {
+            Box(
+                modifier = Modifier
+                    .align(Alignment.Center)
+                    .fillMaxHeight()
+                    .width(6.dp)
+                    .background(
+                        color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.7f),
+                        shape = RoundedCornerShape(3.dp)
+                    )
+            )
+
+            val thumbRadiusPx = with(density) { 6.dp.toPx() }
+            val thumbMaxY = max(0f, heightPx.toFloat() - 2 * thumbRadiusPx)
+            val thumbY = (thumbYPx - thumbRadiusPx).coerceIn(0f, thumbMaxY)
+
+            Box(
+                modifier = Modifier
+                    .align(Alignment.TopCenter)
+                    .offset { IntOffset(0, thumbY.roundToInt()) }
+                    .size(12.dp)
+                    .background(MaterialTheme.colorScheme.primary, CircleShape)
+            )
+        }
+
+        if (isDragging) {
+            val ts = homeItemTimeMillis(items[hoverIndex])
+            val label = if (ts > 0) sdf.format(Date(ts)) else ""
+
+            if (label.isNotBlank()) {
+                val y = (thumbYPx - with(density) { 18.dp.toPx() })
+                    .coerceIn(0f, max(0f, heightPx.toFloat() - with(density) { 40.dp.toPx() }))
+                    .roundToInt()
+
+                Surface(
+                    modifier = Modifier
+                        .align(Alignment.TopEnd)
+                        .offset {
+                            IntOffset(
+                                x = -with(density) { (trackWidth + bubbleGap).toPx() }.roundToInt(),
+                                y = y
+                            )
+                        }
+                        .widthIn(min = 128.dp)
+                        .onSizeChanged { /* 不一定需要测量宽高了 */ },
+                    color = MaterialTheme.colorScheme.secondaryContainer,
+                    shape = MaterialTheme.shapes.medium,
+                    tonalElevation = 3.dp
+                ) {
+                    Text(
+                        text = label,
+                        maxLines = 1,
+                        softWrap = false,
+                        overflow = TextOverflow.Clip,
+			modifier = Modifier.padding(horizontal = 12.dp, vertical = 6.dp),
+                        style = MaterialTheme.typography.labelLarge,
+                        color = MaterialTheme.colorScheme.onSecondaryContainer
+                    )
+                }
+            }
+        }
+    }
+}
+
+private fun groupRecordsForHome(records: List<UniversalRecord>): List<HomeListItem> {
+    val result = ArrayList<HomeListItem>(records.size)
+    var i = 0
+    while (i < records.size) {
+        val r = records[i]
+        val isZhihuAnswer = r.platform == "zhihu" && r.recordType == "answer"
+        if (!isZhihuAnswer) {
+            result.add(RecordListItem(r))
+            i++
+            continue
+        }
+
+        val questionKey = zhihuAnswerQuestionKey(r)
+        if (questionKey.isBlank()) {
+            result.add(RecordListItem(r))
+            i++
+            continue
+        }
+
+        val group = mutableListOf<UniversalRecord>()
+        var j = i
+        while (j < records.size) {
+            val rr = records[j]
+            if (rr.platform != "zhihu" || rr.recordType != "answer") break
+            if (zhihuAnswerQuestionKey(rr) != questionKey) break
+            group.add(rr)
+            j++
+        }
+
+        if (group.size >= 2) {
+            val title = group.first().title.ifBlank { "无标题" }
+            result.add(
+                AnswerGroupListItem(
+                    questionKey = questionKey,
+                    questionTitle = title,
+                    answers = group,
+                    firstId = group.first().id
+                )
+            )
+        } else {
+            result.add(RecordListItem(r))
+        }
+        i = j
+    }
+    return result
+}
+
+private fun zhihuAnswerQuestionKey(record: UniversalRecord): String {
+    if (record.platform != "zhihu" || record.recordType != "answer") return ""
+    if (record.parentId.startsWith("zhihu_question_")) return record.parentId
+    return try {
+        val obj = JsonParser.parseString(record.extraMetadata).asJsonObject
+        if (obj.has("question_id") && !obj.get("question_id").isJsonNull) "zhihu_question_${obj.get("question_id").asString}" else ""
+    } catch (_: Exception) {
+        ""
+    }
+}
+
+@Composable
+private fun AnswerGroupItem(
+    questionTitle: String,
+    answers: List<UniversalRecord>,
+    searchQuery: String,
+    onOpenAnswer: (UniversalRecord) -> Unit
+) {
+    Card(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 12.dp, vertical = 6.dp),
+        elevation = CardDefaults.cardElevation(2.dp),
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface)
+    ) {
+        Column(modifier = Modifier.padding(16.dp)) {
+            Surface(
+                color = MaterialTheme.colorScheme.secondaryContainer,
+                shape = MaterialTheme.shapes.small
+            ) {
+                Text(
+                    text = "知乎 · 回答",
+                    style = MaterialTheme.typography.labelSmall,
+                    modifier = Modifier.padding(horizontal = 6.dp, vertical = 2.dp),
+                    color = MaterialTheme.colorScheme.onSecondaryContainer
+                )
+            }
+
+            Spacer(modifier = Modifier.height(8.dp))
+
+            Text(
+                text = highlightText(questionTitle.ifBlank { "无标题" }, searchQuery),
+                style = MaterialTheme.typography.titleMedium,
+                fontWeight = FontWeight.Bold,
+                maxLines = 2,
+                overflow = TextOverflow.Ellipsis
+            )
+
+            Spacer(modifier = Modifier.height(10.dp))
+
+            val sdf = remember { SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.getDefault()) }
+            answers.forEachIndexed { index, answer ->
+                if (index > 0) {
+                    Spacer(modifier = Modifier.height(10.dp))
+                    HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.6f))
+                    Spacer(modifier = Modifier.height(10.dp))
+                }
+
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .clickable { onOpenAnswer(answer) }
+                ) {
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Text(
+                            text = highlightText(answer.authorName.ifBlank { "未知作者" }, searchQuery),
+                            style = MaterialTheme.typography.bodySmall,
+                            color = MaterialTheme.colorScheme.primary,
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis
+                        )
+                        Text(
+                            text = "浏览于 ${sdf.format(Date(answer.captureTime))}",
+                            style = MaterialTheme.typography.labelSmall,
+                            color = MaterialTheme.colorScheme.outline
+                        )
+                    }
+
+                    val previewText = previewFromRecordContent(answer.content)
+                    if (previewText.isNotBlank()) {
+                        Spacer(modifier = Modifier.height(6.dp))
+                        Text(
+                            text = highlightText(previewText, searchQuery),
+                            style = MaterialTheme.typography.bodySmall,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                            maxLines = 2,
+                            overflow = TextOverflow.Ellipsis
+                        )
+                    }
+                }
+            }
+        }
+    }
+}
+
+private fun previewFromRecordContent(content: String): String {
+    if (content.isBlank()) return ""
+    val text = try {
+        Jsoup.parse(content).text()
+    } catch (_: Exception) {
+        content
+    }
+    return text.replace('\n', ' ').replace('\r', ' ').trim()
+}
+
+@Composable
+private fun highlightText(text: String, query: String): AnnotatedString {
+    if (query.isEmpty()) return AnnotatedString(text)
+
+    return buildAnnotatedString {
+        var start = 0
+        while (start < text.length) {
+            val index = text.indexOf(query, start, ignoreCase = true)
+            if (index == -1) {
+                append(text.substring(start))
+                break
+            }
+            append(text.substring(start, index))
+            withStyle(
+                style = SpanStyle(
+                    background = MaterialTheme.colorScheme.primaryContainer,
+                    color = MaterialTheme.colorScheme.onPrimaryContainer,
+                    fontWeight = FontWeight.Bold
+                )
+            ) {
+                append(text.substring(index, index + query.length))
+            }
+            start = index + query.length
         }
     }
 }

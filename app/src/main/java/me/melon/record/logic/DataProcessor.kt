@@ -4,6 +4,8 @@ import android.util.Log
 import com.google.gson.Gson
 import com.google.gson.JsonObject
 import com.google.gson.JsonParser
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import me.melon.record.ObjectBox
 import me.melon.record.data.model.RawData
 import me.melon.record.data.model.UniversalRecord
@@ -14,6 +16,15 @@ import java.util.regex.Pattern
 object DataProcessor {
 
     private const val TAG = "DataProcessor"
+
+    data class SyncProgress(
+        val isRunning: Boolean,
+        val total: Int,
+        val processed: Int
+    )
+
+    private val _syncProgress = MutableStateFlow(SyncProgress(isRunning = false, total = 0, processed = 0))
+    val syncProgress: StateFlow<SyncProgress> = _syncProgress
 
     // 1. JSON 类型的文章接口
     private val PATTERN_JSON_ARTICLE = Pattern.compile("https?://api\\.zhihu\\.com/articles/[^/]+/?")
@@ -44,51 +55,56 @@ object DataProcessor {
 
         Log.i(TAG, "Found ${allRawData.size} raw records. Starting process...")
 
-        val processedRawIds = mutableListOf<Long>()
+        data class ParsedBatchItem(val rawId: Long, val cleanUrl: String, val records: List<UniversalRecord>?)
 
-        ObjectBox.store.runInTx {
-            for (raw in allRawData) {
-                try {
-                    val cleanUrl = if (raw.url.contains("?")) raw.url.substringBefore("?") else raw.url
+        val total = allRawData.size
+        var processed = 0
+        _syncProgress.value = SyncProgress(isRunning = true, total = total, processed = processed)
 
-                    // 调试输出：打印收到的所有原始数据，不分类型
-                    val debugJson = if (raw.json.length > 500) raw.json.take(500) + "..." else raw.json
-                    Log.d(TAG, ">>> Processing RawData from [${raw.hostApp}]: $cleanUrl")
-                    Log.d(TAG, ">>> Content Snippet: ${debugJson.replace("\n", " ")}")
+        val parsed = ArrayList<ParsedBatchItem>(allRawData.size)
+        for (raw in allRawData) {
+            val cleanUrl = if (raw.url.contains("?")) raw.url.substringBefore("?") else raw.url
+            try {
+                var records: List<UniversalRecord>? = null
 
-                    var records: List<UniversalRecord>? = null
+                if (PATTERN_JSON_ARTICLE.matcher(cleanUrl).matches()) {
+                    records = listOf(parseJsonArticle(raw, cleanUrl))
+                } else if (PATTERN_HTML_ANSWER.matcher(cleanUrl).matches()) {
+                    records = listOf(parseHtmlAnswer(raw, cleanUrl))
+                } else if (PATTERN_ZHIHU_QUESTION_DETAIL.matcher(cleanUrl).matches()) {
+                    records = listOf(parseZhihuQuestionDetail(raw, cleanUrl))
+                } else if (PATTERN_ZHIHU_QUESTION_FEEDS.matcher(cleanUrl).matches()) {
+                    records = listOf(parseZhihuQuestionFeeds(raw, cleanUrl))
+                } else if (PATTERN_ZHIHU_ROOT_COMMENT.matcher(cleanUrl).matches()) {
+                    records = parseZhihuComments(raw, cleanUrl, true)
+                } else if (PATTERN_ZHIHU_CHILD_COMMENT.matcher(cleanUrl).matches()) {
+                    records = parseZhihuComments(raw, cleanUrl, false)
+                }
 
-                    if (PATTERN_JSON_ARTICLE.matcher(cleanUrl).matches()) {
-                        val r = parseJsonArticle(raw, cleanUrl)
-                        records = listOf(r)
-                    } else if (PATTERN_HTML_ANSWER.matcher(cleanUrl).matches()) {
-                        val r = parseHtmlAnswer(raw, cleanUrl)
-                        records = listOf(r)
-                    } else if (PATTERN_ZHIHU_QUESTION_DETAIL.matcher(cleanUrl).matches()) {
-                        val r = parseZhihuQuestionDetail(raw, cleanUrl)
-                        records = listOf(r)
-                    } else if (PATTERN_ZHIHU_QUESTION_FEEDS.matcher(cleanUrl).matches()) {
-                        val r = parseZhihuQuestionFeeds(raw, cleanUrl)
-                        records = listOf(r)
-                    } else if (PATTERN_ZHIHU_ROOT_COMMENT.matcher(cleanUrl).matches()) {
-                        records = parseZhihuComments(raw, cleanUrl, true)
-                    } else if (PATTERN_ZHIHU_CHILD_COMMENT.matcher(cleanUrl).matches()) {
-                        records = parseZhihuComments(raw, cleanUrl, false)
+                parsed.add(ParsedBatchItem(raw.id, cleanUrl, records))
+            } catch (e: Exception) {
+                Log.e(TAG, "Failed to process ID: ${raw.id}", e)
+                parsed.add(ParsedBatchItem(raw.id, cleanUrl, emptyList()))
+            }
+        }
+
+        val batchSize = 80
+        for (batch in parsed.chunked(batchSize)) {
+            val processedRawIds = ArrayList<Long>(batch.size)
+            ObjectBox.store.runInTx {
+                for (item in batch) {
+                    val records = item.records
+                    if (records == null) {
+                        Log.i(TAG, "Unmatched URL (Log Only): ${item.cleanUrl}")
                     } else {
-                        // 仅输出日志，不再存入数据库
-                        Log.i(TAG, "Unmatched URL (Log Only): $cleanUrl")
-                    }
-
-                    if (records != null) {
                         for (record in records) {
-                            // 【去重逻辑】检查是否已经存过该 platformId
                             val existing = recordBox.query()
                                 .equal(UniversalRecord_.platformId, record.platformId, io.objectbox.query.QueryBuilder.StringOrder.CASE_SENSITIVE)
                                 .build()
                                 .findFirst()
 
                             if (existing != null) {
-                                record.id = existing.id // 复用现有主键，触发 Update 而不是 Insert
+                                record.id = existing.id
                                 if (record.platform == "zhihu" && record.recordType == "question") {
                                     record.extraMetadata = mergeQuestionExtra(existing.extraMetadata, record.extraMetadata)
                                     if (record.title.isBlank()) record.title = existing.title
@@ -102,7 +118,6 @@ object DataProcessor {
                                 }
                             }
                             recordBox.put(record)
-                            Log.d(TAG, "Parse SUCCESS & Saved: ${record.title} [${record.platformId}]")
 
                             if (record.platform == "zhihu" && record.recordType == "question") {
                                 val qid = try {
@@ -124,17 +139,18 @@ object DataProcessor {
                             }
                         }
                     }
-                    // 无论是否匹配/成功，都标记为已处理以防卡死队列（视需求也可保留失败的）
-                    processedRawIds.add(raw.id)
-                } catch (e: Exception) {
-                    Log.e(TAG, "Failed to process ID: ${raw.id}", e)
-                    // 解析失败的记录也删掉，防止无限重试崩溃。如果想调试可以注释下行。
-                    processedRawIds.add(raw.id)
+                    processedRawIds.add(item.rawId)
+                }
+                if (processedRawIds.isNotEmpty()) {
+                    rawBox.remove(*processedRawIds.toLongArray())
                 }
             }
-            rawBox.remove(*processedRawIds.toLongArray())
+            processed += batch.size
+            _syncProgress.value = SyncProgress(isRunning = true, total = total, processed = processed.coerceAtMost(total))
         }
-        Log.i(TAG, "Cleaned up ${processedRawIds.size} RawData.")
+
+        Log.i(TAG, "Cleaned up ${parsed.size} RawData.")
+        _syncProgress.value = SyncProgress(isRunning = false, total = total, processed = total)
     }
 
     private fun parseJsonArticle(raw: RawData, cleanUrl: String): UniversalRecord {

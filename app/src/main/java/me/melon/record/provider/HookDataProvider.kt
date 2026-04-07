@@ -60,6 +60,9 @@ class HookDataProvider : ContentProvider() {
             enforceCallerAllowed()
             val url = values.getAsString("url") ?: ""
             val host = values.getAsString("hostApp") ?: ""
+            val timestamp = (values.getAsLong("timestamp")
+                ?: values.getAsString("timestamp")?.toLongOrNull())
+                ?: System.currentTimeMillis()
             val payloadToken = values.getAsString("payloadToken")
             val json = if (!payloadToken.isNullOrBlank()) {
                 val dir = File(context!!.cacheDir, "hook_payload")
@@ -75,7 +78,8 @@ class HookDataProvider : ContentProvider() {
             val entity = RawData(
                 url = url,
                 json = json,
-                hostApp = host
+                hostApp = host,
+                timestamp = timestamp
             )
             val id = rawDataBox.put(entity)
 

@@ -221,6 +221,20 @@ private void saveResponseAsync(Object response, final String url) {
                 }
                 String url = metaParts[0];
                 String hostApp = metaParts[1];
+                long captureTs = 0L;
+                if (metaParts.length >= 4) {
+                    try {
+                        captureTs = Long.parseLong(metaParts[3].trim());
+                    } catch (Throwable ignored) {}
+                }
+                if (captureTs <= 0L) {
+                    try {
+                        int idx = token.indexOf('_');
+                        String prefix = idx > 0 ? token.substring(0, idx) : token;
+                        captureTs = Long.parseLong(prefix);
+                    } catch (Throwable ignored) {}
+                }
+                if (captureTs <= 0L) captureTs = System.currentTimeMillis();
 
                 Uri payloadUri = Uri.parse("content://me.melon.record.provider/raw_payload/" + token);
                 ParcelFileDescriptor pfd = null;
@@ -248,6 +262,7 @@ private void saveResponseAsync(Object response, final String url) {
                 values.put("url", url);
                 values.put("hostApp", hostApp);
                 values.put("payloadToken", token);
+                values.put("timestamp", captureTs);
 
                 if (mContext.getContentResolver().insert(uri, values) != null) {
                     meta.delete();
@@ -262,7 +277,8 @@ private void saveResponseAsync(Object response, final String url) {
     private void enqueueCapture(String url, byte[] bytes, String contentType) throws IOException {
         File queueDir = new File(mContext.getCacheDir(), QUEUE_DIR);
         if (!queueDir.exists()) queueDir.mkdirs();
-        String token = System.currentTimeMillis() + "_" + System.nanoTime();
+        long captureTs = System.currentTimeMillis();
+        String token = captureTs + "_" + System.nanoTime();
         File payloadFile = new File(queueDir, token + ".bin");
         try (FileOutputStream fos = new FileOutputStream(payloadFile)) {
             fos.write(bytes);
@@ -271,7 +287,7 @@ private void saveResponseAsync(Object response, final String url) {
 
         File metaFile = new File(queueDir, token + ".meta");
         String hostApp = "com.zhihu.android";
-        String meta = safeLine(url) + "\n" + safeLine(hostApp) + "\n" + safeLine(contentType) + "\n";
+        String meta = safeLine(url) + "\n" + safeLine(hostApp) + "\n" + safeLine(contentType) + "\n" + captureTs + "\n";
         try (FileOutputStream fos = new FileOutputStream(metaFile)) {
             fos.write(meta.getBytes(StandardCharsets.UTF_8));
             fos.flush();
@@ -294,7 +310,7 @@ private void saveResponseAsync(Object response, final String url) {
             }
             String[] lines = sb.toString().split("\n", -1);
             if (lines.length < 2) return null;
-            return new String[]{lines[0], lines[1], lines.length >= 3 ? lines[2] : ""};
+            return new String[]{lines[0], lines[1], lines.length >= 3 ? lines[2] : "", lines.length >= 4 ? lines[3] : ""};
         } catch (Throwable t) {
             return null;
         }
@@ -332,14 +348,15 @@ private void saveResponseAsync(Object response, final String url) {
     private void enqueueLegacy(String url, byte[] payload, String hostApp) throws IOException {
         File queueDir = new File(mContext.getCacheDir(), QUEUE_DIR);
         if (!queueDir.exists()) queueDir.mkdirs();
-        String token = System.currentTimeMillis() + "_" + System.nanoTime();
+        long captureTs = System.currentTimeMillis();
+        String token = captureTs + "_" + System.nanoTime();
         File payloadFile = new File(queueDir, token + ".bin");
         try (FileOutputStream fos = new FileOutputStream(payloadFile)) {
             fos.write(payload);
             fos.flush();
         }
         File metaFile = new File(queueDir, token + ".meta");
-        String meta = safeLine(url) + "\n" + safeLine(hostApp) + "\n" + "application/json" + "\n";
+        String meta = safeLine(url) + "\n" + safeLine(hostApp) + "\n" + "application/json" + "\n" + captureTs + "\n";
         try (FileOutputStream fos = new FileOutputStream(metaFile)) {
             fos.write(meta.getBytes(StandardCharsets.UTF_8));
             fos.flush();

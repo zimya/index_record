@@ -23,7 +23,9 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
+import com.google.gson.JsonParser
 import me.melon.record.data.model.UniversalRecord
+import org.jsoup.Jsoup
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
@@ -72,9 +74,9 @@ fun RecordItem(record: UniversalRecord, searchQuery: String, onClick: () -> Unit
                     )
                 }
 
-                val sdf = SimpleDateFormat("MM-dd HH:mm", Locale.getDefault())
+                val sdf = SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.getDefault())
                 Text(
-                    text = sdf.format(Date(record.captureTime)),
+                    text = "浏览于 ${sdf.format(Date(record.captureTime))}",
                     style = MaterialTheme.typography.labelSmall,
                     color = MaterialTheme.colorScheme.outline
                 )
@@ -103,6 +105,18 @@ fun RecordItem(record: UniversalRecord, searchQuery: String, onClick: () -> Unit
                 overflow = TextOverflow.Ellipsis
             )
 
+            val previewText = getPreviewText(record)
+            if (previewText.isNotBlank()) {
+                Spacer(modifier = Modifier.height(6.dp))
+                Text(
+                    text = highlightText(previewText, searchQuery),
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    maxLines = 2,
+                    overflow = TextOverflow.Ellipsis
+                )
+            }
+
             if (searchQuery.isNotEmpty() && record.content.contains(searchQuery, ignoreCase = true)) {
                 Spacer(modifier = Modifier.height(8.dp))
                 Surface(
@@ -121,6 +135,31 @@ fun RecordItem(record: UniversalRecord, searchQuery: String, onClick: () -> Unit
             }
         }
     }
+}
+
+private fun getPreviewText(record: UniversalRecord): String {
+    val raw = when (record.recordType) {
+        "question" -> {
+            if (record.content.isNotBlank()) {
+                record.content
+            } else {
+                try {
+                    val obj = JsonParser.parseString(record.extraMetadata).asJsonObject
+                    if (obj.has("excerpt") && !obj.get("excerpt").isJsonNull) obj.get("excerpt").asString else ""
+                } catch (_: Exception) {
+                    ""
+                }
+            }
+        }
+        else -> record.content
+    }
+
+    val text = try {
+        Jsoup.parse(raw).text()
+    } catch (_: Exception) {
+        raw
+    }
+    return text.replace('\n', ' ').replace('\r', ' ').trim()
 }
 
 @Composable

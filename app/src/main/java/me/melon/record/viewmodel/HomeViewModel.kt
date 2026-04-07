@@ -3,11 +3,10 @@ package me.melon.record.viewmodel
 import android.app.Application
 import android.content.Intent
 import androidx.lifecycle.AndroidViewModel
-import androidx.lifecycle.viewModelScope
 import io.objectbox.android.AndroidScheduler
-import io.objectbox.query.Query
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.withContext
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.*
 import me.melon.record.ObjectBox
@@ -26,21 +25,7 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
         val types: Set<String> = emptySet()
     )
 
-    init {
-        // 1. 发送广播，通知宿主 App（如知乎）推送积压的数据
-        val intent = Intent("me.melon.record.ACTION_SYNC")
-        application.sendBroadcast(intent)
-
-        // 2. 在应用启动（ViewModel初始化）时，处理所有本地已有的 RawData
-        viewModelScope.launch(Dispatchers.IO) {
-            try {
-                me.melon.record.logic.DataProcessor.processPendingData()
-            } catch (e: Exception) {
-                e.printStackTrace()
-            }
-        }
-    }
-
+    private val rawDataBox = ObjectBox.store.boxFor(RawData::class.java)
     private val recordBox = ObjectBox.store.boxFor(UniversalRecord::class.java)
     private val rawBox = ObjectBox.store.boxFor(RawData::class.java)
 
@@ -75,7 +60,6 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
         _filter.value = HomeFilter()
     }
 
-    // UI State: 由于改为了后台自动解析，我们不再需要手动刷新控制
     private val _isRefreshing = MutableStateFlow(false)
     val isRefreshing: StateFlow<Boolean> = _isRefreshing.asStateFlow()
 
@@ -195,15 +179,43 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
         }.flowOn(Dispatchers.IO)
     }
 
-    // 如果用户非要下拉刷新，可以手动触发重试同步
-    suspend fun refreshData() {
+    suspend fun refreshData(): Int {
+        if (_isRefreshing.value) return 0
         _isRefreshing.value = true
         try {
+            val beforeCount = withContext(Dispatchers.IO) { recordBox.count() }
             val intent = Intent("me.melon.record.ACTION_SYNC")
             getApplication<Application>().sendBroadcast(intent)
-            kotlinx.coroutines.withContext(Dispatchers.IO) {
+
+            withContext(Dispatchers.IO) {
+                val startTime = System.currentTimeMillis()
+                val minWaitMs = 1200L
+                val stableWindowMs = 700L
+                val maxWaitMs = 10000L
+                var lastPending = -1L
+                var stableStart = System.currentTimeMillis()
+
+                while (System.currentTimeMillis() - startTime < maxWaitMs) {
+                    me.melon.record.logic.DataProcessor.processPendingData()
+                    delay(180)
+                    val pending = rawDataBox.count()
+                    val now = System.currentTimeMillis()
+                    if (pending != lastPending) {
+                        lastPending = pending
+                        stableStart = now
+                    }
+                    if (
+                        now - startTime >= minWaitMs &&
+                        pending == 0L &&
+                        now - stableStart >= stableWindowMs
+                    ) {
+                        break
+                    }
+                }
                 me.melon.record.logic.DataProcessor.processPendingData()
             }
+            val afterCount = withContext(Dispatchers.IO) { recordBox.count() }
+            return (afterCount - beforeCount).coerceAtLeast(0).toInt()
         } finally {
             _isRefreshing.value = false
         }

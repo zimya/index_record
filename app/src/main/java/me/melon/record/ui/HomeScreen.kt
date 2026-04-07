@@ -38,16 +38,18 @@ import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.google.gson.JsonParser
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import me.melon.record.data.model.UniversalRecord
 import me.melon.record.ui.components.FilterBottomSheet
 import me.melon.record.ui.components.RecordItem
+import me.melon.record.ui.components.RefreshResultHint
 import me.melon.record.viewmodel.HomeViewModel
 import org.jsoup.Jsoup
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
 import androidx.compose.runtime.saveable.rememberSaveable
-import kotlinx.coroutines.launch
 import me.melon.record.logic.DataProcessor
 import kotlin.math.max
 import kotlin.math.roundToInt
@@ -209,7 +211,7 @@ fun PullToRefreshListScreen(
     onSearchQueryChange: (String) -> Unit,
     isSearchActive: Boolean,
     onSearchActiveChange: (Boolean) -> Unit,
-    onRefresh: suspend () -> Unit,
+    onRefresh: suspend () -> Int,
     onOpenFilter: () -> Unit,
     listState: LazyListState,
     rawPendingCount: Long,
@@ -218,6 +220,16 @@ fun PullToRefreshListScreen(
 ) {
     val pullState = rememberPullToRefreshState()
     val listItems = remember(records) { groupRecordsForHome(records) }
+    val scope = rememberCoroutineScope()
+    var hintVisible by remember { mutableStateOf(false) }
+    var hintMessage by remember { mutableStateOf("") }
+    var hintShowArrow by remember { mutableStateOf(false) }
+    var hintNoNewToken by remember { mutableLongStateOf(0L) }
+    val isAtTop by remember {
+        derivedStateOf {
+            listState.firstVisibleItemIndex == 0 && listState.firstVisibleItemScrollOffset == 0
+        }
+    }
 
     BackHandler(enabled = isSearchActive || searchQuery.isNotBlank()) {
         if (searchQuery.isNotBlank()) {
@@ -226,10 +238,31 @@ fun PullToRefreshListScreen(
         onSearchActiveChange(false)
     }
 
+    LaunchedEffect(isAtTop, hintShowArrow) {
+        if (isAtTop && hintShowArrow) hintVisible = false
+    }
+
+    LaunchedEffect(hintNoNewToken) {
+        if (hintNoNewToken == 0L) return@LaunchedEffect
+        delay(1800)
+        hintVisible = false
+    }
+
     LaunchedEffect(pullState.isRefreshing) {
         if (!pullState.isRefreshing) return@LaunchedEffect
         try {
-            onRefresh()
+            val loadedCount = onRefresh()
+            if (loadedCount > 0) {
+                hintMessage = "已加载${loadedCount}条内容"
+                hintShowArrow = true
+                hintVisible = !isAtTop
+                hintNoNewToken = 0L
+            } else {
+                hintMessage = "没有新内容"
+                hintShowArrow = false
+                hintVisible = true
+                hintNoNewToken = System.currentTimeMillis()
+            }
         } finally {
             pullState.endRefresh()
         }
@@ -388,6 +421,24 @@ fun PullToRefreshListScreen(
                         .padding(end = 0.dp, top = 10.dp, bottom = 10.dp)
                 )
             }
+
+            RefreshResultHint(
+                visible = hintVisible,
+                message = hintMessage,
+                showArrow = hintShowArrow,
+                onClick = if (hintShowArrow) {
+                    {
+                        scope.launch {
+                            listState.animateScrollToItem(0)
+                        }
+                    }
+                } else {
+                    null
+                },
+                modifier = Modifier
+                    .align(Alignment.TopCenter)
+                    .padding(top = 8.dp)
+            )
 
             if (pullState.isRefreshing || pullState.verticalOffset > 0) {
                 PullToRefreshContainer(

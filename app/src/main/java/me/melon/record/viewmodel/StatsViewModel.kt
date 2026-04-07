@@ -68,16 +68,17 @@ class StatsViewModel(application: Application) : AndroidViewModel(application) {
         val end = alignedStart.plusDays((totalDays - 1).toLong())
 
         val perDay = HashMap<LocalDate, HashMap<String, Int>>(totalDays)
-        val perAppTotal = HashMap<String, Int>()
+        val perAppTotalAll = HashMap<String, Int>()
 
         for (r in records) {
+            val pkg = resolveSourceApp(r)
+            perAppTotalAll[pkg] = (perAppTotalAll[pkg] ?: 0) + 1
+
             val date = Instant.ofEpochMilli(r.captureTime).atZone(zone).toLocalDate()
             if (date.isBefore(alignedStart) || date.isAfter(end)) continue
-            val pkg = resolveSourceApp(r)
 
             val m = perDay.getOrPut(date) { HashMap() }
             m[pkg] = (m[pkg] ?: 0) + 1
-            perAppTotal[pkg] = (perAppTotal[pkg] ?: 0) + 1
         }
 
         var maxTotal = 0
@@ -87,7 +88,7 @@ class StatsViewModel(application: Application) : AndroidViewModel(application) {
         }
 
         val columns = ArrayList<List<DayCell>>(weeks)
-        for (w in 0 until weeks) {
+        for (w in (weeks - 1) downTo 0) {
             val col = ArrayList<DayCell>(7)
             for (d in 0 until 7) {
                 val date = alignedStart.plusDays((w * 7 + d).toLong())
@@ -96,7 +97,7 @@ class StatsViewModel(application: Application) : AndroidViewModel(application) {
             columns.add(col)
         }
 
-        val topApps = perAppTotal.entries
+        val topApps = perAppTotalAll.entries
             .sortedByDescending { it.value }
             .take(10)
             .map { it.key to it.value }

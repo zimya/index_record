@@ -6,6 +6,7 @@ import androidx.compose.animation.core.tween
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Close
@@ -21,9 +22,12 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import me.melon.record.data.model.UniversalRecord
 import me.melon.record.ui.components.FilterBottomSheet
 import me.melon.record.ui.components.RecordItem
+import me.melon.record.ui.components.RefreshResultHint
 import me.melon.record.viewmodel.HomeViewModel
 
 private enum class NavAction { PUSH, POP }
@@ -160,16 +164,48 @@ fun PullToRefreshListScreen(
     onSearchQueryChange: (String) -> Unit,
     isSearchActive: Boolean,
     onSearchActiveChange: (Boolean) -> Unit,
-    onRefresh: suspend () -> Unit,
+    onRefresh: suspend () -> Int,
     onOpenFilter: () -> Unit,
     onItemClick: (UniversalRecord) -> Unit
 ) {
     val pullState = rememberPullToRefreshState()
+    val listState = rememberLazyListState()
+    val scope = rememberCoroutineScope()
+    var hintVisible by remember { mutableStateOf(false) }
+    var hintMessage by remember { mutableStateOf("") }
+    var hintShowArrow by remember { mutableStateOf(false) }
+    var hintNoNewToken by remember { mutableLongStateOf(0L) }
+    val isAtTop by remember {
+        derivedStateOf {
+            listState.firstVisibleItemIndex == 0 && listState.firstVisibleItemScrollOffset == 0
+        }
+    }
+
+    LaunchedEffect(isAtTop, hintShowArrow) {
+        if (isAtTop && hintShowArrow) hintVisible = false
+    }
+
+    LaunchedEffect(hintNoNewToken) {
+        if (hintNoNewToken == 0L) return@LaunchedEffect
+        delay(1800)
+        hintVisible = false
+    }
 
     LaunchedEffect(pullState.isRefreshing) {
         if (!pullState.isRefreshing) return@LaunchedEffect
         try {
-            onRefresh()
+            val loadedCount = onRefresh()
+            if (loadedCount > 0) {
+                hintMessage = "已加载${loadedCount}条内容"
+                hintShowArrow = true
+                hintVisible = !isAtTop
+                hintNoNewToken = 0L
+            } else {
+                hintMessage = "没有新内容"
+                hintShowArrow = false
+                hintVisible = true
+                hintNoNewToken = System.currentTimeMillis()
+            }
         } finally {
             pullState.endRefresh()
         }
@@ -252,7 +288,10 @@ fun PullToRefreshListScreen(
                 }
             }
 
-            LazyColumn(modifier = Modifier.fillMaxSize()) {
+            LazyColumn(
+                state = listState,
+                modifier = Modifier.fillMaxSize()
+            ) {
                 items(records, key = { it.id }) { record ->
                     AnimatedVisibility(
                         visible = true,
@@ -265,6 +304,24 @@ fun PullToRefreshListScreen(
                     }
                 }
             }
+
+            RefreshResultHint(
+                visible = hintVisible,
+                message = hintMessage,
+                showArrow = hintShowArrow,
+                onClick = if (hintShowArrow) {
+                    {
+                        scope.launch {
+                            listState.animateScrollToItem(0)
+                        }
+                    }
+                } else {
+                    null
+                },
+                modifier = Modifier
+                    .align(Alignment.TopCenter)
+                    .padding(top = 8.dp)
+            )
 
             if (pullState.isRefreshing || pullState.verticalOffset > 0) {
                 PullToRefreshContainer(

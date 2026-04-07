@@ -6,13 +6,9 @@ import android.database.Cursor
 import android.net.Uri
 import android.os.Binder
 import android.os.ParcelFileDescriptor
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 import me.melon.record.ObjectBox
 import me.melon.record.data.model.RawData
 import io.objectbox.Box
-import me.melon.record.logic.DataProcessor
 import java.io.File
 import java.io.FileNotFoundException
 import java.nio.charset.StandardCharsets
@@ -26,7 +22,6 @@ class HookDataProvider : ContentProvider() {
     }
 
     private lateinit var rawDataBox: Box<RawData>
-    private val providerScope = CoroutineScope(Dispatchers.IO)
 
     override fun onCreate(): Boolean {
         context?.let { ctx ->
@@ -78,16 +73,6 @@ class HookDataProvider : ContentProvider() {
                 hostApp = host
             )
             val id = rawDataBox.put(entity)
-
-            // 【核心改进】异步触发数据解析，不需要等 UI 启动
-            providerScope.launch {
-                try {
-                    DataProcessor.processPendingData()
-                } catch (e: Exception) {
-                    e.printStackTrace()
-                }
-            }
-
             return Uri.withAppendedPath(uri, id.toString())
         } catch (e: Exception) {
             e.printStackTrace()

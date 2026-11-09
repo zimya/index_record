@@ -313,7 +313,7 @@ fun PullToRefreshListScreen(
             val loadedCount = onRefresh()
             // 新增数量统一由列表变化累计，刷新返回值不覆盖批次累计值。
             if (loadedCount == 0 && sessionLoadedCount == 0) {
-                hintMessage = if (rawPendingCount > 0) "后台同步中…" else "暂未收到新内容，宿主后台同步可能延迟"
+                hintMessage = if (rawPendingCount > 0) "后台同步中…" else "暂未收到新内容"
                 hintShowArrow = false
                 hintVisible = true
                 hintNoNewToken = System.currentTimeMillis()
@@ -324,6 +324,7 @@ fun PullToRefreshListScreen(
     }
 
     Scaffold(
+        contentWindowInsets = WindowInsets(0, 0, 0, 0),
         topBar = {
             AnimatedContent(
                 targetState = isSearchActive,

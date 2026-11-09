@@ -3,6 +3,7 @@ package me.melon.record.ui
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -96,6 +97,7 @@ fun CommentDetailScreen(
     val dislikeCount = if (meta.has("dislike_count") && !meta.get("dislike_count").isJsonNull) meta.get("dislike_count").asLong else 0L
 
     Scaffold(
+        contentWindowInsets = WindowInsets(0, 0, 0, 0),
         topBar = {
             TopAppBar(
                 title = { Text("评论详情", style = MaterialTheme.typography.titleMedium) },

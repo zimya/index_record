@@ -1,11 +1,15 @@
 package me.melon.record.viewmodel
 
 import android.app.Application
+import android.app.BroadcastOptions
+import android.os.Build
+import android.util.Log
 import android.content.Intent
 import androidx.lifecycle.AndroidViewModel
-import io.objectbox.android.AndroidScheduler
+import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.*
@@ -28,6 +32,50 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
     private val rawDataBox = ObjectBox.store.boxFor(RawData::class.java)
     private val recordBox = ObjectBox.store.boxFor(UniversalRecord::class.java)
     private val rawBox = ObjectBox.store.boxFor(RawData::class.java)
+
+    init {
+        // App 启动时向知乎等宿主进程发送唤醒同步广播，并自动检查清理未解析数据
+        viewModelScope.launch(Dispatchers.IO) {
+            DataProcessor.requestProcessing()
+            sendSyncBroadcast()
+        }
+    }
+
+    private fun sendSyncBroadcast() {
+        val app = getApplication<Application>()
+        val targetPackages = listOf(
+            "com.zhihu.android",
+            "com.douban.frodo",
+            "com.baidu.tieba",
+            "com.xingin.xhs",
+            "com.twitter.android"
+        )
+        val options = if (Build.VERSION.SDK_INT >= 34) {
+            BroadcastOptions.makeBasic()
+                .setDeferralPolicy(BroadcastOptions.DEFERRAL_POLICY_NONE)
+                .toBundle()
+        } else null
+        for (pkg in targetPackages) {
+            try {
+                val intent = Intent("me.melon.record.ACTION_SYNC").apply {
+                    setPackage(pkg)
+                    addFlags(Intent.FLAG_RECEIVER_FOREGROUND)
+                    addFlags(Intent.FLAG_INCLUDE_STOPPED_PACKAGES)
+                }
+                app.sendBroadcast(intent, null, options)
+            } catch (e: Exception) {
+                Log.w("HomeViewModel", "Failed to request sync from $pkg", e)
+            }
+        }
+        try {
+            val genericIntent = Intent("me.melon.record.ACTION_SYNC").apply {
+                addFlags(Intent.FLAG_RECEIVER_FOREGROUND)
+            }
+            app.sendBroadcast(genericIntent, null, options)
+        } catch (e: Exception) {
+            Log.w("HomeViewModel", "Failed to broadcast sync request", e)
+        }
+    }
 
     // Search query state
     private val _searchQuery = MutableStateFlow("")
@@ -63,100 +111,100 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
     private val _isRefreshing = MutableStateFlow(false)
     val isRefreshing: StateFlow<Boolean> = _isRefreshing.asStateFlow()
 
-    val availableAppsFlow: Flow<List<String>> = callbackFlow {
+    private fun queryAvailableApps(): List<String> {
         val query = recordBox.query().build()
-        val subscription = query.subscribe()
-            .on(AndroidScheduler.mainThread())
-            .observer { data ->
-                val apps = data.map { resolveSourceApp(it) }
-                    .filter { it.isNotBlank() }
-                    .distinct()
-                    .sorted()
-                trySend(apps)
+        val directApps = query.property(UniversalRecord_.sourceApp).distinct().findStrings()
+            ?.filter { !it.isNullOrBlank() } ?: emptyList()
+        val platforms = query.property(UniversalRecord_.platform).distinct().findStrings()
+            ?.filter { !it.isNullOrBlank() } ?: emptyList()
+        query.close()
+        val fallbackApps = platforms.map { p ->
+            when (p) {
+                "zhihu" -> "com.zhihu.android"
+                "douban" -> "com.douban.frodo"
+                "tieba" -> "com.baidu.tieba"
+                "xiaohongshu" -> "com.xingin.xhs"
+                "twitter" -> "com.twitter.android"
+                else -> ""
+            }
+        }.filter { it.isNotBlank() }
+        return (directApps + fallbackApps).distinct().sorted()
+    }
+
+    private fun queryAvailablePlatforms(): List<String> {
+        val query = recordBox.query().build()
+        val platforms = query.property(UniversalRecord_.platform).distinct().findStrings()
+            ?.filter { !it.isNullOrBlank() }
+            ?.sorted() ?: emptyList()
+        query.close()
+        return platforms
+    }
+
+    private fun queryAvailableTypes(): List<String> {
+        val query = recordBox.query().build()
+        val types = query.property(UniversalRecord_.recordType).distinct().findStrings()
+            ?.filter { !it.isNullOrBlank() }
+            ?.sorted() ?: emptyList()
+        query.close()
+        return types
+    }
+
+    val availableAppsFlow: Flow<List<String>> = callbackFlow {
+        val subscription = ObjectBox.store.subscribe(UniversalRecord::class.java)
+            .observer {
+                trySend(queryAvailableApps())
             }
 
-        val initialApps = query.find()
-            .map { resolveSourceApp(it) }
-            .filter { it.isNotBlank() }
-            .distinct()
-            .sorted()
-        trySend(initialApps)
+        trySend(queryAvailableApps())
 
         awaitClose {
             subscription.cancel()
-            query.close()
         }
     }.flowOn(Dispatchers.IO)
 
     val availablePlatformsFlow: Flow<List<String>> = callbackFlow {
-        val query = recordBox.query().build()
-        val subscription = query.subscribe()
-            .on(AndroidScheduler.mainThread())
-            .observer { data ->
-                val platforms = data.map { it.platform }
-                    .filter { it.isNotBlank() }
-                    .distinct()
-                    .sorted()
-                trySend(platforms)
+        val subscription = ObjectBox.store.subscribe(UniversalRecord::class.java)
+            .observer {
+                trySend(queryAvailablePlatforms())
             }
 
-        val initial = query.find()
-            .map { it.platform }
-            .filter { it.isNotBlank() }
-            .distinct()
-            .sorted()
-        trySend(initial)
+        trySend(queryAvailablePlatforms())
 
         awaitClose {
             subscription.cancel()
-            query.close()
         }
     }.flowOn(Dispatchers.IO)
 
     val availableTypesFlow: Flow<List<String>> = callbackFlow {
-        val query = recordBox.query().build()
-        val subscription = query.subscribe()
-            .on(AndroidScheduler.mainThread())
-            .observer { data ->
-                val types = data.map { it.recordType }
-                    .filter { it.isNotBlank() }
-                    .distinct()
-                    .sorted()
-                trySend(types)
+        val subscription = ObjectBox.store.subscribe(UniversalRecord::class.java)
+            .observer {
+                trySend(queryAvailableTypes())
             }
 
-        val initial = query.find()
-            .map { it.recordType }
-            .filter { it.isNotBlank() }
-            .distinct()
-            .sorted()
-        trySend(initial)
+        trySend(queryAvailableTypes())
 
         awaitClose {
             subscription.cancel()
-            query.close()
         }
     }.flowOn(Dispatchers.IO)
 
     val rawPendingCountFlow: Flow<Long> = callbackFlow {
-        val query = rawBox.query().build()
-        val subscription = query.subscribe()
-            .on(AndroidScheduler.mainThread())
-            .observer { data ->
-                trySend(data.size.toLong())
+        // 轻量观察 RawData 表变动，直接利用原生 count()，不实例化任何巨型字符串
+        val subscription = ObjectBox.store.subscribe(RawData::class.java)
+            .observer {
+                trySend(rawDataBox.count())
             }
 
-        trySend(query.find().size.toLong())
+        trySend(rawDataBox.count())
 
         awaitClose {
             subscription.cancel()
-            query.close()
         }
     }.flowOn(Dispatchers.IO)
 
     val syncProgress: StateFlow<DataProcessor.SyncProgress> = DataProcessor.syncProgress
 
-    // 监听 UniversalRecord 数据库变化，并支持搜索过滤
+    // 监听 UniversalRecord 数据库变化，在 IO 线程完成查询与过滤
     @OptIn(kotlinx.coroutines.ExperimentalCoroutinesApi::class)
     val recordsFlow: Flow<List<UniversalRecord>> = combine(_searchQuery, _filter) { q, f -> q to f }
         .flatMapLatest { (queryText, filterState) ->
@@ -165,7 +213,6 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
             val query = queryBuilder.orderDesc(UniversalRecord_.captureTime).build()
 
             val subscription = query.subscribe()
-                .on(AndroidScheduler.mainThread())
                 .observer { data ->
                     trySend(applyFilters(data, queryText, filterState))
                 }
@@ -184,33 +231,42 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
         _isRefreshing.value = true
         try {
             val beforeCount = withContext(Dispatchers.IO) { recordBox.count() }
-            val intent = Intent("me.melon.record.ACTION_SYNC")
-            getApplication<Application>().sendBroadcast(intent)
+            sendSyncBroadcast()
 
             withContext(Dispatchers.IO) {
                 val startTime = System.currentTimeMillis()
-                val minWaitMs = 1200L
-                val stableWindowMs = 700L
-                val maxWaitMs = 10000L
+                val initialProbeMs = 1500L
+                val stableWindowMs = 800L
+                val maxWaitMs = 15000L
+                var hasReceivedAny = rawDataBox.count() > 0
                 var lastPending = -1L
                 var stableStart = System.currentTimeMillis()
 
                 while (System.currentTimeMillis() - startTime < maxWaitMs) {
                     me.melon.record.logic.DataProcessor.processPendingData()
-                    delay(180)
                     val pending = rawDataBox.count()
                     val now = System.currentTimeMillis()
+
+                    if (pending > 0) {
+                        hasReceivedAny = true
+                    }
+
                     if (pending != lastPending) {
                         lastPending = pending
                         stableStart = now
                     }
-                    if (
-                        now - startTime >= minWaitMs &&
-                        pending == 0L &&
-                        now - stableStart >= stableWindowMs
-                    ) {
-                        break
+
+                    val elapsed = now - startTime
+                    if (!hasReceivedAny) {
+                        if (elapsed >= initialProbeMs && pending == 0L) {
+                            break
+                        }
+                    } else {
+                        if (pending == 0L && now - stableStart >= stableWindowMs) {
+                            break
+                        }
                     }
+                    delay(150)
                 }
                 me.melon.record.logic.DataProcessor.processPendingData()
             }
@@ -218,6 +274,12 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
             return (afterCount - beforeCount).coerceAtLeast(0).toInt()
         } finally {
             _isRefreshing.value = false
+            // 若仍有未解析的数据，在后台继续处理
+            if (rawDataBox.count() > 0) {
+                viewModelScope.launch(Dispatchers.IO) {
+                    DataProcessor.processPendingData()
+                }
+            }
         }
     }
 

@@ -8,6 +8,7 @@ import android.os.Binder
 import android.os.ParcelFileDescriptor
 import me.melon.record.ObjectBox
 import me.melon.record.data.model.RawData
+import me.melon.record.logic.DataProcessor
 import io.objectbox.Box
 import java.io.File
 import java.io.FileNotFoundException
@@ -77,6 +78,8 @@ class HookDataProvider : ContentProvider() {
                 timestamp = timestamp
             )
             val id = rawDataBox.put(entity)
+            // 转存成功后异步解析，不阻塞宿主的 Binder 调用。
+            DataProcessor.requestProcessing()
             return Uri.withAppendedPath(uri, id.toString())
         } catch (e: Exception) {
             e.printStackTrace()

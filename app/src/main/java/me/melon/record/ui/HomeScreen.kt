@@ -76,7 +76,8 @@ private data class AnswerGroupListItem(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeScreen(viewModel: HomeViewModel = viewModel()) {
-    val records by viewModel.recordsFlow.collectAsState(initial = emptyList())
+    val loadedRecords by viewModel.recordsFlow.collectAsState(initial = null)
+    val records = loadedRecords.orEmpty()
     val searchQuery by viewModel.searchQuery.collectAsState()
     val filter by viewModel.filter.collectAsState()
     val availableApps by viewModel.availableAppsFlow.collectAsState(initial = emptyList())
@@ -156,6 +157,7 @@ fun HomeScreen(viewModel: HomeViewModel = viewModel()) {
         } else {
             PullToRefreshListScreen(
                 records = records,
+                recordsLoaded = loadedRecords != null,
                 searchQuery = searchQuery,
                 filter = filter,
                 availableApps = availableApps,
@@ -205,6 +207,7 @@ fun HomeScreen(viewModel: HomeViewModel = viewModel()) {
 @Composable
 fun PullToRefreshListScreen(
     records: List<UniversalRecord>,
+    recordsLoaded: Boolean,
     searchQuery: String,
     filter: HomeViewModel.HomeFilter,
     availableApps: List<String>,
@@ -238,12 +241,68 @@ fun PullToRefreshListScreen(
         onSearchActiveChange(false)
     }
 
-    LaunchedEffect(isAtTop, hintShowArrow) {
-        if (isAtTop && hintShowArrow) hintVisible = false
+
+    var syncSessionActive by remember { mutableStateOf(false) }
+    var sessionLoadedCount by remember(searchQuery, filter) { mutableStateOf(0) }
+    var acknowledgedLoadedCount by remember(searchQuery, filter) { mutableStateOf(0) }
+    var previousRecordIds by remember(searchQuery, filter) { mutableStateOf<Set<Long>?>(null) }
+    LaunchedEffect(records, recordsLoaded, searchQuery, filter) {
+        if (!recordsLoaded) return@LaunchedEffect
+        val ids = records.mapTo(HashSet()) { it.id }
+        val previous = previousRecordIds
+        previousRecordIds = ids
+        if (previous == null) return@LaunchedEffect
+        val addedCount = ids.count { it !in previous }
+        if (addedCount > 0) {
+            if (!syncSessionActive) {
+                sessionLoadedCount = 0
+                acknowledgedLoadedCount = 0
+            }
+            sessionLoadedCount += addedCount
+            syncSessionActive = true
+        }
     }
 
-    LaunchedEffect(hintNoNewToken) {
-        if (hintNoNewToken == 0L) return@LaunchedEffect
+    // 宿主逐条转存时，队列可能在批次间归零；持续空闲后才结束本轮展示。
+    LaunchedEffect(rawPendingCount, syncProgress, records, pullState.isRefreshing) {
+        if (rawPendingCount > 0L || syncProgress.isRunning || pullState.isRefreshing) {
+            if (!syncSessionActive) {
+                sessionLoadedCount = 0
+                acknowledgedLoadedCount = 0
+            }
+            syncSessionActive = true
+        } else {
+            delay(2500)
+            syncSessionActive = false
+        }
+    }
+
+    LaunchedEffect(syncSessionActive, sessionLoadedCount, isAtTop) {
+        if (sessionLoadedCount == 0) return@LaunchedEffect
+        if (sessionLoadedCount <= acknowledgedLoadedCount) {
+            hintVisible = false
+            return@LaunchedEffect
+        }
+        if (isAtTop) {
+            acknowledgedLoadedCount = sessionLoadedCount
+            if (hintShowArrow) {
+                hintVisible = false
+                hintShowArrow = false
+                return@LaunchedEffect
+            }
+        }
+        hintMessage = if (syncSessionActive) {
+            "已加载 ${sessionLoadedCount} 条内容（后台同步中）"
+        } else {
+            "已加载 ${sessionLoadedCount} 条内容"
+        }
+        hintShowArrow = !isAtTop
+        hintVisible = true
+        hintNoNewToken = if (!syncSessionActive && isAtTop) System.currentTimeMillis() else 0L
+    }
+
+    LaunchedEffect(hintNoNewToken, syncSessionActive) {
+        if (hintNoNewToken == 0L || syncSessionActive) return@LaunchedEffect
         delay(1800)
         hintVisible = false
     }
@@ -252,13 +311,9 @@ fun PullToRefreshListScreen(
         if (!pullState.isRefreshing) return@LaunchedEffect
         try {
             val loadedCount = onRefresh()
-            if (loadedCount > 0) {
-                hintMessage = "已加载${loadedCount}条内容"
-                hintShowArrow = true
-                hintVisible = !isAtTop
-                hintNoNewToken = 0L
-            } else {
-                hintMessage = "没有新内容"
+            // 新增数量统一由列表变化累计，刷新返回值不覆盖批次累计值。
+            if (loadedCount == 0 && sessionLoadedCount == 0) {
+                hintMessage = if (rawPendingCount > 0) "后台同步中…" else "暂未收到新内容，宿主后台同步可能延迟"
                 hintShowArrow = false
                 hintVisible = true
                 hintNoNewToken = System.currentTimeMillis()
@@ -337,7 +392,7 @@ fun PullToRefreshListScreen(
                 .nestedScroll(pullState.nestedScrollConnection)
         ) {
             Column(modifier = Modifier.fillMaxSize()) {
-                val showSync = rawPendingCount > 0L || syncProgress.isRunning
+                val showSync = syncSessionActive || rawPendingCount > 0L || syncProgress.isRunning
                 if (showSync) {
                     Surface(
                         modifier = Modifier
@@ -362,9 +417,16 @@ fun PullToRefreshListScreen(
                                 LinearProgressIndicator(modifier = Modifier.fillMaxWidth())
                             }
                             Spacer(modifier = Modifier.height(8.dp))
-                            val processedLabel = if (syncProgress.total > 0) "${syncProgress.processed}/${syncProgress.total}" else "…"
+                            val syncLabel = when {
+                                syncProgress.isRunning ->
+                                    "同步中：剩余 ${rawPendingCount} 条 · 本轮已加载 ${sessionLoadedCount} 条"
+                                rawPendingCount > 0L ->
+                                    "等待处理：剩余 ${rawPendingCount} 条 · 本轮已加载 ${sessionLoadedCount} 条"
+                                else ->
+                                    "同步中：本轮已加载 ${sessionLoadedCount} 条 · 等待后续数据…"
+                            }
                             Text(
-                                text = "同步中：剩余 ${rawPendingCount} 条 · 已处理 $processedLabel",
+                                text = syncLabel,
                                 style = MaterialTheme.typography.labelMedium,
                                 color = MaterialTheme.colorScheme.onSurfaceVariant
                             )
@@ -428,7 +490,12 @@ fun PullToRefreshListScreen(
                 showArrow = hintShowArrow,
                 onClick = if (hintShowArrow) {
                     {
+                        acknowledgedLoadedCount = sessionLoadedCount
+                        hintVisible = false
                         scope.launch {
+                            if (listState.firstVisibleItemIndex > 15) {
+                                listState.scrollToItem(15)
+                            }
                             listState.animateScrollToItem(0)
                         }
                     }

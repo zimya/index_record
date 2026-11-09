@@ -4,6 +4,11 @@ import android.util.Log
 import com.google.gson.Gson
 import com.google.gson.JsonObject
 import com.google.gson.JsonParser
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import me.melon.record.ObjectBox
@@ -16,6 +21,7 @@ import java.util.regex.Pattern
 object DataProcessor {
 
     private const val TAG = "DataProcessor"
+    private const val CHUNK_SIZE = 25L
 
     data class SyncProgress(
         val isRunning: Boolean,
@@ -25,6 +31,26 @@ object DataProcessor {
 
     private val _syncProgress = MutableStateFlow(SyncProgress(isRunning = false, total = 0, processed = 0))
     val syncProgress: StateFlow<SyncProgress> = _syncProgress
+
+    private val processingRequests = Channel<Unit>(Channel.CONFLATED)
+    private val processingScope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
+
+    init {
+        processingScope.launch {
+            for (request in processingRequests) {
+                try {
+                    processPendingData()
+                } catch (e: Exception) {
+                    Log.e(TAG, "Failed to process pending raw data; queued data is retained", e)
+                }
+            }
+        }
+    }
+
+    // 请求属于进程而非页面生命周期；合并突发请求，并保留处理结束前到达的唤醒。
+    fun requestProcessing() {
+        processingRequests.trySend(Unit)
+    }
 
     // 1. JSON 类型的文章接口
     private val PATTERN_JSON_ARTICLE = Pattern.compile("https?://api\\.zhihu\\.com/articles/[^/]+/?")
@@ -48,109 +74,118 @@ object DataProcessor {
         val rawBox = ObjectBox.store.boxFor(RawData::class.java)
         val recordBox = ObjectBox.store.boxFor(UniversalRecord::class.java)
 
-        val allRawData = rawBox.all
-        if (allRawData.isEmpty()) {
+        val initialCount = rawBox.count().toInt()
+        if (initialCount == 0) {
+            _syncProgress.value = SyncProgress(isRunning = false, total = 0, processed = 0)
             return
         }
 
-        Log.i(TAG, "Found ${allRawData.size} raw records. Starting process...")
+        Log.i(TAG, "Found $initialCount raw records. Starting chunked process...")
 
-        data class ParsedBatchItem(val rawId: Long, val cleanUrl: String, val records: List<UniversalRecord>?)
-
-        val total = allRawData.size
         var processed = 0
-        _syncProgress.value = SyncProgress(isRunning = true, total = total, processed = processed)
+        var total = initialCount
+        _syncProgress.value = SyncProgress(isRunning = true, total = total, processed = 0)
 
-        val parsed = ArrayList<ParsedBatchItem>(allRawData.size)
-        for (raw in allRawData) {
-            val cleanUrl = if (raw.url.contains("?")) raw.url.substringBefore("?") else raw.url
-            try {
-                var records: List<UniversalRecord>? = null
+        data class ParsedItem(val rawId: Long, val cleanUrl: String, val records: List<UniversalRecord>?)
 
-                if (PATTERN_JSON_ARTICLE.matcher(cleanUrl).matches()) {
-                    records = listOf(parseJsonArticle(raw, cleanUrl))
-                } else if (PATTERN_HTML_ANSWER.matcher(cleanUrl).matches()) {
-                    records = listOf(parseHtmlAnswer(raw, cleanUrl))
-                } else if (PATTERN_ZHIHU_QUESTION_DETAIL.matcher(cleanUrl).matches()) {
-                    records = listOf(parseZhihuQuestionDetail(raw, cleanUrl))
-                } else if (PATTERN_ZHIHU_QUESTION_FEEDS.matcher(cleanUrl).matches()) {
-                    records = listOf(parseZhihuQuestionFeeds(raw, cleanUrl))
-                } else if (PATTERN_ZHIHU_ROOT_COMMENT.matcher(cleanUrl).matches()) {
-                    records = parseZhihuComments(raw, cleanUrl, true)
-                } else if (PATTERN_ZHIHU_CHILD_COMMENT.matcher(cleanUrl).matches()) {
-                    records = parseZhihuComments(raw, cleanUrl, false)
+        val query = rawBox.query().build()
+        try {
+            while (true) {
+                // 每次仅提取最多 CHUNK_SIZE 条，避免一次性加载所有巨型 JSON/HTML 导致 OOM
+                val chunk = query.find(0, CHUNK_SIZE)
+                if (chunk.isEmpty()) break
+
+                val parsedItems = ArrayList<ParsedItem>(chunk.size)
+                for (raw in chunk) {
+                    val cleanUrl = if (raw.url.contains("?")) raw.url.substringBefore("?") else raw.url
+                    try {
+                        var records: List<UniversalRecord>? = null
+
+                        if (PATTERN_JSON_ARTICLE.matcher(cleanUrl).matches()) {
+                            records = listOf(parseJsonArticle(raw, cleanUrl))
+                        } else if (PATTERN_HTML_ANSWER.matcher(cleanUrl).matches()) {
+                            records = listOf(parseHtmlAnswer(raw, cleanUrl))
+                        } else if (PATTERN_ZHIHU_QUESTION_DETAIL.matcher(cleanUrl).matches()) {
+                            records = listOf(parseZhihuQuestionDetail(raw, cleanUrl))
+                        } else if (PATTERN_ZHIHU_QUESTION_FEEDS.matcher(cleanUrl).matches()) {
+                            records = listOf(parseZhihuQuestionFeeds(raw, cleanUrl))
+                        } else if (PATTERN_ZHIHU_ROOT_COMMENT.matcher(cleanUrl).matches()) {
+                            records = parseZhihuComments(raw, cleanUrl, true)
+                        } else if (PATTERN_ZHIHU_CHILD_COMMENT.matcher(cleanUrl).matches()) {
+                            records = parseZhihuComments(raw, cleanUrl, false)
+                        }
+
+                        parsedItems.add(ParsedItem(raw.id, cleanUrl, records))
+                    } catch (e: Exception) {
+                        Log.e(TAG, "Failed to process raw ID: ${raw.id}", e)
+                        parsedItems.add(ParsedItem(raw.id, cleanUrl, emptyList()))
+                    }
                 }
 
-                parsed.add(ParsedBatchItem(raw.id, cleanUrl, records))
-            } catch (e: Exception) {
-                Log.e(TAG, "Failed to process ID: ${raw.id}", e)
-                parsed.add(ParsedBatchItem(raw.id, cleanUrl, emptyList()))
-            }
-        }
+                // 批处理事务：写入 UniversalRecord 并删除该批次 RawData
+                val processedRawIds = ArrayList<Long>(chunk.size)
+                ObjectBox.store.runInTx {
+                    for (item in parsedItems) {
+                        val records = item.records
+                        if (!records.isNullOrEmpty()) {
+                            for (record in records) {
+                                val existing = recordBox.query()
+                                    .equal(UniversalRecord_.platformId, record.platformId, io.objectbox.query.QueryBuilder.StringOrder.CASE_SENSITIVE)
+                                    .build()
+                                    .findFirst()
 
-        val batchSize = 80
-        for (batch in parsed.chunked(batchSize)) {
-            val processedRawIds = ArrayList<Long>(batch.size)
-            ObjectBox.store.runInTx {
-                for (item in batch) {
-                    val records = item.records
-                    if (records == null) {
-                        Log.i(TAG, "Unmatched URL (Log Only): ${item.cleanUrl}")
-                    } else {
-                        for (record in records) {
-                            val existing = recordBox.query()
-                                .equal(UniversalRecord_.platformId, record.platformId, io.objectbox.query.QueryBuilder.StringOrder.CASE_SENSITIVE)
-                                .build()
-                                .findFirst()
+                                if (existing != null) {
+                                    record.id = existing.id
+                                    if (record.platform == "zhihu" && record.recordType == "question") {
+                                        record.extraMetadata = mergeQuestionExtra(existing.extraMetadata, record.extraMetadata)
+                                        if (record.title.isBlank()) record.title = existing.title
+                                        if (record.content.isBlank()) record.content = existing.content
+                                        if (record.authorId.isBlank()) record.authorId = existing.authorId
+                                        if (record.authorName.isBlank()) record.authorName = existing.authorName
+                                        if (record.authorAvatar.isBlank()) record.authorAvatar = existing.authorAvatar
+                                        if (record.sourceUrl.isBlank()) record.sourceUrl = existing.sourceUrl
+                                        record.publishTime = maxOf(existing.publishTime, record.publishTime)
+                                        record.captureTime = maxOf(existing.captureTime, record.captureTime)
+                                    }
+                                }
+                                recordBox.put(record)
 
-                            if (existing != null) {
-                                record.id = existing.id
                                 if (record.platform == "zhihu" && record.recordType == "question") {
-                                    record.extraMetadata = mergeQuestionExtra(existing.extraMetadata, record.extraMetadata)
-                                    if (record.title.isBlank()) record.title = existing.title
-                                    if (record.content.isBlank()) record.content = existing.content
-                                    if (record.authorId.isBlank()) record.authorId = existing.authorId
-                                    if (record.authorName.isBlank()) record.authorName = existing.authorName
-                                    if (record.authorAvatar.isBlank()) record.authorAvatar = existing.authorAvatar
-                                    if (record.sourceUrl.isBlank()) record.sourceUrl = existing.sourceUrl
-                                    record.publishTime = maxOf(existing.publishTime, record.publishTime)
-                                    record.captureTime = maxOf(existing.captureTime, record.captureTime)
-                                }
-                            }
-                            recordBox.put(record)
-
-                            if (record.platform == "zhihu" && record.recordType == "question") {
-                                val qid = try {
-                                    JsonParser.parseString(record.extraMetadata).asJsonObject.safeString("question_id")
-                                } catch (_: Exception) {
-                                    ""
-                                }
-                                if (qid.isNotBlank()) {
-                                    linkExistingAnswersToQuestion(recordBox, qid, record.platformId)
-                                }
-                                val answerIds = try {
-                                    extractAnswerIdsFromQuestionExtra(record.extraMetadata)
-                                } catch (_: Exception) {
-                                    emptyList()
-                                }
-                                if (answerIds.isNotEmpty()) {
-                                    linkAnswersByIds(recordBox, record.platformId, answerIds)
+                                    val qid = try {
+                                        JsonParser.parseString(record.extraMetadata).asJsonObject.safeString("question_id")
+                                    } catch (_: Exception) {
+                                        ""
+                                    }
+                                    if (qid.isNotBlank()) {
+                                        linkExistingAnswersToQuestion(recordBox, qid, record.platformId)
+                                    }
+                                    val answerIds = try {
+                                        extractAnswerIdsFromQuestionExtra(record.extraMetadata)
+                                    } catch (_: Exception) {
+                                        emptyList()
+                                    }
+                                    if (answerIds.isNotEmpty()) {
+                                        linkAnswersByIds(recordBox, record.platformId, answerIds)
+                                    }
                                 }
                             }
                         }
+                        processedRawIds.add(item.rawId)
                     }
-                    processedRawIds.add(item.rawId)
+                    if (processedRawIds.isNotEmpty()) {
+                        rawBox.remove(*processedRawIds.toLongArray())
+                    }
                 }
-                if (processedRawIds.isNotEmpty()) {
-                    rawBox.remove(*processedRawIds.toLongArray())
-                }
-            }
-            processed += batch.size
-            _syncProgress.value = SyncProgress(isRunning = true, total = total, processed = processed.coerceAtMost(total))
-        }
 
-        Log.i(TAG, "Cleaned up ${parsed.size} RawData.")
-        _syncProgress.value = SyncProgress(isRunning = false, total = total, processed = total)
+                processed += chunk.size
+                total = maxOf(total, processed + rawBox.count().toInt())
+                _syncProgress.value = SyncProgress(isRunning = true, total = total, processed = processed.coerceAtMost(total))
+            }
+        } finally {
+            query.close()
+            _syncProgress.value = SyncProgress(isRunning = false, total = 0, processed = 0)
+        }
+        Log.i(TAG, "Completed processing raw data. Processed count: $processed")
     }
 
     private fun parseJsonArticle(raw: RawData, cleanUrl: String): UniversalRecord {
@@ -269,10 +304,12 @@ object DataProcessor {
         val questionPlatformId = if (questionId.isNotBlank()) "zhihu_question_$questionId" else ""
         val shouldBindToQuestion = if (questionPlatformId.isNotBlank()) {
             val recordBox = ObjectBox.store.boxFor(UniversalRecord::class.java)
-            recordBox.query()
+            val qQuery = recordBox.query()
                 .equal(UniversalRecord_.platformId, questionPlatformId, io.objectbox.query.QueryBuilder.StringOrder.CASE_SENSITIVE)
                 .build()
-                .findFirst() != null
+            val exists = qQuery.count() > 0
+            qQuery.close()
+            exists
         } else {
             false
         }
@@ -470,15 +507,16 @@ object DataProcessor {
     }
 
     private fun linkExistingAnswersToQuestion(recordBox: io.objectbox.Box<UniversalRecord>, questionId: String, questionPlatformId: String) {
-        val answers = recordBox.query()
+        val query = recordBox.query()
             .equal(UniversalRecord_.platform, "zhihu", io.objectbox.query.QueryBuilder.StringOrder.CASE_SENSITIVE)
             .equal(UniversalRecord_.recordType, "answer", io.objectbox.query.QueryBuilder.StringOrder.CASE_SENSITIVE)
+            .equal(UniversalRecord_.parentId, "", io.objectbox.query.QueryBuilder.StringOrder.CASE_SENSITIVE)
             .build()
-            .find()
+        val answers = query.find()
+        query.close()
         if (answers.isEmpty()) return
-        var changed = false
+        val changedAnswers = ArrayList<UniversalRecord>()
         for (a in answers) {
-            if (a.parentId.isNotBlank()) continue
             val qid = try {
                 JsonParser.parseString(a.extraMetadata).asJsonObject.safeString("question_id")
             } catch (_: Exception) {
@@ -486,10 +524,10 @@ object DataProcessor {
             }
             if (qid == questionId) {
                 a.parentId = questionPlatformId
-                changed = true
+                changedAnswers.add(a)
             }
         }
-        if (changed) recordBox.put(answers)
+        if (changedAnswers.isNotEmpty()) recordBox.put(changedAnswers)
     }
 
         private fun parseZhihuComments(raw: RawData, cleanUrl: String, isRoot: Boolean): List<UniversalRecord> {

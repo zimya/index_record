@@ -4,6 +4,14 @@
     <!-- 关键：声明 SDK 版本 -->
     <uses-sdk android:minSdkVersion="26" android:targetSdkVersion="34" />
 
+    <queries>
+        <package android:name="com.zhihu.android" />
+        <package android:name="com.douban.frodo" />
+        <package android:name="com.baidu.tieba" />
+        <package android:name="com.xingin.xhs" />
+        <package android:name="com.twitter.android" />
+    </queries>
+
     <application
         android:icon="@mipmap/ic_launcher"
         android:roundIcon="@mipmap/ic_launcher"

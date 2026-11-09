@@ -58,6 +58,7 @@ public void handleLoadPackage(final XC_LoadPackage.LoadPackageParam lpparam) thr
                 XposedBridge.log(TAG + "Context attached, setting up hook.");
                 setupOkHttpHook(mContext.getClassLoader());
                 setupSyncReceiver(mContext);
+                executor.submit(() -> trySyncToApp());
             }
         }
     );
@@ -71,6 +72,7 @@ public void handleLoadPackage(final XC_LoadPackage.LoadPackageParam lpparam) thr
                 @Override
                 public void onReceive(Context context, Intent intent) {
                     if ("me.melon.record.ACTION_SYNC".equals(intent.getAction())) {
+                        XposedBridge.log(TAG + "Received ACTION_SYNC broadcast, syncing queue...");
                         executor.submit(() -> trySyncToApp());
                     }
                 }

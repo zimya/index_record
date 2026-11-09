@@ -3,7 +3,6 @@ package me.melon.record.viewmodel
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
-import io.objectbox.android.AndroidScheduler
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
@@ -40,7 +39,6 @@ class StatsViewModel(application: Application) : AndroidViewModel(application) {
     private val updates: Flow<StatsState> = callbackFlow {
         val query = recordBox.query().orderDesc(UniversalRecord_.captureTime).build()
         val subscription = query.subscribe()
-            .on(AndroidScheduler.mainThread())
             .observer { data ->
                 trySend(computeState(data, 52))
             }

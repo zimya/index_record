@@ -1,0 +1,380 @@
+{
+    "actors": [
+        {
+            "name": "布莱恩·克兰斯顿"
+        },
+        {
+            "name": "亚伦·保尔"
+        },
+        {
+            "name": "安娜·冈"
+        },
+        {
+            "name": "迪恩·诺里斯"
+        },
+        {
+            "name": "贝琪·勃兰特"
+        },
+        {
+            "name": "RJ·米特"
+        }
+    ],
+    "aka": ["制毒师 第一季", "致命毒师 第一季", "崩坏 第一季"],
+    "album_no_interact": false,
+    "body_bg_color": "f8f9f4",
+    "can_rate": true,
+    "card_subtitle": "2008 / 美国 / 剧情 犯罪 / 亚当·伯恩斯坦 文斯·吉利根 翠西亚·布洛克 蒂姆·亨特 吉姆·麦凯 布朗温·休斯 / 布莱恩·克兰斯顿 亚伦·保尔",
+    "color_scheme": {
+        "_base_color": [0.21999999999999997, 0.12254901960784326, 0.8],
+        "_avg_color": [
+            0.23611111111111124, 0.13872832369942195, 0.6784313725490196
+        ],
+        "primary_color_light": "9fa591",
+        "primary_color_dark": "7a7f6f",
+        "secondary_color": "f8f9f4",
+        "is_dark": true
+    },
+    "comment_count": 72127,
+    "controversy_reason": "",
+    "countries": ["美国"],
+    "cover": {
+        "author": {
+            "avatar": "https://img3.doubanio.com/icon/up173165961-3.webp",
+            "id": "173165961",
+            "is_club": false,
+            "kind": "user",
+            "loc": {
+                "id": "118204",
+                "name": "泉州",
+                "uid": "quanzhou"
+            },
+            "name": "Frank.Y",
+            "reg_time": "2018-01-27 16:31:49",
+            "type": "user",
+            "uid": "173165961",
+            "uri": "douban://douban.com/user/173165961",
+            "url": "https://www.douban.com/people/173165961/"
+        },
+        "create_time": "2023-01-14 14:11:28",
+        "description": "",
+        "id": "2886443948",
+        "image": {
+            "is_animated": false,
+            "is_live": false,
+            "large": {
+                "height": 1600,
+                "size": 0,
+                "url": "https://img3.doubanio.com/view/photo/l/public/p2886443948.webp",
+                "width": 1066
+            },
+            "normal": {
+                "height": 600,
+                "size": 0,
+                "url": "https://img3.doubanio.com/view/photo/m/public/p2886443948.webp",
+                "width": 400
+            },
+            "primary_color": "",
+            "raw": null,
+            "small": {
+                "height": 600,
+                "size": 0,
+                "url": "https://img3.doubanio.com/view/photo/s/public/p2886443948.webp",
+                "width": 400
+            }
+        },
+        "owner_uri": "douban://douban.com/tv/2373195",
+        "position": 1,
+        "sharing_url": "https://www.douban.com/doubanapp/dispatch?uri=/photo/2886443948/",
+        "type": "photo",
+        "uri": "douban://douban.com/photo/2886443948",
+        "url": "https://movie.douban.com/photos/photo/2886443948/"
+    },
+    "cover_url": "https://img3.doubanio.com/view/photo/m_ratio_poster/public/p2886443948.webp",
+    "directors": [
+        {
+            "name": "亚当·伯恩斯坦"
+        },
+        {
+            "name": "文斯·吉利根"
+        },
+        {
+            "name": "翠西亚·布洛克"
+        },
+        {
+            "name": "蒂姆·亨特"
+        },
+        {
+            "name": "吉姆·麦凯"
+        },
+        {
+            "name": "布朗温·休斯"
+        }
+    ],
+    "durations": ["50分钟"],
+    "episodes_count": 7,
+    "episodes_info": "",
+    "feedback_uri": "https://m.douban.com/subject/feedback?id=2373195&type=tv",
+    "forum_info": null,
+    "forum_topic_count": 150,
+    "gallery_topic_count": 0,
+    "genres": ["剧情", "犯罪"],
+    "has_linewatch": false,
+    "head_info": null,
+    "header_bg_color": "7a7f6f",
+    "honor_infos": [
+        {
+            "kind": "tv",
+            "rank": 7,
+            "title": "高分经典美剧榜",
+            "uri": "douban://douban.com/subject_collection/ECVACWVGI?type=rank&category=movie&rank_type=tv_genre"
+        }
+    ],
+    "id": "2373195",
+    "info_url": "https://www.douban.com/doubanapp//h5/movie/2373195/desc",
+    "interest": {
+        "comment": "",
+        "create_time": "2024-01-05 17:15:29",
+        "done_index": 1315,
+        "id": 4046468289,
+        "is_private": false,
+        "rating": null,
+        "sharing_text": "https://www.douban.com/doubanapp/dispatch/movie/2373195 来自@豆瓣App",
+        "sharing_url": "https://www.douban.com/doubanapp/dispatch?uri=/subject/2373195/interest/4046468289",
+        "status": "done",
+        "tags": [],
+        "user": {
+            "avatar": "https://img3.doubanio.com/icon/up218545496-2.webp",
+            "avatar_side_icon": "https://img3.doubanio.com/view/files/raw/file-1784692060.png",
+            "avatar_side_icon_id": "484",
+            "avatar_side_icon_type": 3,
+            "id": "218545496",
+            "is_club": false,
+            "kind": "user",
+            "loc": {
+                "id": "108296",
+                "name": "上海",
+                "uid": "shanghai"
+            },
+            "name": "东瓜瓜瓜瓜",
+            "reg_time": "2020-06-24 21:19:09",
+            "type": "user",
+            "uid": "melon-dong",
+            "uri": "douban://douban.com/user/218545496",
+            "url": "https://www.douban.com/people/218545496/"
+        },
+        "vote_count": 0
+    },
+    "interest_cmt_earlier_tip_desc": "该短评的发布时间早于公开上映时间，作者可能通过其他渠道提前观看，请谨慎参考。其评分将不计入总评分。",
+    "interest_cmt_earlier_tip_title": "发布于上映前",
+    "interest_control_info": null,
+    "intro": "新墨西哥州的高中化学老师沃尔特·H·怀特（布莱恩·科兰斯顿 Bryan Cranston 饰）是拮据家庭的唯一经济来源。他大半生安分守己，兢兢业业，却在50岁生日之际突然得知自己罹患肺癌晚期的噩耗，原本便不甚顺意的人生顿时雪上加霜。\n为了保障怀孕的妻子斯凯勒（安娜·冈 Anna Gunn 饰）和残疾的儿子小沃特能在自己死后衣食无忧，沃尔特决意铤而走险。他主动找到曾经的学生、而今的毒贩小混混杰西·平克曼（亚伦·保尔 Aaron Paul 饰）谈合作，并运用娴熟高超的化学技术提炼出高纯度冰毒交给后者贩售。孰料事态的发展却在平克曼带回毒品供销商疯狂小八及其表弟后急转直下，沃尔特的人生也由此彻底步向失控。他被迫开始了教书与制毒的双重生活，逐渐坠落至万劫不复的深渊。",
+    "is_douban_intro": true,
+    "is_released": true,
+    "is_restrictive": false,
+    "is_show": false,
+    "is_tv": true,
+    "languages": ["英语", "西班牙语"],
+    "last_episode_number": null,
+    "lineticket_url": "",
+    "linewatches": [],
+    "null_rating_reason": "",
+    "original_title": "Breaking Bad Season 1",
+    "pic": {
+        "large": "https://img3.doubanio.com/view/photo/m_ratio_poster/public/p2886443948.webp",
+        "normal": "https://img3.doubanio.com/view/photo/s_ratio_poster/public/p2886443948.webp"
+    },
+    "pre_playable_date": null,
+    "pre_release_desc": "",
+    "pubdate": ["2008-01-20(美国)"],
+    "rate_info": "",
+    "rating": {
+        "count": 395894,
+        "max": 10,
+        "star_count": 4.5,
+        "value": 9.2
+    },
+    "realtime_hot_honor_infos": [],
+    "release_date": null,
+    "restrictive_icon_url": "",
+    "review_count": 356,
+    "share_activities": [],
+    "sharing_url": "https://www.douban.com/doubanapp/dispatch/movie/2373195",
+    "subject_collections": [
+        {
+            "id": "2018_tv_30",
+            "is_follow": false,
+            "title": "2018开播10周年剧集",
+            "uri": "douban://douban.com/subject_collection/2018_tv_30?type=rank&category=movie&rank_type=year"
+        },
+        {
+            "id": "ECYIJZL3A",
+            "is_follow": false,
+            "title": "第9届美国电影学会奖获奖名单",
+            "uri": "douban://douban.com/subject_collection/ECYIJZL3A?type=rank&category=movie&rank_type=award_movie"
+        },
+        {
+            "id": "ECJJCWOLY",
+            "is_follow": false,
+            "title": "第60届黄金时段艾美奖获奖名单",
+            "uri": "douban://douban.com/subject_collection/ECJJCWOLY?type=rank&category=movie&rank_type=award_movie"
+        }
+    ],
+    "subtype": "tv",
+    "tags": [],
+    "ticket_price_info": "",
+    "ticket_promo_text": "",
+    "ticket_vendor_icons": [
+        "https://img9.doubanio.com/view/dale-online/dale_ad/public/0589a62f2f2d7c2.jpg"
+    ],
+    "title": "绝命毒师 第一季",
+    "trailers": [],
+    "type": "tv",
+    "uri": "douban://douban.com/tv/2373195",
+    "url": "https://movie.douban.com/subject/2373195/",
+    "variable_modules": [
+        {
+            "id": "rating",
+            "sub_modules": []
+        },
+        {
+            "id": "other_interests",
+            "sub_modules": []
+        },
+        {
+            "id": "tags",
+            "sub_modules": []
+        },
+        {
+            "id": "episode_discussions",
+            "sub_modules": []
+        },
+        {
+            "id": "video_photos",
+            "sub_modules": []
+        },
+        {
+            "id": "share",
+            "sub_modules": [
+                {
+                    "id": "screenshot"
+                },
+                {
+                    "id": "doulist"
+                },
+                {
+                    "id": "status"
+                },
+                {
+                    "id": "other_channels"
+                }
+            ]
+        },
+        {
+            "id": "honor_infos",
+            "sub_modules": []
+        },
+        {
+            "id": "comments",
+            "sub_modules": [
+                {
+                    "id": "count"
+                },
+                {
+                    "data": [
+                        {
+                            "name": "热门",
+                            "id": "hot"
+                        },
+                        {
+                            "name": "最新",
+                            "id": "latest"
+                        },
+                        {
+                            "name": "友邻",
+                            "id": "friend"
+                        }
+                    ],
+                    "id": "sort_by",
+                    "data_type": "sort_by"
+                },
+                {
+                    "id": "rating_scope"
+                }
+            ]
+        },
+        {
+            "id": "related_items",
+            "sub_modules": []
+        },
+        {
+            "id": "interest",
+            "sub_modules": []
+        },
+        {
+            "id": "related_subjects",
+            "sub_modules": []
+        },
+        {
+            "id": "ugc_tabs",
+            "sub_modules": [
+                {
+                    "id": "ugc_tab",
+                    "data_type": "ugc_tab",
+                    "data": {
+                        "type": "mixed_suggestion",
+                        "title": "综合",
+                        "id": "mixed_suggestion",
+                        "uri": "douban://partial.douban.com/subject/2373195/suggest",
+                        "source": "综合",
+                        "count": 3704
+                    }
+                },
+                {
+                    "id": "ugc_tab",
+                    "data_type": "ugc_tab",
+                    "data": {
+                        "type": "review",
+                        "title": "剧评",
+                        "source": "reviews",
+                        "sort_by": [
+                            {
+                                "name": "热门",
+                                "id": "hot"
+                            },
+                            {
+                                "name": "最新",
+                                "id": "latest"
+                            },
+                            {
+                                "name": "友邻",
+                                "id": "friend"
+                            }
+                        ]
+                    }
+                },
+                {
+                    "id": "ugc_tab",
+                    "data_type": "ugc_tab",
+                    "data": {
+                        "type": "custom",
+                        "title": "小组讨论",
+                        "id": "group",
+                        "uri": "douban://partial.douban.com/subject/2373195/group_topic/_content?group_id=682046",
+                        "source": "小组讨论",
+                        "count": 3677
+                    }
+                }
+            ]
+        }
+    ],
+    "vendor_count": 0,
+    "vendor_desc": "",
+    "vendor_icons": [],
+    "vendors": [],
+    "video": null,
+    "webisode": null,
+    "webisode_count": 0,
+    "webview_info": {},
+    "wechat_timeline_share": "screenshot",
+    "year": "2008"
+}

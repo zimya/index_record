@@ -25,6 +25,8 @@ import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import com.google.gson.JsonParser
 import me.melon.record.data.model.UniversalRecord
+import me.melon.record.ui.theme.getPlatformThemeColor
+import me.melon.record.ui.theme.isAppInDarkTheme
 import org.jsoup.Jsoup
 import java.text.SimpleDateFormat
 import java.util.Date
@@ -45,6 +47,10 @@ fun RecordItem(record: UniversalRecord, searchQuery: String, onClick: () -> Unit
         "answer" -> "回答"
         "article" -> "文章"
         "comment" -> "评论"
+        "topic" -> "帖子"
+        "review" -> "长评"
+        "interest" -> "短评"
+        "subject" -> "条目"
         else -> record.recordType
     }
 
@@ -62,15 +68,18 @@ fun RecordItem(record: UniversalRecord, searchQuery: String, onClick: () -> Unit
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {
+                val isDark = isAppInDarkTheme()
+                val platformColor = getPlatformThemeColor(record.platform, isDark)
                 Surface(
-                    color = MaterialTheme.colorScheme.secondaryContainer,
+                    color = platformColor.container,
                     shape = MaterialTheme.shapes.small
                 ) {
                     Text(
                         text = "$platformLabel · $typeLabel",
                         style = MaterialTheme.typography.labelSmall,
                         modifier = Modifier.padding(horizontal = 6.dp, vertical = 2.dp),
-                        color = MaterialTheme.colorScheme.onSecondaryContainer
+                        color = platformColor.text,
+                        fontWeight = FontWeight.Medium
                     )
                 }
 

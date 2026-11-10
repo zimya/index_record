@@ -310,6 +310,10 @@ private fun typeLabel(type: String): String {
         "answer" -> "回答"
         "article" -> "文章"
         "comment" -> "评论"
+        "topic" -> "帖子"
+        "review" -> "长评"
+        "interest" -> "短评"
+        "subject" -> "条目"
         else -> type
     }
 }

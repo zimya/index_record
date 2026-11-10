@@ -57,6 +57,8 @@ import me.melon.record.data.model.UniversalRecord
 import me.melon.record.ui.components.FilterBottomSheet
 import me.melon.record.ui.components.RecordItem
 import me.melon.record.ui.components.RefreshResultHint
+import me.melon.record.ui.theme.getPlatformThemeColor
+import me.melon.record.ui.theme.isAppInDarkTheme
 import me.melon.record.viewmodel.HomeViewModel
 import org.jsoup.Jsoup
 import java.text.SimpleDateFormat
@@ -67,21 +69,31 @@ import me.melon.record.logic.DataProcessor
 import kotlin.math.max
 import kotlin.math.roundToInt
 
-private sealed interface HomeListItem {
+internal sealed interface HomeListItem {
     val key: String
 }
 
-private data class RecordListItem(val record: UniversalRecord) : HomeListItem {
+internal data class RecordListItem(val record: UniversalRecord) : HomeListItem {
     override val key: String = "record_${record.id}"
 }
 
-private data class AnswerGroupListItem(
+internal data class AnswerGroupListItem(
     val questionKey: String,
     val questionTitle: String,
     val answers: List<UniversalRecord>,
     val firstId: Long
 ) : HomeListItem {
     override val key: String = "answer_group_${questionKey}_$firstId"
+}
+
+internal data class InterestGroupListItem(
+    val subjectKey: String,
+    val subjectTitle: String,
+    val typeLabel: String,
+    val interests: List<UniversalRecord>,
+    val firstId: Long
+) : HomeListItem {
+    override val key: String = "interest_group_${subjectKey}_$firstId"
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -214,6 +226,12 @@ fun HomeScreen(viewModel: HomeViewModel = viewModel()) {
                                 record = targetRecord,
                                 onBack = { viewModel.popDetail() },
                                 onOpenAnswer = { viewModel.pushDetail(it) }
+                            )
+                        } else if (targetRecord.recordType == "subject") {
+                            SubjectDetailScreen(
+                                record = targetRecord,
+                                onBack = { viewModel.popDetail() },
+                                onOpenRecord = { viewModel.pushDetail(it) }
                             )
                         } else {
                             RecordDetailScreen(
@@ -573,6 +591,15 @@ fun PullToRefreshListScreen(
                                             onOpenAnswer = onItemClick
                                         )
                                     }
+                                    is InterestGroupListItem -> {
+                                        InterestGroupItem(
+                                            subjectTitle = item.subjectTitle,
+                                            typeLabel = item.typeLabel,
+                                            interests = item.interests,
+                                            searchQuery = searchQuery,
+                                            onOpenInterest = onItemClick
+                                        )
+                                    }
                                 }
                             }
                         }
@@ -629,6 +656,7 @@ private fun homeItemTimeMillis(item: HomeListItem): Long {
     return when (item) {
         is RecordListItem -> item.record.captureTime
         is AnswerGroupListItem -> item.answers.firstOrNull()?.captureTime ?: 0L
+        is InterestGroupListItem -> item.interests.firstOrNull()?.captureTime ?: 0L
     }
 }
 
@@ -754,51 +782,135 @@ private fun DateFastScroller(
     }
 }
 
-private fun groupRecordsForHome(records: List<UniversalRecord>): List<HomeListItem> {
+internal fun groupRecordsForHome(records: List<UniversalRecord>): List<HomeListItem> {
     val result = ArrayList<HomeListItem>(records.size)
     var i = 0
     while (i < records.size) {
         val r = records[i]
         val isZhihuAnswer = r.platform == "zhihu" && r.recordType == "answer"
-        if (!isZhihuAnswer) {
-            result.add(RecordListItem(r))
-            i++
-            continue
+        if (isZhihuAnswer) {
+            val questionKey = zhihuAnswerQuestionKey(r)
+            if (questionKey.isNotBlank()) {
+                val group = mutableListOf<UniversalRecord>()
+                var j = i
+                while (j < records.size) {
+                    val rr = records[j]
+                    if (rr.platform != "zhihu" || rr.recordType != "answer") break
+                    if (zhihuAnswerQuestionKey(rr) != questionKey) break
+                    group.add(rr)
+                    j++
+                }
+
+                if (group.size >= 2) {
+                    val title = group.first().title.ifBlank { "无标题" }
+                    result.add(
+                        AnswerGroupListItem(
+                            questionKey = questionKey,
+                            questionTitle = title,
+                            answers = group,
+                            firstId = group.first().id
+                        )
+                    )
+                    i = j
+                    continue
+                }
+            }
         }
 
-        val questionKey = zhihuAnswerQuestionKey(r)
-        if (questionKey.isBlank()) {
-            result.add(RecordListItem(r))
-            i++
-            continue
+        val isDoubanInterest = r.platform == "douban" && r.recordType == "interest"
+        if (isDoubanInterest) {
+            val subjectKey = doubanInterestSubjectKey(r)
+            if (subjectKey.isNotBlank()) {
+                val group = mutableListOf<UniversalRecord>()
+                var j = i
+                while (j < records.size) {
+                    val rr = records[j]
+                    if (rr.platform != "douban" || rr.recordType != "interest") break
+                    if (doubanInterestSubjectKey(rr) != subjectKey) break
+                    group.add(rr)
+                    j++
+                }
+
+                if (group.size >= 2) {
+                    val (title, typeLabel) = doubanInterestTitleAndType(group.first())
+                    result.add(
+                        InterestGroupListItem(
+                            subjectKey = subjectKey,
+                            subjectTitle = title,
+                            typeLabel = typeLabel,
+                            interests = group,
+                            firstId = group.first().id
+                        )
+                    )
+                    i = j
+                    continue
+                }
+            }
         }
 
-        val group = mutableListOf<UniversalRecord>()
-        var j = i
-        while (j < records.size) {
-            val rr = records[j]
-            if (rr.platform != "zhihu" || rr.recordType != "answer") break
-            if (zhihuAnswerQuestionKey(rr) != questionKey) break
-            group.add(rr)
-            j++
-        }
-
-        if (group.size >= 2) {
-            val title = group.first().title.ifBlank { "无标题" }
-            result.add(
-                AnswerGroupListItem(
-                    questionKey = questionKey,
-                    questionTitle = title,
-                    answers = group,
-                    firstId = group.first().id
-                )
-            )
-        } else {
-            result.add(RecordListItem(r))
-        }
-        i = j
+        result.add(RecordListItem(r))
+        i++
     }
     return result
+}
+
+private fun doubanInterestSubjectKey(record: UniversalRecord): String {
+    if (record.platform != "douban" || record.recordType != "interest") return ""
+    if (record.parentId.isNotBlank() && record.parentId.startsWith("douban_")) {
+        return record.parentId
+    }
+    return try {
+        val obj = JsonParser.parseString(record.extraMetadata).asJsonObject
+        val type = if (obj.has("subject_type") && !obj.get("subject_type").isJsonNull) obj.get("subject_type").asString else ""
+        val id = if (obj.has("subject_id") && !obj.get("subject_id").isJsonNull) obj.get("subject_id").asString else ""
+        if (id.isNotBlank()) {
+            if (type.isNotBlank()) "douban_${type}_$id" else "douban_$id"
+        } else {
+            record.title.ifBlank { "" }
+        }
+    } catch (_: Exception) {
+        record.title.ifBlank { "" }
+    }
+}
+
+private fun doubanInterestTitleAndType(record: UniversalRecord): Pair<String, String> {
+    var subjectTitle = ""
+    var subjectType = ""
+    try {
+        val obj = JsonParser.parseString(record.extraMetadata).asJsonObject
+        if (obj.has("subject_title") && !obj.get("subject_title").isJsonNull) {
+            subjectTitle = obj.get("subject_title").asString.trim()
+        }
+        if (obj.has("subject_type") && !obj.get("subject_type").isJsonNull) {
+            subjectType = obj.get("subject_type").asString.trim()
+        }
+    } catch (_: Exception) {}
+
+    val typeLabel = when (subjectType) {
+        "movie" -> "电影短评"
+        "book" -> "图书短评"
+        "music" -> "音乐短评"
+        "game" -> "游戏短评"
+        "tv" -> "剧集短评"
+        "drama" -> "舞台剧短评"
+        else -> {
+            if (record.title.contains("：")) {
+                record.title.substringBefore("：").trim()
+            } else {
+                "短评"
+            }
+        }
+    }
+
+    val displayTitle = if (subjectTitle.isNotBlank()) {
+        subjectTitle
+    } else if (record.title.contains("：")) {
+        record.title.substringAfter("：").trim()
+    } else {
+        record.title.ifBlank { "无标题" }
+    }
+
+    return Pair(displayTitle, typeLabel)
 }
 
 private fun zhihuAnswerQuestionKey(record: UniversalRecord): String {
@@ -819,6 +931,9 @@ private fun AnswerGroupItem(
     searchQuery: String,
     onOpenAnswer: (UniversalRecord) -> Unit
 ) {
+    val isDark = isAppInDarkTheme()
+    val platformColor = getPlatformThemeColor("zhihu", isDark)
+
     Card(
         modifier = Modifier
             .fillMaxWidth()
@@ -828,14 +943,15 @@ private fun AnswerGroupItem(
     ) {
         Column(modifier = Modifier.padding(16.dp)) {
             Surface(
-                color = MaterialTheme.colorScheme.secondaryContainer,
+                color = platformColor.container,
                 shape = MaterialTheme.shapes.small
             ) {
                 Text(
                     text = "知乎 · 回答",
                     style = MaterialTheme.typography.labelSmall,
                     modifier = Modifier.padding(horizontal = 6.dp, vertical = 2.dp),
-                    color = MaterialTheme.colorScheme.onSecondaryContainer
+                    color = platformColor.text,
+                    fontWeight = FontWeight.Medium
                 )
             }
 
@@ -884,6 +1000,99 @@ private fun AnswerGroupItem(
                     }
 
                     val previewText = previewFromRecordContent(answer.content)
+                    if (previewText.isNotBlank()) {
+                        Spacer(modifier = Modifier.height(6.dp))
+                        Text(
+                            text = highlightText(previewText, searchQuery),
+                            style = MaterialTheme.typography.bodySmall,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                            maxLines = 2,
+                            overflow = TextOverflow.Ellipsis
+                        )
+                    }
+                }
+            }
+        }
+    }
+}
+
+@Composable
+private fun InterestGroupItem(
+    subjectTitle: String,
+    typeLabel: String,
+    interests: List<UniversalRecord>,
+    searchQuery: String,
+    onOpenInterest: (UniversalRecord) -> Unit
+) {
+    val isDark = isAppInDarkTheme()
+    val platformColor = getPlatformThemeColor("douban", isDark)
+
+    Card(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 12.dp, vertical = 6.dp),
+        elevation = CardDefaults.cardElevation(2.dp),
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface)
+    ) {
+        Column(modifier = Modifier.padding(16.dp)) {
+            Surface(
+                color = platformColor.container,
+                shape = MaterialTheme.shapes.small
+            ) {
+                Text(
+                    text = "豆瓣 · $typeLabel",
+                    style = MaterialTheme.typography.labelSmall,
+                    modifier = Modifier.padding(horizontal = 6.dp, vertical = 2.dp),
+                    color = platformColor.text,
+                    fontWeight = FontWeight.Medium
+                )
+            }
+
+            Spacer(modifier = Modifier.height(8.dp))
+
+            Text(
+                text = highlightText(subjectTitle.ifBlank { "无标题" }, searchQuery),
+                style = MaterialTheme.typography.titleMedium,
+                fontWeight = FontWeight.Bold,
+                maxLines = 2,
+                overflow = TextOverflow.Ellipsis
+            )
+
+            Spacer(modifier = Modifier.height(10.dp))
+
+            val sdf = remember { SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.getDefault()) }
+            interests.forEachIndexed { index, interest ->
+                if (index > 0) {
+                    Spacer(modifier = Modifier.height(10.dp))
+                    HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.6f))
+                    Spacer(modifier = Modifier.height(10.dp))
+                }
+
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .clickable { onOpenInterest(interest) }
+                ) {
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Text(
+                            text = highlightText(interest.authorName.ifBlank { "豆瓣用户" }, searchQuery),
+                            style = MaterialTheme.typography.bodySmall,
+                            color = MaterialTheme.colorScheme.primary,
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis
+                        )
+                        Text(
+                            text = "浏览于 ${sdf.format(Date(interest.captureTime))}",
+                            style = MaterialTheme.typography.labelSmall,
+                            color = MaterialTheme.colorScheme.outline
+                        )
+                    }
+
+                    val previewText = previewFromRecordContent(interest.content)
                     if (previewText.isNotBlank()) {
                         Spacer(modifier = Modifier.height(6.dp))
                         Text(

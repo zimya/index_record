@@ -17,6 +17,7 @@ import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
 import androidx.compose.material.icons.outlined.ChatBubbleOutline
 import androidx.compose.material.icons.outlined.Place
 import androidx.compose.material.icons.outlined.StarOutline
@@ -28,7 +29,8 @@ import androidx.compose.material3.FilterChip
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.Button
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
@@ -48,9 +50,13 @@ import com.google.gson.JsonObject
 import com.google.gson.JsonParser
 import me.melon.record.data.model.UniversalRecord
 import me.melon.record.markdown.RenderMarkdownText
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.ui.text.style.TextOverflow
 import me.melon.record.ui.components.AvatarImage
 import me.melon.record.ui.components.CoverImage
 import me.melon.record.ui.components.ImageViewerDialog
+import me.melon.record.ui.theme.getPlatformThemeColor
+import me.melon.record.ui.theme.isAppInDarkTheme
 import java.text.SimpleDateFormat
 import java.util.Date
 import androidx.compose.runtime.LaunchedEffect
@@ -138,14 +144,65 @@ fun RecordDetailScreen(
 
     LaunchedEffect(record.platformId, record.parentId) {
         withContext(Dispatchers.IO) {
-            if (record.platform == "zhihu" && record.recordType == "answer" && record.parentId.startsWith("zhihu_question_")) {
-                val box = ObjectBox.store.boxFor(UniversalRecord::class.java)
-                relatedRecord = box.query()
+            val box = ObjectBox.store.boxFor(UniversalRecord::class.java)
+
+            fun queryRelated() {
+                if (record.platform == "zhihu" && record.recordType == "answer" && record.parentId.startsWith("zhihu_question_")) {
+                    relatedRecord = box.query()
+                        .equal(UniversalRecord_.platformId, record.parentId, io.objectbox.query.QueryBuilder.StringOrder.CASE_SENSITIVE)
+                        .build()
+                        .findFirst()
+                } else if (record.platform == "douban" && record.parentId.startsWith("douban_")) {
+                    val found = box.query()
+                        .equal(UniversalRecord_.platformId, record.parentId, io.objectbox.query.QueryBuilder.StringOrder.CASE_SENSITIVE)
+                        .build()
+                        .findFirst()
+                    if (found != null) {
+                        relatedRecord = found
+                    } else {
+                        // 若尚未捕获条目本体，根据记录中的 subject 元数据构造一个条目引用，点击后可查看聚合短评/长评
+                        try {
+                            val meta = JsonParser.parseString(record.extraMetadata).asJsonObject
+                            val sId = if (meta.has("subject_id") && !meta.get("subject_id").isJsonNull) meta.get("subject_id").asString else ""
+                            val sTitle = if (meta.has("subject_title") && !meta.get("subject_title").isJsonNull) meta.get("subject_title").asString else ""
+                            val sType = if (meta.has("subject_type") && !meta.get("subject_type").isJsonNull) meta.get("subject_type").asString else "movie"
+                            if (sId.isNotBlank() && sTitle.isNotBlank()) {
+                                relatedRecord = UniversalRecord(
+                                    platform = "douban",
+                                    recordType = "subject",
+                                    sourceApp = record.sourceApp,
+                                    platformId = record.parentId,
+                                    title = sTitle,
+                                    content = sTitle,
+                                    extraMetadata = record.extraMetadata
+                                )
+                            } else {
+                                relatedRecord = null
+                            }
+                        } catch (_: Exception) {
+                            relatedRecord = null
+                        }
+                    }
+                } else {
+                    relatedRecord = null
+                }
+            }
+
+            queryRelated()
+
+            if (record.parentId.isNotBlank()) {
+                val sub = box.query()
                     .equal(UniversalRecord_.platformId, record.parentId, io.objectbox.query.QueryBuilder.StringOrder.CASE_SENSITIVE)
                     .build()
-                    .findFirst()
-            } else {
-                relatedRecord = null
+                    .subscribe()
+                    .observer {
+                        queryRelated()
+                    }
+                try {
+                    kotlinx.coroutines.awaitCancellation()
+                } finally {
+                    sub.cancel()
+                }
             }
         }
     }
@@ -342,11 +399,58 @@ fun RecordDetailScreen(
             item {
                 val target = relatedRecord
                 if (target != null) {
-                    Button(
-                        onClick = { onOpenRecord(target) },
-                        modifier = Modifier.fillMaxWidth()
+                    val platform = target.platform.ifBlank {
+                        if (target.recordType == "subject") "douban" else if (target.recordType == "question") "zhihu" else record.platform
+                    }
+                    val isDark = isAppInDarkTheme()
+                    val platformColor = getPlatformThemeColor(platform, isDark)
+
+                    Card(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .clickable { onOpenRecord(target) },
+                        shape = RoundedCornerShape(12.dp),
+                        colors = CardDefaults.cardColors(
+                            containerColor = platformColor.container
+                        )
                     ) {
-                        Text("跳转到相关内容")
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(horizontal = 16.dp, vertical = 14.dp),
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.SpaceBetween
+                        ) {
+                            Column(modifier = Modifier.weight(1f)) {
+                                val tagText = when (target.recordType) {
+                                    "subject" -> "所属豆瓣条目"
+                                    "question" -> "对应知乎问题"
+                                    else -> "关联内容"
+                                }
+                                Text(
+                                    text = tagText,
+                                    style = MaterialTheme.typography.labelSmall,
+                                    color = platformColor.text,
+                                    fontWeight = FontWeight.Bold
+                                )
+                                Spacer(modifier = Modifier.height(3.dp))
+                                Text(
+                                    text = target.title,
+                                    style = MaterialTheme.typography.bodyLarge,
+                                    fontWeight = FontWeight.Bold,
+                                    color = MaterialTheme.colorScheme.onSurface,
+                                    maxLines = 1,
+                                    overflow = TextOverflow.Ellipsis
+                                )
+                            }
+                            Spacer(modifier = Modifier.width(12.dp))
+                            Icon(
+                                imageVector = Icons.AutoMirrored.Filled.KeyboardArrowRight,
+                                contentDescription = null,
+                                tint = platformColor.text.copy(alpha = 0.7f),
+                                modifier = Modifier.size(22.dp)
+                            )
+                        }
                     }
                     Spacer(modifier = Modifier.height(16.dp))
                 }

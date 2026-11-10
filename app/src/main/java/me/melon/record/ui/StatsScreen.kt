@@ -75,6 +75,11 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import me.melon.record.logic.BarData
 import me.melon.record.logic.DistributionRange
+import me.melon.record.ui.theme.DoubanGreen
+import me.melon.record.ui.theme.TiebaBlue
+import me.melon.record.ui.theme.TwitterBlue
+import me.melon.record.ui.theme.XiaohongshuRed
+import me.melon.record.ui.theme.ZhihuBlue
 import me.melon.record.viewmodel.StatsViewModel
 import java.time.LocalDate
 import java.util.Locale
@@ -1122,12 +1127,12 @@ private fun HeatCell(
 // -------------------- 实用工具函数与颜色映射 --------------------
 
 fun colorFromPackage(pkg: String): Color {
-    return when (pkg) {
-        "com.zhihu.android", "zhihu" -> Color(0xFF0084FF) // 知乎蓝
-        "com.douban.frodo", "douban" -> Color(0xFF2E963D) // 豆瓣绿
-        "com.baidu.tieba", "tieba" -> Color(0xFF4E6EF2) // 贴吧蓝紫
-        "com.xingin.xhs", "xiaohongshu" -> Color(0xFFFF2442) // 小红书红
-        "com.twitter.android", "twitter" -> Color(0xFF1D9BF0) // Twitter 蓝
+    return when (pkg.lowercase()) {
+        "com.zhihu.android", "zhihu" -> ZhihuBlue
+        "com.douban.frodo", "douban" -> DoubanGreen
+        "com.baidu.tieba", "tieba" -> TiebaBlue
+        "com.xingin.xhs", "xiaohongshu" -> XiaohongshuRed
+        "com.twitter.android", "twitter" -> TwitterBlue
         else -> {
             val h = (pkg.hashCode().toLong().ushr(1) % 360L).toFloat()
             Color.hsv(h, 0.65f, 0.90f)

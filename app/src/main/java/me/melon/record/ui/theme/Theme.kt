@@ -5,8 +5,11 @@ import android.os.Build
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.SideEffect
+import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.luminance
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalView
 import androidx.core.view.WindowCompat
@@ -15,6 +18,13 @@ enum class ThemeMode {
     LIGHT,
     DARK,
     SYSTEM
+}
+
+val LocalIsDarkTheme = staticCompositionLocalOf { false }
+
+@Composable
+fun isAppInDarkTheme(): Boolean {
+    return LocalIsDarkTheme.current || (MaterialTheme.colorScheme.surface.luminance() < 0.5f)
 }
 
 private val DarkColorScheme = darkColorScheme(
@@ -68,8 +78,10 @@ fun IndexRecordTheme(
         }
     }
 
-    MaterialTheme(
-        colorScheme = colorScheme,
-        content = content
-    )
+    CompositionLocalProvider(LocalIsDarkTheme provides darkTheme) {
+        MaterialTheme(
+            colorScheme = colorScheme,
+            content = content
+        )
+    }
 }

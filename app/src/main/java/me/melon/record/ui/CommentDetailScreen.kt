@@ -64,7 +64,7 @@ fun CommentDetailScreen(
 
             var current = record
             var guard = 0
-            while (current.parentId.startsWith("zhihu_comment_") && guard < 30) {
+            while ((current.parentId.startsWith("zhihu_comment_") || current.parentId.startsWith("douban_comment_")) && guard < 30) {
                 val parent = box.query()
                     .equal(UniversalRecord_.platformId, current.parentId, io.objectbox.query.QueryBuilder.StringOrder.CASE_SENSITIVE)
                     .build()

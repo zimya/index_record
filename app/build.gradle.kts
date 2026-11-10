@@ -87,6 +87,7 @@ dependencies {
     implementation("org.commonmark:commonmark-ext-footnotes:0.24.0")
 
     implementation("io.coil-kt:coil-compose:2.6.0")
+    implementation("androidx.palette:palette-ktx:1.0.0")
 
     // Material Icons Extended
     implementation("androidx.compose.material:material-icons-extended:1.6.0")

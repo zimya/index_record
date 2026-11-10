@@ -116,6 +116,8 @@ object DataProcessor {
                                     record.captureTime = maxOf(existing.captureTime, record.captureTime)
                                     if (record.platform == "zhihu" && record.recordType == "question") {
                                         record.extraMetadata = ZhihuRelations.mergeQuestionExtra(existing.extraMetadata, record.extraMetadata)
+                                    } else if (record.platform == "douban" && record.recordType == "subject") {
+                                        record.extraMetadata = me.melon.record.parser.douban.DoubanRelations.mergeSubjectExtra(existing.extraMetadata, record.extraMetadata)
                                     }
                                 }
                                 recordBox.put(record)
@@ -137,6 +139,18 @@ object DataProcessor {
                                     if (answerIds.isNotEmpty()) {
                                         ZhihuRelations.linkAnswersByIds(recordBox, record.platformId, answerIds)
                                     }
+                                } else if (record.platform == "douban") {
+                                    try {
+                                        val meta = JsonParser.parseString(record.extraMetadata).asJsonObject
+                                        val sId = meta.get("subject_id")?.asString ?: ""
+                                        val sTitle = meta.get("subject_title")?.asString ?: ""
+                                        val sType = meta.get("subject_type")?.asString ?: ""
+                                        if (sId.isNotBlank() && sTitle.isNotBlank()) {
+                                            me.melon.record.parser.douban.DoubanRelations.linkSubjectToInterests(
+                                                recordBox, sType.ifBlank { "movie" }, sId, sTitle
+                                            )
+                                        }
+                                    } catch (_: Exception) {}
                                 }
                             }
                         }

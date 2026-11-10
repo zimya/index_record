@@ -1,0 +1,167 @@
+{
+    "aliases": [
+        "塞尔达传说：荒野之息",
+        "萨尔达传说：旷野之息",
+        "The Legend of Zelda: Breath of the Wild",
+        "BOTW"
+    ],
+    "body_bg_color": "f4f7f9",
+    "card_subtitle": "塞尔达传说：荒野之息/萨尔达传说：旷野之息/The Legend of Zelda: Breath of the Wild/BOTW/冒险/动作/Nintendo Switch/Nintendo Switch 2/Wii U/Nintendo EAD/2017-03-03",
+    "cn_name": "塞尔达传说 旷野之息",
+    "color_scheme": {
+        "_base_color": [
+            0.5952380952380953, 0.14583333333333326, 0.18823529411764706
+        ],
+        "_avg_color": [0.08333333333333325, 0.16, 0.5882352941176471],
+        "primary_color_light": "8d97a5",
+        "primary_color_dark": "6c747f",
+        "secondary_color": "f4f7f9",
+        "is_dark": true
+    },
+    "comment_count": 31539,
+    "controversy_reason": "",
+    "cover_url": "https://img3.doubanio.com/lpic/s29308930.jpg",
+    "developers": ["Nintendo EAD"],
+    "feedback_uri": "",
+    "forum_topic_count": 0,
+    "gallery_topic_count": 0,
+    "genres": ["冒险", "动作"],
+    "guide_review_count": 0,
+    "header_bg_color": "6c747f",
+    "honor_infos": [],
+    "id": "26817171",
+    "in_blacklist": false,
+    "info_url": "https://www.douban.com/doubanapp//h5/game/26817171/desc",
+    "interest": null,
+    "interest_cmt_earlier_tip_desc": "",
+    "interest_cmt_earlier_tip_title": "",
+    "interest_control_info": null,
+    "intro": "《塞尔达传说 荒野之息》（日语：ゼルダの伝説 ブレス オブ ザ ワイルド，英语：The Legend of Zelda: Breath of the Wild，港台译作“萨尔达传说 荒野之息”）是一款动作冒险游戏。本作由任天堂企划制作本部与任天堂旗下子公司Monolith Soft协力开发。游戏最早计划为Wii U平台独占发行，之后宣布将在任天堂新的混合型游戏主机任天堂Switch上发售，并将成为该主机的首发游戏之一。同时任天堂确认本作会是任天堂在Wii U上开发的最后一款游戏。\r\n游戏最初于2013年公布，并计划于2015年发行。之后任天堂宣布游戏延期并最终定于2017年3月3日发行。\r\n剧情\r\n很久很久以前，海拉尔王国的各个族群和平共存。其中名为锡克族（Sheikah）的族人们制造了许多先进的科技来帮助海拉尔的人们。但是有一天，邪恶的梦魇加侬（Calamity Ganon）击败了勇者并试图占领海拉尔王国。情势紧迫下锡克族人启动了他们暗中制造、用来保护家园的机械巨兽和守卫者。这些机械士兵成功的将梦魇加侬封印在海拉尔城堡中，但是机械士兵们却遭到邪恶力量的控制而反过来攻击海拉尔人。因为惧怕著锡克族的力量，海拉尔王将他们统统放逐出海拉尔王国。\r\n一百年后的现代，勇者林克从沉睡中苏醒，却失去了所有的记忆。林克在一个未知的女性声音的带领下遇见了一位长者，长者告诉他梦魇加侬依旧被封印在城堡内并日渐壮大自己的力量，林克必须在封印被破坏前拯救海拉尔王国。\r\n\r\n\r\n《塞尔达传说 荒野之息》获得业界极高的好评。国外多家游戏媒体给予满分评价。",
+    "is_released": true,
+    "is_show": false,
+    "null_rating_reason": "",
+    "pic": {
+        "large": "https://qnmob3-sign.doubanio.com/lpic/s29308930.jpg?sa_cv=3a593bdee4583060440455f7e04abee9&sa_ct=6af38138&imageView2/2/q/80/w/600/h/3000/format/webp",
+        "normal": "https://qnmob3-sign.doubanio.com/lpic/s29308930.jpg?sa_cv=3a593bdee4583060440455f7e04abee9&sa_ct=6af38138&imageView2/2/q/80/w/200/h/300/format/webp"
+    },
+    "platforms": [
+        {
+            "abbreviation": "NS",
+            "cn_name": "Nintendo Switch",
+            "id": 158,
+            "name": "Nintendo Switch"
+        },
+        {
+            "abbreviation": "NS 2",
+            "cn_name": "Nintendo Switch 2",
+            "id": 170,
+            "name": "Nintendo Switch 2"
+        },
+        {
+            "abbreviation": "WIIU",
+            "cn_name": "Wii U",
+            "id": 139,
+            "name": "Wii U"
+        }
+    ],
+    "publishers": ["Nintendo"],
+    "rating": {
+        "count": 77053,
+        "max": 10,
+        "star_count": 5,
+        "value": 9.8
+    },
+    "release_date": "2017-03-03",
+    "review_count": 356,
+    "share_activities": [],
+    "sharing_url": "https://www.douban.com/doubanapp/dispatch/game/26817171",
+    "subject_collections": [],
+    "subtype": "game",
+    "tags": [],
+    "title": "塞尔达传说 旷野之息 ゼルダの伝説 ブレス オブ ザ ワイルド",
+    "type": "game",
+    "ugc_tabs": [
+        {
+            "type": "review",
+            "title": "游戏评论",
+            "source": "reviews"
+        },
+        {
+            "type": "guide",
+            "title": "游戏攻略",
+            "source": "game_guides"
+        }
+    ],
+    "uri": "douban://douban.com/game/26817171",
+    "url": "https://www.douban.com/game/26817171/",
+    "variable_modules": [
+        {
+            "id": "comments",
+            "sub_modules": [
+                {
+                    "id": "count"
+                },
+                {
+                    "data": [
+                        {
+                            "name": "热门",
+                            "id": "hot"
+                        },
+                        {
+                            "name": "最新",
+                            "id": "latest"
+                        },
+                        {
+                            "name": "友邻",
+                            "id": "friend"
+                        }
+                    ],
+                    "id": "sort_by",
+                    "data_type": "sort_by"
+                },
+                {
+                    "id": "rating_scope"
+                }
+            ]
+        },
+        {
+            "id": "ugc_tabs",
+            "sub_modules": [
+                {
+                    "id": "ugc_tab",
+                    "data_type": "ugc_tab",
+                    "data": {
+                        "type": "review",
+                        "title": "游戏评论",
+                        "source": "reviews",
+                        "sort_by": [
+                            {
+                                "name": "热门",
+                                "id": "hot"
+                            },
+                            {
+                                "name": "最新",
+                                "id": "latest"
+                            },
+                            {
+                                "name": "友邻",
+                                "id": "friend"
+                            }
+                        ]
+                    }
+                },
+                {
+                    "id": "ugc_tab",
+                    "data_type": "ugc_tab",
+                    "data": {
+                        "type": "guide",
+                        "title": "游戏攻略",
+                        "source": "game_guides"
+                    }
+                }
+            ]
+        }
+    ],
+    "vendor_count": 0,
+    "wechat_timeline_share": "screenshot"
+}

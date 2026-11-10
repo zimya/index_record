@@ -1,0 +1,772 @@
+{
+    "id": "505200892",
+    "type": "topic",
+    "uri": "douban://douban.com/group/topic/505200892?_spm_id=MTIxMzI3Njcx",
+    "url": "https://www.douban.com/group/topic/505200892/?_spm_id=MTIxMzI3Njcx",
+    "title": "i飞雪。。震撼新发现。。2019年超女聚餐醉后拥抱次日老兵发了一条微博。。",
+    "create_time": "2026-11-10 06:42:18",
+    "cover_url": "https://img3.doubanio.com/view/group_topic/sqxs/public/p753077423.webp",
+    "has_poll": false,
+    "is_ad": false,
+    "abstract": "已获得原po主授权。。\r\n2019年聚餐许飞在那夜和厉娜抱着哭。。。\r\nRebor...",
+    "anthologies": [],
+    "author": {
+        "avatar": "https://img9.doubanio.com/icon/up121327671-14.webp",
+        "followed": false,
+        "gender": "",
+        "id": "121327671",
+        "is_banned_forever": false,
+        "is_club": false,
+        "is_readonly_forever": false,
+        "kind": "user",
+        "loc": {
+            "id": "108309",
+            "name": "重庆",
+            "uid": "chongqing"
+        },
+        "name": "画画的肖恩",
+        "reg_time": "2015-02-10 13:02:22",
+        "type": "user",
+        "uid": "121327671",
+        "uri": "douban://douban.com/user/121327671",
+        "url": "https://www.douban.com/people/121327671/",
+        "is_manager": false,
+        "member_title": "马克杯",
+        "member_title_color": "#51c21c",
+        "is_advanced_member_title": false
+    },
+    "can_add_image_comment": true,
+    "can_author_delete": false,
+    "can_comment_outside": false,
+    "can_relate_gallery_topic": false,
+    "can_transfer_accessible": false,
+    "can_transfer_reply_limit": false,
+    "collections_count": 618,
+    "comments_count": 117,
+    "content": "<div id='content'><p data-align=\"left\">已获得原po主授权。。\n\n2019年聚餐许飞在那夜和厉娜抱着哭。。。\nReborn妹妹说“娜娜是你的”之后于次日上午11点发文：众人皆醉我更醉，举世混浊我更浊。。</p><div class=\"image-container image-float-center\"><div class=\"image-wrapper\"><img height=\"auto\" src=\"https://img3.doubanio.com/view/group_topic/l/public/p753077423.webp\" style=\"background-color: #DFDFDF\" width=\"500\"/></div></div><p data-align=\"left\">\n现在这条微博现在已经看不到了，但百度百家号同步过去了。。\n随后在当天傍晚。。是最近直播对19年聚餐事件欲言又止的军娃和军姨发了超女聚餐微博。。</p><div class=\"image-container image-float-center\"><div class=\"image-wrapper\"><img height=\"auto\" src=\"https://img2.doubanio.com/view/group_topic/l/public/p753077421.webp\" style=\"background-color: #DFDFDF\" width=\"500\"/></div></div><div class=\"image-container image-float-center\"><div class=\"image-wrapper\"><img height=\"auto\" src=\"https://img3.doubanio.com/view/group_topic/l/public/p753077422.webp\" style=\"background-color: #DFDFDF\" width=\"500\"/></div><div class=\"image-caption-wrapper\"><div class=\"image-caption\">到底有多复杂</div></div></div><p data-align=\"left\">之后晚上10点许飞发了12月27日出席了微博一直播年度音乐人颁奖。。。可以确定聚餐是在12月26号。。许飞在第二天中午发微博。。随后军娃军姨才发了聚餐照片。。</p><div class=\"image-container image-float-center\"><div class=\"image-wrapper\"><img height=\"auto\" src=\"https://img9.doubanio.com/view/group_topic/l/public/p753077425.webp\" style=\"background-color: #DFDFDF\" width=\"500\"/></div></div><p data-align=\"left\">彩蛋：许飞把这句诗放到了2020新专辑的宣传里。。</p><div class=\"image-container image-float-center\"><div class=\"image-wrapper\"><img height=\"auto\" src=\"https://img9.doubanio.com/view/group_topic/l/public/p753077424.webp\" style=\"background-color: #DFDFDF\" width=\"500\"/></div></div><p data-align=\"left\">老兵。。2019年和军嫂的醉后一夜到底发生了什么让你有了这样的感受。。。\n\n原帖来自博主：<a class=\"link\" href=\"https://weibo.com/u/6575515942\" rel=\"nofollow\" target=\"_blank\">https://douc.cc/4B6OsDF</a>\n最后放一个我很喜欢的解读蒽</p><div class=\"image-container image-float-center\"><div class=\"image-wrapper\"><img height=\"auto\" src=\"https://img9.doubanio.com/view/group_topic/l/public/p753143825.webp\" style=\"background-color: #DFDFDF\" width=\"500\"/></div></div></div>",
+    "edit_time": "2026-11-10 18:25:58",
+    "enable_photo_watermark": false,
+    "explanation_types": "",
+    "gallery_topic": null,
+    "gifts_count": 0,
+    "group": {
+        "admin_banner": ["banner_url", "uri"],
+        "alert": "",
+        "allow_binding_gallery_topic": false,
+        "allow_binding_video": true,
+        "allow_downvote_comment": false,
+        "allow_downvote_topic": false,
+        "allow_send_status": true,
+        "allow_topic_event": true,
+        "avatar": "https://img3.doubanio.com/view/group/sqxs/public/6a768a4273e71df.webp",
+        "background_mask_color": "#5e61c2",
+        "can_create_topic_event": false,
+        "can_set_checkin_tab": false,
+        "can_set_collection_photos": false,
+        "can_set_safeguard_mode": false,
+        "can_use_group_quiz": true,
+        "category": {
+            "id": 835,
+            "title": "娱乐"
+        },
+        "censor_message": "",
+        "club_id": "",
+        "comment_box_placeholder": "",
+        "create_time": "2019-04-26 11:56:49",
+        "custom_like_text": "踩踩",
+        "desc": "主要讨论娱乐圈。。。欢迎在规定的范围内自由发言。。。\n降低审判欲。。。尊重物种多样性。。。\n请不要发生活水贴、社会民生、政治话题哦。。。。\n每天有管理员巡逻。。。也欢迎举报。。。\n共同维护小组氛围吧。。。\n\n举报楼在小组公告专区可找到。。。",
+        "domain": "P",
+        "elite_total": 3405,
+        "enable_checkin": true,
+        "enable_feature_funding": true,
+        "enable_hot_search_board": true,
+        "enable_official_activity": false,
+        "enable_subscribe": true,
+        "feed_tags": [
+            {
+                "sortby": "new",
+                "title": "最新"
+            },
+            {
+                "sortby": "hot",
+                "title": "热门"
+            },
+            {
+                "sortby": "elite",
+                "title": "精华"
+            }
+        ],
+        "group_joining_quiz_id": null,
+        "group_joining_quiz_url": null,
+        "group_posting_quiz_id": null,
+        "group_posting_quiz_url": null,
+        "group_tabs": [
+            {
+                "type": "topic_tag",
+                "id": "110033",
+                "name": "神金病房",
+                "uri": "",
+                "seq": 1,
+                "landing": false,
+                "rule": {
+                    "text": "发疯！发疯！！！只有发疯！！！能让我们。。。变回正常人。。。～",
+                    "links": []
+                }
+            },
+            {
+                "type": "topic_tag",
+                "id": "43014",
+                "name": "产出文学",
+                "uri": "",
+                "seq": 2,
+                "landing": false,
+                "rule": {
+                    "text": "磕。。。磕你的。。。磕你的CP。。。每一对产品。。。有不同的惊喜，",
+                    "links": []
+                }
+            },
+            {
+                "type": "topic_tag",
+                "id": "144622",
+                "name": "生活教程",
+                "uri": "",
+                "seq": 3,
+                "landing": false,
+                "rule": {
+                    "text": "让。。，小lv子。。。生活。。。更美。。好👌",
+                    "links": []
+                }
+            },
+            {
+                "type": "topic_tag",
+                "id": "112325",
+                "name": "领读专区",
+                "uri": "",
+                "seq": 4,
+                "landing": false,
+                "rule": {
+                    "text": "不懂啊。。。就你们。。。有文化？。。。是吧，，，",
+                    "links": []
+                }
+            },
+            {
+                "type": "topic_tag",
+                "id": "43013",
+                "name": "小组公告",
+                "uri": "",
+                "seq": 5,
+                "landing": false,
+                "rule": {
+                    "text": "土皇帝专用，其他人勿发。蒽。",
+                    "links": []
+                }
+            }
+        ],
+        "hot_topic_count": 0,
+        "id": "661193",
+        "is_enable_reply_comment": false,
+        "is_new_owner": false,
+        "is_official": false,
+        "is_readonly": false,
+        "is_subject_group": false,
+        "is_subscribed": true,
+        "join_type": "R",
+        "joined_guide": {
+            "links": [],
+            "text": "欢迎加入火花四射观察室小组！恭喜你成为本组的小火柴"
+        },
+        "joining_guide": {
+            "text": "1. 从哪里知道本组？2. 为什么进组？3. 进来不能做什么？",
+            "links": []
+        },
+        "large_avatar": "https://img3.doubanio.com/view/group/medium/public/6a768a4273e71df.webp",
+        "manager_name": "小柴火",
+        "member_count": 77330,
+        "member_count_text": "77330",
+        "member_name": "小火柴",
+        "member_role": 1000,
+        "name": "火花四射观察室",
+        "need_pop_rules": false,
+        "new_topic_event_template": true,
+        "other_feed_tags": [
+            {
+                "sortby": "new",
+                "title": "最新"
+            },
+            {
+                "sortby": "hot",
+                "title": "热门"
+            }
+        ],
+        "owner": {
+            "avatar": "https://img3.doubanio.com/icon/up160795573-9.webp",
+            "followed": false,
+            "gender": "U",
+            "id": "160795573",
+            "is_banned_forever": false,
+            "is_club": false,
+            "is_readonly_forever": false,
+            "kind": "user",
+            "loc": null,
+            "name": "土皇帝",
+            "reg_time": "2017-04-28 05:28:58",
+            "type": "user",
+            "uid": "160795573",
+            "uri": "douban://douban.com/user/160795573",
+            "url": "https://www.douban.com/people/160795573/"
+        },
+        "owner_id": "160795573",
+        "post_guide": {
+            "text": "组员你好，发言前请先了解本组最新的发言规则",
+            "links": []
+        },
+        "post_limit_info": {
+            "post_limit": false
+        },
+        "preview_checkin_tab": false,
+        "preview_collection_photos": false,
+        "reject_status": null,
+        "rules_desc": "1 禁单人贴，违规锁帖。禁广告贴，违规踢。 2 禁安利贴，违规踢。 3 禁同类、水化刷屏贴，刷屏过多开集中贴。 4 禁政治、社会、生活贴，1次锁，2次踢。 5 禁讨论素人，违规踢。 6 禁粉丝发言和喊话贴，违规踢。 7 禁止鉴粉、水军，违规踢。 8 禁止吵架、辱骂、人身攻击，违规踢。 9 请勿发布《娱乐信息管理原则》不允许的内容 10 请勿发布《社区指导原则》不允许的内容",
+        "safeguard_until": null,
+        "sharing_url": "https://www.douban.com/doubanapp/dispatch?uri=%2Fgroup%2F661193",
+        "show_checkin_tab": false,
+        "show_collection_photos": false,
+        "slogan": "有泡泡。。。走不散。。。",
+        "subtitle": "最近更新: jn刻板印象。。。。",
+        "topic_count": 573844,
+        "topic_tags_normal": [
+            {
+                "id": "110033",
+                "name": "神金病房",
+                "short_name": "",
+                "type": "normal",
+                "subject_id": 0,
+                "is_hot": false,
+                "icon": "",
+                "n_topics": 11090,
+                "subject_type": "movie",
+                "rule": {
+                    "text": "发疯！发疯！！！只有发疯！！！能让我们。。。变回正常人。。。～",
+                    "links": []
+                }
+            },
+            {
+                "id": "43014",
+                "name": "产出文学",
+                "short_name": "",
+                "type": "normal",
+                "subject_id": 0,
+                "is_hot": false,
+                "icon": "",
+                "n_topics": 23422,
+                "subject_type": "movie",
+                "rule": {
+                    "text": "磕。。。磕你的。。。磕你的CP。。。每一对产品。。。有不同的惊喜，",
+                    "links": []
+                }
+            },
+            {
+                "id": "144622",
+                "name": "生活教程",
+                "short_name": "",
+                "type": "normal",
+                "subject_id": 0,
+                "is_hot": false,
+                "icon": "",
+                "n_topics": 1872,
+                "subject_type": "movie",
+                "rule": {
+                    "text": "让。。，小lv子。。。生活。。。更美。。好👌",
+                    "links": []
+                }
+            },
+            {
+                "id": "112325",
+                "name": "领读专区",
+                "short_name": "",
+                "type": "normal",
+                "subject_id": 0,
+                "is_hot": false,
+                "icon": "",
+                "n_topics": 2452,
+                "subject_type": "movie",
+                "rule": {
+                    "text": "不懂啊。。。就你们。。。有文化？。。。是吧，，，",
+                    "links": []
+                }
+            },
+            {
+                "id": "43013",
+                "name": "小组公告",
+                "short_name": "",
+                "type": "normal",
+                "subject_id": 0,
+                "is_hot": false,
+                "icon": "",
+                "n_topics": 163,
+                "subject_type": "movie",
+                "rule": {
+                    "text": "土皇帝专用，其他人勿发。蒽。",
+                    "links": []
+                }
+            }
+        ],
+        "topics_list_hidden_reason": "",
+        "type": "group",
+        "uri": "douban://douban.com/group/661193",
+        "url": "https://www.douban.com/group/661193/"
+    },
+    "has_image_subjects": false,
+    "has_related_contents": false,
+    "image_layout": "vertical",
+    "interest": null,
+    "interest_tags": [],
+    "is_active_in_hobbit": false,
+    "is_admin_locked": false,
+    "is_agent_thread": false,
+    "is_collected": false,
+    "is_douban_ad_author": false,
+    "is_elite": false,
+    "is_event": false,
+    "is_hidden_in_hobbit": false,
+    "is_locked": false,
+    "is_original": false,
+    "is_private": false,
+    "is_richtext": true,
+    "is_selected_in_hobbit": false,
+    "is_status_sent": true,
+    "label": "",
+    "like_count": 360,
+    "locked": false,
+    "reaction_type": 0,
+    "reactions_count": 360,
+    "read_count": 0,
+    "recommended_search_keyword": {
+        "id": "1216082",
+        "name": "19年与厉娜聚餐后许飞发的微博",
+        "uri": "douban://douban.com/search/result?q=%2319%E5%B9%B4%E4%B8%8E%E5%8E%89%E5%A8%9C%E8%81%9A%E9%A4%90%E5%90%8E%E8%AE%B8%E9%A3%9E%E5%8F%91%E7%9A%84%E5%BE%AE%E5%8D%9A%23"
+    },
+    "related_search_keyword": null,
+    "reply_limit": "A",
+    "reshares_count": 56,
+    "sharing_url": "https://www.douban.com/doubanapp/dispatch?uri=%2Fgroup%2Ftopic%2F505200892%3F_spm_id%3DMTIxMzI3Njcx&_i=94338094db87f91",
+    "subtype": "group",
+    "total_cnt_for_author": 0,
+    "update_time": "2026-11-10 23:48:35.104190",
+    "video_info": null,
+    "ip_location": "浙江",
+    "screenshot_url": "douban://partial.douban.com/screenshot/group/topic/505200892/_content?_spm_id=MTIxMzI3Njcx",
+    "screenshot_type": "rexxar",
+    "screenshot_title": "生成海报",
+    "wechat_timeline_share": "url",
+    "topic_tags": [],
+    "is_enable_reply_comment": false,
+    "enable_audio": false,
+    "sub_topic_tags": [],
+    "kwcxubfid": "db87f91505200892",
+    "photos": [
+        {
+            "author_id": "121327671",
+            "creation_date": "2026-11-10 06:42:17",
+            "id": "753077423",
+            "image": {
+                "is_animated": false,
+                "is_live": false,
+                "large": {
+                    "height": 226,
+                    "size": 0,
+                    "url": "https://img3.doubanio.com/view/group_topic/l/public/p753077423.webp",
+                    "width": 500
+                },
+                "normal": {
+                    "height": 226,
+                    "size": 0,
+                    "url": "https://img3.doubanio.com/view/group_topic/l/public/p753077423.webp",
+                    "width": 500
+                },
+                "primary_color": "DFDFDF",
+                "raw": null
+            },
+            "layout": "C",
+            "seq_id": "0",
+            "size": {
+                "height": 226,
+                "width": 500
+            },
+            "title": "",
+            "topic_id": "505200892"
+        },
+        {
+            "author_id": "121327671",
+            "creation_date": "2026-11-10 06:42:16",
+            "id": "753077421",
+            "image": {
+                "is_animated": false,
+                "is_live": false,
+                "large": {
+                    "height": 652,
+                    "size": 0,
+                    "url": "https://img2.doubanio.com/view/group_topic/l/public/p753077421.webp",
+                    "width": 500
+                },
+                "normal": {
+                    "height": 652,
+                    "size": 0,
+                    "url": "https://img2.doubanio.com/view/group_topic/l/public/p753077421.webp",
+                    "width": 500
+                },
+                "primary_color": "DFDFDF",
+                "raw": null
+            },
+            "layout": "C",
+            "seq_id": "1",
+            "size": {
+                "height": 652,
+                "width": 500
+            },
+            "title": "",
+            "topic_id": "505200892"
+        },
+        {
+            "author_id": "121327671",
+            "creation_date": "2026-11-10 06:42:17",
+            "id": "753077422",
+            "image": {
+                "is_animated": false,
+                "is_live": false,
+                "large": {
+                    "height": 653,
+                    "size": 0,
+                    "url": "https://img3.doubanio.com/view/group_topic/l/public/p753077422.webp",
+                    "width": 500
+                },
+                "normal": {
+                    "height": 653,
+                    "size": 0,
+                    "url": "https://img3.doubanio.com/view/group_topic/l/public/p753077422.webp",
+                    "width": 500
+                },
+                "primary_color": "DFDFDF",
+                "raw": null
+            },
+            "layout": "C",
+            "seq_id": "2",
+            "size": {
+                "height": 653,
+                "width": 500
+            },
+            "title": "到底有多复杂",
+            "topic_id": "505200892"
+        },
+        {
+            "author_id": "121327671",
+            "creation_date": "2026-11-10 06:42:17",
+            "id": "753077425",
+            "image": {
+                "is_animated": false,
+                "is_live": false,
+                "large": {
+                    "height": 373,
+                    "size": 0,
+                    "url": "https://img9.doubanio.com/view/group_topic/l/public/p753077425.webp",
+                    "width": 500
+                },
+                "normal": {
+                    "height": 373,
+                    "size": 0,
+                    "url": "https://img9.doubanio.com/view/group_topic/l/public/p753077425.webp",
+                    "width": 500
+                },
+                "primary_color": "DFDFDF",
+                "raw": null
+            },
+            "layout": "C",
+            "seq_id": "3",
+            "size": {
+                "height": 373,
+                "width": 500
+            },
+            "title": "",
+            "topic_id": "505200892"
+        },
+        {
+            "author_id": "121327671",
+            "creation_date": "2026-11-10 06:42:17",
+            "id": "753077424",
+            "image": {
+                "is_animated": false,
+                "is_live": false,
+                "large": {
+                    "height": 689,
+                    "size": 0,
+                    "url": "https://img9.doubanio.com/view/group_topic/l/public/p753077424.webp",
+                    "width": 500
+                },
+                "normal": {
+                    "height": 689,
+                    "size": 0,
+                    "url": "https://img9.doubanio.com/view/group_topic/l/public/p753077424.webp",
+                    "width": 500
+                },
+                "primary_color": "DFDFDF",
+                "raw": null
+            },
+            "layout": "C",
+            "seq_id": "4",
+            "size": {
+                "height": 689,
+                "width": 500
+            },
+            "title": "",
+            "topic_id": "505200892"
+        },
+        {
+            "author_id": "121327671",
+            "creation_date": "2026-11-10 18:25:58",
+            "id": "753143825",
+            "image": {
+                "is_animated": false,
+                "is_live": false,
+                "large": {
+                    "height": 245,
+                    "size": 0,
+                    "url": "https://img9.doubanio.com/view/group_topic/l/public/p753143825.webp",
+                    "width": 500
+                },
+                "normal": {
+                    "height": 245,
+                    "size": 0,
+                    "url": "https://img9.doubanio.com/view/group_topic/l/public/p753143825.webp",
+                    "width": 500
+                },
+                "primary_color": "DFDFDF",
+                "raw": null
+            },
+            "layout": "C",
+            "seq_id": "6",
+            "size": {
+                "height": 245,
+                "width": 500
+            },
+            "title": "",
+            "topic_id": "505200892"
+        }
+    ],
+    "gadget_beanshop": {
+        "context": "{\"object_kind\":1000,\"object_id\":\"121327671\",\"object_title\":\"画画的肖恩\",\"source_title\":\"小组讨论 i飞雪。。震...\",\"source_url\":\"douban:\\/\\/douban.com\\/group\\/topic\\/505200892?_spm_id=MTIxMzI3Njcx\",\"source_type\":9,\"source_id\":\"505200892\"}",
+        "id": 4,
+        "is_default": false,
+        "title": "送礼物给",
+        "uri": "douban.internal://douban.com/beanshop/4?context=%7B%22object_kind%22%3A1000%2C%22object_id%22%3A%22121327671%22%2C%22object_title%22%3A%22%E7%94%BB%E7%94%BB%E7%9A%84%E8%82%96%E6%81%A9%22%2C%22source_title%22%3A%22%E5%B0%8F%E7%BB%84%E8%AE%A8%E8%AE%BA+i%E9%A3%9E%E9%9B%AA%E3%80%82%E3%80%82%E9%9C%87...%22%2C%22source_url%22%3A%22douban%3A%5C%2F%5C%2Fdouban.com%5C%2Fgroup%5C%2Ftopic%5C%2F505200892%3F_spm_id%3DMTIxMzI3Njcx%22%2C%22source_type%22%3A9%2C%22source_id%22%3A%22505200892%22%7D&isTransparent=true"
+    },
+    "ad_filter_type": 0,
+    "ad_info": {
+        "ad_expose_time": null,
+        "ad_id": "4edd1217a3293a89bcbc96e270dce0db",
+        "ad_index": 0,
+        "ad_owner": {
+            "avatar": "",
+            "name": ""
+        },
+        "ad_source": null,
+        "ad_type": "fake",
+        "advertisement_type": 43,
+        "click_track_urls": [],
+        "creative_id": "4edd1217a3293a89bcbc96e270dce0db",
+        "deeplink_info": null,
+        "desc": "",
+        "download_info": null,
+        "ecpm": "",
+        "feedback_info": null,
+        "fetch_timeout": 1600,
+        "image_list": [],
+        "images": [],
+        "impression": 0,
+        "impression_type": 0,
+        "is_gray": false,
+        "layout": 0,
+        "monitor_urls": [],
+        "postback": "{\"topic_image_layout\":\"vertical\",\"feed_slot_index\":1,\"query_words\":\"微博_2\"}",
+        "preload_key": "5",
+        "redirect_confirm": false,
+        "req_id": "1491b6f807a136efd7593ce779c07170",
+        "sdk_list": [
+            {
+                "app_id": "114472",
+                "creative_id": "d75cc935a231ff50d2493ede47260dd8",
+                "floor_price": 20,
+                "height_limit": 550,
+                "image_ratio": 1.78,
+                "is_split_image": false,
+                "pos_id": "31154",
+                "query_word": "",
+                "sdk_id": "jztSDK|114472|31154|267158",
+                "sdk_type": "jztSDK",
+                "show_cta": true,
+                "slot_index": 1,
+                "unit_id": "",
+                "use_real_ecpm": true
+            },
+            {
+                "app_id": "5003519",
+                "creative_id": "731caf0e9f6903c0e5be6bc1ac9f3d9a",
+                "floor_price": 20,
+                "height_limit": 550,
+                "image_ratio": 0,
+                "is_split_image": false,
+                "pos_id": "960267743",
+                "query_word": "",
+                "sdk_id": "pangolinSDK|5003519|960267743|267235",
+                "sdk_type": "pangolinSDK",
+                "show_cta": true,
+                "slot_index": 1,
+                "unit_id": "",
+                "use_real_ecpm": true
+            },
+            {
+                "app_id": "5003519",
+                "creative_id": "a55ff5a23e5166661e7d03db7a77dc8a",
+                "floor_price": 20,
+                "height_limit": 550,
+                "image_ratio": 0,
+                "is_split_image": false,
+                "pos_id": "959456255",
+                "query_word": "",
+                "sdk_id": "pangolinSDK|5003519|959456255|267236",
+                "sdk_type": "pangolinSDK",
+                "show_cta": true,
+                "slot_index": 1,
+                "unit_id": "",
+                "use_real_ecpm": true
+            },
+            {
+                "app_id": "5003519",
+                "creative_id": "5f299fcda8201f458bc660ce618081fa",
+                "floor_price": 10,
+                "height_limit": 550,
+                "image_ratio": 0,
+                "is_split_image": false,
+                "pos_id": "959502160",
+                "query_word": "",
+                "sdk_id": "pangolinExpressSDK|5003519|959502160|267240",
+                "sdk_type": "pangolinExpressSDK",
+                "show_cta": true,
+                "slot_index": 1,
+                "unit_id": "",
+                "use_real_ecpm": true
+            },
+            {
+                "app_id": "5003519",
+                "creative_id": "1fdc622cf93765fe8b909c2fabc208f9",
+                "floor_price": 200,
+                "height_limit": 550,
+                "image_ratio": 0,
+                "is_split_image": false,
+                "pos_id": "957829571",
+                "query_word": "",
+                "sdk_id": "pangolinExpressSDK|5003519|957829571|267242",
+                "sdk_type": "pangolinExpressSDK",
+                "show_cta": true,
+                "slot_index": 1,
+                "unit_id": "",
+                "use_real_ecpm": true
+            },
+            {
+                "app_id": "1106217425",
+                "creative_id": "1c92c9ce62cbb266fe3ad8b57d88bc69",
+                "floor_price": 20,
+                "height_limit": 550,
+                "image_ratio": 0,
+                "is_split_image": false,
+                "pos_id": "6158974223242496",
+                "query_word": "微博",
+                "sdk_id": "gdtSDK|1106217425|6158974223242496|267358",
+                "sdk_type": "gdtSDK",
+                "show_cta": true,
+                "slot_index": 1,
+                "unit_id": "",
+                "use_real_ecpm": true
+            },
+            {
+                "app_id": "1106217425",
+                "creative_id": "3e99fedddbeaa42e369dbceba9bd17d9",
+                "floor_price": 20,
+                "height_limit": 550,
+                "image_ratio": 0,
+                "is_split_image": false,
+                "pos_id": "4146258154728427",
+                "query_word": "",
+                "sdk_id": "gdtSDK|1106217425|4146258154728427|267361",
+                "sdk_type": "gdtSDK",
+                "show_cta": true,
+                "slot_index": 1,
+                "unit_id": "",
+                "use_real_ecpm": true
+            },
+            {
+                "app_id": "1106217425",
+                "creative_id": "87d22669c8d344c19db220b00043ba13",
+                "floor_price": 20,
+                "height_limit": 550,
+                "image_ratio": 0,
+                "is_split_image": false,
+                "pos_id": "9103309271707140",
+                "query_word": "",
+                "sdk_id": "gdtExpressSDK|1106217425|9103309271707140|267364",
+                "sdk_type": "gdtExpressSDK",
+                "show_cta": true,
+                "slot_index": 1,
+                "unit_id": "",
+                "use_real_ecpm": true
+            },
+            {
+                "app_id": "1106217425",
+                "creative_id": "306633973ca2e9423f25ebb8535a9e2a",
+                "floor_price": 20,
+                "height_limit": 550,
+                "image_ratio": 0,
+                "is_split_image": false,
+                "pos_id": "8026432959391422",
+                "query_word": "",
+                "sdk_id": "gdtExpressSDK|1106217425|8026432959391422|267366",
+                "sdk_type": "gdtExpressSDK",
+                "show_cta": true,
+                "slot_index": 1,
+                "unit_id": "",
+                "use_real_ecpm": true
+            },
+            {
+                "app_id": "1106217425",
+                "creative_id": "06c180c96120f91aa4cb5a05239bfb2c",
+                "floor_price": 20,
+                "height_limit": 550,
+                "image_ratio": 0,
+                "is_split_image": false,
+                "pos_id": "9173501651060845",
+                "query_word": "",
+                "sdk_id": "gdtExpressSDK|1106217425|9173501651060845|267368",
+                "sdk_type": "gdtExpressSDK",
+                "show_cta": true,
+                "slot_index": 1,
+                "unit_id": "",
+                "use_real_ecpm": true
+            }
+        ],
+        "sell_type": "",
+        "show_ad_mark": false,
+        "slide_info": null,
+        "start_logging_url_host": "",
+        "title": "",
+        "uniq_id": "",
+        "unit_name": "dale_group_topic_ad",
+        "universal_clicks": [],
+        "universal_fails": [],
+        "universal_success": [],
+        "uri": "",
+        "video_info": null,
+        "webview_evoke": [],
+        "win_notice_urls": []
+    },
+    "can_show_ad": true,
+    "is_report_stock": true
+}

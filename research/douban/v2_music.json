@@ -1,0 +1,335 @@
+{
+    "body_bg_color": "f9f9f4",
+    "can_rate": true,
+    "card_subtitle": "宇多田ヒカル / 2021",
+    "color_scheme": {
+        "_base_color": [
+            0.16666666666666666, 0.020746887966804906, 0.9450980392156862
+        ],
+        "_avg_color": [0.0, 0.023999999999999917, 0.9803921568627451],
+        "primary_color_light": "f2f2ed",
+        "primary_color_dark": "f2f2ed",
+        "secondary_color": "f9f9f4",
+        "is_dark": false
+    },
+    "comment_count": 3754,
+    "controversy_reason": "",
+    "cover_url": "https://img9.doubanio.com/view/subject/m/public/s33775024.jpg",
+    "discs": ["1"],
+    "feedback_uri": "https://m.douban.com/subject/feedback?id=35282427&type=music",
+    "forum_topic_count": 7,
+    "gallery_topic_count": 0,
+    "genres": ["原声"],
+    "header_bg_color": "f2f2ed",
+    "honor_infos": [],
+    "id": "35282427",
+    "interest": {
+        "comment": "",
+        "create_time": "2026-09-17 09:20:32",
+        "done_index": 3,
+        "id": 4946019438,
+        "is_private": false,
+        "rating": {
+            "count": 1,
+            "max": 5,
+            "star_count": 5,
+            "value": 5
+        },
+        "sharing_text": "我的评分：★★★★★ https://www.douban.com/doubanapp/dispatch/music/35282427 来自@豆瓣App",
+        "sharing_url": "https://www.douban.com/doubanapp/dispatch?uri=/subject/35282427/interest/4946019438",
+        "status": "done",
+        "tags": [],
+        "user": {
+            "avatar": "https://img3.doubanio.com/icon/up218545496-2.webp",
+            "avatar_side_icon": "https://img3.doubanio.com/view/files/raw/file-1784692060.png",
+            "avatar_side_icon_id": "484",
+            "avatar_side_icon_type": 3,
+            "id": "218545496",
+            "is_club": false,
+            "kind": "user",
+            "loc": {
+                "id": "108296",
+                "name": "上海",
+                "uid": "shanghai"
+            },
+            "name": "东瓜瓜瓜瓜",
+            "reg_time": "2020-06-24 21:19:09",
+            "type": "user",
+            "uid": "melon-dong",
+            "uri": "douban://douban.com/user/218545496",
+            "url": "https://www.douban.com/people/218545496/"
+        },
+        "vote_count": 0
+    },
+    "interest_cmt_earlier_tip_desc": "",
+    "interest_cmt_earlier_tip_title": "",
+    "interest_control_info": null,
+    "intro": "天后宇多田光 × 新世紀福音戰士 終章神曲〈One Last Kiss〉發行！\n萬眾期待的「福音戰士」系列電影《新・福音戰士劇場版:│▌》經過多次延期，3 月 8 日終於在日本盛大上映，吸引各路粉絲一早就在電影院前排隊，等著第一時間收看這部神作的終章。宇多田光演唱的主題曲〈One Last Kiss〉在 3 月 9 日 (二) 數位上架，由庵野秀明監製的 MV 也於同日在 YouTube 首播，並在上線不到一周天就突破了千萬次點閱數。\n〈One Last Kiss〉也在日本國內 12 個音樂平台獲得了專輯排行榜冠軍，並在 16 個平台上獲得單曲冠軍。更在 9 個音樂平台上同時奪下單曲和專輯的雙冠。不僅在日本，該曲在全世界的 33 個國家 / 地區的音樂平台入榜，在 18 個國家 / 地區的 iTunes 熱門專輯排行榜奪下冠軍！在日本、台灣、香港、澳門的 iTunes 更同時榮獲熱門專輯和熱門歌曲的雙冠！這也創下宇多田光在全球各大數位平台奪下最多冠軍的新紀錄。〈One Last Kiss〉更在美國的 iTunes 搶下熱門專輯的第 2 名，創下跟 2017 年發行「光 -Ray Of Hope MIX-」(Remixed by PUNPEE) 時一樣的最佳紀錄！",
+    "intro_url": "https://www.douban.com/doubanapp//h5/music/35282427/desc",
+    "is_playable": false,
+    "is_released": true,
+    "is_show": false,
+    "isrc": [],
+    "media": ["CD"],
+    "null_rating_reason": "",
+    "other_version": null,
+    "pic": {
+        "large": "https://img9.doubanio.com/view/subject/m/public/s33775024.jpg",
+        "normal": "https://img9.doubanio.com/view/subject/s/public/s33775024.jpg"
+    },
+    "pubdate": ["2021-03-09"],
+    "publisher": ["ソニー・ミュージックレーベルズ"],
+    "rate_info": "",
+    "rating": {
+        "count": 14159,
+        "max": 10,
+        "star_count": 5.0,
+        "value": 9.5
+    },
+    "review_count": 11,
+    "share_activities": [],
+    "sharing_url": "https://www.douban.com/doubanapp/dispatch/music/35282427",
+    "singer": [
+        {
+            "name": "宇多田ヒカル"
+        }
+    ],
+    "songs": [
+        {
+            "apple_album_id": "",
+            "apple_track_id": "",
+            "artist_names": [],
+            "cover_url": "https://img9.doubanio.com/view/subject/s/public/s33775024.jpg",
+            "duration": 0,
+            "playable": false,
+            "preview_url": "",
+            "subject_id": "35282427",
+            "title": "収録曲：",
+            "track_number": null
+        },
+        {
+            "apple_album_id": "",
+            "apple_track_id": "",
+            "artist_names": [],
+            "cover_url": "https://img9.doubanio.com/view/subject/s/public/s33775024.jpg",
+            "duration": 0,
+            "playable": false,
+            "preview_url": "",
+            "subject_id": "35282427",
+            "title": ": One Last Kiss　（映画『シン・エヴァンゲリオン劇場版』テーマソング）",
+            "track_number": 1
+        },
+        {
+            "apple_album_id": "",
+            "apple_track_id": "",
+            "artist_names": [],
+            "cover_url": "https://img9.doubanio.com/view/subject/s/public/s33775024.jpg",
+            "duration": 0,
+            "playable": false,
+            "preview_url": "",
+            "subject_id": "35282427",
+            "title": ": Beautiful World (Da Capo Version)　（映画『シン・エヴァンゲリオン劇場版』テーマソング）",
+            "track_number": 2
+        },
+        {
+            "apple_album_id": "",
+            "apple_track_id": "",
+            "artist_names": [],
+            "cover_url": "https://img9.doubanio.com/view/subject/s/public/s33775024.jpg",
+            "duration": 0,
+            "playable": false,
+            "preview_url": "",
+            "subject_id": "35282427",
+            "title": ": Beautiful World -2021 Remastered-　（映画『ヱヴァンゲリヲン新劇場版：序』テーマソング)",
+            "track_number": 3
+        },
+        {
+            "apple_album_id": "",
+            "apple_track_id": "",
+            "artist_names": [],
+            "cover_url": "https://img9.doubanio.com/view/subject/s/public/s33775024.jpg",
+            "duration": 0,
+            "playable": false,
+            "preview_url": "",
+            "subject_id": "35282427",
+            "title": ": Beautiful World (PLANiTb Acoustica Mix) -2021 Remastered-　（映画『ヱヴァンゲリヲン新劇場版：破』テーマソング)",
+            "track_number": 4
+        },
+        {
+            "apple_album_id": "",
+            "apple_track_id": "",
+            "artist_names": [],
+            "cover_url": "https://img9.doubanio.com/view/subject/s/public/s33775024.jpg",
+            "duration": 0,
+            "playable": false,
+            "preview_url": "",
+            "subject_id": "35282427",
+            "title": ": 桜流し -2021 Remastered-　（映画『ヱヴァンゲリヲン新劇場版：Q』テーマソング)",
+            "track_number": 5
+        },
+        {
+            "apple_album_id": "",
+            "apple_track_id": "",
+            "artist_names": [],
+            "cover_url": "https://img9.doubanio.com/view/subject/s/public/s33775024.jpg",
+            "duration": 0,
+            "playable": false,
+            "preview_url": "",
+            "subject_id": "35282427",
+            "title": ": Fly Me To The Moon (In Other Words) (2007 MIX) -2021 Remastered-　（映画『ヱヴァンゲリヲン新劇場版：序』予告編挿入歌)",
+            "track_number": 6
+        },
+        {
+            "apple_album_id": "",
+            "apple_track_id": "",
+            "artist_names": [],
+            "cover_url": "https://img9.doubanio.com/view/subject/s/public/s33775024.jpg",
+            "duration": 0,
+            "playable": false,
+            "preview_url": "",
+            "subject_id": "35282427",
+            "title": ": One Last Kiss (Instrumental)",
+            "track_number": 7
+        },
+        {
+            "apple_album_id": "",
+            "apple_track_id": "",
+            "artist_names": [],
+            "cover_url": "https://img9.doubanio.com/view/subject/s/public/s33775024.jpg",
+            "duration": 0,
+            "playable": false,
+            "preview_url": "",
+            "subject_id": "35282427",
+            "title": ": Beautiful World (Da Capo Version) (Instrumental)",
+            "track_number": 8
+        }
+    ],
+    "subject_collections": [],
+    "subtype": "music",
+    "tags": [],
+    "title": "One Last Kiss",
+    "tracks_url": "https://www.douban.com/doubanapp//h5/music/35282427/songs",
+    "type": "music",
+    "uri": "douban://douban.com/music/35282427",
+    "url": "https://music.douban.com/subject/35282427/",
+    "variable_modules": [
+        {
+            "id": "honor_infos",
+            "sub_modules": []
+        },
+        {
+            "id": "rating",
+            "sub_modules": []
+        },
+        {
+            "id": "interest",
+            "sub_modules": []
+        },
+        {
+            "id": "share",
+            "sub_modules": [
+                {
+                    "id": "screenshot"
+                },
+                {
+                    "id": "doulist"
+                },
+                {
+                    "id": "status"
+                },
+                {
+                    "id": "other_channels"
+                }
+            ]
+        },
+        {
+            "id": "related_items",
+            "sub_modules": []
+        },
+        {
+            "id": "comments",
+            "sub_modules": [
+                {
+                    "id": "count"
+                },
+                {
+                    "id": "sort_by",
+                    "data": [
+                        {
+                            "id": "hot",
+                            "name": "热门"
+                        },
+                        {
+                            "id": "latest",
+                            "name": "最新"
+                        },
+                        {
+                            "id": "friend",
+                            "name": "友邻"
+                        }
+                    ],
+                    "data_type": "sort_by"
+                },
+                {
+                    "id": "rating_scope"
+                }
+            ]
+        },
+        {
+            "id": "tags",
+            "sub_modules": []
+        },
+        {
+            "id": "related_doulists",
+            "sub_modules": []
+        },
+        {
+            "id": "other_interests",
+            "sub_modules": []
+        },
+        {
+            "id": "related_subjects",
+            "sub_modules": []
+        },
+        {
+            "id": "ugc_tabs",
+            "sub_modules": [
+                {
+                    "id": "ugc_tab",
+                    "data_type": "ugc_tab",
+                    "data": {
+                        "type": "review",
+                        "title": "乐评",
+                        "source": "reviews",
+                        "sort_by": [
+                            {
+                                "id": "hot",
+                                "name": "热门"
+                            },
+                            {
+                                "id": "latest",
+                                "name": "最新"
+                            },
+                            {
+                                "id": "friend",
+                                "name": "友邻"
+                            }
+                        ]
+                    }
+                },
+                {
+                    "id": "ugc_tab",
+                    "data_type": "ugc_tab",
+                    "data": {
+                        "type": "forum",
+                        "title": "讨论",
+                        "source": "forum_topics"
+                    }
+                }
+            ]
+        }
+    ],
+    "vendor_count": 0,
+    "version": ["EP"],
+    "wechat_timeline_share": "screenshot"
+}

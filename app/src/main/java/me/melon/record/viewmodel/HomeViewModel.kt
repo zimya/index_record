@@ -32,7 +32,14 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
         val apps: Set<String> = emptySet(),
         val platforms: Set<String> = emptySet(),
         val types: Set<String> = emptySet()
-    )
+    ) {
+        val isActive: Boolean
+            get() = startMillis != null ||
+                    endMillis != null ||
+                    apps.isNotEmpty() ||
+                    platforms.isNotEmpty() ||
+                    types.isNotEmpty()
+    }
 
     private val rawDataBox = ObjectBox.store.boxFor(RawData::class.java)
     private val recordBox = ObjectBox.store.boxFor(UniversalRecord::class.java)
@@ -216,6 +223,9 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
     val homeListState = LazyListState()
 
     fun pushDetail(record: UniversalRecord) {
+        if (navStack.isNotEmpty() && navStack.last().id == record.id && record.id != 0L) {
+            return
+        }
         lastNavAction = NavAction.PUSH
         navStack.add(record)
     }
@@ -328,10 +338,11 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
         val apps = filterState.apps
         val platforms = filterState.platforms
         val types = filterState.types
+        val allowComments = trimmedQuery.isNotEmpty() || ("comment" in types)
 
         return data.asSequence()
             .filter { record ->
-                if (trimmedQuery.isEmpty() && record.recordType == "comment") return@filter false
+                if (!allowComments && record.recordType == "comment") return@filter false
                 if (start != null && record.captureTime < start) return@filter false
                 if (end != null && record.captureTime > end) return@filter false
                 val sourceApp = resolveSourceApp(record)

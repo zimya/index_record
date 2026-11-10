@@ -2,7 +2,10 @@ package me.melon.record.ui
 
 import androidx.activity.compose.BackHandler
 import androidx.compose.animation.*
+import androidx.compose.animation.core.FastOutSlowInEasing
+import androidx.compose.animation.core.animateFloat
 import androidx.compose.animation.core.tween
+import androidx.compose.animation.core.updateTransition
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.detectVerticalDragGestures
@@ -16,6 +19,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.FilterList
+import androidx.compose.material.icons.outlined.FilterList
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.*
 import androidx.compose.material3.pulltorefresh.PullToRefreshContainer
@@ -24,6 +28,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.onSizeChanged
@@ -34,6 +39,8 @@ import androidx.compose.ui.focus.focusRequester
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.TextFieldValue
+import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
@@ -95,41 +102,35 @@ fun HomeScreen(viewModel: HomeViewModel = viewModel()) {
     var isSearchActive by rememberSaveable { mutableStateOf(false) }
     var showFilterSheet by remember { mutableStateOf(false) }
 
-    AnimatedContent(
-        targetState = currentRecord,
-        transitionSpec = {
-            if (lastNavAction == HomeViewModel.NavAction.PUSH) {
-                (slideInHorizontally { it } + fadeIn()).togetherWith(slideOutHorizontally { -it / 2 } + fadeOut())
-            } else {
-                (slideInHorizontally { -it / 2 } + fadeIn()).togetherWith(slideOutHorizontally { it } + fadeOut())
-            }.using(SizeTransform(clip = false))
-        },
-        label = "ScreenTransition"
-    ) { targetRecord ->
-        if (targetRecord != null) {
-            BackHandler {
-                viewModel.popDetail()
-            }
-            if (targetRecord.recordType == "comment") {
-                CommentDetailScreen(
-                    record = targetRecord,
-                    onBack = { viewModel.popDetail() },
-                    onOpenParent = { viewModel.pushDetail(it) }
-                )
-            } else if (targetRecord.recordType == "question") {
-                QuestionDetailScreen(
-                    record = targetRecord,
-                    onBack = { viewModel.popDetail() },
-                    onOpenAnswer = { viewModel.pushDetail(it) }
-                )
-            } else {
-                RecordDetailScreen(
-                    record = targetRecord,
-                    onBack = { viewModel.popDetail() },
-                    onOpenRecord = { viewModel.pushDetail(it) }
-                )
-            }
-        } else {
+    val hasDetail = currentRecord != null
+    var lastNonNullRecord by remember { mutableStateOf<UniversalRecord?>(null) }
+    if (currentRecord != null) {
+        lastNonNullRecord = currentRecord
+    }
+
+    val homeTransition = updateTransition(targetState = hasDetail, label = "HomeTransition")
+    val homeOffsetFraction by homeTransition.animateFloat(
+        transitionSpec = { tween(durationMillis = 300, easing = FastOutSlowInEasing) },
+        label = "HomeOffsetFraction"
+    ) { showDetail ->
+        if (showDetail) -0.35f else 0f
+    }
+    val homeAlpha by homeTransition.animateFloat(
+        transitionSpec = { tween(durationMillis = 300, easing = FastOutSlowInEasing) },
+        label = "HomeAlpha"
+    ) { showDetail ->
+        if (showDetail) 0.85f else 1f
+    }
+
+    Box(modifier = Modifier.fillMaxSize()) {
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .graphicsLayer {
+                    translationX = size.width * homeOffsetFraction
+                    alpha = homeAlpha
+                }
+        ) {
             PullToRefreshListScreen(
                 records = records,
                 recordsLoaded = isInitialLoaded,
@@ -149,6 +150,81 @@ fun HomeScreen(viewModel: HomeViewModel = viewModel()) {
                 syncProgress = syncProgress,
                 onItemClick = { viewModel.pushDetail(it) }
             )
+        }
+
+        AnimatedVisibility(
+            visible = hasDetail,
+            enter = slideInHorizontally(
+                animationSpec = tween(300, easing = FastOutSlowInEasing),
+                initialOffsetX = { it }
+            ) + fadeIn(animationSpec = tween(300)),
+            exit = slideOutHorizontally(
+                animationSpec = tween(300, easing = FastOutSlowInEasing),
+                targetOffsetX = { it }
+            ) + fadeOut(animationSpec = tween(300))
+        ) {
+            val recordToShow = currentRecord ?: lastNonNullRecord
+            if (recordToShow != null) {
+                BackHandler(enabled = hasDetail) {
+                    viewModel.popDetail()
+                }
+
+                Surface(
+                    modifier = Modifier.fillMaxSize(),
+                    color = MaterialTheme.colorScheme.background,
+                    shadowElevation = 8.dp
+                ) {
+                    AnimatedContent(
+                        targetState = recordToShow,
+                        transitionSpec = {
+                            if (lastNavAction == HomeViewModel.NavAction.PUSH) {
+                                (slideInHorizontally(
+                                    animationSpec = tween(300, easing = FastOutSlowInEasing),
+                                    initialOffsetX = { it }
+                                ) + fadeIn(animationSpec = tween(300)))
+                                    .togetherWith(
+                                        slideOutHorizontally(
+                                            animationSpec = tween(300, easing = FastOutSlowInEasing),
+                                            targetOffsetX = { -it / 2 }
+                                        ) + fadeOut(animationSpec = tween(300))
+                                    )
+                            } else {
+                                (slideInHorizontally(
+                                    animationSpec = tween(300, easing = FastOutSlowInEasing),
+                                    initialOffsetX = { -it / 2 }
+                                ) + fadeIn(animationSpec = tween(300)))
+                                    .togetherWith(
+                                        slideOutHorizontally(
+                                            animationSpec = tween(300, easing = FastOutSlowInEasing),
+                                            targetOffsetX = { it }
+                                        ) + fadeOut(animationSpec = tween(300))
+                                    )
+                            }.using(SizeTransform(clip = false))
+                        },
+                        label = "DetailStackTransition"
+                    ) { targetRecord ->
+                        if (targetRecord.recordType == "comment") {
+                            CommentDetailScreen(
+                                record = targetRecord,
+                                onBack = { viewModel.popDetail() },
+                                onOpenParent = { viewModel.pushDetail(it) }
+                            )
+                        } else if (targetRecord.recordType == "question") {
+                            QuestionDetailScreen(
+                                record = targetRecord,
+                                onBack = { viewModel.popDetail() },
+                                onOpenAnswer = { viewModel.pushDetail(it) }
+                            )
+                        } else {
+                            RecordDetailScreen(
+                                record = targetRecord,
+                                onBack = { viewModel.popDetail() },
+                                onOpenRecord = { viewModel.pushDetail(it) }
+                            )
+                        }
+                    }
+                }
+            }
         }
     }
 
@@ -208,6 +284,19 @@ fun PullToRefreshListScreen(
 
     val keyboardController = LocalSoftwareKeyboardController.current
     val isSearching = isSearchActive || searchQuery.isNotBlank()
+
+    var textFieldValue by rememberSaveable(stateSaver = TextFieldValue.Saver) {
+        mutableStateOf(TextFieldValue(searchQuery, TextRange(searchQuery.length)))
+    }
+
+    LaunchedEffect(searchQuery) {
+        if (searchQuery != textFieldValue.text) {
+            textFieldValue = TextFieldValue(
+                text = searchQuery,
+                selection = TextRange(searchQuery.length)
+            )
+        }
+    }
 
     BackHandler(enabled = isSearching) {
         keyboardController?.hide()
@@ -335,8 +424,13 @@ fun PullToRefreshListScreen(
                     TopAppBar(
                         title = {
                             TextField(
-                                value = searchQuery,
-                                onValueChange = onSearchQueryChange,
+                                value = textFieldValue,
+                                onValueChange = { newValue ->
+                                    textFieldValue = newValue
+                                    if (newValue.text != searchQuery) {
+                                        onSearchQueryChange(newValue.text)
+                                    }
+                                },
                                 modifier = Modifier
                                     .fillMaxWidth()
                                     .focusRequester(focusRequester),
@@ -353,8 +447,11 @@ fun PullToRefreshListScreen(
                                     unfocusedIndicatorColor = Color.Transparent
                                 ),
                                 trailingIcon = {
-                                    if (searchQuery.isNotEmpty()) {
-                                        IconButton(onClick = { onSearchQueryChange("") }) {
+                                    if (textFieldValue.text.isNotEmpty()) {
+                                        IconButton(onClick = {
+                                            textFieldValue = TextFieldValue("", TextRange.Zero)
+                                            onSearchQueryChange("")
+                                        }) {
                                             Icon(Icons.Default.Close, contentDescription = "Clear")
                                         }
                                     }
@@ -379,7 +476,12 @@ fun PullToRefreshListScreen(
                                 Icon(Icons.Default.Search, contentDescription = "Search")
                             }
                             IconButton(onClick = onOpenFilter) {
-                                Icon(Icons.Default.FilterList, contentDescription = "Filter")
+                                val hasFilter = filter.isActive
+                                Icon(
+                                    imageVector = if (hasFilter) Icons.Filled.FilterList else Icons.Outlined.FilterList,
+                                    contentDescription = "Filter",
+                                    tint = if (hasFilter) MaterialTheme.colorScheme.primary else LocalContentColor.current
+                                )
                             }
                         },
                         colors = TopAppBarDefaults.topAppBarColors(

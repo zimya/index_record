@@ -51,8 +51,8 @@ import kotlinx.coroutines.withContext
 import me.melon.record.ObjectBox
 import me.melon.record.data.model.UniversalRecord
 import me.melon.record.data.model.UniversalRecord_
+import me.melon.record.markdown.RenderMarkdownText
 import me.melon.record.ui.components.AvatarImage
-import me.melon.record.ui.components.HtmlBodyWebView
 import org.jsoup.Jsoup
 import java.text.SimpleDateFormat
 import java.util.Date
@@ -210,26 +210,21 @@ fun QuestionDetailScreen(
             }
 
             item {
-                Surface(
-                    modifier = Modifier.fillMaxWidth(),
-                    color = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.3f),
-                    shape = MaterialTheme.shapes.medium
-                ) {
-                    if (record.content.isNotBlank()) {
-                        HtmlBodyWebView(
-                            htmlBody = record.content,
-                            modifier = Modifier.padding(16.dp),
-                            onImageClick = { _, _ -> }
-                        )
-                    } else {
-                        val hint = excerpt.ifBlank { "（问题详情未缓存）" }
-                        Text(
-                            text = hint,
-                            style = MaterialTheme.typography.bodyMedium,
-                            modifier = Modifier.padding(16.dp),
-                            color = MaterialTheme.colorScheme.outline
-                        )
-                    }
+                if (record.content.isNotBlank()) {
+                    RenderMarkdownText(
+                        markdown = record.content,
+                        modifier = Modifier.fillMaxWidth(),
+                        enableScroll = false,
+                        selectable = true,
+                        onImageClick = { _, _ -> }
+                    )
+                } else {
+                    val hint = excerpt.ifBlank { "（问题详情未缓存）" }
+                    Text(
+                        text = hint,
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = MaterialTheme.colorScheme.outline
+                    )
                 }
                 Spacer(modifier = Modifier.height(16.dp))
             }

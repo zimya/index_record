@@ -11,6 +11,8 @@ buildscript {
 // 这里只声明插件的版本，apply false 表示不在根目录应用，但在子模块中可用
 plugins {
     id("com.android.application") version "8.8.0" apply false
-    id("org.jetbrains.kotlin.android") version "2.1.0" apply false
-    id("org.jetbrains.kotlin.plugin.compose") version "2.1.0" apply false
+    id("com.android.library") version "8.8.0" apply false
+    kotlin("android") version "2.1.0" apply false
+    kotlin("multiplatform") version "2.1.0" apply false
+    kotlin("plugin.compose") version "2.1.0" apply false
 }

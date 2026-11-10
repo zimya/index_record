@@ -35,6 +35,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import me.melon.record.markdown.RenderMarkdownText
 import com.google.gson.JsonObject
 import com.google.gson.JsonParser
 import kotlinx.coroutines.Dispatchers
@@ -167,18 +168,12 @@ fun CommentDetailScreen(
                 }
             }
             Spacer(modifier = Modifier.height(12.dp))
-            Surface(
+            RenderMarkdownText(
+                markdown = record.content,
                 modifier = Modifier.fillMaxWidth(),
-                color = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.3f),
-                shape = MaterialTheme.shapes.medium
-            ) {
-                Text(
-                    text = cleanContent,
-                    style = MaterialTheme.typography.bodyLarge,
-                    modifier = Modifier.padding(16.dp),
-                    color = MaterialTheme.colorScheme.onSurface
-                )
-            }
+                enableScroll = false,
+                selectable = true,
+            )
             Spacer(modifier = Modifier.height(24.dp))
 
             val target = related

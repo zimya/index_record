@@ -28,6 +28,12 @@ import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
+import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
@@ -200,52 +206,63 @@ fun PullToRefreshListScreen(
         }
     }
 
-    BackHandler(enabled = isSearchActive || searchQuery.isNotBlank()) {
+    val keyboardController = LocalSoftwareKeyboardController.current
+    val isSearching = isSearchActive || searchQuery.isNotBlank()
+
+    BackHandler(enabled = isSearching) {
+        keyboardController?.hide()
         if (searchQuery.isNotBlank()) {
             onSearchQueryChange("")
         }
         onSearchActiveChange(false)
     }
 
-
     var syncSessionActive by remember { mutableStateOf(false) }
-    val showSync = syncSessionActive || rawPendingCount > 0L || syncProgress.isRunning
-    var sessionLoadedCount by remember(searchQuery, filter) { mutableStateOf(0) }
-    var acknowledgedLoadedCount by remember(searchQuery, filter) { mutableStateOf(0) }
-    var previousRecordIds by remember(searchQuery, filter) { mutableStateOf<Set<Long>?>(null) }
-    LaunchedEffect(records, recordsLoaded, searchQuery, filter) {
+    val showSync = (syncSessionActive || rawPendingCount > 0L || syncProgress.isRunning) && !isSearching
+    var sessionLoadedCount by remember { mutableStateOf(0) }
+    var acknowledgedLoadedCount by remember { mutableStateOf(0) }
+    var previousRecordIds by remember { mutableStateOf<Set<Long>?>(null) }
+
+    LaunchedEffect(records, recordsLoaded) {
         if (!recordsLoaded) return@LaunchedEffect
         val ids = records.mapTo(HashSet()) { it.id }
         val previous = previousRecordIds
         previousRecordIds = ids
         if (previous == null) return@LaunchedEffect
-        val addedCount = ids.count { it !in previous }
-        if (addedCount > 0) {
-            if (!syncSessionActive) {
-                sessionLoadedCount = 0
-                acknowledgedLoadedCount = 0
+        // 只有在真实的同步或刷新会话中、且非搜索状态下，列表新增项才计入本轮加载数
+        if (syncSessionActive && !isSearching) {
+            val addedCount = ids.count { it !in previous }
+            if (addedCount > 0) {
+                sessionLoadedCount += addedCount
             }
-            sessionLoadedCount += addedCount
-            syncSessionActive = true
+        }
+    }
+
+    // 当用户进入搜索时，立即清理提示和历史统计
+    LaunchedEffect(isSearching) {
+        if (isSearching) {
+            hintVisible = false
+            sessionLoadedCount = 0
+            acknowledgedLoadedCount = 0
         }
     }
 
     // 宿主逐条转存时，队列可能在批次间归零；持续空闲后才结束本轮展示。
-    LaunchedEffect(rawPendingCount, syncProgress, records, pullState.isRefreshing) {
+    LaunchedEffect(rawPendingCount, syncProgress.isRunning, pullState.isRefreshing) {
         if (rawPendingCount > 0L || syncProgress.isRunning || pullState.isRefreshing) {
             if (!syncSessionActive) {
                 sessionLoadedCount = 0
                 acknowledgedLoadedCount = 0
             }
             syncSessionActive = true
-        } else {
+        } else if (syncSessionActive) {
             delay(2500)
             syncSessionActive = false
         }
     }
 
-    LaunchedEffect(showSync, sessionLoadedCount, isAtTop) {
-        if (showSync) {
+    LaunchedEffect(showSync, sessionLoadedCount, isAtTop, isSearching) {
+        if (isSearching || showSync) {
             hintVisible = false
             return@LaunchedEffect
         }
@@ -286,6 +303,8 @@ fun PullToRefreshListScreen(
                 hintShowArrow = false
                 hintVisible = true
                 hintNoNewToken = System.currentTimeMillis()
+            } else if (loadedCount > 0 && sessionLoadedCount == 0) {
+                sessionLoadedCount = loadedCount
             }
         } finally {
             pullState.endRefresh()
@@ -305,14 +324,28 @@ fun PullToRefreshListScreen(
                 label = "TopBarTransition"
             ) { active ->
                 if (active) {
+                    val focusRequester = remember { FocusRequester() }
+                    LaunchedEffect(Unit) {
+                        runCatching { focusRequester.requestFocus() }
+                        delay(100)
+                        runCatching { focusRequester.requestFocus() }
+                        keyboardController?.show()
+                    }
+
                     TopAppBar(
                         title = {
                             TextField(
                                 value = searchQuery,
                                 onValueChange = onSearchQueryChange,
-                                modifier = Modifier.fillMaxWidth(),
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .focusRequester(focusRequester),
                                 placeholder = { Text("搜索内容、作者、平台...") },
                                 singleLine = true,
+                                keyboardOptions = KeyboardOptions(imeAction = ImeAction.Search),
+                                keyboardActions = KeyboardActions(onSearch = {
+                                    keyboardController?.hide()
+                                }),
                                 colors = TextFieldDefaults.colors(
                                     focusedContainerColor = Color.Transparent,
                                     unfocusedContainerColor = Color.Transparent,
@@ -329,7 +362,10 @@ fun PullToRefreshListScreen(
                             )
                         },
                         navigationIcon = {
-                            IconButton(onClick = { onSearchActiveChange(false) }) {
+                            IconButton(onClick = {
+                                keyboardController?.hide()
+                                onSearchActiveChange(false)
+                            }) {
                                 Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back")
                             }
                         },

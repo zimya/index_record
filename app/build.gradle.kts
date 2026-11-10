@@ -3,6 +3,11 @@ plugins {
     id("org.jetbrains.kotlin.android")
     id("org.jetbrains.kotlin.plugin.compose")
     id("io.objectbox")
+    kotlin("kapt")
+}
+
+kapt {
+    correctErrorTypes = true
 }
 
 android {
@@ -72,6 +77,15 @@ dependencies {
     implementation("com.google.code.gson:gson:2.10.1")
     implementation("org.jsoup:jsoup:1.17.2")
 
+    // Markdown & Syntax & Math
+    implementation("dev.snipme:highlights:1.1.0")
+    implementation("io.github.erweixin:ratex-android:0.1.8")
+    implementation("org.commonmark:commonmark:0.24.0")
+    implementation("org.commonmark:commonmark-ext-gfm-tables:0.24.0")
+    implementation("org.commonmark:commonmark-ext-autolink:0.24.0")
+    implementation("org.commonmark:commonmark-ext-gfm-strikethrough:0.24.0")
+    implementation("org.commonmark:commonmark-ext-footnotes:0.24.0")
+
     implementation("io.coil-kt:coil-compose:2.6.0")
 
     // Material Icons Extended
@@ -79,6 +93,8 @@ dependencies {
 
     // ObjectBox Browser
     debugImplementation("io.objectbox:objectbox-android-objectbrowser:3.7.1")
+
+    testImplementation("junit:junit:4.13.2")
 
     // Xposed
     compileOnly(files("libs/api-82.jar"))

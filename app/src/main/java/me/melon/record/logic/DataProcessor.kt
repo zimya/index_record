@@ -15,6 +15,7 @@ import me.melon.record.ObjectBox
 import me.melon.record.data.model.RawData
 import me.melon.record.data.model.UniversalRecord
 import me.melon.record.data.model.UniversalRecord_
+import me.melon.record.markdown.zhihuHtmlToMarkdown
 import org.jsoup.Jsoup
 import java.util.regex.Pattern
 
@@ -193,7 +194,8 @@ object DataProcessor {
 
         val articleId = cleanUrl.trimEnd('/').substringAfterLast('/')
         val title = jsonParams.safeString("title")
-        val content = jsonParams.safeString("content")
+        val rawContent = jsonParams.safeString("content")
+        val content = zhihuHtmlToMarkdown(rawContent)
 
         val authorObj = jsonParams.getAsJsonObject("author")
         val authorName = authorObj?.safeString("name") ?: "Unknown"
@@ -238,7 +240,8 @@ object DataProcessor {
             ?.getAsJsonObject(answerId)
             ?: throw Exception("Answer data not found for id: $answerId")
 
-        val content = answerData.safeString("content")
+        val rawContent = answerData.safeString("content")
+        val content = zhihuHtmlToMarkdown(rawContent)
 
         val initialState = fullJson.getAsJsonObject("initialState")
 
@@ -341,7 +344,8 @@ object DataProcessor {
         if (questionId.isBlank()) throw Exception("Question id not found")
 
         val title = jsonParams.safeString("title")
-        val detail = jsonParams.safeString("detail").ifBlank { jsonParams.safeString("editable_detail") }
+        val rawDetail = jsonParams.safeString("detail").ifBlank { jsonParams.safeString("editable_detail") }
+        val detail = if (rawDetail.isNotBlank()) zhihuHtmlToMarkdown(rawDetail) else ""
 
         val authorObj = jsonParams.getAsJsonObject("author")
         val authorName = authorObj?.safeString("name") ?: "知乎用户"
@@ -556,7 +560,12 @@ object DataProcessor {
             val commentId = commentObj.safeString("id")
             if (commentId.isEmpty()) return
 
-            val content = commentObj.safeString("content")
+            val rawContent = commentObj.safeString("content")
+            val content = if (rawContent.contains("<") && rawContent.contains(">")) {
+                zhihuHtmlToMarkdown(rawContent)
+            } else {
+                rawContent
+            }
 
             val authorObj = commentObj.getAsJsonObject("author")
             val authorName = authorObj?.safeString("name") ?: "Unknown"

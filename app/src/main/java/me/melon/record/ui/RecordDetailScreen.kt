@@ -47,7 +47,7 @@ import androidx.compose.ui.unit.dp
 import com.google.gson.JsonObject
 import com.google.gson.JsonParser
 import me.melon.record.data.model.UniversalRecord
-import me.melon.record.ui.components.HtmlBodyWebView
+import me.melon.record.markdown.RenderMarkdownText
 import me.melon.record.ui.components.AvatarImage
 import me.melon.record.ui.components.CoverImage
 import me.melon.record.ui.components.ImageViewerDialog
@@ -273,20 +273,16 @@ fun RecordDetailScreen(
             }
 
             item {
-                Surface(
+                RenderMarkdownText(
+                    markdown = record.content,
                     modifier = Modifier.fillMaxWidth(),
-                    color = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.3f),
-                    shape = MaterialTheme.shapes.medium
-                ) {
-                    HtmlBodyWebView(
-                        htmlBody = record.content,
-                        modifier = Modifier.padding(16.dp),
-                        onImageClick = { urls, index ->
-                            viewerUrls = urls
-                            viewerIndex = index
-                        }
-                    )
-                }
+                    enableScroll = false,
+                    selectable = true,
+                    onImageClick = { urls, index ->
+                        viewerUrls = urls
+                        viewerIndex = index
+                    }
+                )
                 Spacer(modifier = Modifier.height(16.dp))
             }
 

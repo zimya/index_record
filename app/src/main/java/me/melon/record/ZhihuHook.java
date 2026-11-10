@@ -156,7 +156,7 @@ public void handleLoadPackage(final XC_LoadPackage.LoadPackageParam lpparam) thr
                         try {
                             Object urlObj = XposedHelpers.callMethod(request, "url");
                             String url = (urlObj != null) ? urlObj.toString() : "";
-                            if (url.contains("zhihu.com")) {
+                            if (isTargetUrl(url)) {
                                 saveResponseAsync(response, url);
                             }
                         } catch (Throwable ignored) {}
@@ -169,7 +169,18 @@ public void handleLoadPackage(final XC_LoadPackage.LoadPackageParam lpparam) thr
             XposedHelpers.callMethod(builder, "addInterceptor", interceptor);
         } catch (Throwable ignored) {}
     }
-private void saveResponseAsync(Object response, final String url) {
+
+    private static boolean isTargetUrl(String url) {
+        if (url == null || !url.contains("zhihu.com")) {
+            return false;
+        }
+        return url.contains("/articles/")
+            || url.contains("/appview/v2/answer/")
+            || url.contains("/questions/")
+            || url.contains("/comment_v5/");
+    }
+
+    private void saveResponseAsync(Object response, final String url) {
     try {
         XposedBridge.log(TAG + "[Found URL] " + (url.length() > 100 ? url.substring(0, 100) : url));
         String contentType = (String) XposedHelpers.callMethod(response, "header", "Content-Type");

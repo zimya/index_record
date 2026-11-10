@@ -7,6 +7,11 @@ import android.util.Log
 import android.content.Intent
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.compose.foundation.lazy.LazyListState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateListOf
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -204,27 +209,56 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
 
     val syncProgress: StateFlow<DataProcessor.SyncProgress> = DataProcessor.syncProgress
 
+    enum class NavAction { PUSH, POP }
+
+    val navStack = mutableStateListOf<UniversalRecord>()
+    var lastNavAction by mutableStateOf(NavAction.PUSH)
+    val homeListState = LazyListState()
+
+    fun pushDetail(record: UniversalRecord) {
+        lastNavAction = NavAction.PUSH
+        navStack.add(record)
+    }
+
+    fun popDetail(): Boolean {
+        if (navStack.isNotEmpty()) {
+            lastNavAction = NavAction.POP
+            navStack.removeAt(navStack.lastIndex)
+            return true
+        }
+        return false
+    }
+
+    private val _isInitialLoaded = MutableStateFlow(false)
+    val isInitialLoaded: StateFlow<Boolean> = _isInitialLoaded.asStateFlow()
+
     // 监听 UniversalRecord 数据库变化，在 IO 线程完成查询与过滤
     @OptIn(kotlinx.coroutines.ExperimentalCoroutinesApi::class)
-    val recordsFlow: Flow<List<UniversalRecord>> = combine(_searchQuery, _filter) { q, f -> q to f }
+    val recordsFlow: StateFlow<List<UniversalRecord>> = combine(_searchQuery, _filter) { q, f -> q to f }
         .flatMapLatest { (queryText, filterState) ->
-        callbackFlow {
-            val queryBuilder = recordBox.query()
-            val query = queryBuilder.orderDesc(UniversalRecord_.captureTime).build()
+            callbackFlow {
+                val queryBuilder = recordBox.query()
+                val query = queryBuilder.orderDesc(UniversalRecord_.captureTime).build()
 
-            val subscription = query.subscribe()
-                .observer { data ->
-                    trySend(applyFilters(data, queryText, filterState))
+                val subscription = query.subscribe()
+                    .observer { data ->
+                        trySend(applyFilters(data, queryText, filterState))
+                    }
+
+                trySend(applyFilters(query.find(), queryText, filterState))
+
+                awaitClose {
+                    subscription.cancel()
+                    query.close()
                 }
-
-            trySend(applyFilters(query.find(), queryText, filterState))
-
-            awaitClose {
-                subscription.cancel()
-                query.close()
-            }
-        }.flowOn(Dispatchers.IO)
-    }
+            }.flowOn(Dispatchers.IO)
+        }
+        .onEach { _isInitialLoaded.value = true }
+        .stateIn(
+            scope = viewModelScope,
+            started = SharingStarted.Eagerly,
+            initialValue = emptyList()
+        )
 
     suspend fun refreshData(): Int {
         if (_isRefreshing.value) return 0

@@ -54,8 +54,6 @@ import me.melon.record.logic.DataProcessor
 import kotlin.math.max
 import kotlin.math.roundToInt
 
-private enum class NavAction { PUSH, POP }
-
 private sealed interface HomeListItem {
     val key: String
 }
@@ -76,8 +74,8 @@ private data class AnswerGroupListItem(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeScreen(viewModel: HomeViewModel = viewModel()) {
-    val loadedRecords by viewModel.recordsFlow.collectAsState(initial = null)
-    val records = loadedRecords.orEmpty()
+    val records by viewModel.recordsFlow.collectAsState()
+    val isInitialLoaded by viewModel.isInitialLoaded.collectAsState()
     val searchQuery by viewModel.searchQuery.collectAsState()
     val filter by viewModel.filter.collectAsState()
     val availableApps by viewModel.availableAppsFlow.collectAsState(initial = emptyList())
@@ -86,17 +84,15 @@ fun HomeScreen(viewModel: HomeViewModel = viewModel()) {
     val rawPendingCount by viewModel.rawPendingCountFlow.collectAsState(initial = 0L)
     val syncProgress by viewModel.syncProgress.collectAsState()
 
-    val navStack = remember { mutableStateListOf<UniversalRecord>() }
-    val currentRecord = navStack.lastOrNull()
-    var lastNavAction by remember { mutableStateOf(NavAction.PUSH) }
-    var isSearchActive by remember { mutableStateOf(false) }
+    val currentRecord = viewModel.navStack.lastOrNull()
+    val lastNavAction = viewModel.lastNavAction
+    var isSearchActive by rememberSaveable { mutableStateOf(false) }
     var showFilterSheet by remember { mutableStateOf(false) }
-    val homeListState = rememberSaveable(saver = LazyListState.Saver) { LazyListState() }
 
     AnimatedContent(
         targetState = currentRecord,
         transitionSpec = {
-            if (lastNavAction == NavAction.PUSH) {
+            if (lastNavAction == HomeViewModel.NavAction.PUSH) {
                 (slideInHorizontally { it } + fadeIn()).togetherWith(slideOutHorizontally { -it / 2 } + fadeOut())
             } else {
                 (slideInHorizontally { -it / 2 } + fadeIn()).togetherWith(slideOutHorizontally { it } + fadeOut())
@@ -106,58 +102,31 @@ fun HomeScreen(viewModel: HomeViewModel = viewModel()) {
     ) { targetRecord ->
         if (targetRecord != null) {
             BackHandler {
-                if (navStack.isNotEmpty()) {
-                    lastNavAction = NavAction.POP
-                    navStack.removeAt(navStack.lastIndex)
-                }
+                viewModel.popDetail()
             }
             if (targetRecord.recordType == "comment") {
                 CommentDetailScreen(
                     record = targetRecord,
-                    onBack = {
-                        if (navStack.isNotEmpty()) {
-                            lastNavAction = NavAction.POP
-                            navStack.removeAt(navStack.lastIndex)
-                        }
-                    },
-                    onOpenParent = {
-                        lastNavAction = NavAction.PUSH
-                        navStack.add(it)
-                    }
+                    onBack = { viewModel.popDetail() },
+                    onOpenParent = { viewModel.pushDetail(it) }
                 )
             } else if (targetRecord.recordType == "question") {
                 QuestionDetailScreen(
                     record = targetRecord,
-                    onBack = {
-                        if (navStack.isNotEmpty()) {
-                            lastNavAction = NavAction.POP
-                            navStack.removeAt(navStack.lastIndex)
-                        }
-                    },
-                    onOpenAnswer = {
-                        lastNavAction = NavAction.PUSH
-                        navStack.add(it)
-                    }
+                    onBack = { viewModel.popDetail() },
+                    onOpenAnswer = { viewModel.pushDetail(it) }
                 )
             } else {
                 RecordDetailScreen(
                     record = targetRecord,
-                    onBack = {
-                        if (navStack.isNotEmpty()) {
-                            lastNavAction = NavAction.POP
-                            navStack.removeAt(navStack.lastIndex)
-                        }
-                    },
-                    onOpenRecord = {
-                        lastNavAction = NavAction.PUSH
-                        navStack.add(it)
-                    }
+                    onBack = { viewModel.popDetail() },
+                    onOpenRecord = { viewModel.pushDetail(it) }
                 )
             }
         } else {
             PullToRefreshListScreen(
                 records = records,
-                recordsLoaded = loadedRecords != null,
+                recordsLoaded = isInitialLoaded,
                 searchQuery = searchQuery,
                 filter = filter,
                 availableApps = availableApps,
@@ -169,13 +138,10 @@ fun HomeScreen(viewModel: HomeViewModel = viewModel()) {
                 },
                 onRefresh = { viewModel.refreshData() },
                 onOpenFilter = { showFilterSheet = true },
-                listState = homeListState,
+                listState = viewModel.homeListState,
                 rawPendingCount = rawPendingCount,
                 syncProgress = syncProgress,
-                onItemClick = {
-                    lastNavAction = NavAction.PUSH
-                    navStack.add(it)
-                }
+                onItemClick = { viewModel.pushDetail(it) }
             )
         }
     }
@@ -440,7 +406,7 @@ fun PullToRefreshListScreen(
                 if (records.isEmpty()) {
                     Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
                         Text(
-                            if (searchQuery.isNotEmpty()) "没有找到匹配的记录" else "暂无记录，去刷刷社交网络吧！",
+                            if (searchQuery.isNotEmpty()) "没有找到匹配的记录" else if (!recordsLoaded) "" else "暂无记录，去刷刷社交网络吧！",
                             color = Color.Gray
                         )
                     }

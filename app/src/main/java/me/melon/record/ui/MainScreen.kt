@@ -16,6 +16,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.saveable.rememberSaveableStateHolder
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 
@@ -23,6 +24,7 @@ import androidx.compose.ui.Modifier
 @Composable
 fun MainScreen() {
     var selectedTab by rememberSaveable { mutableIntStateOf(0) }
+    val saveableStateHolder = rememberSaveableStateHolder()
 
     Scaffold(
         contentWindowInsets = WindowInsets(0, 0, 0, 0),
@@ -54,10 +56,12 @@ fun MainScreen() {
                 .fillMaxSize()
                 .padding(bottom = padding.calculateBottomPadding())
         ) {
-            when (selectedTab) {
-                0 -> HomeScreen()
-                1 -> StatsScreen()
-                else -> SettingsScreen()
+            saveableStateHolder.SaveableStateProvider(key = selectedTab) {
+                when (selectedTab) {
+                    0 -> HomeScreen()
+                    1 -> StatsScreen()
+                    else -> SettingsScreen()
+                }
             }
         }
     }

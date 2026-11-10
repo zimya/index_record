@@ -1,0 +1,1411 @@
+{
+    "paging": {
+        "is_end": false,
+        "is_start": false,
+        "next": "https://api.zhihu.com/next-render?context_expand=1&id=40711040936&is_native=1&limit=5&page_id=4&scenes=unknown&session_id=1794324240071238241&type=answer",
+        "previous": "",
+        "totals": 0
+    },
+    "data": [
+        {
+            "question": {
+                "id": "656790296",
+                "type": "question",
+                "title": "你玩过时间最长的游戏是什么？",
+                "url": "https://api.zhihu.com/questions/656790296",
+                "status": {
+                    "is_locked": false,
+                    "is_close": false,
+                    "is_evaluate": false,
+                    "is_suggest": false
+                },
+                "relationship": {
+                    "is_author": false,
+                    "is_anonymous": false,
+                    "is_following": false,
+                    "is_downvoting": false
+                },
+                "review_info": {
+                    "type": "",
+                    "tips": "当前已有问题编辑正在审核，请稍后重试",
+                    "edit_tips": "当前已有问题编辑正在审核，请稍后重试",
+                    "is_reviewing": false,
+                    "edit_is_reviewing": true
+                },
+                "mute_info": {
+                    "type": ""
+                },
+                "reaction_instruction": {},
+                "followers_count": 3678,
+                "answer_count": 3458
+            },
+            "author": {
+                "id": "20adbaabda9ecf917db2e0b1b1194616",
+                "url_token": "han-tian-fang",
+                "type": "people",
+                "is_org": false,
+                "gender": 1,
+                "fullname": "肖寒",
+                "avatar": {
+                    "avatar_image": {
+                        "day": "https://pica.zhimg.com/v2-cc2249a9ba3726a0770691d68e9438a3_l.jpg?source=32738c0c&needBackground=1",
+                        "night": "https://picx.zhimg.com/v2-cc2249a9ba3726a0770691d68e9438a3_l.jpg?source=32738c0c&needBackground=1",
+                        "width": 36,
+                        "height": 36,
+                        "jump_url": "http://www.zhihu.com/people/han-tian-fang"
+                    },
+                    "avatar_frame_image": null,
+                    "avatar_icon_image": {
+                        "day": "https://picx.zhimg.com/v2-9697eee792f40b672a56c3ab5d34bb4f_l.png?source=32738c0c",
+                        "night": "https://picx.zhimg.com/v2-509afcd53c32f3f5aa3e2be1176ac480_l.png?source=32738c0c",
+                        "width": 18,
+                        "height": 18,
+                        "jump_url": ""
+                    },
+                    "avatar_cover_image": null
+                },
+                "identity_icons": [
+                    {
+                        "day": "https://picx.zhimg.com/v2-b745dab79c957a541eb72381ece4438d_720w.png?source=32738c0c",
+                        "night": "https://picx.zhimg.com/v2-b745dab79c957a541eb72381ece4438d_720w.png?source=32738c0c",
+                        "width": 18,
+                        "height": 18,
+                        "jump_url": "zhihu://popup_container?url=https%3A%2F%2Fwww.zhihu.com%2Fappview%2Fv2%2Fbadge_center%2Fdetail%3FuserToken%3Dhan-tian-fang%26badgeId%3D972475023013875712&min_percent=0.6&show_header=false&cancelable=true&enable_drag=false&canchangeheight=false&is_covertab=true&is_show_shadow=true"
+                    }
+                ],
+                "description": "PMP 项目管理专业人士资格证持证人",
+                "follow_status": "normal"
+            },
+            "search_word": {
+                "queries": [
+                    {
+                        "display_query": "",
+                        "real_query": "",
+                        "link_url": "zhihu://search?content_type=answer&content_id=3514967325&scene=NextPreset",
+                        "attached_info": "",
+                        "id": ""
+                    }
+                ]
+            },
+            "interaction_bar_plugins": [
+                {
+                    "type": "comment",
+                    "comment": {
+                        "enable": true,
+                        "placeholder": "一起聊一聊"
+                    }
+                },
+                {
+                    "type": "follow"
+                }
+            ],
+            "bar_plugins_flip_time": 0,
+            "business_type": "normal",
+            "is_mine": false,
+            "comment_permission": "all",
+            "admin_closed_comment": false,
+            "copyright_status": "PUBLIC",
+            "can_copy": true,
+            "reaction_instruction": {},
+            "hot_comment": [],
+            "reaction": {
+                "statistics": {
+                    "up_vote_count": 27,
+                    "down_vote_count": 0,
+                    "like_count": 3,
+                    "comment_count": 14,
+                    "share_count": 0,
+                    "play_count": 0,
+                    "interest_play_count": 0,
+                    "favorites": 0,
+                    "pv_count": 0,
+                    "bullet_count": 0,
+                    "applaud_count": 0,
+                    "question_follower_count": 0,
+                    "question_answer_count": 0,
+                    "plaincontent_vote_up_count": 0,
+                    "plaincontent_like_count": 0,
+                    "img_like_count": {
+                        "v2-743ff6b04c3dfae7a7f2df5dcdb80b4f": 0
+                    },
+                    "subscribe_count": 0,
+                    "republishers": []
+                },
+                "relation": {
+                    "is_author": false,
+                    "vote": "Neutral",
+                    "liked": false,
+                    "img_liked": {
+                        "v2-743ff6b04c3dfae7a7f2df5dcdb80b4f": false
+                    },
+                    "faved": false,
+                    "following": false,
+                    "subcribed": false,
+                    "is_navigator_vote": false,
+                    "current_user_is_navigator": false,
+                    "vote_next_step": ""
+                },
+                "image_reactions": {
+                    "v2-743ff6b04c3dfae7a7f2df5dcdb80b4f": {
+                        "like_count": 0,
+                        "is_liked": false
+                    }
+                },
+                "share_count_string": "0"
+            },
+            "excerpt": "大号一万多小时，更别提dota1了。垃圾游戏毁我青春，我还要再玩五十年。 [图片]",
+            "biz_type_list": ["answer"],
+            "structured_content": {
+                "paging": "{\"is_end\":true,\"next\":\"https://api.zhihu.com/next-content-render?offset=20\\u0026url_token=3514967325\\u0026content_type=answer\\u0026version_id=2000000002591263305\",\"is_start\":true,\"previous\":\"https://api.zhihu.com/next-content-render?offset=0\\u0026url_token=3514967325\\u0026content_type=answer\\u0026version_id=2000000002591263305\",\"totals\":0}",
+                "segments": [
+                    {
+                        "id": "0",
+                        "paragraph": {
+                            "marks": [],
+                            "pid": "ON2TirjL",
+                            "text": "大号一万多小时，更别提dota1了。垃圾游戏毁我青春，我还要再玩五十年。"
+                        },
+                        "type": "paragraph"
+                    },
+                    {
+                        "id": "1",
+                        "image": {
+                            "description": "",
+                            "height": 1044,
+                            "is_gif": false,
+                            "layout": "normal",
+                            "original_token": "v2-743ff6b04c3dfae7a7f2df5dcdb80b4f",
+                            "original_urls": [
+                                "https://pic1.zhimg.com/v2-743ff6b04c3dfae7a7f2df5dcdb80b4f.jpg?source=7e7ef6e2&needBackground=1"
+                            ],
+                            "status": "normal",
+                            "token": "v2-a23d08a9dbe1c17343ce2db95e1122c4",
+                            "urls": [
+                                "https://picx.zhimg.com/v2-a23d08a9dbe1c17343ce2db95e1122c4.jpg?source=7e7ef6e2&needBackground=1"
+                            ],
+                            "width": 1290
+                        },
+                        "type": "image"
+                    }
+                ]
+            },
+            "video": null,
+            "image_list": {
+                "count": 1,
+                "images": [
+                    {
+                        "height": 1044,
+                        "original_height": 582,
+                        "original_token": "v2-743ff6b04c3dfae7a7f2df5dcdb80b4f",
+                        "original_url": "https://pic1.zhimg.com/v2-743ff6b04c3dfae7a7f2df5dcdb80b4f_720w.jpg?source=2c26e567&needBackground=1",
+                        "original_width": 720,
+                        "suffix": "jpg?source=7e7ef6e2&needBackground=1",
+                        "thumbnail": "https://picx.zhimg.com/80/v2-743ff6b04c3dfae7a7f2df5dcdb80b4f_xl.jpg",
+                        "token": "v2-a23d08a9dbe1c17343ce2db95e1122c4",
+                        "url": "https://picx.zhimg.com/v2-a23d08a9dbe1c17343ce2db95e1122c4.jpg?source=7e7ef6e2&needBackground=1",
+                        "width": 1290
+                    }
+                ],
+                "width_ratio": 0.5,
+                "is_grid": false
+            },
+            "endorsement": [],
+            "relationship_tips": {
+                "type": "reaction_endorse",
+                "right_icon": {
+                    "day": "https://pic1.zhimg.com/80/v2-5e22e91ab9265c2115a98d47ebb42358_1440w.png",
+                    "night": "https://pic1.zhimg.com/80/v2-5e22e91ab9265c2115a98d47ebb42358_1440w.png",
+                    "width": 10,
+                    "height": 10
+                },
+                "text": "27 人赞同了该回答",
+                "text_color": "GBK06A",
+                "text_size": 13,
+                "is_bold": false,
+                "action_url": "zhihu://hybrid?zh_url=https%3A%2F%2Fwww.zhihu.com%2Fappview%2Fanswer%2F3514967325%2Fvoters%3Fzh_hide_nav_bar%3Dtrue"
+            },
+            "podcast_audio_enter": {
+                "text": "听内容",
+                "text_color": "MapBrand",
+                "text_size": 13,
+                "action_url": "zhihu://podcast/audio_player/0?contentId=3514967325&contentType=answer&subType=&entrance=detail_page",
+                "sub_type": ""
+            },
+            "ad_info": {
+                "data": ""
+            },
+            "attached_info": "MiQyYjQ0NGQ0YS0wMDdkLTQwYWEtODM3Yi05OTA3NzNjM2M2ODGiARAIBBADGJ3KiIwNIJiml7kCigJ2EAQaCTY2OTE1NTM4NCIKMzUxNDk2NzMyNSi0mcGwnDQyVAjRsrHOAhAEGgs0MDcxMTA0MDkzNiCcv7I1KAMyB1VOS05PV046E0FOU1dFUl9QQUdFX1JFTF9SRUNA4cTG6ruMrvMYSANqCggBEAQaBGJhc2V4A5ICGQoJNjY5MTU1Mzg0EgozNTE0OTY3MzI1GAQ=",
+            "nf_attached_info": "CgdVTktOT1dOEhNBTlNXRVJfUEFHRV9SRUxfUkVD",
+            "header": {
+                "action_url": "https://www.zhihu.com/question/656790296",
+                "text": "你玩过时间最长的游戏是什么？",
+                "text_size": 17,
+                "text_color": "GBK02A",
+                "bold": true
+            },
+            "content_end_info": {
+                "create_time_text": "2024-05-30 15:56",
+                "update_time_text": "",
+                "ip_info": "新加坡",
+                "reshipment_settings": "",
+                "show_origin_page": {
+                    "text": "",
+                    "action_url": ""
+                }
+            },
+            "section_info": {
+                "text": "—— 相关推荐 ——",
+                "text_color": "GBK07B",
+                "text_size": 12,
+                "background_color": "GBK10C",
+                "bold": false
+            },
+            "preload": false,
+            "third_business": {},
+            "comment_config": {
+                "can_segment_reply": true
+            },
+            "id": "3514967325",
+            "type": "answer"
+        },
+        {
+            "question": {
+                "id": "553268952",
+                "type": "question",
+                "title": "如何看待小游戏《羊了个羊》第二关难度?",
+                "url": "https://api.zhihu.com/questions/553268952",
+                "status": {
+                    "is_locked": false,
+                    "is_close": false,
+                    "is_evaluate": false,
+                    "is_suggest": false
+                },
+                "relationship": {
+                    "is_author": false,
+                    "is_anonymous": false,
+                    "is_following": false,
+                    "is_downvoting": false
+                },
+                "review_info": {
+                    "type": "",
+                    "tips": "当前已有问题编辑正在审核，请稍后重试",
+                    "edit_tips": "当前已有问题编辑正在审核，请稍后重试",
+                    "is_reviewing": false,
+                    "edit_is_reviewing": true
+                },
+                "mute_info": {
+                    "type": ""
+                },
+                "reaction_instruction": {},
+                "followers_count": 1395,
+                "answer_count": 921
+            },
+            "author": {
+                "id": "7f1b5c386f813286c1a8074d9128cef8",
+                "url_token": "jiu-yuan-de-deng-huo",
+                "type": "people",
+                "is_org": false,
+                "gender": 0,
+                "fullname": "久远的灯火",
+                "avatar": {
+                    "avatar_image": {
+                        "day": "https://pica.zhimg.com/v2-221b0ccba7d29ef4df34253311bbf10d_l.jpg?source=32738c0c&needBackground=1",
+                        "night": "https://picx.zhimg.com/v2-221b0ccba7d29ef4df34253311bbf10d_l.jpg?source=32738c0c&needBackground=1",
+                        "width": 36,
+                        "height": 36,
+                        "jump_url": "http://www.zhihu.com/people/jiu-yuan-de-deng-huo"
+                    },
+                    "avatar_frame_image": null,
+                    "avatar_icon_image": null,
+                    "avatar_cover_image": null
+                },
+                "identity_icons": [
+                    {
+                        "day": "https://picx.zhimg.com/v2-4812630bc27d642f7cafcd6cdeca3d7a_720w.png?source=32738c0c",
+                        "night": "https://picx.zhimg.com/v2-c9686ff064ea3579730756ac6c289978_720w.png?source=32738c0c",
+                        "width": 18,
+                        "height": 18,
+                        "jump_url": "zhihu://vip/purchase?super_vip_type=0"
+                    },
+                    {
+                        "day": "https://picx.zhimg.com/v2-3c8d21e5e0b4d825580e20a91bfcf39a_720w.png?source=32738c0c",
+                        "night": "https://pic1.zhimg.com/v2-3c8d21e5e0b4d825580e20a91bfcf39a_720w.png?source=32738c0c",
+                        "width": 18,
+                        "height": 18,
+                        "jump_url": "zhihu://popup_container?url=https%3A%2F%2Fwww.zhihu.com%2Fappview%2Fv2%2Fbadge_center%2Fdetail%3FuserToken%3Djiu-yuan-de-deng-huo%26badgeId%3D1797652730489237504&min_percent=0.6&show_header=false&cancelable=true&enable_drag=false&canchangeheight=false&is_covertab=true&is_show_shadow=true"
+                    }
+                ],
+                "description": "",
+                "follow_status": "normal"
+            },
+            "search_word": {
+                "queries": [
+                    {
+                        "display_query": "",
+                        "real_query": "",
+                        "link_url": "zhihu://search?content_type=answer&content_id=2677254484&scene=NextPreset",
+                        "attached_info": "",
+                        "id": ""
+                    }
+                ]
+            },
+            "interaction_bar_plugins": [
+                {
+                    "type": "comment",
+                    "comment": {
+                        "enable": true,
+                        "placeholder": "欢迎畅所欲言"
+                    }
+                },
+                {
+                    "type": "follow"
+                }
+            ],
+            "bar_plugins_flip_time": 0,
+            "business_type": "normal",
+            "is_mine": false,
+            "comment_permission": "all",
+            "admin_closed_comment": false,
+            "copyright_status": "RESERVED",
+            "can_copy": false,
+            "reaction_instruction": {},
+            "hot_comment": [
+                {
+                    "id": "10288798776",
+                    "type": "comment",
+                    "resource_type": "answer",
+                    "url": "/comments/10288798776",
+                    "hot": true,
+                    "top": false,
+                    "content": "有人说为了证明自己智商一直玩 事实上 从你玩这个游戏就已经证明了智商[惊喜]",
+                    "score": 0,
+                    "created_time": 1663398588,
+                    "is_delete": false,
+                    "collapsed": false,
+                    "reviewing": false,
+                    "reply_comment_id": "0",
+                    "liked": false,
+                    "like_count": 1213,
+                    "disliked": false,
+                    "dislike_count": 3,
+                    "is_author": false,
+                    "can_like": true,
+                    "can_dislike": true,
+                    "can_delete": false,
+                    "can_reply": true,
+                    "can_hot": false,
+                    "can_collapse": false,
+                    "can_share": true,
+                    "can_unfold": false,
+                    "author": {
+                        "id": "3a5e60898daa39b8bdb405913b3aa7e6",
+                        "url_token": "castiel-74-95",
+                        "name": "Castiel",
+                        "avatar_url": "https://pic1.zhimg.com/v2-073cd6a1d25dc3b85cca101ad868f0b0_l.jpg?source=06d4cd63",
+                        "avatar_url_template": "https://picx.zhimg.com/v2-073cd6a1d25dc3b85cca101ad868f0b0_l.jpg?source=06d4cd63",
+                        "is_org": false,
+                        "type": "people",
+                        "url": "",
+                        "user_type": "people",
+                        "headline": "",
+                        "gender": 2,
+                        "is_advertiser": false,
+                        "badge_v2": {
+                            "title": "",
+                            "merged_badges": [],
+                            "detail_badges": []
+                        },
+                        "vip_info": {
+                            "is_vip": false
+                        },
+                        "exposed_medal": {
+                            "medal_id": "972480281613197312",
+                            "medal_name": "每天逛逛",
+                            "avatar_url": "https://picx.zhimg.com/v2-cdc7c578bc7555f8113a409eaf2704b8_r.jpg?source=06d4cd63",
+                            "mini_avatar_url": "https://picx.zhimg.com/v2-cdc7c578bc7555f8113a409eaf2704b8_r.jpg?source=06d4cd63",
+                            "description": "累计登录 365 天",
+                            "medal_avatar_frame": "",
+                            "can_click": true
+                        },
+                        "kvip_info": {
+                            "is_vip": false
+                        }
+                    },
+                    "comment_tag": [
+                        {
+                            "type": "ip_info",
+                            "text": "甘肃",
+                            "color": "#999999",
+                            "night_color": "#999999",
+                            "has_border": false
+                        },
+                        {
+                            "type": "hot",
+                            "text": "热评",
+                            "color": "#FF9607",
+                            "night_color": "#FF9607",
+                            "has_border": false
+                        }
+                    ],
+                    "child_comment_count": 33,
+                    "object_type": 2,
+                    "object_id": 516860837,
+                    "can_truncate": false,
+                    "can_more": true
+                }
+            ],
+            "reaction": {
+                "statistics": {
+                    "up_vote_count": 7250,
+                    "down_vote_count": 48,
+                    "like_count": 476,
+                    "comment_count": 367,
+                    "share_count": 0,
+                    "play_count": 0,
+                    "interest_play_count": 0,
+                    "favorites": 543,
+                    "pv_count": 0,
+                    "bullet_count": 0,
+                    "applaud_count": 0,
+                    "question_follower_count": 0,
+                    "question_answer_count": 0,
+                    "plaincontent_vote_up_count": 0,
+                    "plaincontent_like_count": 0,
+                    "subscribe_count": 0,
+                    "republishers": []
+                },
+                "relation": {
+                    "is_author": false,
+                    "vote": "Neutral",
+                    "liked": false,
+                    "faved": false,
+                    "following": false,
+                    "subcribed": false,
+                    "is_navigator_vote": false,
+                    "current_user_is_navigator": false,
+                    "vote_next_step": ""
+                },
+                "image_reactions": {},
+                "share_count_string": "30"
+            },
+            "excerpt": "其实根本不是难度的问题。 现在已经有人解包源代码了，发现其实这个游戏根本没有保障游戏必然有解。 每一局形成的逻辑其实是非常简单的。每一局开始的时候服务器传回数据表明牌局怎么摆，有多少种花色，有多少张牌。数据传回本地后，本地将每种牌的数量乘以三，然后洗牌。接下来的操作就是难度的来源： 在某个位置牌未确定时，从洗好的牌组中抽一张摆上，然后就放出来让人玩了。本地进行的“乘以三”这个操作，是用来保证每一局…",
+            "biz_type_list": ["answer"],
+            "structured_content": {
+                "paging": "{\"is_end\":true,\"next\":\"https://api.zhihu.com/next-content-render?offset=20\\u0026url_token=2677254484\\u0026content_type=answer\\u0026version_id=2000000001693237576\",\"is_start\":true,\"previous\":\"https://api.zhihu.com/next-content-render?offset=0\\u0026url_token=2677254484\\u0026content_type=answer\\u0026version_id=2000000001693237576\",\"totals\":0}",
+                "segments": [
+                    {
+                        "id": "0",
+                        "paragraph": {
+                            "marks": [],
+                            "pid": "Hk-jDd_H",
+                            "text": "其实根本不是难度的问题。"
+                        },
+                        "type": "paragraph"
+                    },
+                    {
+                        "id": "1",
+                        "paragraph": {
+                            "marks": [],
+                            "pid": "Vz58sg5V",
+                            "text": "现在已经有人解包源代码了，发现其实这个游戏根本没有保障游戏必然有解。"
+                        },
+                        "type": "paragraph"
+                    },
+                    {
+                        "id": "2",
+                        "paragraph": {
+                            "marks": [
+                                {
+                                    "end_index": 128,
+                                    "start_index": 93,
+                                    "type": "bold"
+                                },
+                                {
+                                    "end_index": 164,
+                                    "entity_word": {
+                                        "attach_info_bytes": "sgJZCgbmrbvlsYASB1Vua25vd24YpAIgpgIoATUJBVw6OgZhbnN3ZXJAvOuy0rSR65r9AUgAUiQ1YjRiYjExMi02OWNmLTQ4MGQtYmQyZi0zYmFiMDBiMDBmMjjyAuwBCiQ1YjRiYjExMi02OWNmLTQ4MGQtYmQyZi0zYmFiMDBiMDBmMjgaBmFuc3dlciIJNTE2ODYwODM3OgbmrbvlsYBAvOuy0rSR65r9AUgBUhZhaV9lbnRpdHlfbGxtX3JlY2FsbGVyXQkFXDpiWQoG5q275bGAEgdVbmtub3duGKQCIKYCKAE1CQVcOjoGYW5zd2VyQLzrstK0keua/QFIAFIkNWI0YmIxMTItNjljZi00ODBkLWJkMmYtM2JhYjAwYjAwZjI4ciRlNzZiNzVkZC00NzQzLTQ5ZDgtYmY0ZS1iNDBhZTdlZTkyODM=",
+                                        "id": "0",
+                                        "type": "search",
+                                        "url": "https://www.zhihu.com/search?attached_info=sgJZCgbmrbvlsYASB1Vua25vd24YpAIgpgIoATUJBVw6OgZhbnN3ZXJAvOuy0rSR65r9AUgAUiQ1YjRiYjExMi02OWNmLTQ4MGQtYmQyZi0zYmFiMDBiMDBmMjjyAuwBCiQ1YjRiYjExMi02OWNmLTQ4MGQtYmQyZi0zYmFiMDBiMDBmMjgaBmFuc3dlciIJNTE2ODYwODM3OgbmrbvlsYBAvOuy0rSR65r9AUgBUhZhaV9lbnRpdHlfbGxtX3JlY2FsbGVyXQkFXDpiWQoG5q275bGAEgdVbmtub3duGKQCIKYCKAE1CQVcOjoGYW5zd2VyQLzrstK0keua%2FQFIAFIkNWI0YmIxMTItNjljZi00ODBkLWJkMmYtM2JhYjAwYjAwZjI4ciRlNzZiNzVkZC00NzQzLTQ5ZDgtYmY0ZS1iNDBhZTdlZTkyODM%3D&content_id=516860837&content_type=ANSWER&extra=%7B%22content_id%22%3A%22516860837%22%2C%22content_type%22%3A%22answer%22%2C%22request_click_id%22%3A%22e76b75dd-4743-49d8-bf4e-b40ae7ee9283%22%7D&halfSheet=1&hybrid_search_extra=%7B%22sourceId%22%3A0%2C%22sourceType%22%3A%22search%22%7D&hybrid_search_source=Entity&match_order=1&q=%E6%AD%BB%E5%B1%80&request_click_id=e76b75dd-4743-49d8-bf4e-b40ae7ee9283&search_source=Entity&target=blank",
+                                        "word": "死局"
+                                    },
+                                    "start_index": 162,
+                                    "type": "entity_word"
+                                }
+                            ],
+                            "pid": "lobvJljj",
+                            "text": "每一局形成的逻辑其实是非常简单的。每一局开始的时候服务器传回数据表明牌局怎么摆，有多少种花色，有多少张牌。数据传回本地后，本地将每种牌的数量乘以三，然后洗牌。接下来的操作就是难度的来源：在某个位置牌未确定时，从洗好的牌组中抽一张摆上，然后就放出来让人玩了。本地进行的“乘以三”这个操作，是用来保证每一局不会因为牌数不够而陷入死局。"
+                        },
+                        "type": "paragraph"
+                    },
+                    {
+                        "id": "3",
+                        "paragraph": {
+                            "marks": [],
+                            "pid": "NQ4wA9PE",
+                            "text": "如果这么摆一层，这游戏肯定有解，问题是这个游戏摆了很多层，从源代码看，有些关卡能摆二十几层。这就导致实际上大部分牌局摆出来的时候就是没有解的，怎么玩都是死局。"
+                        },
+                        "type": "paragraph"
+                    },
+                    {
+                        "id": "4",
+                        "paragraph": {
+                            "marks": [
+                                {
+                                    "end_index": 51,
+                                    "entity_word": {
+                                        "attach_info_bytes": "sgJZCgblj4zmtogSB1Vua25vd24Y3QMg3wMoATUinUo6OgZhbnN3ZXJA9NfepeT7lZbWAUgAUiQ1YjRiYjExMi02OWNmLTQ4MGQtYmQyZi0zYmFiMDBiMDBmMjjyAuwBCiQ1YjRiYjExMi02OWNmLTQ4MGQtYmQyZi0zYmFiMDBiMDBmMjgaBmFuc3dlciIJNTE2ODYwODM3Ogblj4zmtohA9NfepeT7lZbWAUgCUhZhaV9lbnRpdHlfbGxtX3JlY2FsbGVyXSKdSjpiWQoG5Y+M5raIEgdVbmtub3duGN0DIN8DKAE1Ip1KOjoGYW5zd2VyQPTX3qXk+5WW1gFIAFIkNWI0YmIxMTItNjljZi00ODBkLWJkMmYtM2JhYjAwYjAwZjI4ciRlNzZiNzVkZC00NzQzLTQ5ZDgtYmY0ZS1iNDBhZTdlZTkyODM=",
+                                        "id": "0",
+                                        "type": "search",
+                                        "url": "https://www.zhihu.com/search?attached_info=sgJZCgblj4zmtogSB1Vua25vd24Y3QMg3wMoATUinUo6OgZhbnN3ZXJA9NfepeT7lZbWAUgAUiQ1YjRiYjExMi02OWNmLTQ4MGQtYmQyZi0zYmFiMDBiMDBmMjjyAuwBCiQ1YjRiYjExMi02OWNmLTQ4MGQtYmQyZi0zYmFiMDBiMDBmMjgaBmFuc3dlciIJNTE2ODYwODM3Ogblj4zmtohA9NfepeT7lZbWAUgCUhZhaV9lbnRpdHlfbGxtX3JlY2FsbGVyXSKdSjpiWQoG5Y%2BM5raIEgdVbmtub3duGN0DIN8DKAE1Ip1KOjoGYW5zd2VyQPTX3qXk%2B5WW1gFIAFIkNWI0YmIxMTItNjljZi00ODBkLWJkMmYtM2JhYjAwYjAwZjI4ciRlNzZiNzVkZC00NzQzLTQ5ZDgtYmY0ZS1iNDBhZTdlZTkyODM%3D&content_id=516860837&content_type=ANSWER&extra=%7B%22content_id%22%3A%22516860837%22%2C%22content_type%22%3A%22answer%22%2C%22request_click_id%22%3A%22e76b75dd-4743-49d8-bf4e-b40ae7ee9283%22%7D&halfSheet=1&hybrid_search_extra=%7B%22sourceId%22%3A0%2C%22sourceType%22%3A%22search%22%7D&hybrid_search_source=Entity&match_order=1&q=%E5%8F%8C%E6%B6%88&request_click_id=e76b75dd-4743-49d8-bf4e-b40ae7ee9283&search_source=Entity&target=blank",
+                                        "word": "双消"
+                                    },
+                                    "start_index": 49,
+                                    "type": "entity_word"
+                                }
+                            ],
+                            "pid": "IyHW38ca",
+                            "text": "如果不理解，那换个类似的场面，找一副扑克，两张点数相同就消除。一副牌牌五十四张。将牌洗切后摆开玩“双消”。"
+                        },
+                        "type": "paragraph"
+                    },
+                    {
+                        "id": "5",
+                        "paragraph": {
+                            "marks": [],
+                            "pid": "wkkQz56R",
+                            "text": "如果只摆一层，必然全可以消掉。"
+                        },
+                        "type": "paragraph"
+                    },
+                    {
+                        "id": "6",
+                        "paragraph": {
+                            "marks": [],
+                            "pid": "-XMDRIUj",
+                            "text": "摆两层，一层27张牌时，就可能出现死局了，比如两张同样点数的牌摞在一起，这时的死局，如果可以看到所有的牌是什么点数，是可以处理的，如果不能看到就是死局。"
+                        },
+                        "type": "paragraph"
+                    },
+                    {
+                        "id": "7",
+                        "paragraph": {
+                            "marks": [],
+                            "pid": "SBa16Ez_",
+                            "text": "要摆三层，每层18张牌，就会出现无论如何也解不开的死局。比如三张同点数的牌摞在一起"
+                        },
+                        "type": "paragraph"
+                    },
+                    {
+                        "id": "8",
+                        "paragraph": {
+                            "marks": [],
+                            "pid": "0O9e-V8R",
+                            "text": "而“摆9层，每层6张牌”的时候，大部分局都是死局，根本玩不下去。"
+                        },
+                        "type": "paragraph"
+                    },
+                    {
+                        "id": "9",
+                        "paragraph": {
+                            "marks": [],
+                            "pid": "ECdlYyTb",
+                            "text": "那要“摆27层，每层两张牌”呢？要过关真的需要老天爷赏了。"
+                        },
+                        "type": "paragraph"
+                    },
+                    {
+                        "id": "10",
+                        "paragraph": {
+                            "marks": [],
+                            "pid": "uJv9Buko",
+                            "text": "正常的游戏会先用一些手段进行验算，保证呈现出的牌局是有解的。羊了个羊是根本不验算，随机成什么就呈现什么。这就导致羊了个羊大部分摆出来的牌局其实一开始就是无解的。"
+                        },
+                        "type": "paragraph"
+                    },
+                    {
+                        "id": "11",
+                        "paragraph": {
+                            "marks": [
+                                {
+                                    "end_index": 76,
+                                    "seg_like": {
+                                        "comment_count": 0,
+                                        "count": 30,
+                                        "is_like": false,
+                                        "is_span": true,
+                                        "my_comment_count": 0,
+                                        "seg_ids": [
+                                            "1554629286300102656",
+                                            "1928798760076555549",
+                                            "2082424448368521259",
+                                            "1579547576789000193",
+                                            "2082424554928993156",
+                                            "1554603688114802688",
+                                            "1557074330361470976",
+                                            "1554596297583263744"
+                                        ]
+                                    },
+                                    "start_index": 0,
+                                    "type": "seg_like"
+                                },
+                                {
+                                    "end_index": 20,
+                                    "entity_word": {
+                                        "attach_info_bytes": "sgJbCgnnurrplKTlnosSB1Vua25vd24YwAcgwwcoATUfya46OgZhbnN3ZXJA8de5xpf4rO05SABSJDViNGJiMTEyLTY5Y2YtNDgwZC1iZDJmLTNiYWIwMGIwMGYyOPIC8QEKJDViNGJiMTEyLTY5Y2YtNDgwZC1iZDJmLTNiYWIwMGIwMGYyOBoGYW5zd2VyIgk1MTY4NjA4Mzc6Cee6uumUpOWei0Dx17nGl/is7TlIAFIXYmFpZHUtYmFpa2UtaXRlbS1yZWNhbGxdH8muOmJbCgnnurrplKTlnosSB1Vua25vd24YwAcgwwcoATUfya46OgZhbnN3ZXJA8de5xpf4rO05SABSJDViNGJiMTEyLTY5Y2YtNDgwZC1iZDJmLTNiYWIwMGIwMGYyOHIkZTc2Yjc1ZGQtNDc0My00OWQ4LWJmNGUtYjQwYWU3ZWU5Mjgz",
+                                        "id": "0",
+                                        "type": "search",
+                                        "url": "https://www.zhihu.com/search?attached_info=sgJbCgnnurrplKTlnosSB1Vua25vd24YwAcgwwcoATUfya46OgZhbnN3ZXJA8de5xpf4rO05SABSJDViNGJiMTEyLTY5Y2YtNDgwZC1iZDJmLTNiYWIwMGIwMGYyOPIC8QEKJDViNGJiMTEyLTY5Y2YtNDgwZC1iZDJmLTNiYWIwMGIwMGYyOBoGYW5zd2VyIgk1MTY4NjA4Mzc6Cee6uumUpOWei0Dx17nGl%2Fis7TlIAFIXYmFpZHUtYmFpa2UtaXRlbS1yZWNhbGxdH8muOmJbCgnnurrplKTlnosSB1Vua25vd24YwAcgwwcoATUfya46OgZhbnN3ZXJA8de5xpf4rO05SABSJDViNGJiMTEyLTY5Y2YtNDgwZC1iZDJmLTNiYWIwMGIwMGYyOHIkZTc2Yjc1ZGQtNDc0My00OWQ4LWJmNGUtYjQwYWU3ZWU5Mjgz&content_id=516860837&content_type=ANSWER&extra=%7B%22content_id%22%3A%22516860837%22%2C%22content_type%22%3A%22answer%22%2C%22request_click_id%22%3A%22e76b75dd-4743-49d8-bf4e-b40ae7ee9283%22%7D&halfSheet=1&hybrid_search_extra=%7B%22sourceId%22%3A0%2C%22sourceType%22%3A%22search%22%7D&hybrid_search_source=Entity&match_order=1&q=%E7%BA%BA%E9%94%A4%E5%9E%8B&request_click_id=e76b75dd-4743-49d8-bf4e-b40ae7ee9283&search_source=Entity&target=blank",
+                                        "word": "纺锤型"
+                                    },
+                                    "start_index": 17,
+                                    "type": "entity_word"
+                                }
+                            ],
+                            "pid": "F7c8Jt36",
+                            "text": "这个游戏还很鸡贼的把牌堆做成了一个纺锤型，上大下小，上面部分选择很多，甭管是不是死局，一开始还是能玩的。其实最下面开局的时候已经被压死了，根本消不完的。"
+                        },
+                        "type": "paragraph"
+                    },
+                    {
+                        "id": "12",
+                        "paragraph": {
+                            "marks": [
+                                {
+                                    "end_index": 70,
+                                    "seg_like": {
+                                        "comment_count": 0,
+                                        "count": 30,
+                                        "is_like": false,
+                                        "is_span": true,
+                                        "my_comment_count": 0,
+                                        "seg_ids": [
+                                            "1554629286300102656",
+                                            "1928798760076555549",
+                                            "2082424448368521259",
+                                            "1579547576789000193",
+                                            "2082424554928993156",
+                                            "1554603688114802688",
+                                            "1557074330361470976",
+                                            "1554596297583263744"
+                                        ]
+                                    },
+                                    "start_index": 0,
+                                    "type": "seg_like"
+                                }
+                            ],
+                            "pid": "l2EZ7WfC",
+                            "text": "但这种到最后才发现问题会让人觉得自己是功败垂成，这也是为什么这段时候不少人着了魔一样折腾这个游戏。其实哪有什么功败垂成，这游戏开局就是死局。"
+                        },
+                        "type": "paragraph"
+                    }
+                ]
+            },
+            "video": null,
+            "card_list": null,
+            "endorsement": [],
+            "relationship_tips": {
+                "type": "reaction_endorse",
+                "right_icon": {
+                    "day": "https://pic1.zhimg.com/80/v2-5e22e91ab9265c2115a98d47ebb42358_1440w.png",
+                    "night": "https://pic1.zhimg.com/80/v2-5e22e91ab9265c2115a98d47ebb42358_1440w.png",
+                    "width": 10,
+                    "height": 10
+                },
+                "text": "7250 人赞同了该回答",
+                "text_color": "GBK06A",
+                "text_size": 13,
+                "is_bold": false,
+                "action_url": "zhihu://hybrid?zh_url=https%3A%2F%2Fwww.zhihu.com%2Fappview%2Fanswer%2F2677254484%2Fvoters%3Fzh_hide_nav_bar%3Dtrue"
+            },
+            "podcast_audio_enter": {
+                "text": "19 人听过",
+                "text_color": "MapBrand",
+                "text_size": 13,
+                "action_url": "zhihu://podcast/audio_player/11995590043?contentId=2677254484&contentType=answer&subType=&entrance=detail_page",
+                "sub_type": ""
+            },
+            "ad_info": {
+                "data": ""
+            },
+            "attached_info": "MiQyYjQ0NGQ0YS0wMDdkLTQwYWEtODM3Yi05OTA3NzNjM2M2ODGiARAIBBADGNTSzvwJINjt6IcCigJ2EAQaCTUxNjg2MDgzNyIKMjY3NzI1NDQ4NCi0mcGwnDQyVAjRsrHOAhAEGgs0MDcxMTA0MDkzNiCcv7I1KAMyB1VOS05PV046E0FOU1dFUl9QQUdFX1JFTF9SRUNA4cTG6ruMrvMYSANqCggBEAQaBGJhc2V4A5ICGQoJNTE2ODYwODM3EgoyNjc3MjU0NDg0GAQ=",
+            "nf_attached_info": "CgdVTktOT1dOEhNBTlNXRVJfUEFHRV9SRUxfUkVD",
+            "header": {
+                "action_url": "https://www.zhihu.com/question/553268952",
+                "text": "如何看待小游戏《羊了个羊》第二关难度?",
+                "text_size": 17,
+                "text_color": "GBK02A",
+                "bold": true
+            },
+            "content_end_info": {
+                "create_time_text": "2022-09-17 10:54",
+                "update_time_text": "编辑于 2022-09-17 19:40",
+                "ip_info": "山西",
+                "reshipment_settings": "禁止转载",
+                "show_origin_page": {
+                    "text": "",
+                    "action_url": ""
+                }
+            },
+            "section_info": {
+                "text": "—— 相关推荐 ——",
+                "text_color": "GBK07B",
+                "text_size": 12,
+                "background_color": "GBK10C",
+                "bold": false
+            },
+            "preload": false,
+            "third_business": {},
+            "comment_config": {
+                "can_segment_reply": true
+            },
+            "id": "2677254484",
+            "type": "answer"
+        },
+        {
+            "question": {
+                "id": "524541439",
+                "type": "question",
+                "title": "男生,现在高一,请教一下知乎的各位大佬,请问我的作文该如何修改?",
+                "url": "https://api.zhihu.com/questions/524541439",
+                "status": {
+                    "is_locked": false,
+                    "is_close": false,
+                    "is_evaluate": false,
+                    "is_suggest": false
+                },
+                "relationship": {
+                    "is_author": false,
+                    "is_anonymous": false,
+                    "is_following": false,
+                    "is_downvoting": false
+                },
+                "review_info": {
+                    "type": "",
+                    "tips": "当前已有问题编辑正在审核，请稍后重试",
+                    "edit_tips": "当前已有问题编辑正在审核，请稍后重试",
+                    "is_reviewing": false,
+                    "edit_is_reviewing": true
+                },
+                "mute_info": {
+                    "type": ""
+                },
+                "reaction_instruction": {},
+                "followers_count": 122,
+                "answer_count": 40
+            },
+            "author": {
+                "id": "ff1c195c018dd72f2739a4dce5a8884b",
+                "url_token": "kidqi-61",
+                "type": "people",
+                "is_org": false,
+                "gender": 0,
+                "fullname": "狂吃彩虹的长颈鹿",
+                "avatar": {
+                    "avatar_image": {
+                        "day": "https://picx.zhimg.com/v2-eff4cc66336c74036a255aa273869b89_l.jpg?source=32738c0c&needBackground=1",
+                        "night": "https://pica.zhimg.com/v2-eff4cc66336c74036a255aa273869b89_l.jpg?source=32738c0c&needBackground=1",
+                        "width": 36,
+                        "height": 36,
+                        "jump_url": "http://www.zhihu.com/people/kidqi-61"
+                    },
+                    "avatar_frame_image": null,
+                    "avatar_icon_image": null,
+                    "avatar_cover_image": null
+                },
+                "identity_icons": [
+                    {
+                        "day": "https://picx.zhimg.com/v2-4812630bc27d642f7cafcd6cdeca3d7a_720w.png?source=32738c0c",
+                        "night": "https://picx.zhimg.com/v2-c9686ff064ea3579730756ac6c289978_720w.png?source=32738c0c",
+                        "width": 18,
+                        "height": 18,
+                        "jump_url": "zhihu://vip/purchase?super_vip_type=0"
+                    },
+                    {
+                        "day": "https://picx.zhimg.com/v2-9251b676c9f4283fdc5e04261a7e534f_720w.png?source=32738c0c",
+                        "night": "https://picx.zhimg.com/v2-9251b676c9f4283fdc5e04261a7e534f_720w.png?source=32738c0c",
+                        "width": 18,
+                        "height": 18,
+                        "jump_url": "zhihu://popup_container?url=https%3A%2F%2Fwww.zhihu.com%2Fappview%2Fv2%2Fbadge_center%2Fdetail%3FuserToken%3Dkidqi-61%26badgeId%3D1502699219463389184&min_percent=0.6&show_header=false&cancelable=true&enable_drag=false&canchangeheight=false&is_covertab=true&is_show_shadow=true"
+                    }
+                ],
+                "description": "好耶",
+                "follow_status": "normal"
+            },
+            "search_word": {
+                "queries": [
+                    {
+                        "display_query": "",
+                        "real_query": "",
+                        "link_url": "zhihu://search?content_type=answer&content_id=2450590812&scene=NextPreset",
+                        "attached_info": "",
+                        "id": ""
+                    }
+                ]
+            },
+            "interaction_bar_plugins": [
+                {
+                    "type": "comment",
+                    "comment": {
+                        "enable": true,
+                        "placeholder": "加入讨论吧"
+                    }
+                },
+                {
+                    "type": "follow"
+                }
+            ],
+            "bar_plugins_flip_time": 0,
+            "business_type": "normal",
+            "is_mine": false,
+            "comment_permission": "all",
+            "admin_closed_comment": false,
+            "copyright_status": "PUBLIC",
+            "can_copy": true,
+            "reaction_instruction": {},
+            "hot_comment": [],
+            "reaction": {
+                "statistics": {
+                    "up_vote_count": 84,
+                    "down_vote_count": 1,
+                    "like_count": 1,
+                    "comment_count": 3,
+                    "share_count": 0,
+                    "play_count": 0,
+                    "interest_play_count": 0,
+                    "favorites": 0,
+                    "pv_count": 0,
+                    "bullet_count": 0,
+                    "applaud_count": 0,
+                    "question_follower_count": 0,
+                    "question_answer_count": 0,
+                    "plaincontent_vote_up_count": 0,
+                    "plaincontent_like_count": 0,
+                    "subscribe_count": 0,
+                    "republishers": []
+                },
+                "relation": {
+                    "is_author": false,
+                    "vote": "Neutral",
+                    "liked": false,
+                    "faved": false,
+                    "following": false,
+                    "subcribed": false,
+                    "is_navigator_vote": false,
+                    "current_user_is_navigator": false,
+                    "vote_next_step": ""
+                },
+                "image_reactions": {},
+                "share_count_string": "0"
+            },
+            "excerpt": "建议可以直接拿着作文去问老师，这样会比较有针对性",
+            "biz_type_list": ["answer"],
+            "structured_content": {
+                "paging": "{\"is_end\":true,\"next\":\"https://api.zhihu.com/next-content-render?offset=20\\u0026url_token=2450590812\\u0026content_type=answer\\u0026version_id=2000000001475624727\",\"is_start\":true,\"previous\":\"https://api.zhihu.com/next-content-render?offset=0\\u0026url_token=2450590812\\u0026content_type=answer\\u0026version_id=2000000001475624727\",\"totals\":0}",
+                "segments": [
+                    {
+                        "id": "0",
+                        "paragraph": {
+                            "marks": [],
+                            "pid": "1Lxo_BE2",
+                            "text": "建议可以直接拿着作文去问老师，这样会比较有针对性"
+                        },
+                        "type": "paragraph"
+                    }
+                ]
+            },
+            "video": null,
+            "card_list": null,
+            "endorsement": [],
+            "relationship_tips": {
+                "type": "reaction_endorse",
+                "right_icon": {
+                    "day": "https://pic1.zhimg.com/80/v2-5e22e91ab9265c2115a98d47ebb42358_1440w.png",
+                    "night": "https://pic1.zhimg.com/80/v2-5e22e91ab9265c2115a98d47ebb42358_1440w.png",
+                    "width": 10,
+                    "height": 10
+                },
+                "text": "84 人赞同了该回答",
+                "text_color": "GBK06A",
+                "text_size": 13,
+                "is_bold": false,
+                "action_url": "zhihu://hybrid?zh_url=https%3A%2F%2Fwww.zhihu.com%2Fappview%2Fanswer%2F2450590812%2Fvoters%3Fzh_hide_nav_bar%3Dtrue"
+            },
+            "podcast_audio_enter": {
+                "text": "2 人听过",
+                "text_color": "MapBrand",
+                "text_size": 13,
+                "action_url": "zhihu://podcast/audio_player/80340096076?contentId=2450590812&contentType=answer&subType=&entrance=detail_page",
+                "sub_type": ""
+            },
+            "ad_info": {
+                "data": ""
+            },
+            "attached_info": "MiQyYjQ0NGQ0YS0wMDdkLTQwYWEtODM3Yi05OTA3NzNjM2M2ODGiARAIBBADGNyYxJAJIP+7j/oBigJ2EAQaCTQ3NTY0NTU4NiIKMjQ1MDU5MDgxMii0mcGwnDQyVAjRsrHOAhAEGgs0MDcxMTA0MDkzNiCcv7I1KAMyB1VOS05PV046E0FOU1dFUl9QQUdFX1JFTF9SRUNA4cTG6ruMrvMYSANqCggBEAQaBGJhc2V4A5ICGQoJNDc1NjQ1NTg2EgoyNDUwNTkwODEyGAQ=",
+            "nf_attached_info": "CgdVTktOT1dOEhNBTlNXRVJfUEFHRV9SRUxfUkVD",
+            "header": {
+                "action_url": "https://www.zhihu.com/question/524541439",
+                "text": "男生,现在高一,请教一下知乎的各位大佬,请问我的作文该如何修改?",
+                "text_size": 17,
+                "text_color": "GBK02A",
+                "bold": true
+            },
+            "content_end_info": {
+                "create_time_text": "2022-04-21 16:34",
+                "update_time_text": "",
+                "ip_info": "",
+                "reshipment_settings": "",
+                "show_origin_page": {
+                    "text": "",
+                    "action_url": ""
+                }
+            },
+            "section_info": {
+                "text": "—— 相关推荐 ——",
+                "text_color": "GBK07B",
+                "text_size": 12,
+                "background_color": "GBK10C",
+                "bold": false
+            },
+            "preload": false,
+            "third_business": {},
+            "comment_config": {
+                "can_segment_reply": true
+            },
+            "id": "2450590812",
+            "type": "answer"
+        },
+        {
+            "question": {
+                "id": "604252756",
+                "type": "question",
+                "title": "有没有非常消磨时间的游戏推荐一下?",
+                "url": "https://api.zhihu.com/questions/604252756",
+                "status": {
+                    "is_locked": false,
+                    "is_close": false,
+                    "is_evaluate": false,
+                    "is_suggest": false
+                },
+                "relationship": {
+                    "is_author": false,
+                    "is_anonymous": false,
+                    "is_following": false,
+                    "is_downvoting": false
+                },
+                "review_info": {
+                    "type": "",
+                    "tips": "当前已有问题编辑正在审核，请稍后重试",
+                    "edit_tips": "当前已有问题编辑正在审核，请稍后重试",
+                    "is_reviewing": false,
+                    "edit_is_reviewing": true
+                },
+                "mute_info": {
+                    "type": ""
+                },
+                "reaction_instruction": {},
+                "followers_count": 1407,
+                "answer_count": 990
+            },
+            "author": {
+                "id": "d8aee1d97246606259e2132d32e96d20",
+                "url_token": "970826",
+                "type": "people",
+                "is_org": false,
+                "gender": 0,
+                "fullname": "竹子有点困",
+                "avatar": {
+                    "avatar_image": {
+                        "day": "https://picx.zhimg.com/v2-74978c7b3b0a483f9067afb2522c916d_l.jpg?source=32738c0c&needBackground=1",
+                        "night": "https://picx.zhimg.com/v2-74978c7b3b0a483f9067afb2522c916d_l.jpg?source=32738c0c&needBackground=1",
+                        "width": 36,
+                        "height": 36,
+                        "jump_url": "http://www.zhihu.com/people/970826"
+                    },
+                    "avatar_frame_image": null,
+                    "avatar_icon_image": null,
+                    "avatar_cover_image": null
+                },
+                "identity_icons": [
+                    {
+                        "day": "https://pic1.zhimg.com/v2-4812630bc27d642f7cafcd6cdeca3d7a_720w.png?source=32738c0c",
+                        "night": "https://pic1.zhimg.com/v2-c9686ff064ea3579730756ac6c289978_720w.png?source=32738c0c",
+                        "width": 18,
+                        "height": 18,
+                        "jump_url": "zhihu://vip/purchase?super_vip_type=0"
+                    },
+                    {
+                        "day": "https://picx.zhimg.com/v2-1071d194af69ba90cbb6428386e0ec8a_720w.png?source=32738c0c",
+                        "night": "https://pic1.zhimg.com/v2-1071d194af69ba90cbb6428386e0ec8a_720w.png?source=32738c0c",
+                        "width": 18,
+                        "height": 18,
+                        "jump_url": "zhihu://popup_container?url=https%3A%2F%2Fwww.zhihu.com%2Fappview%2Fv2%2Fbadge_center%2Fdetail%3FuserToken%3D970826%26badgeId%3D1949066554491797661&min_percent=0.6&show_header=false&cancelable=true&enable_drag=false&canchangeheight=false&is_covertab=true&is_show_shadow=true"
+                    }
+                ],
+                "description": "自古更甚，别人更甚，都比我更甚，那……我如此便就是对的了吗？",
+                "follow_status": "normal"
+            },
+            "search_word": {
+                "queries": [
+                    {
+                        "display_query": "",
+                        "real_query": "",
+                        "link_url": "zhihu://search?content_type=answer&content_id=3216841559&scene=NextPreset",
+                        "attached_info": "",
+                        "id": ""
+                    }
+                ]
+            },
+            "interaction_bar_plugins": [
+                {
+                    "type": "comment",
+                    "comment": {
+                        "enable": true,
+                        "placeholder": "留下你的声音"
+                    }
+                },
+                {
+                    "type": "follow"
+                }
+            ],
+            "bar_plugins_flip_time": 0,
+            "business_type": "normal",
+            "is_mine": false,
+            "comment_permission": "all",
+            "admin_closed_comment": false,
+            "copyright_status": "PUBLIC",
+            "can_copy": true,
+            "reaction_instruction": {},
+            "hot_comment": [],
+            "reaction": {
+                "statistics": {
+                    "up_vote_count": 158,
+                    "down_vote_count": 4,
+                    "like_count": 29,
+                    "comment_count": 7,
+                    "share_count": 0,
+                    "play_count": 0,
+                    "interest_play_count": 0,
+                    "favorites": 5,
+                    "pv_count": 0,
+                    "bullet_count": 0,
+                    "applaud_count": 0,
+                    "question_follower_count": 0,
+                    "question_answer_count": 0,
+                    "plaincontent_vote_up_count": 0,
+                    "plaincontent_like_count": 0,
+                    "subscribe_count": 0,
+                    "republishers": []
+                },
+                "relation": {
+                    "is_author": false,
+                    "vote": "Neutral",
+                    "liked": false,
+                    "faved": false,
+                    "following": false,
+                    "subcribed": false,
+                    "is_navigator_vote": false,
+                    "current_user_is_navigator": false,
+                    "vote_next_step": ""
+                },
+                "image_reactions": {},
+                "share_count_string": "1"
+            },
+            "excerpt": "全特么是寻道大千的广告，玩过，说一句没钱别玩，有钱的打0氪可以一个打几百个，之所以没有几千个几万个是因为这游戏没这么多人",
+            "biz_type_list": ["answer"],
+            "structured_content": {
+                "paging": "{\"is_end\":true,\"next\":\"https://api.zhihu.com/next-content-render?offset=20\\u0026url_token=3216841559\\u0026content_type=answer\\u0026version_id=2000000002238854731\",\"is_start\":true,\"previous\":\"https://api.zhihu.com/next-content-render?offset=0\\u0026url_token=3216841559\\u0026content_type=answer\\u0026version_id=2000000002238854731\",\"totals\":0}",
+                "segments": [
+                    {
+                        "id": "0",
+                        "paragraph": {
+                            "marks": [
+                                {
+                                    "end_index": 8,
+                                    "entity_word": {
+                                        "attach_info_bytes": "sgJZCgzlr7vpgZPlpKfljYMSBEdhbWUYGyAfKAE1EYNtOzoGYW5zd2VyQNCt74CN+tW8PkgAUiQxN2U3YTUyMi0xZDc4LTQ3NDItYTVkYy00YTMyYWMzOWYxZDPyAu0BCiQxN2U3YTUyMi0xZDc4LTQ3NDItYTVkYy00YTMyYWMzOWYxZDMaBmFuc3dlciIJNjE0OTYxOTU0Ogzlr7vpgZPlpKfljYNA0K3vgI361bw+SABSEmFpX2VudGl0eV9yZWNhbGxlcl0Rg207YlkKDOWvu+mBk+Wkp+WNgxIER2FtZRgbIB8oATURg207OgZhbnN3ZXJA0K3vgI361bw+SABSJDE3ZTdhNTIyLTFkNzgtNDc0Mi1hNWRjLTRhMzJhYzM5ZjFkM3IkMjc5NDNlZjItYTFhNS00MjI3LTkzMjItM2Y2NDMwZDdhMmI1",
+                                        "id": "0",
+                                        "type": "search",
+                                        "url": "https://www.zhihu.com/search?attached_info=sgJZCgzlr7vpgZPlpKfljYMSBEdhbWUYGyAfKAE1EYNtOzoGYW5zd2VyQNCt74CN%2BtW8PkgAUiQxN2U3YTUyMi0xZDc4LTQ3NDItYTVkYy00YTMyYWMzOWYxZDPyAu0BCiQxN2U3YTUyMi0xZDc4LTQ3NDItYTVkYy00YTMyYWMzOWYxZDMaBmFuc3dlciIJNjE0OTYxOTU0Ogzlr7vpgZPlpKfljYNA0K3vgI361bw%2BSABSEmFpX2VudGl0eV9yZWNhbGxlcl0Rg207YlkKDOWvu%2BmBk%2BWkp%2BWNgxIER2FtZRgbIB8oATURg207OgZhbnN3ZXJA0K3vgI361bw%2BSABSJDE3ZTdhNTIyLTFkNzgtNDc0Mi1hNWRjLTRhMzJhYzM5ZjFkM3IkMjc5NDNlZjItYTFhNS00MjI3LTkzMjItM2Y2NDMwZDdhMmI1&content_id=614961954&content_type=ANSWER&extra=%7B%22content_id%22%3A%22614961954%22%2C%22content_type%22%3A%22answer%22%2C%22request_click_id%22%3A%2227943ef2-a1a5-4227-9322-3f6430d7a2b5%22%7D&halfSheet=1&hybrid_search_extra=%7B%22sourceId%22%3A0%2C%22sourceType%22%3A%22search%22%7D&hybrid_search_source=Entity&match_order=1&q=%E5%AF%BB%E9%81%93%E5%A4%A7%E5%8D%83&request_click_id=27943ef2-a1a5-4227-9322-3f6430d7a2b5&search_source=Entity&target=blank",
+                                        "word": "寻道大千"
+                                    },
+                                    "start_index": 4,
+                                    "type": "entity_word"
+                                }
+                            ],
+                            "pid": "zHqgBFPg",
+                            "text": "全特么是寻道大千的广告，玩过，说一句没钱别玩，有钱的打0氪可以一个打几百个，之所以没有几千个几万个是因为这游戏没这么多人"
+                        },
+                        "type": "paragraph"
+                    }
+                ]
+            },
+            "video": null,
+            "card_list": null,
+            "endorsement": [],
+            "relationship_tips": {
+                "type": "reaction_endorse",
+                "right_icon": {
+                    "day": "https://pic1.zhimg.com/80/v2-5e22e91ab9265c2115a98d47ebb42358_1440w.png",
+                    "night": "https://pic1.zhimg.com/80/v2-5e22e91ab9265c2115a98d47ebb42358_1440w.png",
+                    "width": 10,
+                    "height": 10
+                },
+                "text": "158 人赞同了该回答",
+                "text_color": "GBK06A",
+                "text_size": 13,
+                "is_bold": false,
+                "action_url": "zhihu://hybrid?zh_url=https%3A%2F%2Fwww.zhihu.com%2Fappview%2Fanswer%2F3216841559%2Fvoters%3Fzh_hide_nav_bar%3Dtrue"
+            },
+            "podcast_audio_enter": {
+                "text": "2 人听过",
+                "text_color": "MapBrand",
+                "text_size": 13,
+                "action_url": "zhihu://podcast/audio_player/13210718804?contentId=3216841559&contentType=answer&subType=&entrance=detail_page",
+                "sub_type": ""
+            },
+            "ad_info": {
+                "data": ""
+            },
+            "attached_info": "MiQyYjQ0NGQ0YS0wMDdkLTQwYWEtODM3Yi05OTA3NzNjM2M2ODGiARAIBBADGNe29P0LINTUkKACigJ2EAQaCTYxNDk2MTk1NCIKMzIxNjg0MTU1OSi0mcGwnDQyVAjRsrHOAhAEGgs0MDcxMTA0MDkzNiCcv7I1KAMyB1VOS05PV046E0FOU1dFUl9QQUdFX1JFTF9SRUNA4cTG6ruMrvMYSANqCggBEAQaBGJhc2V4A5ICGQoJNjE0OTYxOTU0EgozMjE2ODQxNTU5GAQ=",
+            "nf_attached_info": "CgdVTktOT1dOEhNBTlNXRVJfUEFHRV9SRUxfUkVD",
+            "header": {
+                "action_url": "https://www.zhihu.com/question/604252756",
+                "text": "有没有非常消磨时间的游戏推荐一下?",
+                "text_size": 17,
+                "text_color": "GBK02A",
+                "bold": true
+            },
+            "content_end_info": {
+                "create_time_text": "2023-09-18 22:11",
+                "update_time_text": "",
+                "ip_info": "山东",
+                "reshipment_settings": "",
+                "show_origin_page": {
+                    "text": "",
+                    "action_url": ""
+                }
+            },
+            "section_info": {
+                "text": "—— 相关推荐 ——",
+                "text_color": "GBK07B",
+                "text_size": 12,
+                "background_color": "GBK10C",
+                "bold": false
+            },
+            "preload": false,
+            "third_business": {},
+            "comment_config": {
+                "can_segment_reply": true
+            },
+            "id": "3216841559",
+            "type": "answer"
+        },
+        {
+            "question": {
+                "id": "520479824",
+                "type": "question",
+                "title": "可不可以写一个操作系统，用汇编和 C 写内核和驱动，用 HTML 和 JS 通过浏览器内核实现GUI?",
+                "url": "https://api.zhihu.com/questions/520479824",
+                "status": {
+                    "is_locked": false,
+                    "is_close": false,
+                    "is_evaluate": false,
+                    "is_suggest": false
+                },
+                "relationship": {
+                    "is_author": false,
+                    "is_anonymous": false,
+                    "is_following": false,
+                    "is_downvoting": false
+                },
+                "review_info": {
+                    "type": "",
+                    "tips": "当前已有问题编辑正在审核，请稍后重试",
+                    "edit_tips": "当前已有问题编辑正在审核，请稍后重试",
+                    "is_reviewing": false,
+                    "edit_is_reviewing": true
+                },
+                "mute_info": {
+                    "type": ""
+                },
+                "reaction_instruction": {},
+                "followers_count": 236,
+                "answer_count": 84
+            },
+            "author": {
+                "id": "99a1984869462d633a63eee26a8a77f6",
+                "url_token": "729041652",
+                "type": "people",
+                "is_org": false,
+                "gender": 1,
+                "fullname": "ijrys",
+                "avatar": {
+                    "avatar_image": {
+                        "day": "https://picx.zhimg.com/v2-7a25d02cbfc512918a1ca3064e70cc91_l.jpg?source=32738c0c&needBackground=1",
+                        "night": "https://pica.zhimg.com/v2-7a25d02cbfc512918a1ca3064e70cc91_l.jpg?source=32738c0c&needBackground=1",
+                        "width": 36,
+                        "height": 36,
+                        "jump_url": "http://www.zhihu.com/people/729041652"
+                    },
+                    "avatar_frame_image": null,
+                    "avatar_icon_image": null,
+                    "avatar_cover_image": null
+                },
+                "identity_icons": [
+                    {
+                        "day": "https://pic1.zhimg.com/v2-b745dab79c957a541eb72381ece4438d_720w.png?source=32738c0c",
+                        "night": "https://picx.zhimg.com/v2-b745dab79c957a541eb72381ece4438d_720w.png?source=32738c0c",
+                        "width": 18,
+                        "height": 18,
+                        "jump_url": "zhihu://popup_container?url=https%3A%2F%2Fwww.zhihu.com%2Fappview%2Fv2%2Fbadge_center%2Fdetail%3FuserToken%3D729041652%26badgeId%3D972475023013875712&min_percent=0.6&show_header=false&cancelable=true&enable_drag=false&canchangeheight=false&is_covertab=true&is_show_shadow=true"
+                    }
+                ],
+                "description": "求各位dalao遇到问题不要找我，我最多就是点个关注外加浪费你一名额",
+                "follow_status": "normal"
+            },
+            "search_word": {
+                "queries": [
+                    {
+                        "display_query": "",
+                        "real_query": "",
+                        "link_url": "zhihu://search?content_type=answer&content_id=2378633620&scene=NextPreset",
+                        "attached_info": "",
+                        "id": ""
+                    }
+                ]
+            },
+            "interaction_bar_plugins": [
+                {
+                    "type": "comment",
+                    "comment": {
+                        "enable": true,
+                        "placeholder": "一起聊一聊"
+                    }
+                },
+                {
+                    "type": "follow"
+                }
+            ],
+            "bar_plugins_flip_time": 0,
+            "business_type": "normal",
+            "is_mine": false,
+            "comment_permission": "all",
+            "admin_closed_comment": false,
+            "copyright_status": "PUBLIC",
+            "can_copy": true,
+            "reaction_instruction": {},
+            "hot_comment": [],
+            "reaction": {
+                "statistics": {
+                    "up_vote_count": 120,
+                    "down_vote_count": 4,
+                    "like_count": 4,
+                    "comment_count": 18,
+                    "share_count": 0,
+                    "play_count": 0,
+                    "interest_play_count": 0,
+                    "favorites": 4,
+                    "pv_count": 0,
+                    "bullet_count": 0,
+                    "applaud_count": 0,
+                    "question_follower_count": 0,
+                    "question_answer_count": 0,
+                    "plaincontent_vote_up_count": 0,
+                    "plaincontent_like_count": 0,
+                    "subscribe_count": 0,
+                    "republishers": []
+                },
+                "relation": {
+                    "is_author": false,
+                    "vote": "Neutral",
+                    "liked": false,
+                    "faved": false,
+                    "following": false,
+                    "subcribed": false,
+                    "is_navigator_vote": false,
+                    "current_user_is_navigator": false,
+                    "vote_next_step": ""
+                },
+                "image_reactions": {},
+                "share_count_string": "0"
+            },
+            "excerpt": "微信，QQ，淘宝，京东，支付宝，pdd 了解一下",
+            "biz_type_list": ["answer"],
+            "structured_content": {
+                "paging": "{\"is_end\":true,\"next\":\"https://api.zhihu.com/next-content-render?offset=20\\u0026url_token=2378633620\\u0026content_type=answer\\u0026version_id=2000000001417783060\",\"is_start\":true,\"previous\":\"https://api.zhihu.com/next-content-render?offset=0\\u0026url_token=2378633620\\u0026content_type=answer\\u0026version_id=2000000001417783060\",\"totals\":0}",
+                "segments": [
+                    {
+                        "id": "0",
+                        "paragraph": {
+                            "marks": [],
+                            "pid": "Ab-ntHnC",
+                            "text": "微信，QQ，淘宝，京东，支付宝，pdd 了解一下"
+                        },
+                        "type": "paragraph"
+                    }
+                ]
+            },
+            "video": null,
+            "card_list": null,
+            "endorsement": [],
+            "relationship_tips": {
+                "type": "reaction_endorse",
+                "right_icon": {
+                    "day": "https://pic1.zhimg.com/80/v2-5e22e91ab9265c2115a98d47ebb42358_1440w.png",
+                    "night": "https://pic1.zhimg.com/80/v2-5e22e91ab9265c2115a98d47ebb42358_1440w.png",
+                    "width": 10,
+                    "height": 10
+                },
+                "text": "120 人赞同了该回答",
+                "text_color": "GBK06A",
+                "text_size": 13,
+                "is_bold": false,
+                "action_url": "zhihu://hybrid?zh_url=https%3A%2F%2Fwww.zhihu.com%2Fappview%2Fanswer%2F2378633620%2Fvoters%3Fzh_hide_nav_bar%3Dtrue"
+            },
+            "podcast_audio_enter": {
+                "text": "2 人听过",
+                "text_color": "MapBrand",
+                "text_size": 13,
+                "action_url": "zhihu://podcast/audio_player/34610412127?contentId=2378633620&contentType=answer&subType=&entrance=detail_page",
+                "sub_type": ""
+            },
+            "ad_info": {
+                "data": ""
+            },
+            "attached_info": "MiQyYjQ0NGQ0YS0wMDdkLTQwYWEtODM3Yi05OTA3NzNjM2M2ODGiARAIBBADGJSjnO4IINDIl/gBigJ2EAQaCTQ2MjU2MTEwNSIKMjM3ODYzMzYyMCi0mcGwnDQyVAjRsrHOAhAEGgs0MDcxMTA0MDkzNiCcv7I1KAMyB1VOS05PV046E0FOU1dFUl9QQUdFX1JFTF9SRUNA4cTG6ruMrvMYSANqCggBEAQaBGJhc2V4A5ICGQoJNDYyNTYxMTA1EgoyMzc4NjMzNjIwGAQ=",
+            "nf_attached_info": "CgdVTktOT1dOEhNBTlNXRVJfUEFHRV9SRUxfUkVD",
+            "header": {
+                "action_url": "https://www.zhihu.com/question/520479824",
+                "text": "可不可以写一个操作系统，用汇编和 C 写内核和驱动，用 HTML 和 JS 通过浏览器内核实现GUI?",
+                "text_size": 17,
+                "text_color": "GBK02A",
+                "bold": true
+            },
+            "content_end_info": {
+                "create_time_text": "2022-03-07 19:46",
+                "update_time_text": "",
+                "ip_info": "",
+                "reshipment_settings": "",
+                "show_origin_page": {
+                    "text": "",
+                    "action_url": ""
+                }
+            },
+            "section_info": {
+                "text": "—— 相关推荐 ——",
+                "text_color": "GBK07B",
+                "text_size": 12,
+                "background_color": "GBK10C",
+                "bold": false
+            },
+            "preload": false,
+            "third_business": {},
+            "comment_config": {
+                "can_segment_reply": true
+            },
+            "id": "2378633620",
+            "type": "answer"
+        }
+    ]
+}

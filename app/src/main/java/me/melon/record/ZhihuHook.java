@@ -175,9 +175,11 @@ public void handleLoadPackage(final XC_LoadPackage.LoadPackageParam lpparam) thr
             return false;
         }
         return url.contains("/articles/")
+            || url.contains("/answers/")
             || url.contains("/appview/v2/answer/")
             || url.contains("/questions/")
-            || url.contains("/comment_v5/");
+            || url.contains("/comment_v5/")
+            || url.contains("/next-render");
     }
 
     private void saveResponseAsync(Object response, final String url) {

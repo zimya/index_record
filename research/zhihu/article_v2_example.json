@@ -1,0 +1,2487 @@
+{
+    "id": "2007896917322003867",
+    "type": "article",
+    "business_type": "normal",
+    "is_mine": true,
+    "can_copy": true,
+    "copyright_status": "need_review",
+    "is_topping": false,
+    "header": {
+        "action_url": "",
+        "text": "为什么越后抢的人越容易手气最佳？微信红包分配算法的逆向",
+        "text_size": 17,
+        "text_color": "GBK02A",
+        "bold": true
+    },
+    "content_end_info": {
+        "create_time_text": "2026-02-21 01:01",
+        "update_time_text": "编辑于 2026-02-21 11:08",
+        "ip_info": "上海",
+        "reshipment_settings": "",
+        "show_origin_page": null
+    },
+    "author": {
+        "id": "d4586603716886fa5fc050e8dd5db0e5",
+        "url_token": "dong-gua-gua-gua-gua-40",
+        "type": "people",
+        "is_org": false,
+        "gender": 1,
+        "fullname": "东瓜瓜瓜瓜",
+        "avatar": {
+            "avatar_image": {
+                "day": "https://picx.zhimg.com/v2-fe1dfb6186575fb53b1f2a2316fedd03_l.jpg?source=32738c0c&needBackground=1",
+                "night": "https://pica.zhimg.com/v2-fe1dfb6186575fb53b1f2a2316fedd03_l.jpg?source=32738c0c&needBackground=1",
+                "width": 36,
+                "height": 36,
+                "jump_url": "http://www.zhihu.com/people/dong-gua-gua-gua-gua-40"
+            },
+            "avatar_frame_image": null,
+            "avatar_icon_image": null,
+            "avatar_cover_image": null
+        },
+        "identity_icons": [
+            {
+                "day": "https://picx.zhimg.com/v2-e4b57750ed9b7f478c9f6e5cd97cd628_720w.png?source=32738c0c",
+                "night": "https://picx.zhimg.com/v2-e4b57750ed9b7f478c9f6e5cd97cd628_720w.png?source=32738c0c",
+                "width": 18,
+                "height": 18,
+                "jump_url": "zhihu://popup_container?url=https%3A%2F%2Fwww.zhihu.com%2Fappview%2Fv2%2Fbadge_center%2Fdetail%3FuserToken%3Ddong-gua-gua-gua-gua-40%26badgeId%3D1104437667143585792&min_percent=0.6&show_header=false&cancelable=true&enable_drag=false&canchangeheight=false&is_covertab=true&is_show_shadow=true"
+            }
+        ],
+        "description": "我只给知乎遗风点赞",
+        "follow_status": "normal"
+    },
+    "has_vip": false,
+    "has_publishing_draft": false,
+    "structured_content_vip": null,
+    "structured_content": {
+        "paging": "{\"is_end\":true,\"next\":\"https://api.zhihu.com/next-content-render?offset=20\\u0026url_token=2007896917322003867\\u0026content_type=article\\u0026version_id=2000000003239849291\",\"is_start\":true,\"previous\":\"https://api.zhihu.com/next-content-render?offset=0\\u0026url_token=2007896917322003867\\u0026content_type=article\\u0026version_id=2000000003239849291\",\"totals\":0}",
+        "segments": [
+            {
+                "id": "0",
+                "paragraph": {
+                    "marks": [
+                        {
+                            "end_index": 15,
+                            "entity_word": {
+                                "attach_info_bytes": "sgJdCgzmnIDkvJjnrZbnlaUSB1Vua25vd24YIiAmKAE1XMddOzoHYXJ0aWNsZUCjvLyCuOHOwHpIAFIkMTUxNTA5OWQtNzhkNi00NjVjLTg4YzEtMjQxMGU4MjA4ZDFk8gL3AQokMTUxNTA5OWQtNzhkNi00NjVjLTg4YzEtMjQxMGU4MjA4ZDFkGgdhcnRpY2xlIgkyNzA0NTU4NjI6DOacgOS8mOetlueVpUCjvLyCuOHOwHpIDlIXYmFpZHUtYmFpa2UtaXRlbS1yZWNhbGxdXMddO2JdCgzmnIDkvJjnrZbnlaUSB1Vua25vd24YIiAmKAE1XMddOzoHYXJ0aWNsZUCjvLyCuOHOwHpIAFIkMTUxNTA5OWQtNzhkNi00NjVjLTg4YzEtMjQxMGU4MjA4ZDFkciQxMTQ3ZmVjNC03MzEyLTQ4ODQtYmIwZC1iMDhiMzdkNzllZjY=",
+                                "id": "0",
+                                "type": "search",
+                                "url": "https://www.zhihu.com/search?attached_info=sgJdCgzmnIDkvJjnrZbnlaUSB1Vua25vd24YIiAmKAE1XMddOzoHYXJ0aWNsZUCjvLyCuOHOwHpIAFIkMTUxNTA5OWQtNzhkNi00NjVjLTg4YzEtMjQxMGU4MjA4ZDFk8gL3AQokMTUxNTA5OWQtNzhkNi00NjVjLTg4YzEtMjQxMGU4MjA4ZDFkGgdhcnRpY2xlIgkyNzA0NTU4NjI6DOacgOS8mOetlueVpUCjvLyCuOHOwHpIDlIXYmFpZHUtYmFpa2UtaXRlbS1yZWNhbGxdXMddO2JdCgzmnIDkvJjnrZbnlaUSB1Vua25vd24YIiAmKAE1XMddOzoHYXJ0aWNsZUCjvLyCuOHOwHpIAFIkMTUxNTA5OWQtNzhkNi00NjVjLTg4YzEtMjQxMGU4MjA4ZDFkciQxMTQ3ZmVjNC03MzEyLTQ4ODQtYmIwZC1iMDhiMzdkNzllZjY%3D&content_id=270455862&content_type=ARTICLE&extra=%7B%22content_id%22%3A%22270455862%22%2C%22content_type%22%3A%22article%22%2C%22request_click_id%22%3A%221147fec4-7312-4884-bb0d-b08b37d79ef6%22%7D&halfSheet=1&hybrid_search_extra=%7B%22sourceId%22%3A0%2C%22sourceType%22%3A%22search%22%7D&hybrid_search_source=Entity&match_order=1&q=%E6%9C%80%E4%BC%98%E7%AD%96%E7%95%A5&request_click_id=1147fec4-7312-4884-bb0d-b08b37d79ef6&search_source=Entity&target=blank",
+                                "word": "最优策略"
+                            },
+                            "start_index": 11,
+                            "type": "entity_word"
+                        },
+                        {
+                            "end_index": 33,
+                            "entity_word": {
+                                "attach_info_bytes": "sgJbCgnmiYvmsJTnjosSB1Vua25vd24YNSA4KAE1CdexOzoHYXJ0aWNsZUCE+LeOuazf1KoBSABSJDE1MTUwOTlkLTc4ZDYtNDY1Yy04OGMxLTI0MTBlODIwOGQxZPIC8gEKJDE1MTUwOTlkLTc4ZDYtNDY1Yy04OGMxLTI0MTBlODIwOGQxZBoHYXJ0aWNsZSIJMjcwNDU1ODYyOgnmiYvmsJTnjotAhPi3jrms39SqAUgEUhZhaV9lbnRpdHlfbGxtX3JlY2FsbGVyXQnXsTtiWwoJ5omL5rCU546LEgdVbmtub3duGDUgOCgBNQnXsTs6B2FydGljbGVAhPi3jrms39SqAUgAUiQxNTE1MDk5ZC03OGQ2LTQ2NWMtODhjMS0yNDEwZTgyMDhkMWRyJDExNDdmZWM0LTczMTItNDg4NC1iYjBkLWIwOGIzN2Q3OWVmNg==",
+                                "id": "0",
+                                "type": "search",
+                                "url": "https://www.zhihu.com/search?attached_info=sgJbCgnmiYvmsJTnjosSB1Vua25vd24YNSA4KAE1CdexOzoHYXJ0aWNsZUCE%2BLeOuazf1KoBSABSJDE1MTUwOTlkLTc4ZDYtNDY1Yy04OGMxLTI0MTBlODIwOGQxZPIC8gEKJDE1MTUwOTlkLTc4ZDYtNDY1Yy04OGMxLTI0MTBlODIwOGQxZBoHYXJ0aWNsZSIJMjcwNDU1ODYyOgnmiYvmsJTnjotAhPi3jrms39SqAUgEUhZhaV9lbnRpdHlfbGxtX3JlY2FsbGVyXQnXsTtiWwoJ5omL5rCU546LEgdVbmtub3duGDUgOCgBNQnXsTs6B2FydGljbGVAhPi3jrms39SqAUgAUiQxNTE1MDk5ZC03OGQ2LTQ2NWMtODhjMS0yNDEwZTgyMDhkMWRyJDExNDdmZWM0LTczMTItNDg4NC1iYjBkLWIwOGIzN2Q3OWVmNg%3D%3D&content_id=270455862&content_type=ARTICLE&extra=%7B%22content_id%22%3A%22270455862%22%2C%22content_type%22%3A%22article%22%2C%22request_click_id%22%3A%221147fec4-7312-4884-bb0d-b08b37d79ef6%22%7D&halfSheet=1&hybrid_search_extra=%7B%22sourceId%22%3A0%2C%22sourceType%22%3A%22search%22%7D&hybrid_search_source=Entity&match_order=1&q=%E6%89%8B%E6%B0%94%E7%8E%8B&request_click_id=1147fec4-7312-4884-bb0d-b08b37d79ef6&search_source=Entity&target=blank",
+                                "word": "手气王"
+                            },
+                            "start_index": 30,
+                            "type": "entity_word"
+                        },
+                        {
+                            "end_index": 50,
+                            "entity_word": {
+                                "attach_info_bytes": "sgJbCgzliIbphY3nrpfms5USBE1hdGgYRSBJKAM1EGFZOzoHYXJ0aWNsZUDAy6Wfydnvk7oBSABSJDE1MTUwOTlkLTc4ZDYtNDY1Yy04OGMxLTI0MTBlODIwOGQxZPIC8QEKJDE1MTUwOTlkLTc4ZDYtNDY1Yy04OGMxLTI0MTBlODIwOGQxZBoHYXJ0aWNsZSIJMjcwNDU1ODYyOgzliIbphY3nrpfms5VAwMuln8nZ75O6AUgPUhJhaV9lbnRpdHlfcmVjYWxsZXJdEGFZO2JbCgzliIbphY3nrpfms5USBE1hdGgYRSBJKAM1EGFZOzoHYXJ0aWNsZUDAy6Wfydnvk7oBSABSJDE1MTUwOTlkLTc4ZDYtNDY1Yy04OGMxLTI0MTBlODIwOGQxZHIkMTE0N2ZlYzQtNzMxMi00ODg0LWJiMGQtYjA4YjM3ZDc5ZWY2",
+                                "id": "0",
+                                "type": "search",
+                                "url": "https://www.zhihu.com/search?attached_info=sgJbCgzliIbphY3nrpfms5USBE1hdGgYRSBJKAM1EGFZOzoHYXJ0aWNsZUDAy6Wfydnvk7oBSABSJDE1MTUwOTlkLTc4ZDYtNDY1Yy04OGMxLTI0MTBlODIwOGQxZPIC8QEKJDE1MTUwOTlkLTc4ZDYtNDY1Yy04OGMxLTI0MTBlODIwOGQxZBoHYXJ0aWNsZSIJMjcwNDU1ODYyOgzliIbphY3nrpfms5VAwMuln8nZ75O6AUgPUhJhaV9lbnRpdHlfcmVjYWxsZXJdEGFZO2JbCgzliIbphY3nrpfms5USBE1hdGgYRSBJKAM1EGFZOzoHYXJ0aWNsZUDAy6Wfydnvk7oBSABSJDE1MTUwOTlkLTc4ZDYtNDY1Yy04OGMxLTI0MTBlODIwOGQxZHIkMTE0N2ZlYzQtNzMxMi00ODg0LWJiMGQtYjA4YjM3ZDc5ZWY2&content_id=270455862&content_type=ARTICLE&extra=%7B%22content_id%22%3A%22270455862%22%2C%22content_type%22%3A%22article%22%2C%22request_click_id%22%3A%221147fec4-7312-4884-bb0d-b08b37d79ef6%22%7D&halfSheet=1&hybrid_search_extra=%7B%22sourceId%22%3A0%2C%22sourceType%22%3A%22search%22%7D&hybrid_search_source=Entity&match_order=3&q=%E5%88%86%E9%85%8D%E7%AE%97%E6%B3%95&request_click_id=1147fec4-7312-4884-bb0d-b08b37d79ef6&search_source=Entity&target=blank",
+                                "word": "分配算法"
+                            },
+                            "start_index": 46,
+                            "type": "entity_word"
+                        }
+                    ],
+                    "pid": "mp5Hv7f1",
+                    "text": "什么，抢红包也居然存在最优策略？这篇文章研究了统计学视角下「手气王」的分布规律，以及微信红包分配算法的逆向。为了珍贵的研究数据，楼主派发了约 2000 个红包，总耗时 3 个月。还请诸位看官动动发财的小手点赞+关注，包能次次手气最佳♪(･ω･)ﾉ"
+                },
+                "type": "paragraph"
+            },
+            {
+                "id": "1",
+                "type": "hr"
+            },
+            {
+                "id": "2",
+                "paragraph": {
+                    "marks": [],
+                    "pid": "1SS0qapG",
+                    "text": "在开启分析之旅前，大伙不妨先思考两个问题："
+                },
+                "type": "paragraph"
+            },
+            {
+                "blockquote": {
+                    "marks": [
+                        {
+                            "end_index": 32,
+                            "start_index": 28,
+                            "type": "bold"
+                        }
+                    ],
+                    "pid": "X9Hcn4Qw",
+                    "text": "台球店老板在粉丝群发红包，手气最佳者可以免台费，是否存在最佳策略？"
+                },
+                "id": "3",
+                "type": "blockquote"
+            },
+            {
+                "blockquote": {
+                    "marks": [
+                        {
+                            "end_index": 24,
+                            "start_index": 18,
+                            "type": "bold"
+                        },
+                        {
+                            "end_index": 55,
+                            "start_index": 46,
+                            "type": "bold"
+                        }
+                    ],
+                    "pid": "p-_uYp2f",
+                    "text": "酸穷大学生在分配小组任务的时候，采用红包抽签方案。发1毛钱小金额红包，每个人都只能拿几分钱，这样的抽签是否公平？"
+                },
+                "id": "4",
+                "type": "blockquote"
+            },
+            {
+                "id": "5",
+                "image": {
+                    "description": "",
+                    "height": 800,
+                    "is_gif": false,
+                    "layout": "normal",
+                    "original_token": "v2-fce9b21b1a90aac126860a1e5574402f",
+                    "original_urls": [
+                        "https://picx.zhimg.com/v2-fce9b21b1a90aac126860a1e5574402f.jpg?source=7e7ef6e2&needBackground=1"
+                    ],
+                    "status": "normal",
+                    "token": "v2-fce9b21b1a90aac126860a1e5574402f",
+                    "urls": [
+                        "https://pic1.zhimg.com/v2-fce9b21b1a90aac126860a1e5574402f.jpg?source=7e7ef6e2&needBackground=1"
+                    ],
+                    "width": 800
+                },
+                "type": "image"
+            },
+            {
+                "id": "6",
+                "paragraph": {
+                    "marks": [],
+                    "pid": "K4-VJkMH",
+                    "text": "换言之，微信红包的分配是否是公平的？先抢和后抢有没有区别？手气王到底服从什么样的分布规律？要回答这些问题，我们必须分析出微信红包的分配算法。"
+                },
+                "type": "paragraph"
+            },
+            {
+                "id": "7",
+                "paragraph": {
+                    "marks": [
+                        {
+                            "end_index": 48,
+                            "reference": {
+                                "href": "https://www.cnblogs.com/8hao/p/5383143.html",
+                                "index": 1,
+                                "title": "揭秘微信红包：架构、抢红包算法、高并发和降级方案"
+                            },
+                            "start_index": 45,
+                            "type": "reference"
+                        },
+                        {
+                            "end_index": 71,
+                            "reference": {
+                                "href": "https://timyang.net/architecture/wechat-red-packet/",
+                                "index": 2,
+                                "title": "微信红包金额分配的算法"
+                            },
+                            "start_index": 68,
+                            "type": "reference"
+                        },
+                        {
+                            "end_index": 74,
+                            "reference": {
+                                "href": "https://www.zhihu.com/question/22625187/answer/85530416",
+                                "index": 3,
+                                "title": "微信红包的随机算法是怎样实现的？ - 沉简的回答"
+                            },
+                            "start_index": 71,
+                            "type": "reference"
+                        },
+                        {
+                            "end_index": 82,
+                            "reference": {
+                                "href": "https://www.phppan.com/2015/04/weixin-hongbao/",
+                                "index": 4,
+                                "title": "微信红包实现原理"
+                            },
+                            "start_index": 79,
+                            "type": "reference"
+                        },
+                        {
+                            "end_index": 85,
+                            "reference": {
+                                "href": "https://www.zybuluo.com/yulin718/note/93148",
+                                "index": 5,
+                                "title": "微信红包的架构设计简介"
+                            },
+                            "start_index": 82,
+                            "type": "reference"
+                        },
+                        {
+                            "end_index": 108,
+                            "start_index": 103,
+                            "type": "bold"
+                        },
+                        {
+                            "end_index": 101,
+                            "entity_word": {
+                                "attach_info_bytes": "sgJfCgzln7rnoYDnrpfms5USB1Vua25vd24YnQ8goQ8oATWCDoE7OgdhcnRpY2xlQNPL+LCIyO7rBUgAUiQxNTE1MDk5ZC03OGQ2LTQ2NWMtODhjMS0yNDEwZTgyMDhkMWTyAvkBCiQxNTE1MDk5ZC03OGQ2LTQ2NWMtODhjMS0yNDEwZTgyMDhkMWQaB2FydGljbGUiCTI3MDQ1NTg2MjoM5Z+656GA566X5rOVQNPL+LCIyO7rBUgKUhdiYWlkdS1iYWlrZS1pdGVtLXJlY2FsbF2CDoE7Yl8KDOWfuuehgOeul+azlRIHVW5rbm93bhidDyChDygBNYIOgTs6B2FydGljbGVA08v4sIjI7usFSABSJDE1MTUwOTlkLTc4ZDYtNDY1Yy04OGMxLTI0MTBlODIwOGQxZHIkMTE0N2ZlYzQtNzMxMi00ODg0LWJiMGQtYjA4YjM3ZDc5ZWY2",
+                                "id": "0",
+                                "type": "search",
+                                "url": "https://www.zhihu.com/search?attached_info=sgJfCgzln7rnoYDnrpfms5USB1Vua25vd24YnQ8goQ8oATWCDoE7OgdhcnRpY2xlQNPL%2BLCIyO7rBUgAUiQxNTE1MDk5ZC03OGQ2LTQ2NWMtODhjMS0yNDEwZTgyMDhkMWTyAvkBCiQxNTE1MDk5ZC03OGQ2LTQ2NWMtODhjMS0yNDEwZTgyMDhkMWQaB2FydGljbGUiCTI3MDQ1NTg2MjoM5Z%2B656GA566X5rOVQNPL%2BLCIyO7rBUgKUhdiYWlkdS1iYWlrZS1pdGVtLXJlY2FsbF2CDoE7Yl8KDOWfuuehgOeul%2BazlRIHVW5rbm93bhidDyChDygBNYIOgTs6B2FydGljbGVA08v4sIjI7usFSABSJDE1MTUwOTlkLTc4ZDYtNDY1Yy04OGMxLTI0MTBlODIwOGQxZHIkMTE0N2ZlYzQtNzMxMi00ODg0LWJiMGQtYjA4YjM3ZDc5ZWY2&content_id=270455862&content_type=ARTICLE&extra=%7B%22content_id%22%3A%22270455862%22%2C%22content_type%22%3A%22article%22%2C%22request_click_id%22%3A%221147fec4-7312-4884-bb0d-b08b37d79ef6%22%7D&halfSheet=1&hybrid_search_extra=%7B%22sourceId%22%3A0%2C%22sourceType%22%3A%22search%22%7D&hybrid_search_source=Entity&match_order=1&q=%E5%9F%BA%E7%A1%80%E7%AE%97%E6%B3%95&request_click_id=1147fec4-7312-4884-bb0d-b08b37d79ef6&search_source=Entity&target=blank",
+                                "word": "基础算法"
+                            },
+                            "start_index": 97,
+                            "type": "entity_word"
+                        }
+                    ],
+                    "pid": "Wq3gSqjS",
+                    "text": "幸运的是，我们可以站在前人的肩膀上。最早透露微信红包算法的是当时的支付后台架构负责人方乐明[1]，后来也有网友在此基础上分析它的具体算法[2][3]，工程实现[4][5]等。这些文章都提到了一个基础算法——二倍均值法。"
+                },
+                "type": "paragraph"
+            },
+            {
+                "id": "8",
+                "paragraph": {
+                    "marks": [
+                        {
+                            "end_index": 13,
+                            "start_index": 10,
+                            "type": "bold"
+                        },
+                        {
+                            "end_index": 42,
+                            "start_index": 36,
+                            "type": "bold"
+                        },
+                        {
+                            "end_index": 49,
+                            "start_index": 45,
+                            "type": "bold"
+                        },
+                        {
+                            "end_index": 107,
+                            "start_index": 95,
+                            "type": "bold"
+                        }
+                    ],
+                    "pid": "B1SLfOSs",
+                    "text": "微信红包的分配过程是动态的，也就是说每发出去一枚红包，微信后台就会根据 当前剩余人数 和 剩余金额 计算出下一次应该发多少钱，然后依次类推，直到红包发完为止。具体每次发多少钱，是从 0 到 剩余金额➗剩余人数✖️2 这个区间内随机抽取的。"
+                },
+                "type": "paragraph"
+            },
+            {
+                "id": "9",
+                "paragraph": {
+                    "marks": [],
+                    "pid": "5LeHmgt8",
+                    "text": "知道了这个算法，我们可以推导出两个结论"
+                },
+                "type": "paragraph"
+            },
+            {
+                "id": "10",
+                "list_node": {
+                    "items": [
+                        {
+                            "indent_level": 1,
+                            "marks": [
+                                {
+                                    "end_index": 19,
+                                    "start_index": 0,
+                                    "type": "bold"
+                                }
+                            ],
+                            "text": "每个人分得的红包金额的数学期望是相等的：换言之，微信红包还算公平（话说要是平均每个人拿到的钱不相等那还像话么）"
+                        },
+                        {
+                            "indent_level": 1,
+                            "marks": [
+                                {
+                                    "end_index": 19,
+                                    "start_index": 0,
+                                    "type": "bold"
+                                },
+                                {
+                                    "end_index": 88,
+                                    "start_index": 74,
+                                    "type": "bold"
+                                }
+                            ],
+                            "text": "越晚抢红包的人，分得红包金额的方差越大：这就涉及到今天讨论的手气王问题了。手气王是什么，是极值呀。极值一般发生在波动较大的地方，也就是我们可以认定，越晚抢的人，越容易拿到手气王。"
+                        }
+                    ],
+                    "type": "ordered"
+                },
+                "type": "list_node"
+            },
+            {
+                "id": "11",
+                "paragraph": {
+                    "marks": [],
+                    "pid": "9wI_euLI",
+                    "text": "下面做一个简单的数学证明（WARNING：下面大量公式出没，非战斗人员可跳过，直接看算法实现部分）"
+                },
+                "type": "paragraph"
+            },
+            {
+                "id": "12",
+                "paragraph": {
+                    "marks": [
+                        {
+                            "end_index": 12,
+                            "formula": {
+                                "content": "M",
+                                "height": 16,
+                                "img_url": "https://picx.zhimg.com/v2-8a7ee67da3d3d88bfb31b8fca9bb8f5d.jpg?source=7e7ef6e2&needBackground=1",
+                                "url": "https://zhuanlan.zhihu.com/p/2007896917322003867",
+                                "width": 18
+                            },
+                            "start_index": 8,
+                            "type": "formula"
+                        },
+                        {
+                            "end_index": 22,
+                            "formula": {
+                                "content": "N",
+                                "height": 16,
+                                "img_url": "https://pica.zhimg.com/v2-bbf0103508e16e7f6f0e1f50ffe228e9.jpg?source=7e7ef6e2&needBackground=1",
+                                "url": "https://zhuanlan.zhihu.com/p/2007896917322003867",
+                                "width": 15
+                            },
+                            "start_index": 18,
+                            "type": "formula"
+                        },
+                        {
+                            "end_index": 27,
+                            "formula": {
+                                "content": "X_k",
+                                "height": 19,
+                                "img_url": "https://picx.zhimg.com/v2-38eb9cb9f85aba332223d8ec64424687.jpg?source=7e7ef6e2&needBackground=1",
+                                "url": "https://zhuanlan.zhihu.com/p/2007896917322003867",
+                                "width": 23
+                            },
+                            "start_index": 23,
+                            "type": "formula"
+                        },
+                        {
+                            "end_index": 35,
+                            "formula": {
+                                "content": "k",
+                                "height": 16,
+                                "img_url": "https://picx.zhimg.com/v2-a3a807dc491aa46049aa2cdb2e4484f2.jpg?source=7e7ef6e2&needBackground=1",
+                                "url": "https://zhuanlan.zhihu.com/p/2007896917322003867",
+                                "width": 9
+                            },
+                            "start_index": 31,
+                            "type": "formula"
+                        },
+                        {
+                            "end_index": 48,
+                            "formula": {
+                                "content": "R_k",
+                                "height": 19,
+                                "img_url": "https://picx.zhimg.com/v2-941136fee798526dd819d69ec83d91de.jpg?source=7e7ef6e2&needBackground=1",
+                                "url": "https://zhuanlan.zhihu.com/p/2007896917322003867",
+                                "width": 21
+                            },
+                            "start_index": 44,
+                            "type": "formula"
+                        },
+                        {
+                            "end_index": 56,
+                            "formula": {
+                                "content": "k",
+                                "height": 16,
+                                "img_url": "https://picx.zhimg.com/v2-a3a807dc491aa46049aa2cdb2e4484f2.jpg?source=7e7ef6e2&needBackground=1",
+                                "url": "https://zhuanlan.zhihu.com/p/2007896917322003867",
+                                "width": 9
+                            },
+                            "start_index": 52,
+                            "type": "formula"
+                        },
+                        {
+                            "end_index": 74,
+                            "formula": {
+                                "content": "n_k",
+                                "height": 15,
+                                "img_url": "https://picx.zhimg.com/v2-892b776c8847c30dcbe9c7e8a475efd6.jpg?source=7e7ef6e2&needBackground=1",
+                                "url": "https://zhuanlan.zhihu.com/p/2007896917322003867",
+                                "width": 19
+                            },
+                            "start_index": 70,
+                            "type": "formula"
+                        }
+                    ],
+                    "pid": "FV4u0G2p",
+                    "text": "设红包总金额为 [公式]，总人数为 [公式]，[公式] 为第 [公式] 个人抢到的金额，[公式] 为第 [公式] 个人抢红包之前的剩余金额，[公式] 为剩余人数。于是"
+                },
+                "type": "paragraph"
+            },
+            {
+                "id": "13",
+                "paragraph": {
+                    "marks": [
+                        {
+                            "end_index": 4,
+                            "formula": {
+                                "content": "\\begin{align} \\\\ &R_{1}=M,R_{k+1}=R_{k}-X_{k} \\\\ &n_{k}=N-k+1 \\end{align}",
+                                "height": 66,
+                                "img_url": "https://picx.zhimg.com/v2-eab52ad09ff837d1d7107879e8563f9d.jpg?source=7e7ef6e2&needBackground=1",
+                                "url": "https://zhuanlan.zhihu.com/p/2007896917322003867",
+                                "width": 202
+                            },
+                            "start_index": 0,
+                            "type": "formula"
+                        }
+                    ],
+                    "pid": "e7FnBL7E",
+                    "text": "[公式]"
+                },
+                "type": "paragraph"
+            },
+            {
+                "id": "14",
+                "paragraph": {
+                    "marks": [
+                        {
+                            "end_index": 8,
+                            "formula": {
+                                "content": "k",
+                                "height": 16,
+                                "img_url": "https://picx.zhimg.com/v2-a3a807dc491aa46049aa2cdb2e4484f2.jpg?source=7e7ef6e2&needBackground=1",
+                                "url": "https://zhuanlan.zhihu.com/p/2007896917322003867",
+                                "width": 9
+                            },
+                            "start_index": 4,
+                            "type": "formula"
+                        },
+                        {
+                            "end_index": 16,
+                            "formula": {
+                                "content": "X_{k}",
+                                "height": 19,
+                                "img_url": "https://picx.zhimg.com/v2-38eb9cb9f85aba332223d8ec64424687.jpg?source=7e7ef6e2&needBackground=1",
+                                "url": "https://zhuanlan.zhihu.com/p/2007896917322003867",
+                                "width": 23
+                            },
+                            "start_index": 12,
+                            "type": "formula"
+                        },
+                        {
+                            "end_index": 25,
+                            "entity_word": {
+                                "attach_info_bytes": "sgJdCgzlnYfljIDliIbluIMSBE1hdGgYtBwguBwoATUlnHs7OgdhcnRpY2xlQPy7urCv2NDfqgFIAFIkMTUxNTA5OWQtNzhkNi00NjVjLTg4YzEtMjQxMGU4MjA4ZDFk8gLzAQokMTUxNTA5OWQtNzhkNi00NjVjLTg4YzEtMjQxMGU4MjA4ZDFkGgdhcnRpY2xlIgkyNzA0NTU4NjI6DOWdh+WMgOWIhuW4g0D8u7qwr9jQ36oBSAxSEmFpX2VudGl0eV9yZWNhbGxlcl0lnHs7Yl0KDOWdh+WMgOWIhuW4gxIETWF0aBi0HCC4HCgBNSWcezs6B2FydGljbGVA/Lu6sK/Y0N+qAUgAUiQxNTE1MDk5ZC03OGQ2LTQ2NWMtODhjMS0yNDEwZTgyMDhkMWRyJDExNDdmZWM0LTczMTItNDg4NC1iYjBkLWIwOGIzN2Q3OWVmNg==",
+                                "id": "0",
+                                "type": "search",
+                                "url": "https://www.zhihu.com/search?attached_info=sgJdCgzlnYfljIDliIbluIMSBE1hdGgYtBwguBwoATUlnHs7OgdhcnRpY2xlQPy7urCv2NDfqgFIAFIkMTUxNTA5OWQtNzhkNi00NjVjLTg4YzEtMjQxMGU4MjA4ZDFk8gLzAQokMTUxNTA5OWQtNzhkNi00NjVjLTg4YzEtMjQxMGU4MjA4ZDFkGgdhcnRpY2xlIgkyNzA0NTU4NjI6DOWdh%2BWMgOWIhuW4g0D8u7qwr9jQ36oBSAxSEmFpX2VudGl0eV9yZWNhbGxlcl0lnHs7Yl0KDOWdh%2BWMgOWIhuW4gxIETWF0aBi0HCC4HCgBNSWcezs6B2FydGljbGVA%2FLu6sK%2FY0N%2BqAUgAUiQxNTE1MDk5ZC03OGQ2LTQ2NWMtODhjMS0yNDEwZTgyMDhkMWRyJDExNDdmZWM0LTczMTItNDg4NC1iYjBkLWIwOGIzN2Q3OWVmNg%3D%3D&content_id=270455862&content_type=ARTICLE&extra=%7B%22content_id%22%3A%22270455862%22%2C%22content_type%22%3A%22article%22%2C%22request_click_id%22%3A%221147fec4-7312-4884-bb0d-b08b37d79ef6%22%7D&halfSheet=1&hybrid_search_extra=%7B%22sourceId%22%3A0%2C%22sourceType%22%3A%22search%22%7D&hybrid_search_source=Entity&match_order=1&q=%E5%9D%87%E5%8C%80%E5%88%86%E5%B8%83&request_click_id=1147fec4-7312-4884-bb0d-b08b37d79ef6&search_source=Entity&target=blank",
+                                "word": "均匀分布"
+                            },
+                            "start_index": 21,
+                            "type": "entity_word"
+                        }
+                    ],
+                    "pid": "DQFhAIMT",
+                    "text": "对于第 [公式] 个人，[公式] 服从如下均匀分布："
+                },
+                "type": "paragraph"
+            },
+            {
+                "id": "15",
+                "paragraph": {
+                    "marks": [
+                        {
+                            "end_index": 4,
+                            "formula": {
+                                "content": "X_{k}|R_{k} \\sim U\\left( 0, \\frac{R_{k}}{n_{k}} \\times 2 \\right)",
+                                "height": 46,
+                                "img_url": "https://picx.zhimg.com/v2-218f4d63d4d663c23d3da53b6ee38721.jpg?source=7e7ef6e2&needBackground=1",
+                                "url": "https://zhuanlan.zhihu.com/p/2007896917322003867",
+                                "width": 188
+                            },
+                            "start_index": 0,
+                            "type": "formula"
+                        }
+                    ],
+                    "pid": "nUqkeQ_h",
+                    "text": "[公式]"
+                },
+                "type": "paragraph"
+            },
+            {
+                "id": "16",
+                "paragraph": {
+                    "marks": [
+                        {
+                            "end_index": 13,
+                            "start_index": 0,
+                            "type": "bold"
+                        },
+                        {
+                            "end_index": 26,
+                            "formula": {
+                                "content": "X_{k} \\sim U\\left( 0, \\frac{M}{N}\\times 2 \\right)",
+                                "height": 46,
+                                "img_url": "https://pica.zhimg.com/v2-da5a444aa329df6e2bb0bec4f82ad557.jpg?source=7e7ef6e2&needBackground=1",
+                                "url": "https://zhuanlan.zhihu.com/p/2007896917322003867",
+                                "width": 159
+                            },
+                            "start_index": 22,
+                            "type": "formula"
+                        },
+                        {
+                            "end_index": 7,
+                            "entity_word": {
+                                "attach_info_bytes": "sgJgCg/mlbDlrablvZLnurPms5USBE1hdGgY5h4g6x4oATW/gY87OgdhcnRpY2xlQNuN7N2fxInNpwFIAFIkMTUxNTA5OWQtNzhkNi00NjVjLTg4YzEtMjQxMGU4MjA4ZDFk8gL5AQokMTUxNTA5OWQtNzhkNi00NjVjLTg4YzEtMjQxMGU4MjA4ZDFkGgdhcnRpY2xlIgkyNzA0NTU4NjI6D+aVsOWtpuW9kue6s+azlUDbjezdn8SJzacBSAhSEmFpX2VudGl0eV9yZWNhbGxlcl2/gY87YmAKD+aVsOWtpuW9kue6s+azlRIETWF0aBjmHiDrHigBNb+Bjzs6B2FydGljbGVA243s3Z/Eic2nAUgAUiQxNTE1MDk5ZC03OGQ2LTQ2NWMtODhjMS0yNDEwZTgyMDhkMWRyJDExNDdmZWM0LTczMTItNDg4NC1iYjBkLWIwOGIzN2Q3OWVmNg==",
+                                "id": "0",
+                                "type": "search",
+                                "url": "https://www.zhihu.com/search?attached_info=sgJgCg%2FmlbDlrablvZLnurPms5USBE1hdGgY5h4g6x4oATW%2FgY87OgdhcnRpY2xlQNuN7N2fxInNpwFIAFIkMTUxNTA5OWQtNzhkNi00NjVjLTg4YzEtMjQxMGU4MjA4ZDFk8gL5AQokMTUxNTA5OWQtNzhkNi00NjVjLTg4YzEtMjQxMGU4MjA4ZDFkGgdhcnRpY2xlIgkyNzA0NTU4NjI6D%2BaVsOWtpuW9kue6s%2BazlUDbjezdn8SJzacBSAhSEmFpX2VudGl0eV9yZWNhbGxlcl2%2FgY87YmAKD%2BaVsOWtpuW9kue6s%2BazlRIETWF0aBjmHiDrHigBNb%2BBjzs6B2FydGljbGVA243s3Z%2FEic2nAUgAUiQxNTE1MDk5ZC03OGQ2LTQ2NWMtODhjMS0yNDEwZTgyMDhkMWRyJDExNDdmZWM0LTczMTItNDg4NC1iYjBkLWIwOGIzN2Q3OWVmNg%3D%3D&content_id=270455862&content_type=ARTICLE&extra=%7B%22content_id%22%3A%22270455862%22%2C%22content_type%22%3A%22article%22%2C%22request_click_id%22%3A%221147fec4-7312-4884-bb0d-b08b37d79ef6%22%7D&halfSheet=1&hybrid_search_extra=%7B%22sourceId%22%3A0%2C%22sourceType%22%3A%22search%22%7D&hybrid_search_source=Entity&match_order=1&q=%E6%95%B0%E5%AD%A6%E5%BD%92%E7%BA%B3%E6%B3%95&request_click_id=1147fec4-7312-4884-bb0d-b08b37d79ef6&search_source=Entity&target=blank",
+                                "word": "数学归纳法"
+                            },
+                            "start_index": 2,
+                            "type": "entity_word"
+                        }
+                    ],
+                    "pid": "tECm7KJd",
+                    "text": "使用数学归纳法证明结论一：\n\n对于第1个人，[公式]，可以得到第一个人的期望"
+                },
+                "type": "paragraph"
+            },
+            {
+                "id": "17",
+                "paragraph": {
+                    "marks": [
+                        {
+                            "end_index": 4,
+                            "formula": {
+                                "content": "\\mathbb{E}[X_{1}]=\\frac{ 0+\\frac{2M}{N}}{2}=\\frac{M}{N}",
+                                "height": 49,
+                                "img_url": "https://picx.zhimg.com/v2-b5ee07a4dd5d58a47e73f95ff0099e85.jpg?source=7e7ef6e2&needBackground=1",
+                                "url": "https://zhuanlan.zhihu.com/p/2007896917322003867",
+                                "width": 176
+                            },
+                            "start_index": 0,
+                            "type": "formula"
+                        }
+                    ],
+                    "pid": "oWODRWM2",
+                    "text": "[公式]"
+                },
+                "type": "paragraph"
+            },
+            {
+                "id": "18",
+                "paragraph": {
+                    "marks": [
+                        {
+                            "end_index": 11,
+                            "formula": {
+                                "content": "j<k",
+                                "height": 19,
+                                "img_url": "https://picx.zhimg.com/v2-d432e193afe0e9b7f365867c3d836056.jpg?source=7e7ef6e2&needBackground=1",
+                                "url": "https://zhuanlan.zhihu.com/p/2007896917322003867",
+                                "width": 40
+                            },
+                            "start_index": 7,
+                            "type": "formula"
+                        },
+                        {
+                            "end_index": 19,
+                            "formula": {
+                                "content": "\\mathbb{E}[X_{j}]= \\frac{M}{N}",
+                                "height": 39,
+                                "img_url": "https://picx.zhimg.com/v2-56c00378294e373c48a30769342f359f.jpg?source=7e7ef6e2&needBackground=1",
+                                "url": "https://zhuanlan.zhihu.com/p/2007896917322003867",
+                                "width": 90
+                            },
+                            "start_index": 15,
+                            "type": "formula"
+                        },
+                        {
+                            "end_index": 27,
+                            "entity_word": {
+                                "attach_info_bytes": "sgJgCg/lhajmnJ/mnJvlhazlvI8SBE1hdGgY3CQg4SQoATU/38M7OgdhcnRpY2xlQLeJjLuCy7j/kQFIAFIkMTUxNTA5OWQtNzhkNi00NjVjLTg4YzEtMjQxMGU4MjA4ZDFk8gL5AQokMTUxNTA5OWQtNzhkNi00NjVjLTg4YzEtMjQxMGU4MjA4ZDFkGgdhcnRpY2xlIgkyNzA0NTU4NjI6D+WFqOacn+acm+WFrOW8j0C3iYy7gsu4/5EBSANSEmFpX2VudGl0eV9yZWNhbGxlcl0/38M7YmAKD+WFqOacn+acm+WFrOW8jxIETWF0aBjcJCDhJCgBNT/fwzs6B2FydGljbGVAt4mMu4LLuP+RAUgAUiQxNTE1MDk5ZC03OGQ2LTQ2NWMtODhjMS0yNDEwZTgyMDhkMWRyJDExNDdmZWM0LTczMTItNDg4NC1iYjBkLWIwOGIzN2Q3OWVmNg==",
+                                "id": "0",
+                                "type": "search",
+                                "url": "https://www.zhihu.com/search?attached_info=sgJgCg%2FlhajmnJ%2FmnJvlhazlvI8SBE1hdGgY3CQg4SQoATU%2F38M7OgdhcnRpY2xlQLeJjLuCy7j%2FkQFIAFIkMTUxNTA5OWQtNzhkNi00NjVjLTg4YzEtMjQxMGU4MjA4ZDFk8gL5AQokMTUxNTA5OWQtNzhkNi00NjVjLTg4YzEtMjQxMGU4MjA4ZDFkGgdhcnRpY2xlIgkyNzA0NTU4NjI6D%2BWFqOacn%2Bacm%2BWFrOW8j0C3iYy7gsu4%2F5EBSANSEmFpX2VudGl0eV9yZWNhbGxlcl0%2F38M7YmAKD%2BWFqOacn%2Bacm%2BWFrOW8jxIETWF0aBjcJCDhJCgBNT%2Ffwzs6B2FydGljbGVAt4mMu4LLuP%2BRAUgAUiQxNTE1MDk5ZC03OGQ2LTQ2NWMtODhjMS0yNDEwZTgyMDhkMWRyJDExNDdmZWM0LTczMTItNDg4NC1iYjBkLWIwOGIzN2Q3OWVmNg%3D%3D&content_id=270455862&content_type=ARTICLE&extra=%7B%22content_id%22%3A%22270455862%22%2C%22content_type%22%3A%22article%22%2C%22request_click_id%22%3A%221147fec4-7312-4884-bb0d-b08b37d79ef6%22%7D&halfSheet=1&hybrid_search_extra=%7B%22sourceId%22%3A0%2C%22sourceType%22%3A%22search%22%7D&hybrid_search_source=Entity&match_order=1&q=%E5%85%A8%E6%9C%9F%E6%9C%9B%E5%85%AC%E5%BC%8F&request_click_id=1147fec4-7312-4884-bb0d-b08b37d79ef6&search_source=Entity&target=blank",
+                                "word": "全期望公式"
+                            },
+                            "start_index": 22,
+                            "type": "entity_word"
+                        }
+                    ],
+                    "pid": "HrbjjTTf",
+                    "text": "假设对于所有 [公式]，都有 [公式]。根据全期望公式"
+                },
+                "type": "paragraph"
+            },
+            {
+                "id": "19",
+                "paragraph": {
+                    "marks": [
+                        {
+                            "end_index": 4,
+                            "formula": {
+                                "content": "\\begin{align} \\\\ \\mathbb{E}[X_{k}]&=\\mathbb{E}[\\mathbb{E}[X_{k}|R_{k}]] \\\\ &=\\mathbb{E}\\left[ \\frac{1}{2}\\times \\frac{2R_{k}}{N-k+1} \\right] \\\\ &=\\mathbb{E}\\left[ \\frac{R_{k}}{N-k+1} \\right] \\\\ &=\\frac{\\mathbb{E}[R_{k}]}{N-k+1} \\end{align}",
+                                "height": 184,
+                                "img_url": "https://picx.zhimg.com/v2-042f10fe23e2ba318aaf93b0a53ea333.jpg?source=7e7ef6e2&needBackground=1",
+                                "url": "https://zhuanlan.zhihu.com/p/2007896917322003867",
+                                "width": 224
+                            },
+                            "start_index": 0,
+                            "type": "formula"
+                        }
+                    ],
+                    "pid": "pOTjdj6L",
+                    "text": "[公式]"
+                },
+                "type": "paragraph"
+            },
+            {
+                "id": "20",
+                "paragraph": {
+                    "marks": [
+                        {
+                            "end_index": 10,
+                            "formula": {
+                                "content": "R_{k}",
+                                "height": 19,
+                                "img_url": "https://pic1.zhimg.com/v2-941136fee798526dd819d69ec83d91de.jpg?source=7e7ef6e2&needBackground=1",
+                                "url": "https://zhuanlan.zhihu.com/p/2007896917322003867",
+                                "width": 21
+                            },
+                            "start_index": 6,
+                            "type": "formula"
+                        },
+                        {
+                            "end_index": 23,
+                            "formula": {
+                                "content": "k-1",
+                                "height": 18,
+                                "img_url": "https://picx.zhimg.com/v2-65ac184ca2533d00dd6fb47c22cf1ee5.jpg?source=7e7ef6e2&needBackground=1",
+                                "url": "https://zhuanlan.zhihu.com/p/2007896917322003867",
+                                "width": 39
+                            },
+                            "start_index": 19,
+                            "type": "formula"
+                        }
+                    ],
+                    "pid": "mwdEsA0U",
+                    "text": "而剩余金额 [公式] 是总金额减前面 [公式]个人拿去的钱："
+                },
+                "type": "paragraph"
+            },
+            {
+                "id": "21",
+                "paragraph": {
+                    "marks": [
+                        {
+                            "end_index": 4,
+                            "formula": {
+                                "content": "R_{k}=M-\\sum_{j=1}^{k-1}X_{j}",
+                                "height": 58,
+                                "img_url": "https://pic1.zhimg.com/v2-5a5d57984ae953ead0cee7485559298f.jpg?source=7e7ef6e2&needBackground=1",
+                                "url": "https://zhuanlan.zhihu.com/p/2007896917322003867",
+                                "width": 134
+                            },
+                            "start_index": 0,
+                            "type": "formula"
+                        }
+                    ],
+                    "pid": "3j3yZSm2",
+                    "text": "[公式]"
+                },
+                "type": "paragraph"
+            },
+            {
+                "id": "22",
+                "paragraph": {
+                    "marks": [],
+                    "pid": "4SeusgMx",
+                    "text": "代入上式，可得："
+                },
+                "type": "paragraph"
+            },
+            {
+                "id": "23",
+                "paragraph": {
+                    "marks": [
+                        {
+                            "end_index": 4,
+                            "formula": {
+                                "content": "\\begin{align} \\\\ \\mathbb{E}[X_{k}]&=\\frac{1}{N-k+1}\\mathbb{E}\\left[ M-\\sum_{j=1}^{k-1}X_{j} \\right] \\\\ &=\\frac{1}{N-k+1}\\left( M-\\sum_{j=1}^{k-1}\\mathbb{E}[X_{j}] \\right) \\\\ &=\\frac{1}{N-k+1}\\left( M-(k-1) \\frac{M}{N} \\right) \\\\ &=\\frac{\\cancel{ N-k+1 }}{\\cancel{ N-k+1 }} \\cdot \\frac{M}{N}=\\frac{M}{N} \\end{align}",
+                                "height": 246,
+                                "img_url": "https://pica.zhimg.com/v2-8387c26d32b4ce7d6f42751d00ebebba.jpg?source=7e7ef6e2&needBackground=1",
+                                "url": "https://zhuanlan.zhihu.com/p/2007896917322003867",
+                                "width": 298
+                            },
+                            "start_index": 0,
+                            "type": "formula"
+                        }
+                    ],
+                    "pid": "8f2lnMKz",
+                    "text": "[公式]"
+                },
+                "type": "paragraph"
+            },
+            {
+                "id": "24",
+                "paragraph": {
+                    "marks": [
+                        {
+                            "end_index": 6,
+                            "start_index": 0,
+                            "type": "bold"
+                        },
+                        {
+                            "end_index": 33,
+                            "formula": {
+                                "content": "Var(X)=\\mathbb{E}[X^{2}]-\\mathbb{E}[X]^{2}",
+                                "height": 24,
+                                "img_url": "https://pic1.zhimg.com/v2-839eb16fc16ab9947964c7fa01df8bf9.jpg?source=7e7ef6e2&needBackground=1",
+                                "url": "https://zhuanlan.zhihu.com/p/2007896917322003867",
+                                "width": 192
+                            },
+                            "start_index": 29,
+                            "type": "formula"
+                        },
+                        {
+                            "end_index": 47,
+                            "formula": {
+                                "content": "\\mathbb{E}[X_{k+1}^{2}]>\\mathbb{E}[X_{k}^{2}]",
+                                "height": 25,
+                                "img_url": "https://picx.zhimg.com/v2-99cf072d57d54236441587837dccbd28.jpg?source=7e7ef6e2&needBackground=1",
+                                "url": "https://zhuanlan.zhihu.com/p/2007896917322003867",
+                                "width": 127
+                            },
+                            "start_index": 43,
+                            "type": "formula"
+                        },
+                        {
+                            "end_index": 26,
+                            "entity_word": {
+                                "attach_info_bytes": "sgJWCgbmlrnlt64SBE1hdGgY3hIg4BIoATW3OiM7OgdhcnRpY2xlQNeF9bmCnNrPMkgAUiQxNTE1MDk5ZC03OGQ2LTQ2NWMtODhjMS0yNDEwZTgyMDhkMWTyAuUBCiQxNTE1MDk5ZC03OGQ2LTQ2NWMtODhjMS0yNDEwZTgyMDhkMWQaB2FydGljbGUiCTI3MDQ1NTg2MjoG5pa55beuQNeF9bmCnNrPMkgUUhJhaV9lbnRpdHlfcmVjYWxsZXJdtzojO2JWCgbmlrnlt64SBE1hdGgY3hIg4BIoATW3OiM7OgdhcnRpY2xlQNeF9bmCnNrPMkgAUiQxNTE1MDk5ZC03OGQ2LTQ2NWMtODhjMS0yNDEwZTgyMDhkMWRyJDExNDdmZWM0LTczMTItNDg4NC1iYjBkLWIwOGIzN2Q3OWVmNg==",
+                                "id": "0",
+                                "type": "search",
+                                "url": "https://www.zhihu.com/search?attached_info=sgJWCgbmlrnlt64SBE1hdGgY3hIg4BIoATW3OiM7OgdhcnRpY2xlQNeF9bmCnNrPMkgAUiQxNTE1MDk5ZC03OGQ2LTQ2NWMtODhjMS0yNDEwZTgyMDhkMWTyAuUBCiQxNTE1MDk5ZC03OGQ2LTQ2NWMtODhjMS0yNDEwZTgyMDhkMWQaB2FydGljbGUiCTI3MDQ1NTg2MjoG5pa55beuQNeF9bmCnNrPMkgUUhJhaV9lbnRpdHlfcmVjYWxsZXJdtzojO2JWCgbmlrnlt64SBE1hdGgY3hIg4BIoATW3OiM7OgdhcnRpY2xlQNeF9bmCnNrPMkgAUiQxNTE1MDk5ZC03OGQ2LTQ2NWMtODhjMS0yNDEwZTgyMDhkMWRyJDExNDdmZWM0LTczMTItNDg4NC1iYjBkLWIwOGIzN2Q3OWVmNg%3D%3D&content_id=270455862&content_type=ARTICLE&extra=%7B%22content_id%22%3A%22270455862%22%2C%22content_type%22%3A%22article%22%2C%22request_click_id%22%3A%221147fec4-7312-4884-bb0d-b08b37d79ef6%22%7D&halfSheet=1&hybrid_search_extra=%7B%22sourceId%22%3A0%2C%22sourceType%22%3A%22search%22%7D&hybrid_search_source=Entity&match_order=1&q=%E6%96%B9%E5%B7%AE&request_click_id=1147fec4-7312-4884-bb0d-b08b37d79ef6&search_source=Entity&target=blank",
+                                "word": "方差"
+                            },
+                            "start_index": 24,
+                            "type": "entity_word"
+                        },
+                        {
+                            "end_index": 42,
+                            "entity_word": {
+                                "attach_info_bytes": "sgJdCgnkuozpmLbnn6kSB1Vua25vd24Y2zcg3jcoATVpOXE7OgdhcnRpY2xlQKOFpKLc8aec3QFIAFIkMTUxNTA5OWQtNzhkNi00NjVjLTg4YzEtMjQxMGU4MjA4ZDFk8gLwAQokMTUxNTA5OWQtNzhkNi00NjVjLTg4YzEtMjQxMGU4MjA4ZDFkGgdhcnRpY2xlIgkyNzA0NTU4NjI6CeS6jOmYtuefqUCjhaSi3PGnnN0BSA1SEmFpX2VudGl0eV9yZWNhbGxlcl1pOXE7Yl0KCeS6jOmYtuefqRIHVW5rbm93bhjbNyDeNygBNWk5cTs6B2FydGljbGVAo4Wkotzxp5zdAUgAUiQxNTE1MDk5ZC03OGQ2LTQ2NWMtODhjMS0yNDEwZTgyMDhkMWRyJDExNDdmZWM0LTczMTItNDg4NC1iYjBkLWIwOGIzN2Q3OWVmNg==",
+                                "id": "0",
+                                "type": "search",
+                                "url": "https://www.zhihu.com/search?attached_info=sgJdCgnkuozpmLbnn6kSB1Vua25vd24Y2zcg3jcoATVpOXE7OgdhcnRpY2xlQKOFpKLc8aec3QFIAFIkMTUxNTA5OWQtNzhkNi00NjVjLTg4YzEtMjQxMGU4MjA4ZDFk8gLwAQokMTUxNTA5OWQtNzhkNi00NjVjLTg4YzEtMjQxMGU4MjA4ZDFkGgdhcnRpY2xlIgkyNzA0NTU4NjI6CeS6jOmYtuefqUCjhaSi3PGnnN0BSA1SEmFpX2VudGl0eV9yZWNhbGxlcl1pOXE7Yl0KCeS6jOmYtuefqRIHVW5rbm93bhjbNyDeNygBNWk5cTs6B2FydGljbGVAo4Wkotzxp5zdAUgAUiQxNTE1MDk5ZC03OGQ2LTQ2NWMtODhjMS0yNDEwZTgyMDhkMWRyJDExNDdmZWM0LTczMTItNDg4NC1iYjBkLWIwOGIzN2Q3OWVmNg%3D%3D&content_id=270455862&content_type=ARTICLE&extra=%7B%22content_id%22%3A%22270455862%22%2C%22content_type%22%3A%22article%22%2C%22request_click_id%22%3A%221147fec4-7312-4884-bb0d-b08b37d79ef6%22%7D&halfSheet=1&hybrid_search_extra=%7B%22sourceId%22%3A0%2C%22sourceType%22%3A%22search%22%7D&hybrid_search_source=Entity&match_order=1&q=%E4%BA%8C%E9%98%B6%E7%9F%A9&request_click_id=1147fec4-7312-4884-bb0d-b08b37d79ef6&search_source=Entity&target=blank",
+                                "word": "二阶矩"
+                            },
+                            "start_index": 39,
+                            "type": "entity_word"
+                        }
+                    ],
+                    "pid": "_ogWHuTf",
+                    "text": "证明结论二：\n\n上文已经证明了期望相等，那么根据方差公式 [公式]，只需要证明二阶矩 [公式] 即可。"
+                },
+                "type": "paragraph"
+            },
+            {
+                "id": "25",
+                "paragraph": {
+                    "marks": [
+                        {
+                            "end_index": 9,
+                            "formula": {
+                                "content": "X_{k} \\sim U\\left( 0, \\frac{2R_{k}}{n_{k}} \\right)",
+                                "height": 46,
+                                "img_url": "https://pica.zhimg.com/v2-1437733f33259aa1f058260735a04a4e.jpg?source=7e7ef6e2&needBackground=1",
+                                "url": "https://zhuanlan.zhihu.com/p/2007896917322003867",
+                                "width": 141
+                            },
+                            "start_index": 5,
+                            "type": "formula"
+                        }
+                    ],
+                    "pid": "SgN5HKS1",
+                    "text": "根据定义，[公式]，直接用均匀分布的期望平方公式，可得"
+                },
+                "type": "paragraph"
+            },
+            {
+                "id": "26",
+                "paragraph": {
+                    "marks": [
+                        {
+                            "end_index": 4,
+                            "formula": {
+                                "content": "\\mathbb{E}[X_{k}^{2}|R_{k}]=\\frac{1}{3}\\left( \\frac{2R_{k}}{n_{k}} \\right)^{2}=\\frac{4}{3n_{k}^{2}}R_{k}^{2}",
+                                "height": 53,
+                                "img_url": "https://pica.zhimg.com/v2-2328908746b108224ac4d7af4c6afb09.jpg?source=7e7ef6e2&needBackground=1",
+                                "url": "https://zhuanlan.zhihu.com/p/2007896917322003867",
+                                "width": 257
+                            },
+                            "start_index": 0,
+                            "type": "formula"
+                        }
+                    ],
+                    "pid": "_pu1ZHDM",
+                    "text": "[公式]"
+                },
+                "type": "paragraph"
+            },
+            {
+                "id": "27",
+                "paragraph": {
+                    "marks": [],
+                    "pid": "nxAEQj8E",
+                    "text": "两边同时求期望：(全期望公式)"
+                },
+                "type": "paragraph"
+            },
+            {
+                "id": "28",
+                "paragraph": {
+                    "marks": [
+                        {
+                            "end_index": 4,
+                            "formula": {
+                                "content": "\\mathbb{E}[X_{k}^{2}]=\\frac{4}{3n_{k}^{2}}\\mathbb{E}[R_{k}^{2}]\\implies \\frac{\\mathbb{E}[X_{k}^{2}]}{\\mathbb{E}[R_{k}^{2}]}=\\frac{4}{3n_{k}^{2}}\\tag{1}",
+                                "height": 54,
+                                "img_url": "https://pica.zhimg.com/v2-17cd5106cc47285ac48ed10443b3a51c.jpg?source=7e7ef6e2&needBackground=1",
+                                "url": "https://zhuanlan.zhihu.com/p/2007896917322003867",
+                                "width": 563
+                            },
+                            "start_index": 0,
+                            "type": "formula"
+                        }
+                    ],
+                    "pid": "RySSVu3k",
+                    "text": "[公式]"
+                },
+                "type": "paragraph"
+            },
+            {
+                "id": "29",
+                "paragraph": {
+                    "marks": [
+                        {
+                            "end_index": 9,
+                            "formula": {
+                                "content": "R_{k+1}",
+                                "height": 19,
+                                "img_url": "https://pic1.zhimg.com/v2-8e647c490dc45887044ef6af6343835b.jpg?source=7e7ef6e2&needBackground=1",
+                                "url": "https://zhuanlan.zhihu.com/p/2007896917322003867",
+                                "width": 37
+                            },
+                            "start_index": 5,
+                            "type": "formula"
+                        },
+                        {
+                            "end_index": 16,
+                            "formula": {
+                                "content": "R_{k}",
+                                "height": 19,
+                                "img_url": "https://pica.zhimg.com/v2-941136fee798526dd819d69ec83d91de.jpg?source=7e7ef6e2&needBackground=1",
+                                "url": "https://zhuanlan.zhihu.com/p/2007896917322003867",
+                                "width": 21
+                            },
+                            "start_index": 12,
+                            "type": "formula"
+                        },
+                        {
+                            "end_index": 24,
+                            "entity_word": {
+                                "attach_info_bytes": "sgJfCgzpgJLmjqjlhbPns7sSB1Vua25vd24Y0kQg1kQoATWqRVY7OgdhcnRpY2xlQM+H84D9yaqMD0gAUiQxNTE1MDk5ZC03OGQ2LTQ2NWMtODhjMS0yNDEwZTgyMDhkMWTyAvQBCiQxNTE1MDk5ZC03OGQ2LTQ2NWMtODhjMS0yNDEwZTgyMDhkMWQaB2FydGljbGUiCTI3MDQ1NTg2MjoM6YCS5o6o5YWz57O7QM+H84D9yaqMD0gQUhJhaV9lbnRpdHlfcmVjYWxsZXJdqkVWO2JfCgzpgJLmjqjlhbPns7sSB1Vua25vd24Y0kQg1kQoATWqRVY7OgdhcnRpY2xlQM+H84D9yaqMD0gAUiQxNTE1MDk5ZC03OGQ2LTQ2NWMtODhjMS0yNDEwZTgyMDhkMWRyJDExNDdmZWM0LTczMTItNDg4NC1iYjBkLWIwOGIzN2Q3OWVmNg==",
+                                "id": "0",
+                                "type": "search",
+                                "url": "https://www.zhihu.com/search?attached_info=sgJfCgzpgJLmjqjlhbPns7sSB1Vua25vd24Y0kQg1kQoATWqRVY7OgdhcnRpY2xlQM%2BH84D9yaqMD0gAUiQxNTE1MDk5ZC03OGQ2LTQ2NWMtODhjMS0yNDEwZTgyMDhkMWTyAvQBCiQxNTE1MDk5ZC03OGQ2LTQ2NWMtODhjMS0yNDEwZTgyMDhkMWQaB2FydGljbGUiCTI3MDQ1NTg2MjoM6YCS5o6o5YWz57O7QM%2BH84D9yaqMD0gQUhJhaV9lbnRpdHlfcmVjYWxsZXJdqkVWO2JfCgzpgJLmjqjlhbPns7sSB1Vua25vd24Y0kQg1kQoATWqRVY7OgdhcnRpY2xlQM%2BH84D9yaqMD0gAUiQxNTE1MDk5ZC03OGQ2LTQ2NWMtODhjMS0yNDEwZTgyMDhkMWRyJDExNDdmZWM0LTczMTItNDg4NC1iYjBkLWIwOGIzN2Q3OWVmNg%3D%3D&content_id=270455862&content_type=ARTICLE&extra=%7B%22content_id%22%3A%22270455862%22%2C%22content_type%22%3A%22article%22%2C%22request_click_id%22%3A%221147fec4-7312-4884-bb0d-b08b37d79ef6%22%7D&halfSheet=1&hybrid_search_extra=%7B%22sourceId%22%3A0%2C%22sourceType%22%3A%22search%22%7D&hybrid_search_source=Entity&match_order=1&q=%E9%80%92%E6%8E%A8%E5%85%B3%E7%B3%BB&request_click_id=1147fec4-7312-4884-bb0d-b08b37d79ef6&search_source=Entity&target=blank",
+                                "word": "递推关系"
+                            },
+                            "start_index": 20,
+                            "type": "entity_word"
+                        }
+                    ],
+                    "pid": "VqqXD2Jv",
+                    "text": "接下来是 [公式] 与 [公式] 之间的递推关系：\n\n根据定义："
+                },
+                "type": "paragraph"
+            },
+            {
+                "id": "30",
+                "paragraph": {
+                    "marks": [
+                        {
+                            "end_index": 4,
+                            "formula": {
+                                "content": "\\begin{align} \\\\ R_{k+1}&=R_{k}-X_{k} \\\\ \\implies R_{k+1}^{2} &= R_{k}^{2}-2R_{k}X_{k}+X_{k}^{2} \\\\ \\implies \\mathbb{E}[R_{k+1}^{2}|R_{k}]&=R_{k}^{2}-2R_{k}\\mathbb{E}[X_{k}|R_{k}]+\\mathbb{E}[X_{k}^{2}|R_{k}] \\end{align}",
+                                "height": 96,
+                                "img_url": "https://pic1.zhimg.com/v2-4199e83d8c6f2b4436c1bf63c0d20bc1.jpg?source=7e7ef6e2&needBackground=1",
+                                "url": "https://zhuanlan.zhihu.com/p/2007896917322003867",
+                                "width": 391
+                            },
+                            "start_index": 0,
+                            "type": "formula"
+                        }
+                    ],
+                    "pid": "1rhMOCCr",
+                    "text": "[公式]"
+                },
+                "type": "paragraph"
+            },
+            {
+                "id": "31",
+                "paragraph": {
+                    "marks": [
+                        {
+                            "end_index": 11,
+                            "formula": {
+                                "content": "\\mathbb{E}[X_{k}|R_{k}]=\\frac{R_{k}}{n_{k}},\\mathbb{E}[X_{k}^{2}|R_{k}]=\\frac{4R_{k}^{2}}{3n_{k}^{2}}",
+                                "height": 54,
+                                "img_url": "https://pic1.zhimg.com/v2-4a662a57346755ee1c0996193522855c.jpg?source=7e7ef6e2&needBackground=1",
+                                "url": "https://zhuanlan.zhihu.com/p/2007896917322003867",
+                                "width": 259
+                            },
+                            "start_index": 7,
+                            "type": "formula"
+                        }
+                    ],
+                    "pid": "1NPRmsR8",
+                    "text": "把上文的结果 [公式]代入得到："
+                },
+                "type": "paragraph"
+            },
+            {
+                "id": "32",
+                "paragraph": {
+                    "marks": [
+                        {
+                            "end_index": 4,
+                            "formula": {
+                                "content": "\\begin{align} \\\\ \\mathbb{E}[R_{k+1}^{2}|R_{k}]&=R_{k}^{2}-2R_{k}\\left( \\frac{R_{k}}{N_{k}}\\right)+\\frac{4R_{k}^{2}}{3n_{j}^{2}} \\\\ &=R_{k}^{2}\\left( 1-\\frac{2}{n_{k}}+\\frac{4}{2n_{k}^{2}} \\right) \\\\ &= R_{k}^{2}\\cdot \\frac{3n_{k}^{2}-6n_{k}+4}{3n_{k}^{2}} \\\\ \\implies \\mathbb{E}[R_{k+1}^{2}]&=\\mathbb{E}[R_{k}^{2}] \\cdot \\frac{3n_{k}^{2}-6n_{k}+4}{3n_{k}^{2}} \\tag{2} \\end{align}",
+                                "height": 244,
+                                "img_url": "https://picx.zhimg.com/v2-e8b6c2b38551b5e05600384ac0abb2bb.jpg?source=7e7ef6e2&needBackground=1",
+                                "url": "https://zhuanlan.zhihu.com/p/2007896917322003867",
+                                "width": 563
+                            },
+                            "start_index": 0,
+                            "type": "formula"
+                        }
+                    ],
+                    "pid": "YHloBXTW",
+                    "text": "[公式]"
+                },
+                "type": "paragraph"
+            },
+            {
+                "id": "33",
+                "paragraph": {
+                    "marks": [],
+                    "pid": "tCZXQ-4h",
+                    "text": "所以我们由 (1),(2) 可以推出"
+                },
+                "type": "paragraph"
+            },
+            {
+                "id": "34",
+                "paragraph": {
+                    "marks": [
+                        {
+                            "end_index": 4,
+                            "formula": {
+                                "content": "\\begin{align} \\\\ \\mathbb{E}[X_{k+1}^{2}]&=\\frac{4}{3(n_{k}-1)^{2}}\\mathbb{E}[R_{k+1}^{2}] \\\\ &=\\frac{4}{3(n_{k}-1)^{2}}\\cdot \\mathbb{E}[R_{k}^{2}] \\cdot \\frac{3n_{k}^{2}-6n_{k}+4}{3n_{k}^{2}} \\\\ \\implies \\frac{\\mathbb{E}[X_{k+1}^{2}]}{\\mathbb{E}[X_{k}^{2}]}&= \\frac{\\frac{4}{3(n_{k}-1)^{2}}\\cdot \\cancel{ \\mathbb{E}[R_{k}^{2} }] \\cdot \\frac{3n_{k}^{2}-6n_{k}+4}{3n_{k}^{2}} }{\\frac{4}{3n_{k}^{2}}\\cancel{ \\mathbb{E}[R_{k}^{2}] }} \\\\ &=\\frac{3n_{k}^{2}-6n_{k}+4}{3n_{k}^{2}-6n_{k}+3}>1 \\end{align}",
+                                "height": 264,
+                                "img_url": "https://pica.zhimg.com/v2-2c4a6b30bda2dc7b3aa7387414e17d45.jpg?source=7e7ef6e2&needBackground=1",
+                                "url": "https://zhuanlan.zhihu.com/p/2007896917322003867",
+                                "width": 403
+                            },
+                            "start_index": 0,
+                            "type": "formula"
+                        }
+                    ],
+                    "pid": "CNPOtyZs",
+                    "text": "[公式]"
+                },
+                "type": "paragraph"
+            },
+            {
+                "id": "35",
+                "paragraph": {
+                    "marks": [
+                        {
+                            "end_index": 7,
+                            "formula": {
+                                "content": "\\mathbb{E}[X_{k+1}]^{2}>\\mathbb{E}[X_{k}^{2}] \\iff Var(X_{k+1})>Var(X_{k})",
+                                "height": 25,
+                                "img_url": "https://picx.zhimg.com/v2-e75079533f2aa47ffdea3785360c1546.jpg?source=7e7ef6e2&needBackground=1",
+                                "url": "https://zhuanlan.zhihu.com/p/2007896917322003867",
+                                "width": 359
+                            },
+                            "start_index": 3,
+                            "type": "formula"
+                        }
+                    ],
+                    "pid": "8faaEu6d",
+                    "text": "所以 [公式] ，证毕。"
+                },
+                "type": "paragraph"
+            },
+            {
+                "id": "36",
+                "type": "hr"
+            },
+            {
+                "id": "37",
+                "paragraph": {
+                    "marks": [],
+                    "pid": "hcqrY0OV",
+                    "text": "各位看官可能要被绕晕了，不过不要紧，证明不考（狗头"
+                },
+                "type": "paragraph"
+            },
+            {
+                "id": "38",
+                "image": {
+                    "description": "",
+                    "height": 187,
+                    "is_gif": false,
+                    "layout": "small",
+                    "original_token": "v2-4f19d188d43babcf6362d2372307492c",
+                    "original_urls": [
+                        "https://pic1.zhimg.com/v2-4f19d188d43babcf6362d2372307492c.jpg?source=7e7ef6e2&needBackground=1"
+                    ],
+                    "status": "normal",
+                    "token": "v2-4f19d188d43babcf6362d2372307492c",
+                    "urls": [
+                        "https://picx.zhimg.com/v2-4f19d188d43babcf6362d2372307492c.jpg?source=7e7ef6e2&needBackground=1"
+                    ],
+                    "width": 161
+                },
+                "type": "image"
+            },
+            {
+                "id": "39",
+                "paragraph": {
+                    "marks": [],
+                    "text": "\n同学，真正的逆向才刚刚开始......"
+                },
+                "type": "paragraph"
+            },
+            {
+                "id": "40",
+                "paragraph": {
+                    "marks": [],
+                    "pid": "TvcVbPYg",
+                    "text": "话说数学很单纯，但业务很复杂。要是微信真按这个算法来，恐怕要被用户按在地上问候了（虽然现在也是这样）这个算法的问题出在哪里呢？"
+                },
+                "type": "paragraph"
+            },
+            {
+                "id": "41",
+                "list_node": {
+                    "items": [
+                        {
+                            "indent_level": 1,
+                            "marks": [
+                                {
+                                    "end_index": 8,
+                                    "start_index": 0,
+                                    "type": "bold"
+                                }
+                            ],
+                            "text": "钱是整数不是分数，程序猿涉及金钱业务的大忌。千万把离散的钱变成连续的，不然用户会看着 1.14514 元陷入沉思。"
+                        },
+                        {
+                            "indent_level": 1,
+                            "marks": [],
+                            "text": "既然钱是离散的，那么恐怕就不能从 0 开始取吧，否则用户会开出个 0 元的红包。"
+                        },
+                        {
+                            "indent_level": 1,
+                            "marks": [
+                                {
+                                    "end_index": 34,
+                                    "formula": {
+                                        "content": "\\frac{2}{2}\\times 2=2",
+                                        "height": 39,
+                                        "img_url": "https://pic1.zhimg.com/v2-7e01f159f447b1873abe0a8eb4498528.jpg?source=7e7ef6e2&needBackground=1",
+                                        "url": "https://zhuanlan.zhihu.com/p/2007896917322003867",
+                                        "width": 77
+                                    },
+                                    "start_index": 30,
+                                    "type": "formula"
+                                }
+                            ],
+                            "text": "假如 2 分钱的红包分给 2 个人。按算法第一个人可以拿到 [公式] 分钱，那么最后一个人呢？没有什么限制的话，只能喝西北风了。"
+                        }
+                    ],
+                    "type": "unordered"
+                },
+                "type": "list_node"
+            },
+            {
+                "id": "42",
+                "paragraph": {
+                    "marks": [
+                        {
+                            "end_index": 8,
+                            "entity_word": {
+                                "attach_info_bytes": "sgJWCgbnprvmlaMSBE1hdGgYtGogtmooAzVROB47OgdhcnRpY2xlQKauu4vctaKVJkgAUiQxNTE1MDk5ZC03OGQ2LTQ2NWMtODhjMS0yNDEwZTgyMDhkMWTyAuUBCiQxNTE1MDk5ZC03OGQ2LTQ2NWMtODhjMS0yNDEwZTgyMDhkMWQaB2FydGljbGUiCTI3MDQ1NTg2MjoG56a75pWjQKauu4vctaKVJkgVUhJhaV9lbnRpdHlfcmVjYWxsZXJdUTgeO2JWCgbnprvmlaMSBE1hdGgYtGogtmooAzVROB47OgdhcnRpY2xlQKauu4vctaKVJkgAUiQxNTE1MDk5ZC03OGQ2LTQ2NWMtODhjMS0yNDEwZTgyMDhkMWRyJDExNDdmZWM0LTczMTItNDg4NC1iYjBkLWIwOGIzN2Q3OWVmNg==",
+                                "id": "0",
+                                "type": "search",
+                                "url": "https://www.zhihu.com/search?attached_info=sgJWCgbnprvmlaMSBE1hdGgYtGogtmooAzVROB47OgdhcnRpY2xlQKauu4vctaKVJkgAUiQxNTE1MDk5ZC03OGQ2LTQ2NWMtODhjMS0yNDEwZTgyMDhkMWTyAuUBCiQxNTE1MDk5ZC03OGQ2LTQ2NWMtODhjMS0yNDEwZTgyMDhkMWQaB2FydGljbGUiCTI3MDQ1NTg2MjoG56a75pWjQKauu4vctaKVJkgVUhJhaV9lbnRpdHlfcmVjYWxsZXJdUTgeO2JWCgbnprvmlaMSBE1hdGgYtGogtmooAzVROB47OgdhcnRpY2xlQKauu4vctaKVJkgAUiQxNTE1MDk5ZC03OGQ2LTQ2NWMtODhjMS0yNDEwZTgyMDhkMWRyJDExNDdmZWM0LTczMTItNDg4NC1iYjBkLWIwOGIzN2Q3OWVmNg%3D%3D&content_id=270455862&content_type=ARTICLE&extra=%7B%22content_id%22%3A%22270455862%22%2C%22content_type%22%3A%22article%22%2C%22request_click_id%22%3A%221147fec4-7312-4884-bb0d-b08b37d79ef6%22%7D&halfSheet=1&hybrid_search_extra=%7B%22sourceId%22%3A0%2C%22sourceType%22%3A%22search%22%7D&hybrid_search_source=Entity&match_order=3&q=%E7%A6%BB%E6%95%A3&request_click_id=1147fec4-7312-4884-bb0d-b08b37d79ef6&search_source=Entity&target=blank",
+                                "word": "离散"
+                            },
+                            "start_index": 6,
+                            "type": "entity_word"
+                        }
+                    ],
+                    "pid": "dXOrYB5c",
+                    "text": "既然微信针对离散的情形做了优化，那么究竟是什么样的呢？是先用连续抽取再变成离散，还是从一开始就是离散抽取？为了保证每个人抽取至少有1分钱，微信是怎么做的？"
+                },
+                "type": "paragraph"
+            },
+            {
+                "id": "43",
+                "paragraph": {
+                    "marks": [
+                        {
+                            "end_index": 37,
+                            "entity_word": {
+                                "attach_info_bytes": "sgJfCgznrqHkuK3nqqXosbkSB1Vua25vd24Ymm4gnm4oATUsUH47OgdhcnRpY2xlQJrQyayc37PeGkgAUiQxNTE1MDk5ZC03OGQ2LTQ2NWMtODhjMS0yNDEwZTgyMDhkMWTyAvQBCiQxNTE1MDk5ZC03OGQ2LTQ2NWMtODhjMS0yNDEwZTgyMDhkMWQaB2FydGljbGUiCTI3MDQ1NTg2MjoM566h5Lit56ql6LG5QJrQyayc37PeGkgLUhJhaV9lbnRpdHlfcmVjYWxsZXJdLFB+O2JfCgznrqHkuK3nqqXosbkSB1Vua25vd24Ymm4gnm4oATUsUH47OgdhcnRpY2xlQJrQyayc37PeGkgAUiQxNTE1MDk5ZC03OGQ2LTQ2NWMtODhjMS0yNDEwZTgyMDhkMWRyJDExNDdmZWM0LTczMTItNDg4NC1iYjBkLWIwOGIzN2Q3OWVmNg==",
+                                "id": "0",
+                                "type": "search",
+                                "url": "https://www.zhihu.com/search?attached_info=sgJfCgznrqHkuK3nqqXosbkSB1Vua25vd24Ymm4gnm4oATUsUH47OgdhcnRpY2xlQJrQyayc37PeGkgAUiQxNTE1MDk5ZC03OGQ2LTQ2NWMtODhjMS0yNDEwZTgyMDhkMWTyAvQBCiQxNTE1MDk5ZC03OGQ2LTQ2NWMtODhjMS0yNDEwZTgyMDhkMWQaB2FydGljbGUiCTI3MDQ1NTg2MjoM566h5Lit56ql6LG5QJrQyayc37PeGkgLUhJhaV9lbnRpdHlfcmVjYWxsZXJdLFB%2BO2JfCgznrqHkuK3nqqXosbkSB1Vua25vd24Ymm4gnm4oATUsUH47OgdhcnRpY2xlQJrQyayc37PeGkgAUiQxNTE1MDk5ZC03OGQ2LTQ2NWMtODhjMS0yNDEwZTgyMDhkMWRyJDExNDdmZWM0LTczMTItNDg4NC1iYjBkLWIwOGIzN2Q3OWVmNg%3D%3D&content_id=270455862&content_type=ARTICLE&extra=%7B%22content_id%22%3A%22270455862%22%2C%22content_type%22%3A%22article%22%2C%22request_click_id%22%3A%221147fec4-7312-4884-bb0d-b08b37d79ef6%22%7D&halfSheet=1&hybrid_search_extra=%7B%22sourceId%22%3A0%2C%22sourceType%22%3A%22search%22%7D&hybrid_search_source=Entity&match_order=1&q=%E7%AE%A1%E4%B8%AD%E7%AA%A5%E8%B1%B9&request_click_id=1147fec4-7312-4884-bb0d-b08b37d79ef6&search_source=Entity&target=blank",
+                                "word": "管中窥豹"
+                            },
+                            "start_index": 33,
+                            "type": "entity_word"
+                        }
+                    ],
+                    "pid": "5__s_bY0",
+                    "text": "很遗憾，这个模型到现在还是黑盒状态。但是我们可以从一个神奇的现象中管中窥豹。"
+                },
+                "type": "paragraph"
+            },
+            {
+                "id": "44",
+                "paragraph": {
+                    "marks": [
+                        {
+                            "end_index": 16,
+                            "start_index": 8,
+                            "type": "bold"
+                        },
+                        {
+                            "end_index": 19,
+                            "reference": {
+                                "href": "https://mp.weixin.qq.com/s/5YV4QsK6zXzx-_CdaeLutA",
+                                "index": 6,
+                                "title": "微信红包先抢和后抢差距居然这么大！春节抢红包的大数据分析"
+                            },
+                            "start_index": 16,
+                            "type": "reference"
+                        },
+                        {
+                            "end_index": 16,
+                            "entity_word": {
+                                "attach_info_bytes": "sgJuChjmnKvkvY3nuqLljIXmir3lsYnljp/nkIYSCU90aGVyVGVybRjLbiDTbigDNd26fjw6B2FydGljbGVAudTT0926uauAAUgAUiQxNTE1MDk5ZC03OGQ2LTQ2NWMtODhjMS0yNDEwZTgyMDhkMWTyApACCiQxNTE1MDk5ZC03OGQ2LTQ2NWMtODhjMS0yNDEwZTgyMDhkMWQaB2FydGljbGUiCTI3MDQ1NTg2MjoY5pyr5L2N57qi5YyF5oq95bGJ5Y6f55CGQLnU09PdurmrgAFIAFISYWlfZW50aXR5X3JlY2FsbGVyXd26fjxibgoY5pyr5L2N57qi5YyF5oq95bGJ5Y6f55CGEglPdGhlclRlcm0Yy24g024oAzXdun48OgdhcnRpY2xlQLnU09PdurmrgAFIAFIkMTUxNTA5OWQtNzhkNi00NjVjLTg4YzEtMjQxMGU4MjA4ZDFkciQxMTQ3ZmVjNC03MzEyLTQ4ODQtYmIwZC1iMDhiMzdkNzllZjY=",
+                                "id": "0",
+                                "type": "search",
+                                "url": "https://www.zhihu.com/search?attached_info=sgJuChjmnKvkvY3nuqLljIXmir3lsYnljp%2FnkIYSCU90aGVyVGVybRjLbiDTbigDNd26fjw6B2FydGljbGVAudTT0926uauAAUgAUiQxNTE1MDk5ZC03OGQ2LTQ2NWMtODhjMS0yNDEwZTgyMDhkMWTyApACCiQxNTE1MDk5ZC03OGQ2LTQ2NWMtODhjMS0yNDEwZTgyMDhkMWQaB2FydGljbGUiCTI3MDQ1NTg2MjoY5pyr5L2N57qi5YyF5oq95bGJ5Y6f55CGQLnU09PdurmrgAFIAFISYWlfZW50aXR5X3JlY2FsbGVyXd26fjxibgoY5pyr5L2N57qi5YyF5oq95bGJ5Y6f55CGEglPdGhlclRlcm0Yy24g024oAzXdun48OgdhcnRpY2xlQLnU09PdurmrgAFIAFIkMTUxNTA5OWQtNzhkNi00NjVjLTg4YzEtMjQxMGU4MjA4ZDFkciQxMTQ3ZmVjNC03MzEyLTQ4ODQtYmIwZC1iMDhiMzdkNzllZjY%3D&content_id=270455862&content_type=ARTICLE&extra=%7B%22content_id%22%3A%22270455862%22%2C%22content_type%22%3A%22article%22%2C%22request_click_id%22%3A%221147fec4-7312-4884-bb0d-b08b37d79ef6%22%7D&halfSheet=1&hybrid_search_extra=%7B%22sourceId%22%3A0%2C%22sourceType%22%3A%22search%22%7D&hybrid_search_source=Entity&match_order=3&q=%E6%9C%AB%E4%BD%8D%E7%BA%A2%E5%8C%85%E6%8A%BD%E5%B1%89%E5%8E%9F%E7%90%86&request_click_id=1147fec4-7312-4884-bb0d-b08b37d79ef6&search_source=Entity&target=blank",
+                                "word": "末位红包抽屉原理"
+                            },
+                            "start_index": 8,
+                            "type": "entity_word"
+                        }
+                    ],
+                    "pid": "AgGqc0lr",
+                    "text": "这个现象就是——末位红包抽屉原理[6]。"
+                },
+                "type": "paragraph"
+            },
+            {
+                "id": "45",
+                "paragraph": {
+                    "marks": [
+                        {
+                            "end_index": 18,
+                            "link": {
+                                "href": "https://www.zhihu.com/people/c06e444d2dc779ab9ffb6f92013dbe45",
+                                "icon_name": "",
+                                "link_type": "member_mention"
+                            },
+                            "start_index": 15,
+                            "type": "link"
+                        }
+                    ],
+                    "pid": "X-o76zIp",
+                    "text": "咳咳，这名字不是我取的，来源于@毕导 （顺便一提这篇公众号文章写得很棒，基本上把大金额情况下的结论解释清楚了，推荐大家都观摩一下）"
+                },
+                "type": "paragraph"
+            },
+            {
+                "id": "46",
+                "paragraph": {
+                    "marks": [
+                        {
+                            "end_index": 18,
+                            "formula": {
+                                "content": "n+1",
+                                "height": 18,
+                                "img_url": "https://pic1.zhimg.com/v2-49791b7b8ff376d2a7b96a4e69fd3a50.jpg?source=7e7ef6e2&needBackground=1",
+                                "url": "https://zhuanlan.zhihu.com/p/2007896917322003867",
+                                "width": 40
+                            },
+                            "start_index": 14,
+                            "type": "formula"
+                        },
+                        {
+                            "end_index": 30,
+                            "formula": {
+                                "content": "n",
+                                "height": 13,
+                                "img_url": "https://picx.zhimg.com/v2-0117edff8e23efdd5f215b9d097f0bb5.jpg?source=7e7ef6e2&needBackground=1",
+                                "url": "https://zhuanlan.zhihu.com/p/2007896917322003867",
+                                "width": 10
+                            },
+                            "start_index": 26,
+                            "type": "formula"
+                        }
+                    ],
+                    "pid": "aBeqfk5v",
+                    "text": "末位红包抽屉原理指的是，当 [公式] 分钱的红包被 [公式] 个人抢时，永远是最后一位拿到 2 分钱，而前面的人通通都是 1 分钱。也就是说永远是最后一位手气最佳。"
+                },
+                "type": "paragraph"
+            },
+            {
+                "id": "47",
+                "image": {
+                    "description": "",
+                    "height": 198,
+                    "is_gif": false,
+                    "layout": "small",
+                    "original_token": "v2-56535a033098fa764671967d7ba1adca",
+                    "original_urls": [
+                        "https://pic1.zhimg.com/v2-56535a033098fa764671967d7ba1adca.jpg?source=7e7ef6e2&needBackground=1"
+                    ],
+                    "status": "normal",
+                    "token": "v2-56535a033098fa764671967d7ba1adca",
+                    "urls": [
+                        "https://pica.zhimg.com/v2-56535a033098fa764671967d7ba1adca.jpg?source=7e7ef6e2&needBackground=1"
+                    ],
+                    "width": 198
+                },
+                "type": "image"
+            },
+            {
+                "id": "48",
+                "paragraph": {
+                    "marks": [],
+                    "pid": "-EeBlWJb",
+                    "text": "诸位如果不信的话，可以拿亲朋好友测试一下，保证你可以拿手气王："
+                },
+                "type": "paragraph"
+            },
+            {
+                "id": "49",
+                "image": {
+                    "description": "",
+                    "height": 1280,
+                    "is_gif": false,
+                    "layout": "normal",
+                    "original_token": "v2-7b6af8e91b6f2b037e8eae5cab3c3d2a",
+                    "original_urls": [
+                        "https://pic1.zhimg.com/v2-7b6af8e91b6f2b037e8eae5cab3c3d2a.jpg?source=7e7ef6e2&needBackground=1"
+                    ],
+                    "status": "normal",
+                    "token": "v2-7b6af8e91b6f2b037e8eae5cab3c3d2a",
+                    "urls": [
+                        "https://pica.zhimg.com/v2-7b6af8e91b6f2b037e8eae5cab3c3d2a.jpg?source=7e7ef6e2&needBackground=1"
+                    ],
+                    "width": 1152
+                },
+                "type": "image"
+            },
+            {
+                "id": "50",
+                "paragraph": {
+                    "marks": [],
+                    "pid": "7-szigNC",
+                    "text": "诶？楼主你不是说，每个人拿到钱的期望是一样的么，怎么到这里就是错的了呢？"
+                },
+                "type": "paragraph"
+            },
+            {
+                "id": "51",
+                "paragraph": {
+                    "marks": [
+                        {
+                            "end_index": 26,
+                            "start_index": 25,
+                            "type": "bold"
+                        },
+                        {
+                            "end_index": 84,
+                            "start_index": 52,
+                            "type": "bold"
+                        }
+                    ],
+                    "pid": "c915d9Al",
+                    "text": "这是因为，刚刚讨论的是连续的情况，而这里金额单位是分，也就是离散的情况。这便是问题的复杂和有趣之处了——在离散的情况下，刚刚推导的结论完全不成立，需要重新建立一个算法。"
+                },
+                "type": "paragraph"
+            },
+            {
+                "id": "52",
+                "image": {
+                    "description": "",
+                    "height": 187,
+                    "is_gif": false,
+                    "layout": "small",
+                    "original_token": "v2-4f19d188d43babcf6362d2372307492c",
+                    "original_urls": [
+                        "https://picx.zhimg.com/v2-4f19d188d43babcf6362d2372307492c.jpg?source=7e7ef6e2&needBackground=1"
+                    ],
+                    "status": "normal",
+                    "token": "v2-4f19d188d43babcf6362d2372307492c",
+                    "urls": [
+                        "https://picx.zhimg.com/v2-4f19d188d43babcf6362d2372307492c.jpg?source=7e7ef6e2&needBackground=1"
+                    ],
+                    "width": 161
+                },
+                "type": "image"
+            },
+            {
+                "id": "53",
+                "paragraph": {
+                    "marks": [],
+                    "text": "\n为了彻底搞清楚微信是怎么发红包的，楼主打入了某红薯平台，潜入了十数个跨年红包群，然后在里面嘎嘎发红包，在小妹妹面前当金主爸爸（划掉）。"
+                },
+                "type": "paragraph"
+            },
+            {
+                "id": "54",
+                "image": {
+                    "description": "",
+                    "height": 1928,
+                    "is_gif": false,
+                    "layout": "normal",
+                    "original_token": "v2-340a5ea78023c7da9669a3d2c3abd672",
+                    "original_urls": [
+                        "https://picx.zhimg.com/v2-340a5ea78023c7da9669a3d2c3abd672.jpg?source=7e7ef6e2&needBackground=1"
+                    ],
+                    "status": "normal",
+                    "token": "v2-340a5ea78023c7da9669a3d2c3abd672",
+                    "urls": [
+                        "https://picx.zhimg.com/v2-340a5ea78023c7da9669a3d2c3abd672.jpg?source=7e7ef6e2&needBackground=1"
+                    ],
+                    "width": 2570
+                },
+                "type": "image"
+            },
+            {
+                "id": "55",
+                "paragraph": {
+                    "marks": [],
+                    "pid": "1KV1ch-R",
+                    "text": "（顺便提一嘴，期间还遇到了两个被微信封杀的诈骗群。红包群只要是收入群费的，一律鉴定为诈骗......）"
+                },
+                "type": "paragraph"
+            },
+            {
+                "id": "56",
+                "paragraph": {
+                    "marks": [
+                        {
+                            "end_index": 46,
+                            "start_index": 0,
+                            "type": "bold"
+                        }
+                    ],
+                    "pid": "Qop3v6L4",
+                    "text": "然后楼主派发了 200 个 10 人份的红包（金额0.19元），共计发了约 2000 份红包。我敢说，这200 份数据是全互联网最大的一组微信红包数据集，没有之一。"
+                },
+                "type": "paragraph"
+            },
+            {
+                "id": "57",
+                "image": {
+                    "description": "看在楼主为科学破费的精神上，诸位不点个赞支持一下嘛🥺",
+                    "height": 778,
+                    "is_gif": false,
+                    "layout": "normal",
+                    "original_token": "v2-87d8ea0db8176596117a2e166d0dae0b",
+                    "original_urls": [
+                        "https://pica.zhimg.com/v2-87d8ea0db8176596117a2e166d0dae0b.jpg?source=7e7ef6e2&needBackground=1"
+                    ],
+                    "status": "normal",
+                    "token": "v2-87d8ea0db8176596117a2e166d0dae0b",
+                    "urls": [
+                        "https://pic1.zhimg.com/v2-87d8ea0db8176596117a2e166d0dae0b.jpg?source=7e7ef6e2&needBackground=1"
+                    ],
+                    "width": 1412
+                },
+                "type": "image"
+            },
+            {
+                "id": "58",
+                "paragraph": {
+                    "marks": [],
+                    "pid": "Kv0OQSZz",
+                    "text": "我们来画出 200 次抢红包中，手气王是如何分布的："
+                },
+                "type": "paragraph"
+            },
+            {
+                "id": "59",
+                "image": {
+                    "description": "",
+                    "height": 455,
+                    "is_gif": false,
+                    "layout": "normal",
+                    "original_token": "v2-2aab8320d31d1a3194cae4fddad9282e",
+                    "original_urls": [
+                        "https://picx.zhimg.com/v2-2aab8320d31d1a3194cae4fddad9282e.jpg?source=7e7ef6e2&needBackground=1"
+                    ],
+                    "status": "normal",
+                    "token": "v2-2aab8320d31d1a3194cae4fddad9282e",
+                    "urls": [
+                        "https://picx.zhimg.com/v2-2aab8320d31d1a3194cae4fddad9282e.jpg?source=7e7ef6e2&needBackground=1"
+                    ],
+                    "width": 568
+                },
+                "type": "image"
+            },
+            {
+                "id": "60",
+                "paragraph": {
+                    "marks": [],
+                    "text": "\n非常的 Amazing 啊，第一个抢的同学居然没有一次是手气王！更加神奇的是，最后一位抢的包揽了几乎一半的手气王，这是不是有些太夸张了点？没错，这就是小金额微信红包的现状。"
+                },
+                "type": "paragraph"
+            },
+            {
+                "id": "61",
+                "paragraph": {
+                    "marks": [
+                        {
+                            "end_index": 19,
+                            "start_index": 0,
+                            "type": "bold"
+                        }
+                    ],
+                    "text": "小金额的情况下，后抢优势被远远放大了。"
+                },
+                "type": "paragraph"
+            },
+            {
+                "id": "62",
+                "paragraph": {
+                    "marks": [
+                        {
+                            "end_index": 39,
+                            "formula": {
+                                "content": "\\lfloor \\frac{0.19}{10}\\rfloor\\times 2=0.02",
+                                "height": 39,
+                                "img_url": "https://pic1.zhimg.com/v2-1079c5fb6ca8ac5220518310fc9f45d4.jpg?source=7e7ef6e2&needBackground=1",
+                                "url": "https://zhuanlan.zhihu.com/p/2007896917322003867",
+                                "width": 137
+                            },
+                            "start_index": 35,
+                            "type": "formula"
+                        }
+                    ],
+                    "pid": "Y1SQbQiy",
+                    "text": "而且注意到，第一位永远是 0.01 元。但根据二倍均值法，应该取得到 [公式] 元才对呀，这是为什么呢？"
+                },
+                "type": "paragraph"
+            },
+            {
+                "id": "63",
+                "paragraph": {
+                    "marks": [
+                        {
+                            "end_index": 39,
+                            "start_index": 8,
+                            "type": "bold"
+                        }
+                    ],
+                    "pid": "39PBz6qf",
+                    "text": "我们有理由相信，微信为了保证下一位至少有 0.01 元，针对随机上界作出了调整。于是我们可以立即写出三种不同的分配算法："
+                },
+                "type": "paragraph"
+            },
+            {
+                "code_block": {
+                    "content": "def split_red_envelope(\n    total_yuan: float, n: int, seed: Optional[int] = None\n) -> List[float]:\n    total_cents = int(round(total_yuan * 100))\n    rng = random.Random(seed)\n    rem = total_cents\n    amounts = []\n\n    for k in range(n, 0, -1):\n        if k == 1:\n            amount = rem\n        else:\n            # 原汁原味版算法\n            ub = math.floor(rem / k) * 2\n            # 第一种：上限减一分钱，保证后一个至少有1分钱拿\n            ub = math.floor(rem / k) * 2 - 1\n            # 第二种：两个上限做最小值，也可以保证后一个有1分钱\n            ub = math.floor(rem / k) * 2\n            ub = min(ub, rem - (k - 1) * 1)\n            # 第三种：改变取整的位置，因为你不知道微信的真实算法是什么，所以啥都要尝试一下\n            ub = math.floor((rem / k) * 2)\n            ub = min(ub, rem - (k - 1) * 1)\n\n            amount = rng.randint(1, ub)\n        amounts.append(amount)\n        rem -= amount\n\n    return [round(c / 100.0, 2) for c in amounts]",
+                    "language": "python"
+                },
+                "id": "64",
+                "type": "code_block"
+            },
+            {
+                "id": "65",
+                "paragraph": {
+                    "marks": [
+                        {
+                            "end_index": 60,
+                            "entity_word": {
+                                "attach_info_bytes": "sgJkChLokpnnibnljaHnvZfmqKHmi58SBE1hdGgYwbkBIMe5ASgBNeUj0js6B2FydGljbGVA9Pjx34Sp6YoiSABSJDE1MTUwOTlkLTc4ZDYtNDY1Yy04OGMxLTI0MTBlODIwOGQxZPIC/wEKJDE1MTUwOTlkLTc4ZDYtNDY1Yy04OGMxLTI0MTBlODIwOGQxZBoHYXJ0aWNsZSIJMjcwNDU1ODYyOhLokpnnibnljaHnvZfmqKHmi59A9Pjx34Sp6YoiSAJSEmFpX2VudGl0eV9yZWNhbGxlcl3lI9I7YmQKEuiSmeeJueWNoee9l+aooeaLnxIETWF0aBjBuQEgx7kBKAE15SPSOzoHYXJ0aWNsZUD0+PHfhKnpiiJIAFIkMTUxNTA5OWQtNzhkNi00NjVjLTg4YzEtMjQxMGU4MjA4ZDFkciQxMTQ3ZmVjNC03MzEyLTQ4ODQtYmIwZC1iMDhiMzdkNzllZjY=",
+                                "id": "0",
+                                "type": "search",
+                                "url": "https://www.zhihu.com/search?attached_info=sgJkChLokpnnibnljaHnvZfmqKHmi58SBE1hdGgYwbkBIMe5ASgBNeUj0js6B2FydGljbGVA9Pjx34Sp6YoiSABSJDE1MTUwOTlkLTc4ZDYtNDY1Yy04OGMxLTI0MTBlODIwOGQxZPIC%2FwEKJDE1MTUwOTlkLTc4ZDYtNDY1Yy04OGMxLTI0MTBlODIwOGQxZBoHYXJ0aWNsZSIJMjcwNDU1ODYyOhLokpnnibnljaHnvZfmqKHmi59A9Pjx34Sp6YoiSAJSEmFpX2VudGl0eV9yZWNhbGxlcl3lI9I7YmQKEuiSmeeJueWNoee9l%2BaooeaLnxIETWF0aBjBuQEgx7kBKAE15SPSOzoHYXJ0aWNsZUD0%2BPHfhKnpiiJIAFIkMTUxNTA5OWQtNzhkNi00NjVjLTg4YzEtMjQxMGU4MjA4ZDFkciQxMTQ3ZmVjNC03MzEyLTQ4ODQtYmIwZC1iMDhiMzdkNzllZjY%3D&content_id=270455862&content_type=ARTICLE&extra=%7B%22content_id%22%3A%22270455862%22%2C%22content_type%22%3A%22article%22%2C%22request_click_id%22%3A%221147fec4-7312-4884-bb0d-b08b37d79ef6%22%7D&halfSheet=1&hybrid_search_extra=%7B%22sourceId%22%3A0%2C%22sourceType%22%3A%22search%22%7D&hybrid_search_source=Entity&match_order=1&q=%E8%92%99%E7%89%B9%E5%8D%A1%E7%BD%97%E6%A8%A1%E6%8B%9F&request_click_id=1147fec4-7312-4884-bb0d-b08b37d79ef6&search_source=Entity&target=blank",
+                                "word": "蒙特卡罗模拟"
+                            },
+                            "start_index": 54,
+                            "type": "entity_word"
+                        }
+                    ],
+                    "text": "这三种算法都符合「末位红包抽屉原理」，那应该如何鉴别算法之间的好坏呢？对于每个算法，我们可以跑 2000 次蒙特卡罗模拟，计算出模拟情况下的手气分布。下面是这些算法和真实分布的比较："
+                },
+                "type": "paragraph"
+            },
+            {
+                "id": "66",
+                "image": {
+                    "description": "原版算法",
+                    "height": 547,
+                    "is_gif": false,
+                    "layout": "normal",
+                    "original_token": "v2-62cf8ff18c6b84d5596cd4f7c2f580ec",
+                    "original_urls": [
+                        "https://picx.zhimg.com/v2-62cf8ff18c6b84d5596cd4f7c2f580ec.jpg?source=7e7ef6e2&needBackground=1"
+                    ],
+                    "status": "normal",
+                    "token": "v2-62cf8ff18c6b84d5596cd4f7c2f580ec",
+                    "urls": [
+                        "https://picx.zhimg.com/v2-62cf8ff18c6b84d5596cd4f7c2f580ec.jpg?source=7e7ef6e2&needBackground=1"
+                    ],
+                    "width": 998
+                },
+                "type": "image"
+            },
+            {
+                "id": "67",
+                "image": {
+                    "description": "算法一",
+                    "height": 547,
+                    "is_gif": false,
+                    "layout": "normal",
+                    "original_token": "v2-0797df285c860ef462f67f0e63d83013",
+                    "original_urls": [
+                        "https://pic1.zhimg.com/v2-0797df285c860ef462f67f0e63d83013.jpg?source=7e7ef6e2&needBackground=1"
+                    ],
+                    "status": "normal",
+                    "token": "v2-0797df285c860ef462f67f0e63d83013",
+                    "urls": [
+                        "https://picx.zhimg.com/v2-0797df285c860ef462f67f0e63d83013.jpg?source=7e7ef6e2&needBackground=1"
+                    ],
+                    "width": 998
+                },
+                "type": "image"
+            },
+            {
+                "id": "68",
+                "image": {
+                    "description": "算法二",
+                    "height": 547,
+                    "is_gif": false,
+                    "layout": "normal",
+                    "original_token": "v2-936a5f57033f390604255bbea13b6ca0",
+                    "original_urls": [
+                        "https://pic1.zhimg.com/v2-936a5f57033f390604255bbea13b6ca0.jpg?source=7e7ef6e2&needBackground=1"
+                    ],
+                    "status": "normal",
+                    "token": "v2-936a5f57033f390604255bbea13b6ca0",
+                    "urls": [
+                        "https://pic1.zhimg.com/v2-936a5f57033f390604255bbea13b6ca0.jpg?source=7e7ef6e2&needBackground=1"
+                    ],
+                    "width": 998
+                },
+                "type": "image"
+            },
+            {
+                "id": "69",
+                "image": {
+                    "description": "算法三",
+                    "height": 547,
+                    "is_gif": false,
+                    "layout": "normal",
+                    "original_token": "v2-c58074d05fe60f8e2ee4d7067daf6b03",
+                    "original_urls": [
+                        "https://picx.zhimg.com/v2-c58074d05fe60f8e2ee4d7067daf6b03.jpg?source=7e7ef6e2&needBackground=1"
+                    ],
+                    "status": "normal",
+                    "token": "v2-c58074d05fe60f8e2ee4d7067daf6b03",
+                    "urls": [
+                        "https://pic1.zhimg.com/v2-c58074d05fe60f8e2ee4d7067daf6b03.jpg?source=7e7ef6e2&needBackground=1"
+                    ],
+                    "width": 998
+                },
+                "type": "image"
+            },
+            {
+                "id": "70",
+                "paragraph": {
+                    "marks": [
+                        {
+                            "end_index": 30,
+                            "entity_word": {
+                                "attach_info_bytes": "sgJcCgnmn7Hnirblm74SBE1hdGgYoccBIKTHASgBNcgnTjs6B2FydGljbGVA8ZX52oSr1aDNAUgAUiQxNTE1MDk5ZC03OGQ2LTQ2NWMtODhjMS0yNDEwZTgyMDhkMWTyAu8BCiQxNTE1MDk5ZC03OGQ2LTQ2NWMtODhjMS0yNDEwZTgyMDhkMWQaB2FydGljbGUiCTI3MDQ1NTg2MjoJ5p+x54q25Zu+QPGV+dqEq9WgzQFIEVISYWlfZW50aXR5X3JlY2FsbGVyXcgnTjtiXAoJ5p+x54q25Zu+EgRNYXRoGKHHASCkxwEoATXIJ047OgdhcnRpY2xlQPGV+dqEq9WgzQFIAFIkMTUxNTA5OWQtNzhkNi00NjVjLTg4YzEtMjQxMGU4MjA4ZDFkciQxMTQ3ZmVjNC03MzEyLTQ4ODQtYmIwZC1iMDhiMzdkNzllZjY=",
+                                "id": "0",
+                                "type": "search",
+                                "url": "https://www.zhihu.com/search?attached_info=sgJcCgnmn7Hnirblm74SBE1hdGgYoccBIKTHASgBNcgnTjs6B2FydGljbGVA8ZX52oSr1aDNAUgAUiQxNTE1MDk5ZC03OGQ2LTQ2NWMtODhjMS0yNDEwZTgyMDhkMWTyAu8BCiQxNTE1MDk5ZC03OGQ2LTQ2NWMtODhjMS0yNDEwZTgyMDhkMWQaB2FydGljbGUiCTI3MDQ1NTg2MjoJ5p%2Bx54q25Zu%2BQPGV%2BdqEq9WgzQFIEVISYWlfZW50aXR5X3JlY2FsbGVyXcgnTjtiXAoJ5p%2Bx54q25Zu%2BEgRNYXRoGKHHASCkxwEoATXIJ047OgdhcnRpY2xlQPGV%2BdqEq9WgzQFIAFIkMTUxNTA5OWQtNzhkNi00NjVjLTg4YzEtMjQxMGU4MjA4ZDFkciQxMTQ3ZmVjNC03MzEyLTQ4ODQtYmIwZC1iMDhiMzdkNzllZjY%3D&content_id=270455862&content_type=ARTICLE&extra=%7B%22content_id%22%3A%22270455862%22%2C%22content_type%22%3A%22article%22%2C%22request_click_id%22%3A%221147fec4-7312-4884-bb0d-b08b37d79ef6%22%7D&halfSheet=1&hybrid_search_extra=%7B%22sourceId%22%3A0%2C%22sourceType%22%3A%22search%22%7D&hybrid_search_source=Entity&match_order=1&q=%E6%9F%B1%E7%8A%B6%E5%9B%BE&request_click_id=1147fec4-7312-4884-bb0d-b08b37d79ef6&search_source=Entity&target=blank",
+                                "word": "柱状图"
+                            },
+                            "start_index": 27,
+                            "type": "entity_word"
+                        },
+                        {
+                            "end_index": 66,
+                            "entity_word": {
+                                "attach_info_bytes": "sgJeCgzljaHmlrnmo4DpqowSBE1hdGgYxMcBIMjHASgBNf8oqjs6B2FydGljbGVAp6W6697Uvrp4SABSJDE1MTUwOTlkLTc4ZDYtNDY1Yy04OGMxLTI0MTBlODIwOGQxZPIC8wEKJDE1MTUwOTlkLTc4ZDYtNDY1Yy04OGMxLTI0MTBlODIwOGQxZBoHYXJ0aWNsZSIJMjcwNDU1ODYyOgzljaHmlrnmo4DpqoxAp6W6697Uvrp4SAZSEmFpX2VudGl0eV9yZWNhbGxlcl3/KKo7Yl4KDOWNoeaWueajgOmqjBIETWF0aBjExwEgyMcBKAE1/yiqOzoHYXJ0aWNsZUCnpbrr3tS+unhIAFIkMTUxNTA5OWQtNzhkNi00NjVjLTg4YzEtMjQxMGU4MjA4ZDFkciQxMTQ3ZmVjNC03MzEyLTQ4ODQtYmIwZC1iMDhiMzdkNzllZjY=",
+                                "id": "0",
+                                "type": "search",
+                                "url": "https://www.zhihu.com/search?attached_info=sgJeCgzljaHmlrnmo4DpqowSBE1hdGgYxMcBIMjHASgBNf8oqjs6B2FydGljbGVAp6W6697Uvrp4SABSJDE1MTUwOTlkLTc4ZDYtNDY1Yy04OGMxLTI0MTBlODIwOGQxZPIC8wEKJDE1MTUwOTlkLTc4ZDYtNDY1Yy04OGMxLTI0MTBlODIwOGQxZBoHYXJ0aWNsZSIJMjcwNDU1ODYyOgzljaHmlrnmo4DpqoxAp6W6697Uvrp4SAZSEmFpX2VudGl0eV9yZWNhbGxlcl3%2FKKo7Yl4KDOWNoeaWueajgOmqjBIETWF0aBjExwEgyMcBKAE1%2FyiqOzoHYXJ0aWNsZUCnpbrr3tS%2BunhIAFIkMTUxNTA5OWQtNzhkNi00NjVjLTg4YzEtMjQxMGU4MjA4ZDFkciQxMTQ3ZmVjNC03MzEyLTQ4ODQtYmIwZC1iMDhiMzdkNzllZjY%3D&content_id=270455862&content_type=ARTICLE&extra=%7B%22content_id%22%3A%22270455862%22%2C%22content_type%22%3A%22article%22%2C%22request_click_id%22%3A%221147fec4-7312-4884-bb0d-b08b37d79ef6%22%7D&halfSheet=1&hybrid_search_extra=%7B%22sourceId%22%3A0%2C%22sourceType%22%3A%22search%22%7D&hybrid_search_source=Entity&match_order=1&q=%E5%8D%A1%E6%96%B9%E6%A3%80%E9%AA%8C&request_click_id=1147fec4-7312-4884-bb0d-b08b37d79ef6&search_source=Entity&target=blank",
+                                "word": "卡方检验"
+                            },
+                            "start_index": 62,
+                            "type": "entity_word"
+                        }
+                    ],
+                    "pid": "oNodAohz",
+                    "text": "可以看出，原版算法错得相当离谱。算法二、算法三都不符合柱状图的基本规律。只有算法一勉强能看……但是也是错的，因为根本通过不了卡方检验。"
+                },
+                "type": "paragraph"
+            },
+            {
+                "id": "71",
+                "paragraph": {
+                    "marks": [
+                        {
+                            "end_index": 24,
+                            "start_index": 16,
+                            "type": "bold"
+                        }
+                    ],
+                    "pid": "dRbLBS3y",
+                    "text": "于是我思考了一个问题，这个抽取，真的是均匀的吗？"
+                },
+                "type": "paragraph"
+            },
+            {
+                "id": "72",
+                "paragraph": {
+                    "marks": [
+                        {
+                            "end_index": 10,
+                            "entity_word": {
+                                "attach_info_bytes": "sgJlCg/mlbDmja7pgI/op4booagSB1Vua25vd24Yr8gBILTIASgBNT2yrzs6B2FydGljbGVA1s+DzIa2q8iLAUgAUiQxNTE1MDk5ZC03OGQ2LTQ2NWMtODhjMS0yNDEwZTgyMDhkMWTyAoMCCiQxNTE1MDk5ZC03OGQ2LTQ2NWMtODhjMS0yNDEwZTgyMDhkMWQaB2FydGljbGUiCTI3MDQ1NTg2MjoP5pWw5o2u6YCP6KeG6KGoQNbPg8yGtqvIiwFIBVIXYmFpZHUtYmFpa2UtaXRlbS1yZWNhbGxdPbKvO2JlCg/mlbDmja7pgI/op4booagSB1Vua25vd24Yr8gBILTIASgBNT2yrzs6B2FydGljbGVA1s+DzIa2q8iLAUgAUiQxNTE1MDk5ZC03OGQ2LTQ2NWMtODhjMS0yNDEwZTgyMDhkMWRyJDExNDdmZWM0LTczMTItNDg4NC1iYjBkLWIwOGIzN2Q3OWVmNg==",
+                                "id": "0",
+                                "type": "search",
+                                "url": "https://www.zhihu.com/search?attached_info=sgJlCg%2FmlbDmja7pgI%2Fop4booagSB1Vua25vd24Yr8gBILTIASgBNT2yrzs6B2FydGljbGVA1s%2BDzIa2q8iLAUgAUiQxNTE1MDk5ZC03OGQ2LTQ2NWMtODhjMS0yNDEwZTgyMDhkMWTyAoMCCiQxNTE1MDk5ZC03OGQ2LTQ2NWMtODhjMS0yNDEwZTgyMDhkMWQaB2FydGljbGUiCTI3MDQ1NTg2MjoP5pWw5o2u6YCP6KeG6KGoQNbPg8yGtqvIiwFIBVIXYmFpZHUtYmFpa2UtaXRlbS1yZWNhbGxdPbKvO2JlCg%2FmlbDmja7pgI%2Fop4booagSB1Vua25vd24Yr8gBILTIASgBNT2yrzs6B2FydGljbGVA1s%2BDzIa2q8iLAUgAUiQxNTE1MDk5ZC03OGQ2LTQ2NWMtODhjMS0yNDEwZTgyMDhkMWRyJDExNDdmZWM0LTczMTItNDg4NC1iYjBkLWIwOGIzN2Q3OWVmNg%3D%3D&content_id=270455862&content_type=ARTICLE&extra=%7B%22content_id%22%3A%22270455862%22%2C%22content_type%22%3A%22article%22%2C%22request_click_id%22%3A%221147fec4-7312-4884-bb0d-b08b37d79ef6%22%7D&halfSheet=1&hybrid_search_extra=%7B%22sourceId%22%3A0%2C%22sourceType%22%3A%22search%22%7D&hybrid_search_source=Entity&match_order=1&q=%E6%95%B0%E6%8D%AE%E9%80%8F%E8%A7%86%E8%A1%A8&request_click_id=1147fec4-7312-4884-bb0d-b08b37d79ef6&search_source=Entity&target=blank",
+                                "word": "数据透视表"
+                            },
+                            "start_index": 5,
+                            "type": "entity_word"
+                        }
+                    ],
+                    "pid": "rJfEbcwW",
+                    "text": "下面是一张数据透视表，表头是拿到的金额（分），第 n 行是顺序为 n 的人拿到的金额。"
+                },
+                "type": "paragraph"
+            },
+            {
+                "id": "73",
+                "image": {
+                    "description": "",
+                    "height": 754,
+                    "is_gif": false,
+                    "layout": "normal",
+                    "original_token": "v2-bf8d5791705bc5b05504578dfef1c29a",
+                    "original_urls": [
+                        "https://picx.zhimg.com/v2-bf8d5791705bc5b05504578dfef1c29a.jpg?source=7e7ef6e2&needBackground=1"
+                    ],
+                    "status": "normal",
+                    "token": "v2-bf8d5791705bc5b05504578dfef1c29a",
+                    "urls": [
+                        "https://pic1.zhimg.com/v2-bf8d5791705bc5b05504578dfef1c29a.jpg?source=7e7ef6e2&needBackground=1"
+                    ],
+                    "width": 1594
+                },
+                "type": "image"
+            },
+            {
+                "id": "74",
+                "paragraph": {
+                    "marks": [],
+                    "text": "\n可以看到，第一位全部都只拿到 1 分是没有问题的，但是第二位理论上拿1、2、3分钱的概率相同，但是居然呈现了 2:1:1 的趋势，这样的结果已经不能用统计误差来解释了。"
+                },
+                "type": "paragraph"
+            },
+            {
+                "id": "75",
+                "paragraph": {
+                    "marks": [
+                        {
+                            "end_index": 26,
+                            "start_index": 0,
+                            "type": "bold"
+                        }
+                    ],
+                    "text": "也就是说，我们之前默认的均匀抽取这个大前提被推翻了。"
+                },
+                "type": "paragraph"
+            },
+            {
+                "id": "76",
+                "paragraph": {
+                    "marks": [
+                        {
+                            "end_index": 42,
+                            "start_index": 36,
+                            "type": "bold"
+                        }
+                    ],
+                    "pid": "UaRJ9Oen",
+                    "text": "这样的不均匀抽取，是如何产生的呢？我猜测，微信在做抽取的时候是从0开始的连续均匀抽样，抽取的数字小于1时，会自动变为1。这也就解释了为什么恰好是2:1:1"
+                },
+                "type": "paragraph"
+            },
+            {
+                "id": "77",
+                "image": {
+                    "description": "手搓的示意图",
+                    "height": 836,
+                    "is_gif": false,
+                    "layout": "normal",
+                    "original_token": "v2-c1687fd78320ece3e7a21df355759442",
+                    "original_urls": [
+                        "https://pic1.zhimg.com/v2-c1687fd78320ece3e7a21df355759442.jpg?source=7e7ef6e2&needBackground=1"
+                    ],
+                    "status": "normal",
+                    "token": "v2-c1687fd78320ece3e7a21df355759442",
+                    "urls": [
+                        "https://pic1.zhimg.com/v2-c1687fd78320ece3e7a21df355759442.jpg?source=7e7ef6e2&needBackground=1"
+                    ],
+                    "width": 1642
+                },
+                "type": "image"
+            },
+            {
+                "id": "78",
+                "paragraph": {
+                    "marks": [],
+                    "text": "\n嗯，很合理，于是算法四诞生了："
+                },
+                "type": "paragraph"
+            },
+            {
+                "code_block": {
+                    "content": "def split_red_envelope(\n    total_yuan: float, n: int, seed: Optional[int] = None\n) -> List[float]:\n    total_cents = int(round(total_yuan * 100))\n    rng = random.Random(seed)\n    rem = total_cents\n    amounts = []\n\n    for k in range(n, 0, -1):\n        if k == 1:\n            amount = rem\n        else:\n            ub = math.floor(rem / k) * 2\n            ub = min(ub, rem - (k - 1))\n            # 算法四：连续抽取+判断数字是否合法\n            amount = rng.uniform(0, ub)\n            amount = max(1, amount)\n            amount = math.floor(amount)\n\n        amounts.append(amount)\n        rem -= amount",
+                    "language": "python"
+                },
+                "id": "79",
+                "type": "code_block"
+            },
+            {
+                "id": "80",
+                "paragraph": {
+                    "marks": [],
+                    "pid": "TQEHnhv2",
+                    "text": "我们来看看算法四的表现："
+                },
+                "type": "paragraph"
+            },
+            {
+                "id": "81",
+                "image": {
+                    "description": "算法四",
+                    "height": 547,
+                    "is_gif": false,
+                    "layout": "normal",
+                    "original_token": "v2-b3f6583f7b7fea11161254c1de689063",
+                    "original_urls": [
+                        "https://picx.zhimg.com/v2-b3f6583f7b7fea11161254c1de689063.jpg?source=7e7ef6e2&needBackground=1"
+                    ],
+                    "status": "normal",
+                    "token": "v2-b3f6583f7b7fea11161254c1de689063",
+                    "urls": [
+                        "https://picx.zhimg.com/v2-b3f6583f7b7fea11161254c1de689063.jpg?source=7e7ef6e2&needBackground=1"
+                    ],
+                    "width": 998
+                },
+                "type": "image"
+            },
+            {
+                "id": "82",
+                "paragraph": {
+                    "marks": [],
+                    "text": "\n已经和真实数据差异不大了，下降随后上升的趋势也复现得很完美。"
+                },
+                "type": "paragraph"
+            },
+            {
+                "id": "83",
+                "image": {
+                    "description": "",
+                    "height": 187,
+                    "is_gif": false,
+                    "layout": "small",
+                    "original_token": "v2-4f19d188d43babcf6362d2372307492c",
+                    "original_urls": [
+                        "https://picx.zhimg.com/v2-4f19d188d43babcf6362d2372307492c.jpg?source=7e7ef6e2&needBackground=1"
+                    ],
+                    "status": "normal",
+                    "token": "v2-4f19d188d43babcf6362d2372307492c",
+                    "urls": [
+                        "https://picx.zhimg.com/v2-4f19d188d43babcf6362d2372307492c.jpg?source=7e7ef6e2&needBackground=1"
+                    ],
+                    "width": 161
+                },
+                "type": "image"
+            },
+            {
+                "id": "84",
+                "paragraph": {
+                    "marks": [
+                        {
+                            "end_index": 36,
+                            "entity_word": {
+                                "attach_info_bytes": "sgJoChLmi5/lkIjkvJjluqbmo4DpqowSB1Vua25vd24Ys/UBILn1ASgBNRvq0js6B2FydGljbGVA1JKthKbS0/P7AUgAUiQxNTE1MDk5ZC03OGQ2LTQ2NWMtODhjMS0yNDEwZTgyMDhkMWTyAokCCiQxNTE1MDk5ZC03OGQ2LTQ2NWMtODhjMS0yNDEwZTgyMDhkMWQaB2FydGljbGUiCTI3MDQ1NTg2MjoS5ouf5ZCI5LyY5bqm5qOA6aqMQNSSrYSm0tPz+wFIAVIXYmFpZHUtYmFpa2UtaXRlbS1yZWNhbGxdG+rSO2JoChLmi5/lkIjkvJjluqbmo4DpqowSB1Vua25vd24Ys/UBILn1ASgBNRvq0js6B2FydGljbGVA1JKthKbS0/P7AUgAUiQxNTE1MDk5ZC03OGQ2LTQ2NWMtODhjMS0yNDEwZTgyMDhkMWRyJDExNDdmZWM0LTczMTItNDg4NC1iYjBkLWIwOGIzN2Q3OWVmNg==",
+                                "id": "0",
+                                "type": "search",
+                                "url": "https://www.zhihu.com/search?attached_info=sgJoChLmi5%2FlkIjkvJjluqbmo4DpqowSB1Vua25vd24Ys%2FUBILn1ASgBNRvq0js6B2FydGljbGVA1JKthKbS0%2FP7AUgAUiQxNTE1MDk5ZC03OGQ2LTQ2NWMtODhjMS0yNDEwZTgyMDhkMWTyAokCCiQxNTE1MDk5ZC03OGQ2LTQ2NWMtODhjMS0yNDEwZTgyMDhkMWQaB2FydGljbGUiCTI3MDQ1NTg2MjoS5ouf5ZCI5LyY5bqm5qOA6aqMQNSSrYSm0tPz%2BwFIAVIXYmFpZHUtYmFpa2UtaXRlbS1yZWNhbGxdG%2BrSO2JoChLmi5%2FlkIjkvJjluqbmo4DpqowSB1Vua25vd24Ys%2FUBILn1ASgBNRvq0js6B2FydGljbGVA1JKthKbS0%2FP7AUgAUiQxNTE1MDk5ZC03OGQ2LTQ2NWMtODhjMS0yNDEwZTgyMDhkMWRyJDExNDdmZWM0LTczMTItNDg4NC1iYjBkLWIwOGIzN2Q3OWVmNg%3D%3D&content_id=270455862&content_type=ARTICLE&extra=%7B%22content_id%22%3A%22270455862%22%2C%22content_type%22%3A%22article%22%2C%22request_click_id%22%3A%221147fec4-7312-4884-bb0d-b08b37d79ef6%22%7D&halfSheet=1&hybrid_search_extra=%7B%22sourceId%22%3A0%2C%22sourceType%22%3A%22search%22%7D&hybrid_search_source=Entity&match_order=1&q=%E6%8B%9F%E5%90%88%E4%BC%98%E5%BA%A6%E6%A3%80%E9%AA%8C&request_click_id=1147fec4-7312-4884-bb0d-b08b37d79ef6&search_source=Entity&target=blank",
+                                "word": "拟合优度检验"
+                            },
+                            "start_index": 30,
+                            "type": "entity_word"
+                        }
+                    ],
+                    "text": "\n如你所见，微信红包算法并没有被完美复现。因为当你做一个卡方拟合优度检验的时候，会发现真实算法长这样，概率只有5.5%。（恰好不能被拒绝，嘿嘿嘿）"
+                },
+                "type": "paragraph"
+            },
+            {
+                "id": "85",
+                "paragraph": {
+                    "marks": [],
+                    "text": "\n\n\n\n\n\n\n\n\n"
+                },
+                "type": "paragraph"
+            },
+            {
+                "id": "86",
+                "table": {
+                    "cells": [
+                        "X^2",
+                        "自由度",
+                        "p-value",
+                        "15.211",
+                        "8",
+                        "0.05516"
+                    ],
+                    "column_count": 3,
+                    "head_column": false,
+                    "head_row": true,
+                    "interlaced": false,
+                    "row_count": 2,
+                    "size": "normal"
+                },
+                "type": "table"
+            },
+            {
+                "id": "87",
+                "paragraph": {
+                    "marks": [
+                        {
+                            "end_index": 48,
+                            "entity_word": {
+                                "attach_info_bytes": "sgJfCgnlvKDlsI/pvpkSB1Vua25vd24Y9PcBIPf3ASgBNXURkjs6B2FydGljbGVAh7bN9J2tjrOnAUgAUiQxNTE1MDk5ZC03OGQ2LTQ2NWMtODhjMS0yNDEwZTgyMDhkMWTyAvcBCiQxNTE1MDk5ZC03OGQ2LTQ2NWMtODhjMS0yNDEwZTgyMDhkMWQaB2FydGljbGUiCTI3MDQ1NTg2MjoJ5byg5bCP6b6ZQIe2zfSdrY6zpwFIB1IXYmFpZHUtYmFpa2UtaXRlbS1yZWNhbGxddRGSO2JfCgnlvKDlsI/pvpkSB1Vua25vd24Y9PcBIPf3ASgBNXURkjs6B2FydGljbGVAh7bN9J2tjrOnAUgAUiQxNTE1MDk5ZC03OGQ2LTQ2NWMtODhjMS0yNDEwZTgyMDhkMWRyJDExNDdmZWM0LTczMTItNDg4NC1iYjBkLWIwOGIzN2Q3OWVmNg==",
+                                "id": "0",
+                                "type": "search",
+                                "url": "https://www.zhihu.com/search?attached_info=sgJfCgnlvKDlsI%2FpvpkSB1Vua25vd24Y9PcBIPf3ASgBNXURkjs6B2FydGljbGVAh7bN9J2tjrOnAUgAUiQxNTE1MDk5ZC03OGQ2LTQ2NWMtODhjMS0yNDEwZTgyMDhkMWTyAvcBCiQxNTE1MDk5ZC03OGQ2LTQ2NWMtODhjMS0yNDEwZTgyMDhkMWQaB2FydGljbGUiCTI3MDQ1NTg2MjoJ5byg5bCP6b6ZQIe2zfSdrY6zpwFIB1IXYmFpZHUtYmFpa2UtaXRlbS1yZWNhbGxddRGSO2JfCgnlvKDlsI%2FpvpkSB1Vua25vd24Y9PcBIPf3ASgBNXURkjs6B2FydGljbGVAh7bN9J2tjrOnAUgAUiQxNTE1MDk5ZC03OGQ2LTQ2NWMtODhjMS0yNDEwZTgyMDhkMWRyJDExNDdmZWM0LTczMTItNDg4NC1iYjBkLWIwOGIzN2Q3OWVmNg%3D%3D&content_id=270455862&content_type=ARTICLE&extra=%7B%22content_id%22%3A%22270455862%22%2C%22content_type%22%3A%22article%22%2C%22request_click_id%22%3A%221147fec4-7312-4884-bb0d-b08b37d79ef6%22%7D&halfSheet=1&hybrid_search_extra=%7B%22sourceId%22%3A0%2C%22sourceType%22%3A%22search%22%7D&hybrid_search_source=Entity&match_order=1&q=%E5%BC%A0%E5%B0%8F%E9%BE%99&request_click_id=1147fec4-7312-4884-bb0d-b08b37d79ef6&search_source=Entity&target=blank",
+                                "word": "张小龙"
+                            },
+                            "start_index": 45,
+                            "type": "entity_word"
+                        }
+                    ],
+                    "pid": "5I3M1JEc",
+                    "text": "虽然没有完美复现，但至少也算是探索了一把微信红包的底层机制。还要再进一步复原的话，就只能问张小龙了"
+                },
+                "type": "paragraph"
+            },
+            {
+                "id": "88",
+                "image": {
+                    "description": "",
+                    "height": 300,
+                    "is_gif": false,
+                    "layout": "small",
+                    "original_token": "v2-44968f251ab64739428b1b3d517b1569",
+                    "original_urls": [
+                        "https://pic1.zhimg.com/v2-44968f251ab64739428b1b3d517b1569.jpg?source=7e7ef6e2&needBackground=1"
+                    ],
+                    "status": "normal",
+                    "token": "v2-44968f251ab64739428b1b3d517b1569",
+                    "urls": [
+                        "https://pica.zhimg.com/v2-44968f251ab64739428b1b3d517b1569.jpg?source=7e7ef6e2&needBackground=1"
+                    ],
+                    "width": 300
+                },
+                "type": "image"
+            },
+            {
+                "id": "89",
+                "paragraph": {
+                    "marks": [],
+                    "text": "\n回答一下开头提的问题："
+                },
+                "type": "paragraph"
+            },
+            {
+                "id": "90",
+                "paragraph": {
+                    "marks": [
+                        {
+                            "end_index": 91,
+                            "start_index": 37,
+                            "type": "bold"
+                        }
+                    ],
+                    "pid": "GICFc66G",
+                    "text": "Q：台球店老板在粉丝群发红包，手气最佳者可以免台费，是否存在最佳策略？\n\nA：当然有，越后抢越好。最好把人数和金额都在电脑里跑一遍，甚至可以确定在第几位抢最合适（前提是你手稳得一批）"
+                },
+                "type": "paragraph"
+            },
+            {
+                "id": "91",
+                "paragraph": {
+                    "marks": [
+                        {
+                            "end_index": 110,
+                            "start_index": 60,
+                            "type": "bold"
+                        }
+                    ],
+                    "pid": "z8RbmHEP",
+                    "text": "Q：酸穷大学生在分配小组任务的时候，采用红包抽签方案。发1毛钱小金额红包，每个人都只能拿几分钱，这样的抽签是否公平？\n\nA：不公平，越后抢的人越容易手气最佳。最好使用 Python 或者 R 跑个随机数，这个是最公平的。"
+                },
+                "type": "paragraph"
+            },
+            {
+                "id": "92",
+                "paragraph": {
+                    "marks": [],
+                    "pid": "NOs04edj",
+                    "text": "最后祝知友们马年吉祥，财源滚滚！"
+                },
+                "type": "paragraph"
+            },
+            {
+                "id": "93",
+                "image": {
+                    "description": "",
+                    "height": 1920,
+                    "is_gif": false,
+                    "layout": "normal",
+                    "original_token": "v2-f41f82d06a4fd0861013ab53f2245170",
+                    "original_urls": [
+                        "https://pic1.zhimg.com/v2-f41f82d06a4fd0861013ab53f2245170.jpg?source=7e7ef6e2&needBackground=1"
+                    ],
+                    "status": "normal",
+                    "token": "v2-f41f82d06a4fd0861013ab53f2245170",
+                    "urls": [
+                        "https://picx.zhimg.com/v2-f41f82d06a4fd0861013ab53f2245170.jpg?source=7e7ef6e2&needBackground=1"
+                    ],
+                    "width": 1152
+                },
+                "type": "image"
+            },
+            {
+                "blockquote": {
+                    "marks": [
+                        {
+                            "end_index": 22,
+                            "link": {
+                                "href": "https://zhuanlan.zhihu.com/p/1901622331102696374",
+                                "icon_name": "zhicon_icon_24_paper_plain_text",
+                                "link_type": "text"
+                            },
+                            "start_index": 4,
+                            "type": "link"
+                        }
+                    ],
+                    "pid": "Nq9lQvgE",
+                    "text": "本文由  Zhihu on Obsidian 创作并发布"
+                },
+                "id": "94",
+                "type": "blockquote"
+            },
+            {
+                "id": "",
+                "reference_block": {
+                    "items": [
+                        {
+                            "indent_level": 1,
+                            "marks": [
+                                {
+                                    "end_index": 68,
+                                    "link": {
+                                        "href": "https://www.cnblogs.com/8hao/p/5383143.html",
+                                        "icon_name": "",
+                                        "link_type": "reference"
+                                    },
+                                    "start_index": 25,
+                                    "type": "link"
+                                }
+                            ],
+                            "text": "揭秘微信红包：架构、抢红包算法、高并发和降级方案 https://www.cnblogs.com/8hao/p/5383143.html"
+                        },
+                        {
+                            "indent_level": 1,
+                            "marks": [
+                                {
+                                    "end_index": 63,
+                                    "link": {
+                                        "href": "https://timyang.net/architecture/wechat-red-packet/",
+                                        "icon_name": "",
+                                        "link_type": "reference"
+                                    },
+                                    "start_index": 12,
+                                    "type": "link"
+                                }
+                            ],
+                            "text": "微信红包金额分配的算法 https://timyang.net/architecture/wechat-red-packet/"
+                        },
+                        {
+                            "indent_level": 1,
+                            "marks": [
+                                {
+                                    "end_index": 80,
+                                    "link": {
+                                        "href": "https://www.zhihu.com/question/22625187/answer/85530416",
+                                        "icon_name": "",
+                                        "link_type": "reference"
+                                    },
+                                    "start_index": 25,
+                                    "type": "link"
+                                }
+                            ],
+                            "text": "微信红包的随机算法是怎样实现的？ - 沉简的回答 https://www.zhihu.com/question/22625187/answer/85530416"
+                        },
+                        {
+                            "indent_level": 1,
+                            "marks": [
+                                {
+                                    "end_index": 55,
+                                    "link": {
+                                        "href": "https://www.phppan.com/2015/04/weixin-hongbao/",
+                                        "icon_name": "",
+                                        "link_type": "reference"
+                                    },
+                                    "start_index": 9,
+                                    "type": "link"
+                                }
+                            ],
+                            "text": "微信红包实现原理 https://www.phppan.com/2015/04/weixin-hongbao/"
+                        },
+                        {
+                            "indent_level": 1,
+                            "marks": [
+                                {
+                                    "end_index": 55,
+                                    "link": {
+                                        "href": "https://www.zybuluo.com/yulin718/note/93148",
+                                        "icon_name": "",
+                                        "link_type": "reference"
+                                    },
+                                    "start_index": 12,
+                                    "type": "link"
+                                }
+                            ],
+                            "text": "微信红包的架构设计简介 https://www.zybuluo.com/yulin718/note/93148"
+                        },
+                        {
+                            "indent_level": 1,
+                            "marks": [
+                                {
+                                    "end_index": 78,
+                                    "link": {
+                                        "href": "https://mp.weixin.qq.com/s/5YV4QsK6zXzx-_CdaeLutA",
+                                        "icon_name": "",
+                                        "link_type": "reference"
+                                    },
+                                    "start_index": 29,
+                                    "type": "link"
+                                }
+                            ],
+                            "text": "微信红包先抢和后抢差距居然这么大！春节抢红包的大数据分析 https://mp.weixin.qq.com/s/5YV4QsK6zXzx-_CdaeLutA"
+                        }
+                    ]
+                },
+                "type": "reference_block"
+            },
+            {
+                "card": {
+                    "card_type": "reward_tail_truncate",
+                    "extra_info": "{\"valuable_gift_members_data\":null,\"normal_gift_members_data\":null,\"can_open_reward\":true,\"is_rewardable\":true,\"show_gift_icon\":false,\"gift_count_text\":\"\",\"gift_reward_list_url\":\"https://www.zhihu.com/gift-reward/list/article/2007896917322003867\"}",
+                    "id": ""
+                },
+                "id": "",
+                "type": "card"
+            }
+        ]
+    },
+    "excerpt": "什么，抢红包也居然存在最优策略？这篇文章研究了统计学视角下「手气王」的分布规律，以及微信红包分配算法的逆向。为了珍贵的研究数据，楼主派发了约 2000 个红包，总耗时 3 个月。还请诸位看官动动发财的小手点赞+关注，包能次次手气最佳♪(･ω･)ﾉ 在开启分析之旅前，大伙不妨先思考两个问题： 台球店老板在粉丝群发红包，手气最佳者可以免台费，是否存在 最佳策略？ 酸穷大学生在分配小组任务的时候，采用 红包抽…",
+    "video_info": null,
+    "biz_type_list": ["article"],
+    "interaction_bar_plugins": [
+        {
+            "type": "comment",
+            "comment": {
+                "enable": true,
+                "placeholder": "欢迎参与讨论"
+            }
+        }
+    ],
+    "bar_plugins_flip_time": 3000,
+    "reaction": {
+        "statistics": {
+            "up_vote_count": 94,
+            "down_vote_count": 1,
+            "like_count": 1,
+            "comment_count": 12,
+            "share_count": 0,
+            "play_count": 0,
+            "interest_play_count": 0,
+            "favorites": 99,
+            "pv_count": 0,
+            "bullet_count": 0,
+            "applaud_count": 0,
+            "question_follower_count": 0,
+            "question_answer_count": 0,
+            "plaincontent_vote_up_count": 0,
+            "plaincontent_like_count": 0,
+            "img_like_count": {
+                "v2-0797df285c860ef462f67f0e63d83013": 0,
+                "v2-2aab8320d31d1a3194cae4fddad9282e": 0,
+                "v2-340a5ea78023c7da9669a3d2c3abd672": 0,
+                "v2-44968f251ab64739428b1b3d517b1569": 0,
+                "v2-4f19d188d43babcf6362d2372307492c": 0,
+                "v2-56535a033098fa764671967d7ba1adca": 0,
+                "v2-62cf8ff18c6b84d5596cd4f7c2f580ec": 0,
+                "v2-7b6af8e91b6f2b037e8eae5cab3c3d2a": 0,
+                "v2-87d8ea0db8176596117a2e166d0dae0b": 0,
+                "v2-936a5f57033f390604255bbea13b6ca0": 0,
+                "v2-b3f6583f7b7fea11161254c1de689063": 0,
+                "v2-bf8d5791705bc5b05504578dfef1c29a": 0,
+                "v2-c1687fd78320ece3e7a21df355759442": 0,
+                "v2-c58074d05fe60f8e2ee4d7067daf6b03": 0,
+                "v2-f41f82d06a4fd0861013ab53f2245170": 0,
+                "v2-f83253fd38b3233a7e44a3c49d3eb8fb": 0,
+                "v2-fce9b21b1a90aac126860a1e5574402f": 0
+            },
+            "subscribe_count": 0,
+            "republishers": []
+        },
+        "relation": {
+            "is_author": true,
+            "vote": "Neutral",
+            "liked": false,
+            "img_liked": {
+                "v2-0797df285c860ef462f67f0e63d83013": false,
+                "v2-2aab8320d31d1a3194cae4fddad9282e": false,
+                "v2-340a5ea78023c7da9669a3d2c3abd672": false,
+                "v2-44968f251ab64739428b1b3d517b1569": false,
+                "v2-4f19d188d43babcf6362d2372307492c": false,
+                "v2-56535a033098fa764671967d7ba1adca": false,
+                "v2-62cf8ff18c6b84d5596cd4f7c2f580ec": false,
+                "v2-7b6af8e91b6f2b037e8eae5cab3c3d2a": false,
+                "v2-87d8ea0db8176596117a2e166d0dae0b": false,
+                "v2-936a5f57033f390604255bbea13b6ca0": false,
+                "v2-b3f6583f7b7fea11161254c1de689063": false,
+                "v2-bf8d5791705bc5b05504578dfef1c29a": false,
+                "v2-c1687fd78320ece3e7a21df355759442": false,
+                "v2-c58074d05fe60f8e2ee4d7067daf6b03": false,
+                "v2-f41f82d06a4fd0861013ab53f2245170": false,
+                "v2-f83253fd38b3233a7e44a3c49d3eb8fb": false,
+                "v2-fce9b21b1a90aac126860a1e5574402f": false
+            },
+            "faved": false,
+            "following": false,
+            "subcribed": false,
+            "is_navigator_vote": false,
+            "current_user_is_navigator": false,
+            "vote_next_step": ""
+        },
+        "image_reactions": {
+            "v2-0797df285c860ef462f67f0e63d83013": {
+                "like_count": 0,
+                "is_liked": false
+            },
+            "v2-2aab8320d31d1a3194cae4fddad9282e": {
+                "like_count": 0,
+                "is_liked": false
+            },
+            "v2-340a5ea78023c7da9669a3d2c3abd672": {
+                "like_count": 0,
+                "is_liked": false
+            },
+            "v2-44968f251ab64739428b1b3d517b1569": {
+                "like_count": 0,
+                "is_liked": false
+            },
+            "v2-4f19d188d43babcf6362d2372307492c": {
+                "like_count": 0,
+                "is_liked": false
+            },
+            "v2-56535a033098fa764671967d7ba1adca": {
+                "like_count": 0,
+                "is_liked": false
+            },
+            "v2-62cf8ff18c6b84d5596cd4f7c2f580ec": {
+                "like_count": 0,
+                "is_liked": false
+            },
+            "v2-7b6af8e91b6f2b037e8eae5cab3c3d2a": {
+                "like_count": 0,
+                "is_liked": false
+            },
+            "v2-87d8ea0db8176596117a2e166d0dae0b": {
+                "like_count": 0,
+                "is_liked": false
+            },
+            "v2-936a5f57033f390604255bbea13b6ca0": {
+                "like_count": 0,
+                "is_liked": false
+            },
+            "v2-b3f6583f7b7fea11161254c1de689063": {
+                "like_count": 0,
+                "is_liked": false
+            },
+            "v2-bf8d5791705bc5b05504578dfef1c29a": {
+                "like_count": 0,
+                "is_liked": false
+            },
+            "v2-c1687fd78320ece3e7a21df355759442": {
+                "like_count": 0,
+                "is_liked": false
+            },
+            "v2-c58074d05fe60f8e2ee4d7067daf6b03": {
+                "like_count": 0,
+                "is_liked": false
+            },
+            "v2-f41f82d06a4fd0861013ab53f2245170": {
+                "like_count": 0,
+                "is_liked": false
+            },
+            "v2-f83253fd38b3233a7e44a3c49d3eb8fb": {
+                "like_count": 0,
+                "is_liked": false
+            },
+            "v2-fce9b21b1a90aac126860a1e5574402f": {
+                "like_count": 0,
+                "is_liked": false
+            }
+        },
+        "share_count_string": "33"
+    },
+    "comment_config": {
+        "place_holder": "理性发言，友善互动",
+        "can_reply": true,
+        "place_holder_strategy": "normal",
+        "can_segment_reply": true
+    },
+    "endorsement": [],
+    "catalog": null,
+    "relationship_tips": {
+        "type": "reaction_endorse",
+        "right_icon": {
+            "day": "https://pic1.zhimg.com/80/v2-5e22e91ab9265c2115a98d47ebb42358_1440w.png",
+            "night": "https://pic1.zhimg.com/80/v2-5e22e91ab9265c2115a98d47ebb42358_1440w.png",
+            "width": 10,
+            "height": 10
+        },
+        "text": "你关注的 lsh 等 94 人赞同了该文章",
+        "text_color": "GBK06A",
+        "text_size": 13,
+        "is_bold": false,
+        "action_url": "zhihu://hybrid?zh_url=https%3A%2F%2Fwww.zhihu.com%2Fappview%2Farticle%2F2007896917322003867%2Fvoters%3Fzh_hide_nav_bar%3Dtrue",
+        "relationship_endorse_reason_type": 604
+    },
+    "podcast_audio_enter": {
+        "text": "听内容",
+        "text_color": "MapBrand",
+        "text_size": 13,
+        "action_url": "zhihu://podcast/audio_player/0?contentId=2007896917322003867&contentType=article&subType=",
+        "sub_type": ""
+    },
+    "reaction_instruction": {},
+    "settings": {
+        "table_of_contents": {
+            "enabled": false
+        }
+    },
+    "third_business": {
+        "comment": {
+            "total_count": 12,
+            "place_holder": "包容不同才有精彩的多样性"
+        },
+        "related_queries": {
+            "queries": [
+                {
+                    "display_query": "微信红包怎么抢到手气最佳",
+                    "real_query": "微信红包怎么抢到手气最佳",
+                    "link_url": "https://www.zhihu.com/search?extra=%7B%22content_id%22%3A%22270455862%22%2C%22content_type%22%3A%22article%22%2C%22request_click_id%22%3A%2296e030bd-7286-4b34-89a4-3f53d5a36320%22%7D&q=%E5%BE%AE%E4%BF%A1%E7%BA%A2%E5%8C%85%E6%80%8E%E4%B9%88%E6%8A%A2%E5%88%B0%E6%89%8B%E6%B0%94%E6%9C%80%E4%BD%B3&source=ContentBottom&halfSheet=1&attached_info=8gKfAQogNTcyMjE4Y2FiNzZkM2JiYjIxZDM4NjU1OWY0YTQwMzAaB0FSVElDTEUiCTI3MDQ1NTg2Mjok5b6u5L%2Bh57qi5YyF5oCO5LmI5oqi5Yiw5omL5rCU5pyA5L2zQLrDtNSUwL%2B5ygFIAFIJZDJxX2NsaWNrXWjTFzpyJDk2ZTAzMGJkLTcyODYtNGIzNC04OWE0LTNmNTNkNWEzNjMyMA%3D%3D",
+                    "attached_info": "8gKfAQogNTcyMjE4Y2FiNzZkM2JiYjIxZDM4NjU1OWY0YTQwMzAaB0FSVElDTEUiCTI3MDQ1NTg2Mjok5b6u5L+h57qi5YyF5oCO5LmI5oqi5Yiw5omL5rCU5pyA5L2zQLrDtNSUwL+5ygFIAFIJZDJxX2NsaWNrXWjTFzpyJDk2ZTAzMGJkLTcyODYtNGIzNC04OWE0LTNmNTNkNWEzNjMyMA==",
+                    "id": "-3858742649203908166"
+                },
+                {
+                    "display_query": "为什么有人抢红包总是手气最佳",
+                    "real_query": "为什么有人抢红包总是手气最佳",
+                    "link_url": "https://www.zhihu.com/search?extra=%7B%22content_id%22%3A%22270455862%22%2C%22content_type%22%3A%22article%22%2C%22request_click_id%22%3A%2296e030bd-7286-4b34-89a4-3f53d5a36320%22%7D&q=%E4%B8%BA%E4%BB%80%E4%B9%88%E6%9C%89%E4%BA%BA%E6%8A%A2%E7%BA%A2%E5%8C%85%E6%80%BB%E6%98%AF%E6%89%8B%E6%B0%94%E6%9C%80%E4%BD%B3&source=ContentBottom&halfSheet=1&attached_info=8gKxAQogNTcyMjE4Y2FiNzZkM2JiYjIxZDM4NjU1OWY0YTQwMzAaB0FSVElDTEUiCTI3MDQ1NTg2Mjoq5Li65LuA5LmI5pyJ5Lq65oqi57qi5YyF5oC75piv5omL5rCU5pyA5L2zQNT21IqnhNnt4wFIAVIVbG9vay1zZWFyY2gtcmVjYWxsLXYyXTFbCDpyJDk2ZTAzMGJkLTcyODYtNGIzNC04OWE0LTNmNTNkNWEzNjMyMA%3D%3D",
+                    "attached_info": "8gKxAQogNTcyMjE4Y2FiNzZkM2JiYjIxZDM4NjU1OWY0YTQwMzAaB0FSVElDTEUiCTI3MDQ1NTg2Mjoq5Li65LuA5LmI5pyJ5Lq65oqi57qi5YyF5oC75piv5omL5rCU5pyA5L2zQNT21IqnhNnt4wFIAVIVbG9vay1zZWFyY2gtcmVjYWxsLXYyXTFbCDpyJDk2ZTAzMGJkLTcyODYtNGIzNC04OWE0LTNmNTNkNWEzNjMyMA==",
+                    "id": "-2027917108107199660"
+                },
+                {
+                    "display_query": "微信抢红包每次都很少",
+                    "real_query": "微信抢红包每次都很少",
+                    "link_url": "https://www.zhihu.com/search?extra=%7B%22content_id%22%3A%22270455862%22%2C%22content_type%22%3A%22article%22%2C%22request_click_id%22%3A%2296e030bd-7286-4b34-89a4-3f53d5a36320%22%7D&q=%E5%BE%AE%E4%BF%A1%E6%8A%A2%E7%BA%A2%E5%8C%85%E6%AF%8F%E6%AC%A1%E9%83%BD%E5%BE%88%E5%B0%91&source=ContentBottom&halfSheet=1&attached_info=8gKkAQogNTcyMjE4Y2FiNzZkM2JiYjIxZDM4NjU1OWY0YTQwMzAaB0FSVElDTEUiCTI3MDQ1NTg2Mjoe5b6u5L%2Bh5oqi57qi5YyF5q%2BP5qyh6YO95b6I5bCRQMqunuWqrfmDR0gCUhVsb29rLXNlYXJjaC1yZWNhbGwtdjJdqbLFOXIkOTZlMDMwYmQtNzI4Ni00YjM0LTg5YTQtM2Y1M2Q1YTM2MzIw",
+                    "attached_info": "8gKkAQogNTcyMjE4Y2FiNzZkM2JiYjIxZDM4NjU1OWY0YTQwMzAaB0FSVElDTEUiCTI3MDQ1NTg2Mjoe5b6u5L+h5oqi57qi5YyF5q+P5qyh6YO95b6I5bCRQMqunuWqrfmDR0gCUhVsb29rLXNlYXJjaC1yZWNhbGwtdjJdqbLFOXIkOTZlMDMwYmQtNzI4Ni00YjM0LTg5YTQtM2Y1M2Q1YTM2MzIw",
+                    "id": "5118311747855816522"
+                },
+                {
+                    "display_query": "微信红包手气最佳是随机的吗",
+                    "real_query": "微信红包手气最佳是随机的吗",
+                    "link_url": "https://www.zhihu.com/search?extra=%7B%22content_id%22%3A%22270455862%22%2C%22content_type%22%3A%22article%22%2C%22request_click_id%22%3A%2296e030bd-7286-4b34-89a4-3f53d5a36320%22%7D&q=%E5%BE%AE%E4%BF%A1%E7%BA%A2%E5%8C%85%E6%89%8B%E6%B0%94%E6%9C%80%E4%BD%B3%E6%98%AF%E9%9A%8F%E6%9C%BA%E7%9A%84%E5%90%97&source=ContentBottom&halfSheet=1&attached_info=8gKtAQogNTcyMjE4Y2FiNzZkM2JiYjIxZDM4NjU1OWY0YTQwMzAaB0FSVElDTEUiCTI3MDQ1NTg2Mjon5b6u5L%2Bh57qi5YyF5omL5rCU5pyA5L2z5piv6ZqP5py655qE5ZCXQM6HuOjclt%2BlOUgDUhVsb29rLXNlYXJjaC1yZWNhbGwtdjJdmM%2B4OXIkOTZlMDMwYmQtNzI4Ni00YjM0LTg5YTQtM2Y1M2Q1YTM2MzIw",
+                    "attached_info": "8gKtAQogNTcyMjE4Y2FiNzZkM2JiYjIxZDM4NjU1OWY0YTQwMzAaB0FSVElDTEUiCTI3MDQ1NTg2Mjon5b6u5L+h57qi5YyF5omL5rCU5pyA5L2z5piv6ZqP5py655qE5ZCXQM6HuOjclt+lOUgDUhVsb29rLXNlYXJjaC1yZWNhbGwtdjJdmM+4OXIkOTZlMDMwYmQtNzI4Ni00YjM0LTg5YTQtM2Y1M2Q1YTM2MzIw",
+                    "id": "4128530603686364110"
+                },
+                {
+                    "display_query": "拼手气红包算法",
+                    "real_query": "拼手气红包算法",
+                    "link_url": "https://www.zhihu.com/search?extra=%7B%22content_id%22%3A%22270455862%22%2C%22content_type%22%3A%22article%22%2C%22request_click_id%22%3A%2296e030bd-7286-4b34-89a4-3f53d5a36320%22%7D&q=%E6%8B%BC%E6%89%8B%E6%B0%94%E7%BA%A2%E5%8C%85%E7%AE%97%E6%B3%95&source=ContentBottom&halfSheet=1&attached_info=8gKbAQogNTcyMjE4Y2FiNzZkM2JiYjIxZDM4NjU1OWY0YTQwMzAaB0FSVElDTEUiCTI3MDQ1NTg2MjoV5ou85omL5rCU57qi5YyF566X5rOVQODhpNvbztWQNkgEUhVsb29rLXNlYXJjaC1yZWNhbGwtdjJdxIeyOXIkOTZlMDMwYmQtNzI4Ni00YjM0LTg5YTQtM2Y1M2Q1YTM2MzIw",
+                    "attached_info": "8gKbAQogNTcyMjE4Y2FiNzZkM2JiYjIxZDM4NjU1OWY0YTQwMzAaB0FSVElDTEUiCTI3MDQ1NTg2MjoV5ou85omL5rCU57qi5YyF566X5rOVQODhpNvbztWQNkgEUhVsb29rLXNlYXJjaC1yZWNhbGwtdjJdxIeyOXIkOTZlMDMwYmQtNzI4Ni00YjM0LTg5YTQtM2Y1M2Q1YTM2MzIw",
+                    "id": "3900493815934955744"
+                },
+                {
+                    "display_query": "微信红包的算法逻辑",
+                    "real_query": "微信红包的算法逻辑",
+                    "link_url": "https://www.zhihu.com/search?extra=%7B%22content_id%22%3A%22270455862%22%2C%22content_type%22%3A%22article%22%2C%22request_click_id%22%3A%2296e030bd-7286-4b34-89a4-3f53d5a36320%22%7D&q=%E5%BE%AE%E4%BF%A1%E7%BA%A2%E5%8C%85%E7%9A%84%E7%AE%97%E6%B3%95%E9%80%BB%E8%BE%91&source=ContentBottom&halfSheet=1&attached_info=8gKiAQogNTcyMjE4Y2FiNzZkM2JiYjIxZDM4NjU1OWY0YTQwMzAaB0FSVElDTEUiCTI3MDQ1NTg2Mjob5b6u5L%2Bh57qi5YyF55qE566X5rOV6YC76L6RQO%2B29O%2F70IiThgFIBVIVbG9vay1zZWFyY2gtcmVjYWxsLXYyXbYRpzlyJDk2ZTAzMGJkLTcyODYtNGIzNC04OWE0LTNmNTNkNWEzNjMyMA%3D%3D",
+                    "attached_info": "8gKiAQogNTcyMjE4Y2FiNzZkM2JiYjIxZDM4NjU1OWY0YTQwMzAaB0FSVElDTEUiCTI3MDQ1NTg2Mjob5b6u5L+h57qi5YyF55qE566X5rOV6YC76L6RQO+29O/70IiThgFIBVIVbG9vay1zZWFyY2gtcmVjYWxsLXYyXbYRpzlyJDk2ZTAzMGJkLTcyODYtNGIzNC04OWE0LTNmNTNkNWEzNjMyMA==",
+                    "id": "-8780292457108792465"
+                }
+            ]
+        },
+        "ring": {
+            "id": "1871220945986928640",
+            "ring_name": "算法研究所",
+            "avatar": "https://pic1.zhimg.com/v2-f273addf69b1f79c6013de41ab9ce5fa.jpg?source=1a5df958",
+            "ring_second_line_text": "1.3万讨论",
+            "membership_text": "1.1万人已加入",
+            "member_avatars": [
+                "https://picx.zhimg.com/04620260f4a5c0c7f8263d82a11281dd_l.jpg?source=1a5df958",
+                "https://picx.zhimg.com/v2-9f81432bb5f397e14ec2c65e949eb0d3_l.jpg?source=1a5df958",
+                "https://picx.zhimg.com/v2-93e4b44ad85c17e0151fb44b3ed9c2f4_l.jpg?source=1a5df958"
+            ],
+            "state": {
+                "discussion_num": 13653,
+                "membership_num": 11886,
+                "is_joined": false
+            },
+            "target_url": "https://www.zhihu.com/ring/host/1871220945986928640?tab=hot&tab_id=1",
+            "dynamics": {
+                "dynamics_type": "relation",
+                "dynamics_text": "你关注的 @章佳杰 也在这个圈子",
+                "dynamics_url": "https://www.zhihu.com/ring/host/1871220945986928640"
+            },
+            "second_text": "1.1 万研究员 · 1.3 万讨论"
+        }
+    },
+    "attached_info": "kgJtCgkyNzA0NTU4NjISEzIwMDc4OTY5MTczMjIwMDM4NjcYByIKSU1BR0VfVEVYVCo9ChMyMTAzNjI2OTgxMjUwMTc1NDkzEiTlvq7kv6HnuqLljIXmgI7kuYjmiqLliLDmiYvmsJTmnIDkvbMYAA==",
+    "search_word": {
+        "queries": [
+            {
+                "display_query": "",
+                "real_query": "",
+                "link_url": "zhihu://search?content_type=article&content_id=2007896917322003867&scene=NextPreset",
+                "attached_info": "",
+                "id": ""
+            }
+        ]
+    },
+    "float_search_word": {
+        "queries": [
+            {
+                "display_query": "微信红包怎么抢到手气最佳",
+                "real_query": "微信红包怎么抢到手气最佳",
+                "link_url": "https://www.zhihu.com/search?q=%E5%BE%AE%E4%BF%A1%E7%BA%A2%E5%8C%85%E6%80%8E%E4%B9%88%E6%8A%A2%E5%88%B0%E6%89%8B%E6%B0%94%E6%9C%80%E4%BD%B3&source=Floatsearch&target=blank&extra=%7B%22content_id%22%3A%22270455862%22%2C%22content_token%22%3A%222007896917322003867%22%2C%22request_click_id%22%3A%222103626981250175493%22%7D&halfSheet=1&attached_info=kgJtCgkyNzA0NTU4NjISEzIwMDc4OTY5MTczMjIwMDM4NjcYByIKSU1BR0VfVEVYVCo9ChMyMTAzNjI2OTgxMjUwMTc1NDkzEiTlvq7kv6HnuqLljIXmgI7kuYjmiqLliLDmiYvmsJTmnIDkvbMYAA%3D%3D"
+            }
+        ]
+    },
+    "republishers": null,
+    "er_tips": {
+        "is_load_er_cache": false,
+        "load_http_data": true
+    },
+    "reward_info": {
+        "is_rewardable": true,
+        "tagline": "",
+        "can_open_reward": true,
+        "reward_total_money": null,
+        "reward_member_count": null
+    },
+    "topics": [
+        {
+            "name": "微信红包",
+            "url": "https://www.zhihu.com/topic/19940743",
+            "excerpt": "微信红包是腾讯旗下产品微信于2014年1月27日推出的一款应用，功能上可以实现发红包、查收发记录和提现。2014年4月14日，“安卓手机用户只要用微信扫描身边出现的红色二维码，通过腾讯应用宝成功安装其他应用软件，即可领取微信红包。微信红包与2015年春节联欢晚会的互动，让其成为了年夜饭的主菜单，小小的红包甚至不小心抢了春晚的风头。",
+            "avatar_url": "https://pic1.zhimg.com/v2-40e779d5c5e6bcebda41e92d50594618_l.jpg?source=172ae18b",
+            "type": "topic",
+            "id": 19940743,
+            "questions_count": null,
+            "followers_count": null
+        },
+        {
+            "name": "统计学",
+            "url": "https://www.zhihu.com/topic/19558740",
+            "excerpt": "统计学是关于认识客观现象总体数量特征和数量关系的科学。它是通过搜集、整理、分析统计资料，认识客观现象数量规律性的方法论科学。由于统计学的定量研究具有客观、准确和可检验的特点，所以统计方法就成为实证研究的最重要的方法，广泛适用于自然、社会、经济、科学技术各个领域的分析研究。",
+            "avatar_url": "https://picx.zhimg.com/v2-59f27a9b467b09e7dbf04c3837937133_l.jpg?source=172ae18b",
+            "type": "topic",
+            "id": 19558740,
+            "questions_count": null,
+            "followers_count": null
+        },
+        {
+            "name": "概率论",
+            "url": "https://www.zhihu.com/topic/19670916",
+            "excerpt": "概率论是研究随机现象数量规律的数学分支。随机现象是相对于决定性现象而言的。在一定条件下必然发生某一结果的现象称为决定性现象。例如在标准大气压下，纯水加热到100℃时水必然会沸腾等。随机现象则是指在基本条件不变的情况下，每一次试验或观察前，不能肯定会出现哪种结果，呈现出偶然性。例如，掷一硬币，可能出现正面或反面。随机现象的实现和对它的观察称为随机试验。随机试验的每一可能结果称为一个基本事件，一个或一…",
+            "avatar_url": "https://pic1.zhimg.com/e8e6f6137_l.jpg?source=172ae18b",
+            "type": "topic",
+            "id": 19670916,
+            "questions_count": null,
+            "followers_count": null
+        }
+    ]
+}

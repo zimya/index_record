@@ -1,0 +1,971 @@
+{
+    "attached_info": "ogERCAQQAxio38TUlwEg5YCpzxKSAlIKCTcwMTI1ODA2NRILNDA3MTEwNDA5MzYYBCIKSU1BR0VfVEVYVCoqCiQ0NDNmMDU5NC00Y2U4LTQ5ZjMtYWFmZS02ZTNhNDlhMzc2OTkSABgA",
+    "author": {
+        "avatar": {
+            "avatar_icon_image": {
+                "day": "https://pica.zhimg.com/v2-768de5f325c8b1b3baeff60154f8d964_l.png?source=32738c0c",
+                "height": 18,
+                "jump_url": "",
+                "night": "https://picx.zhimg.com/v2-229dd92976619c9aa1421805c3399bec_l.png?source=32738c0c",
+                "width": 18
+            },
+            "avatar_image": {
+                "day": "https://pic1.zhimg.com/a8efbf011d46a296c0da881b115db97d_l.jpg?source=32738c0c&needBackground=1",
+                "height": 36,
+                "jump_url": "http://www.zhihu.com/people/yixiao-huang",
+                "night": "https://picx.zhimg.com/a8efbf011d46a296c0da881b115db97d_l.jpg?source=32738c0c&needBackground=1",
+                "width": 36
+            }
+        },
+        "description": "数学话题下的优秀答主",
+        "follow_status": "normal",
+        "fullname": "Yixiao Huang",
+        "gender": 1,
+        "id": "3a23ec68d26a1c11737e8f2b712f73f5",
+        "identity_icons": [
+            {
+                "day": "https://pic1.zhimg.com/v2-840ef3a49c50ae132d9d2ae3d825f02a_720w.png?source=32738c0c",
+                "height": 18,
+                "jump_url": "zhihu://popup_container?url=https%3A%2F%2Fwww.zhihu.com%2Fappview%2Fv2%2Fbadge_center%2Fdetail%3FuserToken%3Dyixiao-huang%26badgeId%3D1945908517971144762&min_percent=0.6&show_header=false&cancelable=true&enable_drag=false&canchangeheight=false&is_covertab=true&is_show_shadow=true",
+                "night": "https://pic1.zhimg.com/v2-840ef3a49c50ae132d9d2ae3d825f02a_720w.png?source=32738c0c",
+                "width": 18
+            }
+        ],
+        "is_org": false,
+        "type": "people",
+        "url_token": "yixiao-huang"
+    },
+    "bar_plugins_flip_time": 3000,
+    "biz_type_list": ["answer"],
+    "business_type": "normal",
+    "can_copy": true,
+    "catalog": null,
+    "comment_config": {
+        "can_reply": true,
+        "can_segment_reply": true,
+        "comment_identities": [],
+        "place_holder": "理性发言，友善互动",
+        "place_holder_strategy": "normal"
+    },
+    "content_end_info": {
+        "create_time_text": "2024-11-26 01:14",
+        "ip_info": "北京",
+        "reshipment_settings": "",
+        "update_time_text": "编辑于 2024-11-26 01:15"
+    },
+    "endorsement": [],
+    "er_tips": {
+        "is_load_er_cache": false,
+        "load_http_data": true
+    },
+    "excerpt": "如果说的是标准版本的wordle，真有人研究了这个问题，还在今年发了一篇运筹的顶刊（不过讲道理，好像换个作者也不一定发的出OR吧……）：Bertsimas, D., & Paskov, A. (2024). An Exact Solution to Wordle. Operations Research. 论文的官网链接为：https://pubsonline.informs.org/doi/abs/10.1287/opre.2022.0434 ，有一个preprint版本见：https://wordle-page.s3.amazonaws.com/assets/Wordle_Paper_Final.pdf 说一下论文里面的几个重要结论： 第一次猜的最佳单词是SALET；所有的单词都可以在5步以内猜到；平均猜词的步…",
+    "has_publishing_draft": false,
+    "header": {
+        "action_url": "https://www.zhihu.com/question/4998185061",
+        "bold": true,
+        "sub_title": {
+            "action_url": "https://www.zhihu.com/question/4998185061",
+            "bold": true,
+            "text": "知乎 · 2 个回答 · 20 个关注",
+            "text_color": "GBK06A",
+            "text_size": 13
+        },
+        "text": "Wordle游戏在最优决策下6步内是否必定有解？",
+        "text_color": "GBK02A",
+        "text_size": 19
+    },
+    "id": "40711040936",
+    "interaction_bar_plugins": [
+        {
+            "type": "follow"
+        }
+    ],
+    "is_hot_content": false,
+    "is_mine": false,
+    "is_topping": false,
+    "podcast_audio_enter": {
+        "action_url": "zhihu://podcast/audio_player/3108132162?contentId=40711040936&contentType=answer&subType=&entrance=detail_page",
+        "sub_type": "",
+        "text": "1 人听过",
+        "text_color": "MapBrand",
+        "text_size": 13
+    },
+    "question": {
+        "answer_count": 2,
+        "followers_count": 20,
+        "id": "4998185061",
+        "mute_info": {
+            "type": ""
+        },
+        "question_type": "normal",
+        "reaction_instruction": {},
+        "relationship": {
+            "is_anonymous": false,
+            "is_author": false,
+            "is_downvoting": false,
+            "is_following": false
+        },
+        "review_info": {
+            "edit_is_reviewing": true,
+            "edit_tips": "当前已有问题编辑正在审核，请稍后重试",
+            "is_reviewing": false,
+            "tips": "当前已有问题编辑正在审核，请稍后重试",
+            "type": ""
+        },
+        "status": {
+            "is_close": false,
+            "is_evaluate": false,
+            "is_locked": false,
+            "is_suggest": false
+        },
+        "title": "Wordle游戏在最优决策下6步内是否必定有解？",
+        "url": "https://api.zhihu.com/questions/4998185061"
+    },
+    "reaction": {
+        "image_reactions": {
+            "v2-07bab602cdda180f6e4bfc0435665c56": {
+                "is_liked": false,
+                "like_count": 0
+            },
+            "v2-342f4e15460e61655b35ec816c1cbf18": {
+                "is_liked": false,
+                "like_count": 1
+            },
+            "v2-42281a306bd8f0f2fd6921dc24fb578a": {
+                "is_liked": false,
+                "like_count": 0
+            },
+            "v2-a783039f32642378ec48b9f634c53324": {
+                "is_liked": false,
+                "like_count": 0
+            }
+        },
+        "relation": {
+            "current_user_is_navigator": false,
+            "faved": true,
+            "following": false,
+            "img_liked": {
+                "v2-07bab602cdda180f6e4bfc0435665c56": false,
+                "v2-342f4e15460e61655b35ec816c1cbf18": false,
+                "v2-42281a306bd8f0f2fd6921dc24fb578a": false,
+                "v2-a783039f32642378ec48b9f634c53324": false
+            },
+            "is_author": false,
+            "is_navigator_vote": false,
+            "liked": false,
+            "subcribed": false,
+            "vote": "Neutral",
+            "vote_next_step": ""
+        },
+        "share_count_string": "56",
+        "statistics": {
+            "applaud_count": 0,
+            "bullet_count": 0,
+            "comment_count": 26,
+            "down_vote_count": 0,
+            "favorites": 279,
+            "img_like_count": {
+                "v2-07bab602cdda180f6e4bfc0435665c56": 0,
+                "v2-342f4e15460e61655b35ec816c1cbf18": 1,
+                "v2-42281a306bd8f0f2fd6921dc24fb578a": 0,
+                "v2-a783039f32642378ec48b9f634c53324": 0
+            },
+            "interest_play_count": 0,
+            "like_count": 13,
+            "plaincontent_like_count": 0,
+            "plaincontent_vote_up_count": 0,
+            "play_count": 0,
+            "pv_count": 0,
+            "question_answer_count": 0,
+            "question_follower_count": 0,
+            "republishers": [],
+            "share_count": 0,
+            "subscribe_count": 0,
+            "up_vote_count": 340
+        }
+    },
+    "reaction_instruction": {},
+    "relationship_tips": {
+        "action_url": "zhihu://hybrid?zh_url=https%3A%2F%2Fwww.zhihu.com%2Fappview%2Fanswer%2F40711040936%2Fvoters%3Fzh_hide_nav_bar%3Dtrue",
+        "is_bold": false,
+        "relationship_endorse_reason_type": 604,
+        "right_icon": {
+            "day": "https://picx.zhimg.com/80/v2-6f14bb6b170c1e4053ad311cd4e2a6b8_1440w.png",
+            "height": 12,
+            "night": "https://picx.zhimg.com/80/v2-6f14bb6b170c1e4053ad311cd4e2a6b8_1440w.png",
+            "width": 12
+        },
+        "text": "340 人赞同了该回答",
+        "text_color": "GBK06A",
+        "text_size": 13,
+        "type": "reaction_endorse"
+    },
+    "reward_info": {
+        "can_open_reward": false,
+        "is_rewardable": true,
+        "reward_member_count": 0,
+        "reward_total_money": 0,
+        "tagline": "真诚赞赏，手留余香"
+    },
+    "search_word": {
+        "queries": [
+            {
+                "attached_info": "",
+                "display_query": "",
+                "id": "",
+                "link_url": "zhihu://search?content_type=answer&content_id=40711040936&scene=NextPreset",
+                "real_query": ""
+            }
+        ]
+    },
+    "settings": {
+        "table_of_contents": {
+            "enabled": true
+        }
+    },
+    "structured_content": {
+        "paging": "{\"is_end\":true,\"next\":\"https://api.zhihu.com/next-content-render?offset=20\\u0026url_token=40711040936\\u0026content_type=answer\\u0026version_id=2000000002790425705\",\"is_start\":true,\"previous\":\"https://api.zhihu.com/next-content-render?offset=0\\u0026url_token=40711040936\\u0026content_type=answer\\u0026version_id=2000000002790425705\",\"totals\":0}",
+        "segments": [
+            {
+                "id": "0",
+                "paragraph": {
+                    "marks": [
+                        {
+                            "end_index": 190,
+                            "link": {
+                                "href": "https://link.zhihu.com/?target=https%3A//pubsonline.informs.org/doi/abs/10.1287/opre.2022.0434",
+                                "icon_name": "zhicon_icon_24_link",
+                                "link_type": "text"
+                            },
+                            "start_index": 163,
+                            "type": "link"
+                        },
+                        {
+                            "end_index": 238,
+                            "link": {
+                                "href": "https://link.zhihu.com/?target=https%3A//wordle-page.s3.amazonaws.com/assets/Wordle_Paper_Final.pdf",
+                                "icon_name": "zhicon_icon_24_link",
+                                "link_type": "text"
+                            },
+                            "start_index": 206,
+                            "type": "link"
+                        },
+                        {
+                            "end_index": 38,
+                            "entity_word": {
+                                "attach_info_bytes": "sgJTCgbov5DnrbkSBE1hdGgYOyA9KAE1BUiAOjoGYW5zd2VyQOLfwe75xPOJL0gAUiRlZGM5ZjM3Zi1kZTY1LTRiNTgtOWQyYS1hZWQ2NDkzMDU1ZjLyAuEBCiRlZGM5ZjM3Zi1kZTY1LTRiNTgtOWQyYS1hZWQ2NDkzMDU1ZjIaBmFuc3dlciIJNzAxMjU4MDY1Ogbov5DnrblA4t/B7vnE84kvSAZSEmFpX2VudGl0eV9yZWNhbGxlcl0FSIA6YlMKBui/kOetuRIETWF0aBg7ID0oATUFSIA6OgZhbnN3ZXJA4t/B7vnE84kvSABSJGVkYzlmMzdmLWRlNjUtNGI1OC05ZDJhLWFlZDY0OTMwNTVmMnIkNzc4ODdiN2UtODg3OC00MzRlLTk4OGEtMmIwYmY4Y2JkYzE0",
+                                "id": "0",
+                                "type": "search",
+                                "url": "https://www.zhihu.com/search?attached_info=sgJTCgbov5DnrbkSBE1hdGgYOyA9KAE1BUiAOjoGYW5zd2VyQOLfwe75xPOJL0gAUiRlZGM5ZjM3Zi1kZTY1LTRiNTgtOWQyYS1hZWQ2NDkzMDU1ZjLyAuEBCiRlZGM5ZjM3Zi1kZTY1LTRiNTgtOWQyYS1hZWQ2NDkzMDU1ZjIaBmFuc3dlciIJNzAxMjU4MDY1Ogbov5DnrblA4t%2FB7vnE84kvSAZSEmFpX2VudGl0eV9yZWNhbGxlcl0FSIA6YlMKBui%2FkOetuRIETWF0aBg7ID0oATUFSIA6OgZhbnN3ZXJA4t%2FB7vnE84kvSABSJGVkYzlmMzdmLWRlNjUtNGI1OC05ZDJhLWFlZDY0OTMwNTVmMnIkNzc4ODdiN2UtODg3OC00MzRlLTk4OGEtMmIwYmY4Y2JkYzE0&content_id=701258065&content_type=ANSWER&extra=%7B%22content_id%22%3A%22701258065%22%2C%22content_type%22%3A%22answer%22%2C%22request_click_id%22%3A%2277887b7e-8878-434e-988a-2b0bf8cbdc14%22%7D&halfSheet=1&hybrid_search_extra=%7B%22sourceId%22%3A0%2C%22sourceType%22%3A%22search%22%7D&hybrid_search_source=Entity&match_order=1&q=%E8%BF%90%E7%AD%B9&request_click_id=77887b7e-8878-434e-988a-2b0bf8cbdc14&search_source=Entity&target=blank",
+                                "word": "运筹"
+                            },
+                            "start_index": 36,
+                            "type": "entity_word"
+                        }
+                    ],
+                    "pid": "nIAU5KWe",
+                    "text": "如果说的是标准版本的wordle，真有人研究了这个问题，还在今年发了一篇运筹的顶刊（不过讲道理，好像换个作者也不一定发的出OR吧……）：Bertsimas, D., & Paskov, A. (2024). An Exact Solution to Wordle. Operations Research. 论文的官网链接为： pubsonline.informs.org/...，有一个preprint版本见： wordle-page.s3.amazonaws.com..."
+                },
+                "type": "paragraph"
+            },
+            {
+                "id": "1",
+                "paragraph": {
+                    "marks": [],
+                    "pid": "1WvI8AME",
+                    "text": "说一下论文里面的几个重要结论："
+                },
+                "type": "paragraph"
+            },
+            {
+                "id": "2",
+                "list_node": {
+                    "items": [
+                        {
+                            "indent_level": 1,
+                            "marks": [],
+                            "text": "第一次猜的最佳单词是SALET；"
+                        },
+                        {
+                            "indent_level": 1,
+                            "marks": [],
+                            "text": "所有的单词都可以在5步以内猜到；"
+                        },
+                        {
+                            "indent_level": 1,
+                            "marks": [],
+                            "text": "平均猜词的步数是3.421。"
+                        }
+                    ],
+                    "type": "ordered"
+                },
+                "type": "list_node"
+            },
+            {
+                "id": "3",
+                "paragraph": {
+                    "marks": [],
+                    "pid": "Ha-8UzI6",
+                    "text": "接下来讲一下paper里面的一些关键内容。"
+                },
+                "type": "paragraph"
+            },
+            {
+                "heading": {
+                    "level": 2,
+                    "marks": [],
+                    "text": "Wordle规则"
+                },
+                "id": "4",
+                "type": "heading"
+            },
+            {
+                "id": "5",
+                "paragraph": {
+                    "marks": [],
+                    "pid": "XL5eRWX1",
+                    "text": "玩家需要在六轮里面猜出一个隐藏的五字母的英文单词。每输入一个猜测的单词，每个字母会标记为绿色、黄色、灰色：绿色表示字母在单词同样的位置；黄色表示字母在单词中但是在错误的位置；灰色表示字母不在单词中。"
+                },
+                "type": "paragraph"
+            },
+            {
+                "id": "6",
+                "paragraph": {
+                    "marks": [],
+                    "pid": "tcRJXroR",
+                    "text": "标准Wordle版本中，可能猜测的单词有2,315个，但是合法的可输入的单词有12,972个（不在此范围的输入是无效的，比如我输入UVXYZ是不行的）。"
+                },
+                "type": "paragraph"
+            },
+            {
+                "id": "7",
+                "image": {
+                    "description": "游戏规则示意图",
+                    "height": 521,
+                    "is_gif": false,
+                    "layout": "normal",
+                    "original_token": "v2-a783039f32642378ec48b9f634c53324",
+                    "original_urls": [
+                        "https://pic1.zhimg.com/v2-a783039f32642378ec48b9f634c53324.jpg?source=7e7ef6e2&needBackground=1"
+                    ],
+                    "status": "normal",
+                    "token": "v2-844209bcab1cd9eb7b2247dd67b978af",
+                    "urls": [
+                        "https://picx.zhimg.com/v2-844209bcab1cd9eb7b2247dd67b978af.jpg?source=7e7ef6e2&needBackground=1"
+                    ],
+                    "width": 476
+                },
+                "type": "image"
+            },
+            {
+                "heading": {
+                    "level": 2,
+                    "marks": [],
+                    "text": "数学建模"
+                },
+                "id": "8",
+                "type": "heading"
+            },
+            {
+                "id": "9",
+                "paragraph": {
+                    "marks": [
+                        {
+                            "end_index": 18,
+                            "entity_word": {
+                                "attach_info_bytes": "sgJrChjpqazlsJTnp5HlpKvlhrPnrZbov4fnqIsSB1Vua25vd24YjwsglwsoATVWBco7OgZhbnN3ZXJAg6r60eO/7uv2AUgAUiRlZGM5ZjM3Zi1kZTY1LTRiNTgtOWQyYS1hZWQ2NDkzMDU1ZjLyApACCiRlZGM5ZjM3Zi1kZTY1LTRiNTgtOWQyYS1hZWQ2NDkzMDU1ZjIaBmFuc3dlciIJNzAxMjU4MDY1OhjpqazlsJTnp5HlpKvlhrPnrZbov4fnqItAg6r60eO/7uv2AUgAUhZhaV9lbnRpdHlfbGxtX3JlY2FsbGVyXVYFyjtiawoY6ams5bCU56eR5aSr5Yaz562W6L+H56iLEgdVbmtub3duGI8LIJcLKAE1VgXKOzoGYW5zd2VyQIOq+tHjv+7r9gFIAFIkZWRjOWYzN2YtZGU2NS00YjU4LTlkMmEtYWVkNjQ5MzA1NWYyciQ3Nzg4N2I3ZS04ODc4LTQzNGUtOTg4YS0yYjBiZjhjYmRjMTQ=",
+                                "id": "0",
+                                "type": "search",
+                                "url": "https://www.zhihu.com/search?attached_info=sgJrChjpqazlsJTnp5HlpKvlhrPnrZbov4fnqIsSB1Vua25vd24YjwsglwsoATVWBco7OgZhbnN3ZXJAg6r60eO%2F7uv2AUgAUiRlZGM5ZjM3Zi1kZTY1LTRiNTgtOWQyYS1hZWQ2NDkzMDU1ZjLyApACCiRlZGM5ZjM3Zi1kZTY1LTRiNTgtOWQyYS1hZWQ2NDkzMDU1ZjIaBmFuc3dlciIJNzAxMjU4MDY1OhjpqazlsJTnp5HlpKvlhrPnrZbov4fnqItAg6r60eO%2F7uv2AUgAUhZhaV9lbnRpdHlfbGxtX3JlY2FsbGVyXVYFyjtiawoY6ams5bCU56eR5aSr5Yaz562W6L%2BH56iLEgdVbmtub3duGI8LIJcLKAE1VgXKOzoGYW5zd2VyQIOq%2BtHjv%2B7r9gFIAFIkZWRjOWYzN2YtZGU2NS00YjU4LTlkMmEtYWVkNjQ5MzA1NWYyciQ3Nzg4N2I3ZS04ODc4LTQzNGUtOTg4YS0yYjBiZjhjYmRjMTQ%3D&content_id=701258065&content_type=ANSWER&extra=%7B%22content_id%22%3A%22701258065%22%2C%22content_type%22%3A%22answer%22%2C%22request_click_id%22%3A%2277887b7e-8878-434e-988a-2b0bf8cbdc14%22%7D&halfSheet=1&hybrid_search_extra=%7B%22sourceId%22%3A0%2C%22sourceType%22%3A%22search%22%7D&hybrid_search_source=Entity&match_order=1&q=%E9%A9%AC%E5%B0%94%E7%A7%91%E5%A4%AB%E5%86%B3%E7%AD%96%E8%BF%87%E7%A8%8B&request_click_id=77887b7e-8878-434e-988a-2b0bf8cbdc14&search_source=Entity&target=blank",
+                                "word": "马尔科夫决策过程"
+                            },
+                            "start_index": 10,
+                            "type": "entity_word"
+                        },
+                        {
+                            "end_index": 52,
+                            "entity_word": {
+                                "attach_info_bytes": "sgJgCgzmiJDmnKzlh73mlbASCU90aGVyVGVybRi1CyC5CygBNQEIoTo6BmFuc3dlckDE64T8t8GFolVIAFIkZWRjOWYzN2YtZGU2NS00YjU4LTlkMmEtYWVkNjQ5MzA1NWYy8gL0AQokZWRjOWYzN2YtZGU2NS00YjU4LTlkMmEtYWVkNjQ5MzA1NWYyGgZhbnN3ZXIiCTcwMTI1ODA2NToM5oiQ5pys5Ye95pWwQMTrhPy3wYWiVUgDUhJhaV9lbnRpdHlfcmVjYWxsZXJdAQihOmJgCgzmiJDmnKzlh73mlbASCU90aGVyVGVybRi1CyC5CygBNQEIoTo6BmFuc3dlckDE64T8t8GFolVIAFIkZWRjOWYzN2YtZGU2NS00YjU4LTlkMmEtYWVkNjQ5MzA1NWYyciQ3Nzg4N2I3ZS04ODc4LTQzNGUtOTg4YS0yYjBiZjhjYmRjMTQ=",
+                                "id": "0",
+                                "type": "search",
+                                "url": "https://www.zhihu.com/search?attached_info=sgJgCgzmiJDmnKzlh73mlbASCU90aGVyVGVybRi1CyC5CygBNQEIoTo6BmFuc3dlckDE64T8t8GFolVIAFIkZWRjOWYzN2YtZGU2NS00YjU4LTlkMmEtYWVkNjQ5MzA1NWYy8gL0AQokZWRjOWYzN2YtZGU2NS00YjU4LTlkMmEtYWVkNjQ5MzA1NWYyGgZhbnN3ZXIiCTcwMTI1ODA2NToM5oiQ5pys5Ye95pWwQMTrhPy3wYWiVUgDUhJhaV9lbnRpdHlfcmVjYWxsZXJdAQihOmJgCgzmiJDmnKzlh73mlbASCU90aGVyVGVybRi1CyC5CygBNQEIoTo6BmFuc3dlckDE64T8t8GFolVIAFIkZWRjOWYzN2YtZGU2NS00YjU4LTlkMmEtYWVkNjQ5MzA1NWYyciQ3Nzg4N2I3ZS04ODc4LTQzNGUtOTg4YS0yYjBiZjhjYmRjMTQ%3D&content_id=701258065&content_type=ANSWER&extra=%7B%22content_id%22%3A%22701258065%22%2C%22content_type%22%3A%22answer%22%2C%22request_click_id%22%3A%2277887b7e-8878-434e-988a-2b0bf8cbdc14%22%7D&halfSheet=1&hybrid_search_extra=%7B%22sourceId%22%3A0%2C%22sourceType%22%3A%22search%22%7D&hybrid_search_source=Entity&match_order=1&q=%E6%88%90%E6%9C%AC%E5%87%BD%E6%95%B0&request_click_id=77887b7e-8878-434e-988a-2b0bf8cbdc14&search_source=Entity&target=blank",
+                                "word": "成本函数"
+                            },
+                            "start_index": 48,
+                            "type": "entity_word"
+                        },
+                        {
+                            "end_index": 72,
+                            "entity_word": {
+                                "attach_info_bytes": "sgJgCgzovaznp7vlh73mlbASCU90aGVyVGVybRjJCyDNCygBNVT/iTo6BmFuc3dlckDurMDD6/SA1llIAFIkZWRjOWYzN2YtZGU2NS00YjU4LTlkMmEtYWVkNjQ5MzA1NWYy8gL0AQokZWRjOWYzN2YtZGU2NS00YjU4LTlkMmEtYWVkNjQ5MzA1NWYyGgZhbnN3ZXIiCTcwMTI1ODA2NToM6L2s56e75Ye95pWwQO6swMPr9IDWWUgFUhJhaV9lbnRpdHlfcmVjYWxsZXJdVP+JOmJgCgzovaznp7vlh73mlbASCU90aGVyVGVybRjJCyDNCygBNVT/iTo6BmFuc3dlckDurMDD6/SA1llIAFIkZWRjOWYzN2YtZGU2NS00YjU4LTlkMmEtYWVkNjQ5MzA1NWYyciQ3Nzg4N2I3ZS04ODc4LTQzNGUtOTg4YS0yYjBiZjhjYmRjMTQ=",
+                                "id": "0",
+                                "type": "search",
+                                "url": "https://www.zhihu.com/search?attached_info=sgJgCgzovaznp7vlh73mlbASCU90aGVyVGVybRjJCyDNCygBNVT%2FiTo6BmFuc3dlckDurMDD6%2FSA1llIAFIkZWRjOWYzN2YtZGU2NS00YjU4LTlkMmEtYWVkNjQ5MzA1NWYy8gL0AQokZWRjOWYzN2YtZGU2NS00YjU4LTlkMmEtYWVkNjQ5MzA1NWYyGgZhbnN3ZXIiCTcwMTI1ODA2NToM6L2s56e75Ye95pWwQO6swMPr9IDWWUgFUhJhaV9lbnRpdHlfcmVjYWxsZXJdVP%2BJOmJgCgzovaznp7vlh73mlbASCU90aGVyVGVybRjJCyDNCygBNVT%2FiTo6BmFuc3dlckDurMDD6%2FSA1llIAFIkZWRjOWYzN2YtZGU2NS00YjU4LTlkMmEtYWVkNjQ5MzA1NWYyciQ3Nzg4N2I3ZS04ODc4LTQzNGUtOTg4YS0yYjBiZjhjYmRjMTQ%3D&content_id=701258065&content_type=ANSWER&extra=%7B%22content_id%22%3A%22701258065%22%2C%22content_type%22%3A%22answer%22%2C%22request_click_id%22%3A%2277887b7e-8878-434e-988a-2b0bf8cbdc14%22%7D&halfSheet=1&hybrid_search_extra=%7B%22sourceId%22%3A0%2C%22sourceType%22%3A%22search%22%7D&hybrid_search_source=Entity&match_order=1&q=%E8%BD%AC%E7%A7%BB%E5%87%BD%E6%95%B0&request_click_id=77887b7e-8878-434e-988a-2b0bf8cbdc14&search_source=Entity&target=blank",
+                                "word": "转移函数"
+                            },
+                            "start_index": 68,
+                            "type": "entity_word"
+                        }
+                    ],
+                    "pid": "I9mBiAD4",
+                    "text": "上述问题可以用标准的马尔科夫决策过程建模。以下分别描述状态（state）、动作（action）、成本函数（cost function)、转移函数（transition function）。"
+                },
+                "type": "paragraph"
+            },
+            {
+                "id": "10",
+                "paragraph": {
+                    "marks": [
+                        {
+                            "end_index": 15,
+                            "formula": {
+                                "content": "s_t",
+                                "height": 15,
+                                "img_url": "https://pica.zhimg.com/v2-bdb65ac44f31a8b8b7979b1481fb8a77.jpg?source=7e7ef6e2&needBackground=1",
+                                "url": "https://www.zhihu.com/answer/40711040936",
+                                "width": 14
+                            },
+                            "start_index": 11,
+                            "type": "formula"
+                        },
+                        {
+                            "end_index": 25,
+                            "formula": {
+                                "content": "t",
+                                "height": 15,
+                                "img_url": "https://picx.zhimg.com/v2-794ad6925727784e71074af74d989ba4.jpg?source=7e7ef6e2&needBackground=1",
+                                "url": "https://www.zhihu.com/answer/40711040936",
+                                "width": 6
+                            },
+                            "start_index": 21,
+                            "type": "formula"
+                        }
+                    ],
+                    "pid": "kY7pjKpk",
+                    "text": "状态（state）： [公式] 定义为第 [公式] 步还满足的约束要求的单词集合，所以游戏初始状态包含所有2,315个单词。"
+                },
+                "type": "paragraph"
+            },
+            {
+                "id": "11",
+                "paragraph": {
+                    "marks": [
+                        {
+                            "end_index": 19,
+                            "formula": {
+                                "content": "a",
+                                "height": 13,
+                                "img_url": "https://picx.zhimg.com/v2-23d336f01d4baa8f30161d9cfcfbf29f.jpg?source=7e7ef6e2&needBackground=1",
+                                "url": "https://www.zhihu.com/answer/40711040936",
+                                "width": 9
+                            },
+                            "start_index": 15,
+                            "type": "formula"
+                        },
+                        {
+                            "end_index": 31,
+                            "formula": {
+                                "content": "A",
+                                "height": 16,
+                                "img_url": "https://pica.zhimg.com/v2-095b5fea2f7d0839a994248fcaefe418.jpg?source=7e7ef6e2&needBackground=1",
+                                "url": "https://www.zhihu.com/answer/40711040936",
+                                "width": 13
+                            },
+                            "start_index": 27,
+                            "type": "formula"
+                        }
+                    ],
+                    "pid": "_9l94Lfe",
+                    "text": "动作（action）：定义为 [公式] ，对应的集合 [公式] 是所有的12,972可以猜测的单词。"
+                },
+                "type": "paragraph"
+            },
+            {
+                "id": "12",
+                "paragraph": {
+                    "marks": [],
+                    "pid": "I_TVMciZ",
+                    "text": "成本函数（cost function）：猜一次的成本为1，用完6步没猜出来的成本是正无穷。"
+                },
+                "type": "paragraph"
+            },
+            {
+                "id": "13",
+                "paragraph": {
+                    "marks": [
+                        {
+                            "end_index": 37,
+                            "formula": {
+                                "content": "s_t",
+                                "height": 15,
+                                "img_url": "https://picx.zhimg.com/v2-bdb65ac44f31a8b8b7979b1481fb8a77.jpg?source=7e7ef6e2&needBackground=1",
+                                "url": "https://www.zhihu.com/answer/40711040936",
+                                "width": 14
+                            },
+                            "start_index": 33,
+                            "type": "formula"
+                        },
+                        {
+                            "end_index": 51,
+                            "formula": {
+                                "content": "a",
+                                "height": 13,
+                                "img_url": "https://pic1.zhimg.com/v2-23d336f01d4baa8f30161d9cfcfbf29f.jpg?source=7e7ef6e2&needBackground=1",
+                                "url": "https://www.zhihu.com/answer/40711040936",
+                                "width": 9
+                            },
+                            "start_index": 47,
+                            "type": "formula"
+                        },
+                        {
+                            "end_index": 60,
+                            "formula": {
+                                "content": "P(s_t, a)",
+                                "height": 21,
+                                "img_url": "https://picx.zhimg.com/v2-9788ac838f0c953b6cd7a94c565e4e07.jpg?source=7e7ef6e2&needBackground=1",
+                                "url": "https://www.zhihu.com/answer/40711040936",
+                                "width": 58
+                            },
+                            "start_index": 56,
+                            "type": "formula"
+                        },
+                        {
+                            "end_index": 101,
+                            "formula": {
+                                "content": "|P(s_t, a)| \\leq 3^5 = 243",
+                                "height": 24,
+                                "img_url": "https://picx.zhimg.com/v2-4cd14666a47804170c4432e0a459f187.jpg?source=7e7ef6e2&needBackground=1",
+                                "url": "https://www.zhihu.com/answer/40711040936",
+                                "width": 157
+                            },
+                            "start_index": 97,
+                            "type": "formula"
+                        },
+                        {
+                            "end_index": 117,
+                            "formula": {
+                                "content": "s_{t+1} \\in P(s_t, a)",
+                                "height": 21,
+                                "img_url": "https://pic1.zhimg.com/v2-4bb780f6785eef95a8f5458b53370092.jpg?source=7e7ef6e2&needBackground=1",
+                                "url": "https://www.zhihu.com/answer/40711040936",
+                                "width": 109
+                            },
+                            "start_index": 113,
+                            "type": "formula"
+                        },
+                        {
+                            "end_index": 134,
+                            "formula": {
+                                "content": "p_t(s_{t+1}; s_t, a)",
+                                "height": 21,
+                                "img_url": "https://pic1.zhimg.com/v2-e0bd630198e25d1d07b6e9e865e6574b.jpg?source=7e7ef6e2&needBackground=1",
+                                "url": "https://www.zhihu.com/answer/40711040936",
+                                "width": 98
+                            },
+                            "start_index": 130,
+                            "type": "formula"
+                        }
+                    ],
+                    "pid": "gNu3dJM-",
+                    "text": "转移函数（transition function）：给定一个状态 [公式] 和一个猜测的单词 [公式] ，定义 [公式] 为所有可能的转移状态。由于每个字母有三种可能得颜色，可能得转移状态数量 [公式] 。对应一个特定的状态 [公式] ，定义对应的转移概率为 [公式] 。"
+                },
+                "type": "paragraph"
+            },
+            {
+                "id": "14",
+                "paragraph": {
+                    "marks": [
+                        {
+                            "end_index": 14,
+                            "entity_word": {
+                                "attach_info_bytes": "sgJeCg/otJ3lsJTmm7zmlrnnqIsSBE1hdGgYmBEgnREoATUHh4c7OgZhbnN3ZXJA4+XIvOCO3pArSABSJGVkYzlmMzdmLWRlNjUtNGI1OC05ZDJhLWFlZDY0OTMwNTVmMvIC9QEKJGVkYzlmMzdmLWRlNjUtNGI1OC05ZDJhLWFlZDY0OTMwNTVmMhoGYW5zd2VyIgk3MDEyNTgwNjU6D+i0neWwlOabvOaWueeoi0Dj5ci84I7ekCtIAVISYWlfZW50aXR5X3JlY2FsbGVyXQeHhztiXgoP6LSd5bCU5pu85pa556iLEgRNYXRoGJgRIJ0RKAE1B4eHOzoGYW5zd2VyQOPlyLzgjt6QK0gAUiRlZGM5ZjM3Zi1kZTY1LTRiNTgtOWQyYS1hZWQ2NDkzMDU1ZjJyJDc3ODg3YjdlLTg4NzgtNDM0ZS05ODhhLTJiMGJmOGNiZGMxNA==",
+                                "id": "0",
+                                "type": "search",
+                                "url": "https://www.zhihu.com/search?attached_info=sgJeCg%2FotJ3lsJTmm7zmlrnnqIsSBE1hdGgYmBEgnREoATUHh4c7OgZhbnN3ZXJA4%2BXIvOCO3pArSABSJGVkYzlmMzdmLWRlNjUtNGI1OC05ZDJhLWFlZDY0OTMwNTVmMvIC9QEKJGVkYzlmMzdmLWRlNjUtNGI1OC05ZDJhLWFlZDY0OTMwNTVmMhoGYW5zd2VyIgk3MDEyNTgwNjU6D%2Bi0neWwlOabvOaWueeoi0Dj5ci84I7ekCtIAVISYWlfZW50aXR5X3JlY2FsbGVyXQeHhztiXgoP6LSd5bCU5pu85pa556iLEgRNYXRoGJgRIJ0RKAE1B4eHOzoGYW5zd2VyQOPlyLzgjt6QK0gAUiRlZGM5ZjM3Zi1kZTY1LTRiNTgtOWQyYS1hZWQ2NDkzMDU1ZjJyJDc3ODg3YjdlLTg4NzgtNDM0ZS05ODhhLTJiMGJmOGNiZGMxNA%3D%3D&content_id=701258065&content_type=ANSWER&extra=%7B%22content_id%22%3A%22701258065%22%2C%22content_type%22%3A%22answer%22%2C%22request_click_id%22%3A%2277887b7e-8878-434e-988a-2b0bf8cbdc14%22%7D&halfSheet=1&hybrid_search_extra=%7B%22sourceId%22%3A0%2C%22sourceType%22%3A%22search%22%7D&hybrid_search_source=Entity&match_order=1&q=%E8%B4%9D%E5%B0%94%E6%9B%BC%E6%96%B9%E7%A8%8B&request_click_id=77887b7e-8878-434e-988a-2b0bf8cbdc14&search_source=Entity&target=blank",
+                                "word": "贝尔曼方程"
+                            },
+                            "start_index": 9,
+                            "type": "entity_word"
+                        }
+                    ],
+                    "pid": "wWFRbm5P",
+                    "text": "于是，我们可以写出贝尔曼方程"
+                },
+                "type": "paragraph"
+            },
+            {
+                "id": "15",
+                "paragraph": {
+                    "marks": [
+                        {
+                            "end_index": 4,
+                            "formula": {
+                                "content": "V_t^*(s_t) = \\left\\{ \\begin{array}{ll} 1, & \\text{if }t < 6, |s_t|=1,\\\\ \\displaystyle \\min_{a \\in A} \\Big\\{ 1 + \\displaystyle \\sum_{s_{t+1} \\in P(s_t, a)} p_t(s_{t+1}; s_t, a) V_{t+1}^*(s_{t+1}) \\Big\\}, & \\text{if } t < 6, |s_t| > 1, \\\\ \\infty, & \\text{if } t= 6. \\end{array} \\right.",
+                                "height": 99,
+                                "img_url": "https://picx.zhimg.com/v2-e7adbcaf2f12b3821be11e019edf37f8.jpg?source=7e7ef6e2&needBackground=1",
+                                "url": "https://www.zhihu.com/answer/40711040936",
+                                "width": 571
+                            },
+                            "start_index": 0,
+                            "type": "formula"
+                        }
+                    ],
+                    "pid": "tGMwjTzM",
+                    "text": "[公式] "
+                },
+                "type": "paragraph"
+            },
+            {
+                "heading": {
+                    "level": 2,
+                    "marks": [],
+                    "text": "求解算法"
+                },
+                "id": "16",
+                "type": "heading"
+            },
+            {
+                "id": "17",
+                "paragraph": {
+                    "marks": [],
+                    "pid": "dPXItRFi",
+                    "text": "上述贝尔曼方程虽然可以直接求解，但是要考虑的规模过于庞大。作者增加了一些技巧用于提高计算效率："
+                },
+                "type": "paragraph"
+            },
+            {
+                "id": "18",
+                "list_node": {
+                    "items": [
+                        {
+                            "indent_level": 1,
+                            "marks": [
+                                {
+                                    "end_index": 6,
+                                    "formula": {
+                                        "content": "t=5",
+                                        "height": 16,
+                                        "img_url": "https://pic1.zhimg.com/v2-b782e26d9bc36cb1f74546d22cee3284.jpg?source=7e7ef6e2&needBackground=1",
+                                        "url": "https://www.zhihu.com/answer/40711040936",
+                                        "width": 38
+                                    },
+                                    "start_index": 2,
+                                    "type": "formula"
+                                },
+                                {
+                                    "end_index": 16,
+                                    "formula": {
+                                        "content": "|s_5| > 1",
+                                        "height": 21,
+                                        "img_url": "https://picx.zhimg.com/v2-b5ae99a4389d06a4e1afe53fff3aaf2c.jpg?source=7e7ef6e2&needBackground=1",
+                                        "url": "https://www.zhihu.com/answer/40711040936",
+                                        "width": 58
+                                    },
+                                    "start_index": 12,
+                                    "type": "formula"
+                                },
+                                {
+                                    "end_index": 39,
+                                    "formula": {
+                                        "content": "V_5^*(s_5)=\\infty",
+                                        "height": 23,
+                                        "img_url": "https://pic1.zhimg.com/v2-5379218315e0bfe602f4fac5885ec850.jpg?source=7e7ef6e2&needBackground=1",
+                                        "url": "https://www.zhihu.com/answer/40711040936",
+                                        "width": 93
+                                    },
+                                    "start_index": 35,
+                                    "type": "formula"
+                                },
+                                {
+                                    "end_index": 48,
+                                    "formula": {
+                                        "content": "|s_5| = 1",
+                                        "height": 21,
+                                        "img_url": "https://pic1.zhimg.com/v2-a10d9b9e82b61afba9d47eec7f19a2a4.jpg?source=7e7ef6e2&needBackground=1",
+                                        "url": "https://www.zhihu.com/answer/40711040936",
+                                        "width": 58
+                                    },
+                                    "start_index": 44,
+                                    "type": "formula"
+                                },
+                                {
+                                    "end_index": 57,
+                                    "formula": {
+                                        "content": "V_5^*(s_5) = 1",
+                                        "height": 23,
+                                        "img_url": "https://pica.zhimg.com/v2-67960abd82c70cc76fbcd4512f087f02.jpg?source=7e7ef6e2&needBackground=1",
+                                        "url": "https://www.zhihu.com/answer/40711040936",
+                                        "width": 84
+                                    },
+                                    "start_index": 53,
+                                    "type": "formula"
+                                }
+                            ],
+                            "text": "当 [公式] 时，如果 [公式] ，由于第六步无法保证一定猜对，所以 [公式] ；如果 [公式] ，那么 [公式] 。这一步可以减少10倍计算规模。"
+                        },
+                        {
+                            "indent_level": 1,
+                            "marks": [
+                                {
+                                    "end_index": 7,
+                                    "formula": {
+                                        "content": "|s_t| =2",
+                                        "height": 21,
+                                        "img_url": "https://picx.zhimg.com/v2-6968d212f6fed593ed874bcff35a9d9b.jpg?source=7e7ef6e2&needBackground=1",
+                                        "url": "https://www.zhihu.com/answer/40711040936",
+                                        "width": 56
+                                    },
+                                    "start_index": 3,
+                                    "type": "formula"
+                                },
+                                {
+                                    "end_index": 14,
+                                    "formula": {
+                                        "content": "t<5",
+                                        "height": 16,
+                                        "img_url": "https://picx.zhimg.com/v2-9a8105729332f77ffe77fe5f70d89e8d.jpg?source=7e7ef6e2&needBackground=1",
+                                        "url": "https://www.zhihu.com/answer/40711040936",
+                                        "width": 38
+                                    },
+                                    "start_index": 10,
+                                    "type": "formula"
+                                },
+                                {
+                                    "end_index": 22,
+                                    "formula": {
+                                        "content": "V_t^*(s_t) = 1.5",
+                                        "height": 23,
+                                        "img_url": "https://pic1.zhimg.com/v2-3cd16cea363e0024bcdc9262c3730500.jpg?source=7e7ef6e2&needBackground=1",
+                                        "url": "https://www.zhihu.com/answer/40711040936",
+                                        "width": 96
+                                    },
+                                    "start_index": 18,
+                                    "type": "formula"
+                                }
+                            ],
+                            "text": "如果 [公式] 且 [公式] ，则 [公式] ；因为有一半概率直接猜对，有一半概率下一次猜错，然后才猜对。这一步减少2倍计算规模。"
+                        },
+                        {
+                            "indent_level": 1,
+                            "marks": [],
+                            "text": "预计算某个答案是否在猜测的单词和颜色组合下可行，可以加速转移函数的计算。这一步减少1000倍计算规模。"
+                        },
+                        {
+                            "indent_level": 1,
+                            "marks": [
+                                {
+                                    "end_index": 23,
+                                    "formula": {
+                                        "content": "LB(s_t) = 1 \\times \\frac{1}{|s_t|} + 2 \\times \\frac{|s_t| - 1}{|s_t|} = \\frac{2|s_t| - 1}{|s_t|}",
+                                        "height": 49,
+                                        "img_url": "https://picx.zhimg.com/v2-1c905601ed0d46d2ceec8ed44aacf58c.jpg?source=7e7ef6e2&needBackground=1",
+                                        "url": "https://www.zhihu.com/answer/40711040936",
+                                        "width": 341
+                                    },
+                                    "start_index": 19,
+                                    "type": "formula"
+                                }
+                            ],
+                            "text": "利用下界提前剪枝，此处用的一个下界是 [公式] ，物理含义是假设在接下来2次之内肯定猜对。这一步减少100倍计算规模。"
+                        },
+                        {
+                            "indent_level": 1,
+                            "marks": [],
+                            "text": "每一轮猜测时，优先猜包含在答案集合里的单词。这一步减少3倍计算规模。"
+                        }
+                    ],
+                    "type": "ordered"
+                },
+                "type": "list_node"
+            },
+            {
+                "heading": {
+                    "level": 2,
+                    "marks": [],
+                    "text": "计算结果"
+                },
+                "id": "19",
+                "type": "heading"
+            },
+            {
+                "id": "20",
+                "paragraph": {
+                    "marks": [
+                        {
+                            "end_index": 40,
+                            "entity_word": {
+                                "attach_info_bytes": "sgJXCgVTQUxFVBIHVW5rbm93bhjFBCDKBCgBNa7MXTs6BmFuc3dlckCb7fbP4eKC9QlIAFIkZWRjOWYzN2YtZGU2NS00YjU4LTlkMmEtYWVkNjQ5MzA1NWYy8gLoAQokZWRjOWYzN2YtZGU2NS00YjU4LTlkMmEtYWVkNjQ5MzA1NWYyGgZhbnN3ZXIiCTcwMTI1ODA2NToFU0FMRVRAm+32z+HigvUJSAJSFmFpX2VudGl0eV9sbG1fcmVjYWxsZXJdrsxdO2JXCgVTQUxFVBIHVW5rbm93bhjFBCDKBCgBNa7MXTs6BmFuc3dlckCb7fbP4eKC9QlIAFIkZWRjOWYzN2YtZGU2NS00YjU4LTlkMmEtYWVkNjQ5MzA1NWYyciQ3Nzg4N2I3ZS04ODc4LTQzNGUtOTg4YS0yYjBiZjhjYmRjMTQ=",
+                                "id": "0",
+                                "type": "search",
+                                "url": "https://www.zhihu.com/search?attached_info=sgJXCgVTQUxFVBIHVW5rbm93bhjFBCDKBCgBNa7MXTs6BmFuc3dlckCb7fbP4eKC9QlIAFIkZWRjOWYzN2YtZGU2NS00YjU4LTlkMmEtYWVkNjQ5MzA1NWYy8gLoAQokZWRjOWYzN2YtZGU2NS00YjU4LTlkMmEtYWVkNjQ5MzA1NWYyGgZhbnN3ZXIiCTcwMTI1ODA2NToFU0FMRVRAm%2B32z%2BHigvUJSAJSFmFpX2VudGl0eV9sbG1fcmVjYWxsZXJdrsxdO2JXCgVTQUxFVBIHVW5rbm93bhjFBCDKBCgBNa7MXTs6BmFuc3dlckCb7fbP4eKC9QlIAFIkZWRjOWYzN2YtZGU2NS00YjU4LTlkMmEtYWVkNjQ5MzA1NWYyciQ3Nzg4N2I3ZS04ODc4LTQzNGUtOTg4YS0yYjBiZjhjYmRjMTQ%3D&content_id=701258065&content_type=ANSWER&extra=%7B%22content_id%22%3A%22701258065%22%2C%22content_type%22%3A%22answer%22%2C%22request_click_id%22%3A%2277887b7e-8878-434e-988a-2b0bf8cbdc14%22%7D&halfSheet=1&hybrid_search_extra=%7B%22sourceId%22%3A0%2C%22sourceType%22%3A%22search%22%7D&hybrid_search_source=Entity&match_order=1&q=SALET&request_click_id=77887b7e-8878-434e-988a-2b0bf8cbdc14&search_source=Entity&target=blank",
+                                "word": "SALET"
+                            },
+                            "start_index": 35,
+                            "type": "entity_word"
+                        }
+                    ],
+                    "pid": "TcT5XrI6",
+                    "text": "比较了多个不同的单词以后，基于猜测次数期望最小的目标，得到的最优单词是SALET，下图是最好的几个起始单词。"
+                },
+                "type": "paragraph"
+            },
+            {
+                "id": "21",
+                "image": {
+                    "description": "小小吐槽一下，这个Note还表的排版不对应啊",
+                    "height": 419,
+                    "is_gif": false,
+                    "layout": "normal",
+                    "original_token": "v2-07bab602cdda180f6e4bfc0435665c56",
+                    "original_urls": [
+                        "https://pic1.zhimg.com/v2-07bab602cdda180f6e4bfc0435665c56.jpg?source=7e7ef6e2&needBackground=1"
+                    ],
+                    "status": "normal",
+                    "token": "v2-b99c71ce8ab38c6c1ff9edb3d91bac53",
+                    "urls": [
+                        "https://picx.zhimg.com/v2-b99c71ce8ab38c6c1ff9edb3d91bac53.jpg?source=7e7ef6e2&needBackground=1"
+                    ],
+                    "width": 511
+                },
+                "type": "image"
+            },
+            {
+                "id": "22",
+                "paragraph": {
+                    "marks": [],
+                    "pid": "JmeE6oqq",
+                    "text": "起始为SALET以后，下图是不同颜色可能下的第二步最佳猜测单词。"
+                },
+                "type": "paragraph"
+            },
+            {
+                "id": "23",
+                "image": {
+                    "description": "",
+                    "height": 1390,
+                    "is_gif": false,
+                    "layout": "normal",
+                    "original_token": "v2-342f4e15460e61655b35ec816c1cbf18",
+                    "original_urls": [
+                        "https://pica.zhimg.com/v2-342f4e15460e61655b35ec816c1cbf18.jpg?source=7e7ef6e2&needBackground=1"
+                    ],
+                    "status": "normal",
+                    "token": "v2-2f88fabc9b30b7c98cbeaa9ebdfe47c6",
+                    "urls": [
+                        "https://picx.zhimg.com/v2-2f88fabc9b30b7c98cbeaa9ebdfe47c6.jpg?source=7e7ef6e2&needBackground=1"
+                    ],
+                    "width": 1420
+                },
+                "type": "image"
+            },
+            {
+                "id": "24",
+                "paragraph": {
+                    "marks": [],
+                    "pid": "zoc0Itl6",
+                    "text": "以下是所有结果的汇总，可以看到常规版本在第5步能猜对的概率是100%。"
+                },
+                "type": "paragraph"
+            },
+            {
+                "id": "25",
+                "image": {
+                    "description": "",
+                    "height": 770,
+                    "is_gif": false,
+                    "layout": "normal",
+                    "original_token": "v2-42281a306bd8f0f2fd6921dc24fb578a",
+                    "original_urls": [
+                        "https://picx.zhimg.com/v2-42281a306bd8f0f2fd6921dc24fb578a.jpg?source=7e7ef6e2&needBackground=1"
+                    ],
+                    "status": "normal",
+                    "token": "v2-af09422935cc8f320f94ce7e746a3708",
+                    "urls": [
+                        "https://pic1.zhimg.com/v2-af09422935cc8f320f94ce7e746a3708.jpg?source=7e7ef6e2&needBackground=1"
+                    ],
+                    "width": 1370
+                },
+                "type": "image"
+            },
+            {
+                "card": {
+                    "card_type": "reward_tail_truncate",
+                    "extra_info": "{\"valuable_gift_members_data\":null,\"normal_gift_members_data\":null,\"can_open_reward\":false,\"is_rewardable\":true,\"show_gift_icon\":false,\"gift_count_text\":\"还没有人送礼物，鼓励一下作者吧\",\"gift_reward_list_url\":\"https://www.zhihu.com/gift-reward/list/answer/40711040936\"}",
+                    "id": ""
+                },
+                "id": "",
+                "type": "card"
+            }
+        ]
+    },
+    "structured_content_vip": null,
+    "third_business": {
+        "comment": {
+            "place_holder": "思想交汇总能激发非凡灵感",
+            "total_count": 26
+        },
+        "related_queries": {
+            "queries": [
+                {
+                    "attached_info": "8gKXAQogYWYyODBmMDE5YWUzZjNjOWM0Y2U5ZTAwYTg0NTgzMDcaBkFOU1dFUiIJNzAxMjU4MDY1Og93b3JkbGXmnIDkvJjop6NAr9e8wpzwytXDAUgAUhd0aXRsZV9iZXJ0X2VtYmVkZGluZ192Ml3v0To6ciQxMjVjMDI1Ny01ZmNkLTQ1NGItYmJjNy03YjA3NGM1NWM1NDI=",
+                    "display_query": "wordle最优解",
+                    "hot_icon": "",
+                    "id": "-4347333178884674641",
+                    "link_url": "https://www.zhihu.com/search?extra=%7B%22content_id%22%3A%22701258065%22%2C%22content_type%22%3A%22answer%22%2C%22request_click_id%22%3A%22125c0257-5fcd-454b-bbc7-7b074c55c542%22%7D&q=wordle%E6%9C%80%E4%BC%98%E8%A7%A3&source=ContentBottom&halfSheet=1&attached_info=8gKXAQogYWYyODBmMDE5YWUzZjNjOWM0Y2U5ZTAwYTg0NTgzMDcaBkFOU1dFUiIJNzAxMjU4MDY1Og93b3JkbGXmnIDkvJjop6NAr9e8wpzwytXDAUgAUhd0aXRsZV9iZXJ0X2VtYmVkZGluZ192Ml3v0To6ciQxMjVjMDI1Ny01ZmNkLTQ1NGItYmJjNy03YjA3NGM1NWM1NDI%3D",
+                    "real_query": "wordle最优解"
+                },
+                {
+                    "attached_info": "8gKZAQogYWYyODBmMDE5YWUzZjNjOWM0Y2U5ZTAwYTg0NTgzMDcaBkFOU1dFUiIJNzAxMjU4MDY1OhJ3b3JkbGXnsbvkvLzmuLjmiI9Axu3Kisahue0mSAFSF3RpdGxlX2JlcnRfZW1iZWRkaW5nX3YyXfQ1CTpyJDEyNWMwMjU3LTVmY2QtNDU0Yi1iYmM3LTdiMDc0YzU1YzU0Mg==",
+                    "display_query": "wordle类似游戏",
+                    "hot_icon": "",
+                    "id": "2799801959699363526",
+                    "link_url": "https://www.zhihu.com/search?extra=%7B%22content_id%22%3A%22701258065%22%2C%22content_type%22%3A%22answer%22%2C%22request_click_id%22%3A%22125c0257-5fcd-454b-bbc7-7b074c55c542%22%7D&q=wordle%E7%B1%BB%E4%BC%BC%E6%B8%B8%E6%88%8F&source=ContentBottom&halfSheet=1&attached_info=8gKZAQogYWYyODBmMDE5YWUzZjNjOWM0Y2U5ZTAwYTg0NTgzMDcaBkFOU1dFUiIJNzAxMjU4MDY1OhJ3b3JkbGXnsbvkvLzmuLjmiI9Axu3Kisahue0mSAFSF3RpdGxlX2JlcnRfZW1iZWRkaW5nX3YyXfQ1CTpyJDEyNWMwMjU3LTVmY2QtNDU0Yi1iYmM3LTdiMDc0YzU1YzU0Mg%3D%3D",
+                    "real_query": "wordle类似游戏"
+                },
+                {
+                    "attached_info": "8gKUAQogYWYyODBmMDE5YWUzZjNjOWM0Y2U5ZTAwYTg0NTgzMDcaBkFOU1dFUiIJNzAxMjU4MDY1Og93b3JkbGXmgI7kuYjnjqlAu73U1aupzqNnSAJSFWxvb2stc2VhcmNoLXJlY2FsbC12Ml27yfI5ciQxMjVjMDI1Ny01ZmNkLTQ1NGItYmJjNy03YjA3NGM1NWM1NDI=",
+                    "display_query": "wordle怎么玩",
+                    "hot_icon": "",
+                    "id": "7441979902375829179",
+                    "link_url": "https://www.zhihu.com/search?extra=%7B%22content_id%22%3A%22701258065%22%2C%22content_type%22%3A%22answer%22%2C%22request_click_id%22%3A%22125c0257-5fcd-454b-bbc7-7b074c55c542%22%7D&q=wordle%E6%80%8E%E4%B9%88%E7%8E%A9&source=ContentBottom&halfSheet=1&attached_info=8gKUAQogYWYyODBmMDE5YWUzZjNjOWM0Y2U5ZTAwYTg0NTgzMDcaBkFOU1dFUiIJNzAxMjU4MDY1Og93b3JkbGXmgI7kuYjnjqlAu73U1aupzqNnSAJSFWxvb2stc2VhcmNoLXJlY2FsbC12Ml27yfI5ciQxMjVjMDI1Ny01ZmNkLTQ1NGItYmJjNy03YjA3NGM1NWM1NDI%3D",
+                    "real_query": "wordle怎么玩"
+                },
+                {
+                    "attached_info": "8gKUAQogYWYyODBmMDE5YWUzZjNjOWM0Y2U5ZTAwYTg0NTgzMDcaBkFOU1dFUiIJNzAxMjU4MDY1Og93b3JkbGXmupDku6PnoIFA+bbmt+mO4Z1xSANSFWxvb2stc2VhcmNoLXJlY2FsbC12Ml284s45ciQxMjVjMDI1Ny01ZmNkLTQ1NGItYmJjNy03YjA3NGM1NWM1NDI=",
+                    "display_query": "wordle源代码",
+                    "hot_icon": "",
+                    "id": "8159260794785733497",
+                    "link_url": "https://www.zhihu.com/search?extra=%7B%22content_id%22%3A%22701258065%22%2C%22content_type%22%3A%22answer%22%2C%22request_click_id%22%3A%22125c0257-5fcd-454b-bbc7-7b074c55c542%22%7D&q=wordle%E6%BA%90%E4%BB%A3%E7%A0%81&source=ContentBottom&halfSheet=1&attached_info=8gKUAQogYWYyODBmMDE5YWUzZjNjOWM0Y2U5ZTAwYTg0NTgzMDcaBkFOU1dFUiIJNzAxMjU4MDY1Og93b3JkbGXmupDku6PnoIFA%2Bbbmt%2BmO4Z1xSANSFWxvb2stc2VhcmNoLXJlY2FsbC12Ml284s45ciQxMjVjMDI1Ny01ZmNkLTQ1NGItYmJjNy03YjA3NGM1NWM1NDI%3D",
+                    "real_query": "wordle源代码"
+                }
+            ]
+        },
+        "ring": {
+            "avatar": "https://pic1.zhimg.com/v2-47609d944e53599a2a99cc89af9c2f10_l.jpg?source=1a5df958",
+            "dynamics": {
+                "dynamics_text": "你关注的 @槿灵兮 也在这个圈子",
+                "dynamics_type": "relation",
+                "dynamics_url": "https://www.zhihu.com/ring/host/1938605780212360122"
+            },
+            "id": "1938605780212360122",
+            "member_avatars": [
+                "https://pica.zhimg.com/v2-7170e927b4f5308e9d6c6d9524a2fe8f_l.jpg?source=1a5df958",
+                "https://picx.zhimg.com/v2-8d66d3a4b0ff05bd53b44e93175c7bd4_l.jpg?source=1a5df958",
+                "https://picx.zhimg.com/v2-9f94b0fd0eadd57a71abcff8dbd3881e_l.jpg?source=1a5df958"
+            ],
+            "membership_text": "6794人已加入",
+            "ring_name": "数论圈",
+            "ring_second_line_text": "1.1万讨论",
+            "second_text": "6794 数论学者 · 1.1 万讨论",
+            "state": {
+                "discussion_num": 11434,
+                "is_joined": true,
+                "membership_num": 6794
+            },
+            "target_url": "https://www.zhihu.com/ring/host/1938605780212360122?tab=new&tab_id=0"
+        }
+    },
+    "thumbnail": "https://picx.zhimg.com/50/v2-342f4e15460e61655b35ec816c1cbf18_xl.jpg?source=2c26e567",
+    "type": "answer",
+    "video": null
+}

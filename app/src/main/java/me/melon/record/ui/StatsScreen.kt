@@ -54,6 +54,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -718,6 +719,9 @@ private fun StackedBarChart(
     val n = bars.size
     val safeMax = if (maxCount <= 0) 1 else maxCount
 
+    val currentSelectedIndex by rememberUpdatedState(selectedIndex)
+    val currentOnSelectIndex by rememberUpdatedState(onSelectIndex)
+
     Canvas(
         modifier = Modifier
             .fillMaxWidth()
@@ -726,10 +730,10 @@ private fun StackedBarChart(
                 detectTapGestures { offset ->
                     val slotW = size.width / n.toFloat()
                     val tappedIdx = (offset.x / slotW).toInt().coerceIn(0, n - 1)
-                    if (selectedIndex == tappedIdx) {
-                        onSelectIndex(null)
+                    if (currentSelectedIndex == tappedIdx) {
+                        currentOnSelectIndex(null)
                     } else {
-                        onSelectIndex(tappedIdx)
+                        currentOnSelectIndex(tappedIdx)
                     }
                 }
             }
@@ -738,12 +742,12 @@ private fun StackedBarChart(
                     onDragStart = { offset ->
                         val slotW = size.width / n.toFloat()
                         val tappedIdx = (offset.x / slotW).toInt().coerceIn(0, n - 1)
-                        onSelectIndex(tappedIdx)
+                        currentOnSelectIndex(tappedIdx)
                     },
                     onHorizontalDrag = { change, _ ->
                         val slotW = size.width / n.toFloat()
                         val tappedIdx = (change.position.x / slotW).toInt().coerceIn(0, n - 1)
-                        onSelectIndex(tappedIdx)
+                        currentOnSelectIndex(tappedIdx)
                     }
                 )
             }

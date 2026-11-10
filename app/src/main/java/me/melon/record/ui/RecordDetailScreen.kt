@@ -55,6 +55,8 @@ import androidx.compose.ui.text.style.TextOverflow
 import me.melon.record.ui.components.AvatarImage
 import me.melon.record.ui.components.CoverImage
 import me.melon.record.ui.components.ImageViewerDialog
+import me.melon.record.ui.components.RatingStars
+import me.melon.record.parser.douban.DoubanUtils.safeDouble
 import me.melon.record.ui.theme.getPlatformThemeColor
 import me.melon.record.ui.theme.isAppInDarkTheme
 import java.text.SimpleDateFormat
@@ -300,16 +302,30 @@ fun RecordDetailScreen(
                     Spacer(modifier = Modifier.height(12.dp))
                 }
                 val authorHeadline = parsedMetadata.get("author_headline")?.asString ?: ""
+                val starCount = remember(parsedMetadata) {
+                    parsedMetadata.safeDouble("star_count").let {
+                        if (it > 0) it else parsedMetadata.safeDouble("rating_value")
+                    }
+                }
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     AvatarImage(url = record.authorAvatar, size = 40.dp)
                     Spacer(modifier = Modifier.width(12.dp))
                     Column(modifier = Modifier.weight(1f)) {
-                        Text(
-                            text = record.authorName,
-                            style = MaterialTheme.typography.bodyMedium,
-                            fontWeight = FontWeight.Medium,
-                            color = MaterialTheme.colorScheme.primary
-                        )
+                        Row(verticalAlignment = Alignment.CenterVertically) {
+                            Text(
+                                text = record.authorName.ifBlank { if (record.platform == "douban") "豆瓣用户" else "" },
+                                style = MaterialTheme.typography.bodyMedium,
+                                fontWeight = FontWeight.Medium,
+                                color = MaterialTheme.colorScheme.primary,
+                                maxLines = 1,
+                                overflow = TextOverflow.Ellipsis,
+                                modifier = Modifier.weight(1f, fill = false)
+                            )
+                            if (starCount > 0) {
+                                Spacer(modifier = Modifier.width(8.dp))
+                                RatingStars(starCount)
+                            }
+                        }
                         if (authorHeadline.isNotBlank()) {
                             Spacer(modifier = Modifier.height(2.dp))
                             Text(

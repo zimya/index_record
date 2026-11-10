@@ -107,7 +107,11 @@ object DataProcessor {
                                     record.id = existing.id
                                     if (record.parentId.isBlank()) record.parentId = existing.parentId
                                     if (record.title.isBlank()) record.title = existing.title
-                                    if (record.content.isBlank()) record.content = existing.content
+                                    if (record.content.isBlank() || (record.recordType == "subject" && record.content == record.title)) {
+                                        if (existing.content.isNotBlank() && !(existing.recordType == "subject" && existing.content == existing.title)) {
+                                            record.content = existing.content
+                                        }
+                                    }
                                     if (record.authorId.isBlank()) record.authorId = existing.authorId
                                     if (record.authorName.isBlank()) record.authorName = existing.authorName
                                     if (record.authorAvatar.isBlank()) record.authorAvatar = existing.authorAvatar

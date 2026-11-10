@@ -44,6 +44,8 @@ import me.melon.record.ObjectBox
 import me.melon.record.data.model.UniversalRecord
 import me.melon.record.data.model.UniversalRecord_
 import me.melon.record.ui.components.AvatarImage
+import me.melon.record.ui.components.RatingStars
+import me.melon.record.parser.douban.DoubanUtils.safeDouble
 import org.jsoup.Jsoup
 import java.text.SimpleDateFormat
 import java.util.Date
@@ -121,15 +123,24 @@ fun CommentDetailScreen(
                 .padding(horizontal = 16.dp)
         ) {
             Spacer(modifier = Modifier.height(16.dp))
+            val starCount = remember(meta) {
+                meta.safeDouble("star_count").let {
+                    if (it > 0) it else meta.safeDouble("rating_value")
+                }
+            }
             Row(verticalAlignment = Alignment.CenterVertically) {
                 AvatarImage(url = record.authorAvatar, size = 40.dp)
                 Spacer(modifier = Modifier.width(12.dp))
                 Text(
-                    text = record.authorName,
+                    text = record.authorName.ifBlank { if (record.platform == "douban") "豆瓣用户" else "" },
                     style = MaterialTheme.typography.bodyMedium,
                     fontWeight = FontWeight.Bold,
                     color = MaterialTheme.colorScheme.primary
                 )
+                if (starCount > 0) {
+                    Spacer(modifier = Modifier.width(8.dp))
+                    RatingStars(starCount)
+                }
                 Spacer(modifier = Modifier.width(12.dp))
                 Text(
                     text = sdf.format(Date(record.publishTime)),

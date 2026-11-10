@@ -160,6 +160,20 @@ private fun getPreviewText(record: UniversalRecord): String {
                 }
             }
         }
+        "subject" -> {
+            if (record.content.isNotBlank() && record.content != record.title) {
+                record.content
+            } else {
+                try {
+                    val obj = JsonParser.parseString(record.extraMetadata).asJsonObject
+                    val intro = if (obj.has("intro") && !obj.get("intro").isJsonNull) obj.get("intro").asString else ""
+                    val cardSub = if (obj.has("card_subtitle") && !obj.get("card_subtitle").isJsonNull) obj.get("card_subtitle").asString else ""
+                    intro.ifBlank { cardSub }
+                } catch (_: Exception) {
+                    ""
+                }
+            }
+        }
         else -> record.content
     }
 

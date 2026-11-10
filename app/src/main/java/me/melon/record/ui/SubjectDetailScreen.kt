@@ -33,10 +33,8 @@ import androidx.compose.material.icons.outlined.ChatBubbleOutline
 import androidx.compose.material.icons.outlined.EmojiEvents
 import androidx.compose.material.icons.outlined.KeyboardArrowDown
 import androidx.compose.material.icons.outlined.KeyboardArrowUp
-import androidx.compose.material.icons.outlined.Star
-import androidx.compose.material.icons.outlined.StarBorder
-import androidx.compose.material.icons.outlined.StarHalf
 import androidx.compose.material.icons.outlined.ThumbUp
+import me.melon.record.ui.components.RatingStars
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -757,40 +755,6 @@ private fun MetaInfoRow(label: String, value: String) {
             color = MaterialTheme.colorScheme.onSurface,
             modifier = Modifier.weight(1f)
         )
-    }
-}
-
-@Composable
-private fun RatingStars(stars: Double) {
-    Row(verticalAlignment = Alignment.CenterVertically) {
-        val full = stars.toInt().coerceIn(0, 5)
-        val hasHalf = (stars - full) >= 0.25
-        val empty = (5 - full - if (hasHalf) 1 else 0).coerceAtLeast(0)
-
-        for (i in 0 until full) {
-            Icon(
-                imageVector = Icons.Outlined.Star,
-                contentDescription = null,
-                tint = Color(0xFFFFA000),
-                modifier = Modifier.size(14.dp)
-            )
-        }
-        if (hasHalf) {
-            Icon(
-                imageVector = Icons.Outlined.StarHalf,
-                contentDescription = null,
-                tint = Color(0xFFFFA000),
-                modifier = Modifier.size(14.dp)
-            )
-        }
-        for (i in 0 until empty) {
-            Icon(
-                imageVector = Icons.Outlined.StarBorder,
-                contentDescription = null,
-                tint = Color(0xFFBDBDBD),
-                modifier = Modifier.size(14.dp)
-            )
-        }
     }
 }
 

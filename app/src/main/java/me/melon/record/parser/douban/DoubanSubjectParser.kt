@@ -222,7 +222,7 @@ object DoubanSubjectParser {
             sourceApp = raw.hostApp.ifBlank { "com.douban.frodo" },
             platformId = "douban_${subtype}_${subjectId}",
             title = subjectTitle,
-            content = intro.ifBlank { cardSubtitle }.ifBlank { subjectTitle },
+            content = intro.ifBlank { cardSubtitle },
             authorId = "",
             authorName = "豆瓣",
             authorAvatar = "",

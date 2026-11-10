@@ -107,6 +107,7 @@ class DoubanParserTest {
         assertEquals("个篱", first.authorName)
         assertTrue(first.content.contains("那对对死无所畏惧的老夫妇"))
         assertEquals("电影短评：泰坦尼克号", first.title)
+        assertTrue(first.extraMetadata.contains("\"star_count\":5"))
     }
 
     @Test
@@ -196,6 +197,7 @@ class DoubanParserTest {
         assertEquals("柴斯卡", record.authorName)
         assertEquals("douban_movie_1292722", record.parentId)
         assertTrue(record.content.contains("大概是十三年前，我在书市上买了一本"))
+        assertTrue(record.extraMetadata.contains("\"star_count\":4"))
 
         // 同时附带沉淀了条目本体记录
         val subjectRecord = records.firstOrNull { it.recordType == "subject" }
@@ -348,6 +350,15 @@ class DoubanParserTest {
         val merged = DoubanRelations.mergeSubjectExtra(rec.extraMetadata, emptyExtra)
         assertTrue(merged.contains("rating_value"))
         assertTrue(merged.contains("詹姆斯·卡梅隆"))
+
+        // 空壳条目没有简介或副标题时，content 不应回退填充标题，应为空字符串以避免覆盖有效简介
+        val emptySubjectObj = com.google.gson.JsonObject().apply {
+            addProperty("id", "1292722")
+            addProperty("title", "泰坦尼克号")
+        }
+        val emptyShell = DoubanSubjectParser.parseSubjectFromObject(emptySubjectObj, raw, cleanUrl)
+        assertNotNull(emptyShell)
+        assertEquals("", emptyShell!!.content)
     }
 
     @Test

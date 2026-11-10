@@ -59,6 +59,7 @@ object DoubanReviewParser {
 
         val ratingObj = if (json.has("rating") && json.get("rating").isJsonObject) json.getAsJsonObject("rating") else null
         val ratingValue = ratingObj?.safeLong("value") ?: 0L
+        val starCount = ratingObj?.safeLong("star_count") ?: 0L
 
         val extra = JsonObject()
         extra.addProperty("review_id", reviewId)
@@ -72,6 +73,7 @@ object DoubanReviewParser {
         extra.addProperty("comment_count", commentCount)
         if (ipLocation.isNotBlank()) extra.addProperty("ip_info", ipLocation)
         if (ratingValue > 0) extra.addProperty("rating_value", ratingValue)
+        if (starCount > 0) extra.addProperty("star_count", starCount)
         if (coverUrl.isNotBlank()) {
             extra.addProperty("cover_url", coverUrl)
             extra.addProperty("title_image", coverUrl)

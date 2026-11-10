@@ -243,6 +243,7 @@ fun PullToRefreshListScreen(
 
 
     var syncSessionActive by remember { mutableStateOf(false) }
+    val showSync = syncSessionActive || rawPendingCount > 0L || syncProgress.isRunning
     var sessionLoadedCount by remember(searchQuery, filter) { mutableStateOf(0) }
     var acknowledgedLoadedCount by remember(searchQuery, filter) { mutableStateOf(0) }
     var previousRecordIds by remember(searchQuery, filter) { mutableStateOf<Set<Long>?>(null) }
@@ -277,32 +278,34 @@ fun PullToRefreshListScreen(
         }
     }
 
-    LaunchedEffect(syncSessionActive, sessionLoadedCount, isAtTop) {
-        if (sessionLoadedCount == 0) return@LaunchedEffect
-        if (sessionLoadedCount <= acknowledgedLoadedCount) {
+    LaunchedEffect(showSync, sessionLoadedCount, isAtTop) {
+        if (showSync) {
             hintVisible = false
             return@LaunchedEffect
         }
-        if (isAtTop) {
+        if (sessionLoadedCount == 0 || sessionLoadedCount <= acknowledgedLoadedCount) {
+            hintVisible = false
+            return@LaunchedEffect
+        }
+        if (isAtTop && hintShowArrow) {
             acknowledgedLoadedCount = sessionLoadedCount
-            if (hintShowArrow) {
-                hintVisible = false
-                hintShowArrow = false
-                return@LaunchedEffect
-            }
+            hintVisible = false
+            hintShowArrow = false
+            return@LaunchedEffect
         }
-        hintMessage = if (syncSessionActive) {
-            "已加载 ${sessionLoadedCount} 条内容（后台同步中）"
-        } else {
-            "已加载 ${sessionLoadedCount} 条内容"
-        }
+        hintMessage = "已加载 ${sessionLoadedCount} 条内容"
         hintShowArrow = !isAtTop
         hintVisible = true
-        hintNoNewToken = if (!syncSessionActive && isAtTop) System.currentTimeMillis() else 0L
+        if (isAtTop) {
+            acknowledgedLoadedCount = sessionLoadedCount
+            hintNoNewToken = System.currentTimeMillis()
+        } else {
+            hintNoNewToken = 0L
+        }
     }
 
-    LaunchedEffect(hintNoNewToken, syncSessionActive) {
-        if (hintNoNewToken == 0L || syncSessionActive) return@LaunchedEffect
+    LaunchedEffect(hintNoNewToken, showSync) {
+        if (hintNoNewToken == 0L || showSync) return@LaunchedEffect
         delay(1800)
         hintVisible = false
     }
@@ -312,8 +315,8 @@ fun PullToRefreshListScreen(
         try {
             val loadedCount = onRefresh()
             // 新增数量统一由列表变化累计，刷新返回值不覆盖批次累计值。
-            if (loadedCount == 0 && sessionLoadedCount == 0) {
-                hintMessage = if (rawPendingCount > 0) "后台同步中…" else "暂未收到新内容"
+            if (loadedCount == 0 && sessionLoadedCount == 0 && !showSync) {
+                hintMessage = "暂未收到新内容"
                 hintShowArrow = false
                 hintVisible = true
                 hintNoNewToken = System.currentTimeMillis()
@@ -393,7 +396,6 @@ fun PullToRefreshListScreen(
                 .nestedScroll(pullState.nestedScrollConnection)
         ) {
             Column(modifier = Modifier.fillMaxSize()) {
-                val showSync = syncSessionActive || rawPendingCount > 0L || syncProgress.isRunning
                 if (showSync) {
                     Surface(
                         modifier = Modifier
@@ -493,6 +495,7 @@ fun PullToRefreshListScreen(
                     {
                         acknowledgedLoadedCount = sessionLoadedCount
                         hintVisible = false
+                        hintShowArrow = false
                         scope.launch {
                             if (listState.firstVisibleItemIndex > 15) {
                                 listState.scrollToItem(15)

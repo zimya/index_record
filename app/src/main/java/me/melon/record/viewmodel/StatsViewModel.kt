@@ -59,22 +59,19 @@ class StatsViewModel(application: Application) : AndroidViewModel(application) {
 
     private fun computeState(records: List<UniversalRecord>, weeks: Int): StatsState {
         val today = LocalDate.now(zone)
-        val alignedStart = today.minusWeeks(weeks.toLong())
-            .with(TemporalAdjusters.previousOrSame(DayOfWeek.SUNDAY))
-
+        val end = today.with(TemporalAdjusters.nextOrSame(DayOfWeek.SATURDAY))
         val totalDays = weeks * 7
-        val end = alignedStart.plusDays((totalDays - 1).toLong())
+        val alignedStart = end.minusDays((totalDays - 1).toLong())
 
         val perDay = HashMap<LocalDate, HashMap<String, Int>>(totalDays)
         val perAppTotalAll = HashMap<String, Int>()
 
         for (r in records) {
             val pkg = resolveSourceApp(r)
-            perAppTotalAll[pkg] = (perAppTotalAll[pkg] ?: 0) + 1
-
             val date = Instant.ofEpochMilli(r.captureTime).atZone(zone).toLocalDate()
             if (date.isBefore(alignedStart) || date.isAfter(end)) continue
 
+            perAppTotalAll[pkg] = (perAppTotalAll[pkg] ?: 0) + 1
             val m = perDay.getOrPut(date) { HashMap() }
             m[pkg] = (m[pkg] ?: 0) + 1
         }

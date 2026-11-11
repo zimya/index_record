@@ -8,14 +8,24 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.ChatBubbleOutline
+import androidx.compose.material.icons.outlined.RemoveRedEye
+import androidx.compose.material.icons.outlined.Repeat
+import androidx.compose.material.icons.outlined.ThumbUp
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
@@ -51,6 +61,7 @@ fun RecordItem(record: UniversalRecord, searchQuery: String, onClick: () -> Unit
         "review" -> "长评"
         "interest" -> "短评"
         "subject" -> "条目"
+        "tweet" -> "推文"
         else -> record.recordType
     }
 
@@ -70,15 +81,16 @@ fun RecordItem(record: UniversalRecord, searchQuery: String, onClick: () -> Unit
             ) {
                 val isDark = isAppInDarkTheme()
                 val platformColor = getPlatformThemeColor(record.platform, isDark)
+                val isTweetCard = record.platform == "twitter" && record.recordType == "tweet"
                 Surface(
-                    color = platformColor.container,
+                    color = if (isTweetCard) Color.Black else platformColor.container,
                     shape = MaterialTheme.shapes.small
                 ) {
                     Text(
-                        text = "$platformLabel · $typeLabel",
+                        text = if (isTweetCard) "X · tweet" else "$platformLabel · $typeLabel",
                         style = MaterialTheme.typography.labelSmall,
                         modifier = Modifier.padding(horizontal = 6.dp, vertical = 2.dp),
-                        color = platformColor.text,
+                        color = if (isTweetCard) Color.White else platformColor.text,
                         fontWeight = FontWeight.Medium
                     )
                 }
@@ -124,6 +136,58 @@ fun RecordItem(record: UniversalRecord, searchQuery: String, onClick: () -> Unit
                     maxLines = 2,
                     overflow = TextOverflow.Ellipsis
                 )
+            }
+
+            if (record.platform == "twitter") {
+                val twitterMeta = remember(record.extraMetadata) {
+                    try {
+                        JsonParser.parseString(record.extraMetadata).asJsonObject
+                    } catch (_: Exception) {
+                        null
+                    }
+                }
+                if (twitterMeta != null) {
+                    val lk = if (twitterMeta.has("like_count") && !twitterMeta.get("like_count").isJsonNull) {
+                        twitterMeta.get("like_count").asLong
+                    } else if (twitterMeta.has("voteup_count") && !twitterMeta.get("voteup_count").isJsonNull) {
+                        twitterMeta.get("voteup_count").asLong
+                    } else 0L
+
+                    val rt = if (twitterMeta.has("retweet_count") && !twitterMeta.get("retweet_count").isJsonNull) {
+                        twitterMeta.get("retweet_count").asLong
+                    } else 0L
+
+                    val rp = if (twitterMeta.has("reply_count") && !twitterMeta.get("reply_count").isJsonNull) {
+                        twitterMeta.get("reply_count").asLong
+                    } else if (twitterMeta.has("comment_count") && !twitterMeta.get("comment_count").isJsonNull) {
+                        twitterMeta.get("comment_count").asLong
+                    } else 0L
+
+                    val vw = if (twitterMeta.has("views_count") && !twitterMeta.get("views_count").isJsonNull) {
+                        twitterMeta.get("views_count").asLong
+                    } else 0L
+
+                    if (lk > 0L || rt > 0L || rp > 0L || vw > 0L) {
+                        Spacer(modifier = Modifier.height(8.dp))
+                        Row(
+                            horizontalArrangement = Arrangement.spacedBy(16.dp),
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            if (rp > 0L) {
+                                StatItem(Icons.Outlined.ChatBubbleOutline, me.melon.record.parser.x.XUtils.formatCount(rp))
+                            }
+                            if (rt > 0L) {
+                                StatItem(Icons.Outlined.Repeat, me.melon.record.parser.x.XUtils.formatCount(rt))
+                            }
+                            if (lk > 0L) {
+                                StatItem(Icons.Outlined.ThumbUp, me.melon.record.parser.x.XUtils.formatCount(lk))
+                            }
+                            if (vw > 0L) {
+                                StatItem(Icons.Outlined.RemoveRedEye, me.melon.record.parser.x.XUtils.formatCount(vw))
+                            }
+                        }
+                    }
+                }
             }
 
             if (searchQuery.isNotEmpty() && record.content.contains(searchQuery, ignoreCase = true)) {
@@ -223,5 +287,23 @@ private fun highlightText(text: String, query: String): AnnotatedString {
             }
             start = index + query.length
         }
+    }
+}
+
+@Composable
+private fun StatItem(icon: androidx.compose.ui.graphics.vector.ImageVector, text: String) {
+    Row(verticalAlignment = Alignment.CenterVertically) {
+        Icon(
+            imageVector = icon,
+            contentDescription = null,
+            tint = MaterialTheme.colorScheme.outline,
+            modifier = Modifier.size(13.dp)
+        )
+        Spacer(modifier = Modifier.width(4.dp))
+        Text(
+            text = text,
+            style = MaterialTheme.typography.labelSmall,
+            color = MaterialTheme.colorScheme.outline
+        )
     }
 }

@@ -15,11 +15,16 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyListState
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
+
+import androidx.compose.material.icons.outlined.BookmarkBorder
 import androidx.compose.material.icons.outlined.ChatBubbleOutline
 import androidx.compose.material.icons.outlined.Place
+import androidx.compose.material.icons.outlined.RemoveRedEye
+import androidx.compose.material.icons.outlined.Repeat
 import androidx.compose.material.icons.outlined.StarOutline
 import androidx.compose.material.icons.outlined.ThumbDownOffAlt
 import androidx.compose.material.icons.outlined.ThumbUp
@@ -29,8 +34,7 @@ import androidx.compose.material3.FilterChip
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
+
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
@@ -50,15 +54,14 @@ import com.google.gson.JsonObject
 import com.google.gson.JsonParser
 import me.melon.record.data.model.UniversalRecord
 import me.melon.record.markdown.RenderMarkdownText
-import androidx.compose.foundation.shape.RoundedCornerShape
+
 import androidx.compose.ui.text.style.TextOverflow
 import me.melon.record.ui.components.AvatarImage
 import me.melon.record.ui.components.CoverImage
 import me.melon.record.ui.components.ImageViewerDialog
 import me.melon.record.ui.components.RatingStars
 import me.melon.record.parser.douban.DoubanUtils.safeDouble
-import me.melon.record.ui.theme.getPlatformThemeColor
-import me.melon.record.ui.theme.isAppInDarkTheme
+import me.melon.record.ui.components.RelatedRecordCard
 import java.text.SimpleDateFormat
 import java.util.Date
 import androidx.compose.runtime.LaunchedEffect
@@ -105,22 +108,42 @@ private fun MetadataBadge(icon: ImageVector, text: String) {
 fun RecordDetailScreen(
     record: UniversalRecord,
     onBack: () -> Unit,
-    onOpenRecord: (UniversalRecord) -> Unit = {}
+    onOpenRecord: (UniversalRecord) -> Unit = {},
+    listState: LazyListState = rememberLazyListState()
 ) {
     var commentSort by remember { mutableStateOf(CommentSort.DEFAULT) }
     var allComments by remember { mutableStateOf<List<UniversalRecord>>(emptyList()) }
     var viewerUrls by remember { mutableStateOf<List<String>>(emptyList()) }
     var viewerIndex by remember { mutableStateOf(0) }
     var relatedRecord by remember { mutableStateOf<UniversalRecord?>(null) }
+    var commentsLoaded by remember { mutableStateOf(false) }
+    var relatedLoaded by remember { mutableStateOf(false) }
 
     LaunchedEffect(record.platformId) {
         withContext(Dispatchers.IO) {
             val box = ObjectBox.store.boxFor(UniversalRecord::class.java)
-            val rootComments = box.query()
-                .equal(UniversalRecord_.parentId, record.platformId, io.objectbox.query.QueryBuilder.StringOrder.CASE_SENSITIVE)
-                .equal(UniversalRecord_.recordType, "comment", io.objectbox.query.QueryBuilder.StringOrder.CASE_SENSITIVE)
-                .build()
-                .find()
+
+            val altId = if (record.platform == "twitter") {
+                if (record.platformId.startsWith("twitter_tweet_")) {
+                    "twitter_comment_" + record.platformId.removePrefix("twitter_tweet_")
+                } else if (record.platformId.startsWith("twitter_comment_")) {
+                    "twitter_tweet_" + record.platformId.removePrefix("twitter_comment_")
+                } else ""
+            } else ""
+
+            val rootComments = if (altId.isNotBlank()) {
+                box.query()
+                    .`in`(UniversalRecord_.parentId, arrayOf(record.platformId, altId), io.objectbox.query.QueryBuilder.StringOrder.CASE_SENSITIVE)
+                    .equal(UniversalRecord_.recordType, "comment", io.objectbox.query.QueryBuilder.StringOrder.CASE_SENSITIVE)
+                    .build()
+                    .find()
+            } else {
+                box.query()
+                    .equal(UniversalRecord_.parentId, record.platformId, io.objectbox.query.QueryBuilder.StringOrder.CASE_SENSITIVE)
+                    .equal(UniversalRecord_.recordType, "comment", io.objectbox.query.QueryBuilder.StringOrder.CASE_SENSITIVE)
+                    .build()
+                    .find()
+            }
 
             val all = rootComments.toMutableList()
             val seen = rootComments.map { it.platformId }.toMutableSet()
@@ -141,6 +164,7 @@ fun RecordDetailScreen(
             }
 
             allComments = all
+            commentsLoaded = true
         }
     }
 
@@ -191,6 +215,7 @@ fun RecordDetailScreen(
             }
 
             queryRelated()
+            relatedLoaded = true
 
             if (record.parentId.isNotBlank()) {
                 val sub = box.query()
@@ -209,12 +234,25 @@ fun RecordDetailScreen(
         }
     }
 
+    // 数据未加载完成前不使用缓存的滚动状态，否则列表项不足时位置会被钳制并写回缓存
+    val contentReady = commentsLoaded && relatedLoaded
+    val pendingListState = remember { LazyListState() }
+
     data class CommentRow(val record: UniversalRecord, val depth: Int)
 
     val commentRows = remember(allComments, commentSort, record.platformId) {
         val byId = allComments.associateBy { it.platformId }
         val childrenByParent = allComments.groupBy { it.parentId }
-        val roots = childrenByParent[record.platformId].orEmpty()
+
+        val altId = if (record.platform == "twitter") {
+            if (record.platformId.startsWith("twitter_tweet_")) {
+                "twitter_comment_" + record.platformId.removePrefix("twitter_tweet_")
+            } else if (record.platformId.startsWith("twitter_comment_")) {
+                "twitter_tweet_" + record.platformId.removePrefix("twitter_comment_")
+            } else ""
+        } else ""
+
+        val roots = (childrenByParent[record.platformId].orEmpty() + (if (altId.isNotBlank()) childrenByParent[altId].orEmpty() else emptyList())).distinctBy { it.platformId }
 
         fun likeCount(r: UniversalRecord): Long {
             return try {
@@ -264,7 +302,8 @@ fun RecordDetailScreen(
             modifier = Modifier
                 .padding(padding)
                 .fillMaxSize()
-                .padding(horizontal = 16.dp)
+                .padding(horizontal = 16.dp),
+            state = if (contentReady) listState else pendingListState
         ) {
             item {
                 Spacer(modifier = Modifier.height(16.dp))
@@ -375,17 +414,59 @@ fun RecordDetailScreen(
                         horizontalArrangement = Arrangement.spacedBy(8.dp),
                         verticalArrangement = Arrangement.spacedBy(8.dp)
                     ) {
-                        metadata.get("voteup_count")?.let {
-                            MetadataBadge(Icons.Outlined.ThumbUp, it.asString)
-                        }
-                        metadata.get("comment_count")?.let {
-                            MetadataBadge(Icons.Outlined.ChatBubbleOutline, it.asString)
-                        }
-                        metadata.get("ip_info")?.let {
-                            MetadataBadge(Icons.Outlined.Place, it.asString)
-                        }
-                        metadata.get("favlists_count")?.let {
-                            MetadataBadge(Icons.Outlined.StarOutline, it.asString)
+                        if (record.platform == "twitter") {
+                            val likeCount = if (metadata.has("like_count") && !metadata.get("like_count").isJsonNull) {
+                                metadata.get("like_count").asLong
+                            } else if (metadata.has("voteup_count") && !metadata.get("voteup_count").isJsonNull) {
+                                metadata.get("voteup_count").asLong
+                            } else 0L
+
+                            val rtCount = if (metadata.has("retweet_count") && !metadata.get("retweet_count").isJsonNull) {
+                                metadata.get("retweet_count").asLong
+                            } else 0L
+
+                            val repCount = if (metadata.has("reply_count") && !metadata.get("reply_count").isJsonNull) {
+                                metadata.get("reply_count").asLong
+                            } else if (metadata.has("comment_count") && !metadata.get("comment_count").isJsonNull) {
+                                metadata.get("comment_count").asLong
+                            } else 0L
+
+                            val bmCount = if (metadata.has("bookmark_count") && !metadata.get("bookmark_count").isJsonNull) {
+                                metadata.get("bookmark_count").asLong
+                            } else 0L
+
+                            val viewsCount = if (metadata.has("views_count") && !metadata.get("views_count").isJsonNull) {
+                                metadata.get("views_count").asLong
+                            } else 0L
+
+                            if (likeCount > 0L) {
+                                MetadataBadge(Icons.Outlined.ThumbUp, me.melon.record.parser.x.XUtils.formatCount(likeCount))
+                            }
+                            if (rtCount > 0L) {
+                                MetadataBadge(Icons.Outlined.Repeat, me.melon.record.parser.x.XUtils.formatCount(rtCount))
+                            }
+                            if (repCount > 0L) {
+                                MetadataBadge(Icons.Outlined.ChatBubbleOutline, me.melon.record.parser.x.XUtils.formatCount(repCount))
+                            }
+                            if (bmCount > 0L) {
+                                MetadataBadge(Icons.Outlined.BookmarkBorder, me.melon.record.parser.x.XUtils.formatCount(bmCount))
+                            }
+                            if (viewsCount > 0L) {
+                                MetadataBadge(Icons.Outlined.RemoveRedEye, me.melon.record.parser.x.XUtils.formatCount(viewsCount))
+                            }
+                        } else {
+                            metadata.get("voteup_count")?.let {
+                                MetadataBadge(Icons.Outlined.ThumbUp, it.asString)
+                            }
+                            metadata.get("comment_count")?.let {
+                                MetadataBadge(Icons.Outlined.ChatBubbleOutline, it.asString)
+                            }
+                            metadata.get("ip_info")?.let {
+                                MetadataBadge(Icons.Outlined.Place, it.asString)
+                            }
+                            metadata.get("favlists_count")?.let {
+                                MetadataBadge(Icons.Outlined.StarOutline, it.asString)
+                            }
                         }
                     }
                 }
@@ -415,59 +496,11 @@ fun RecordDetailScreen(
             item {
                 val target = relatedRecord
                 if (target != null) {
-                    val platform = target.platform.ifBlank {
-                        if (target.recordType == "subject") "douban" else if (target.recordType == "question") "zhihu" else record.platform
-                    }
-                    val isDark = isAppInDarkTheme()
-                    val platformColor = getPlatformThemeColor(platform, isDark)
-
-                    Card(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .clickable { onOpenRecord(target) },
-                        shape = RoundedCornerShape(12.dp),
-                        colors = CardDefaults.cardColors(
-                            containerColor = platformColor.container
-                        )
-                    ) {
-                        Row(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(horizontal = 16.dp, vertical = 14.dp),
-                            verticalAlignment = Alignment.CenterVertically,
-                            horizontalArrangement = Arrangement.SpaceBetween
-                        ) {
-                            Column(modifier = Modifier.weight(1f)) {
-                                val tagText = when (target.recordType) {
-                                    "subject" -> "所属豆瓣条目"
-                                    "question" -> "对应知乎问题"
-                                    else -> "关联内容"
-                                }
-                                Text(
-                                    text = tagText,
-                                    style = MaterialTheme.typography.labelSmall,
-                                    color = platformColor.text,
-                                    fontWeight = FontWeight.Bold
-                                )
-                                Spacer(modifier = Modifier.height(3.dp))
-                                Text(
-                                    text = target.title,
-                                    style = MaterialTheme.typography.bodyLarge,
-                                    fontWeight = FontWeight.Bold,
-                                    color = MaterialTheme.colorScheme.onSurface,
-                                    maxLines = 1,
-                                    overflow = TextOverflow.Ellipsis
-                                )
-                            }
-                            Spacer(modifier = Modifier.width(12.dp))
-                            Icon(
-                                imageVector = Icons.AutoMirrored.Filled.KeyboardArrowRight,
-                                contentDescription = null,
-                                tint = platformColor.text.copy(alpha = 0.7f),
-                                modifier = Modifier.size(22.dp)
-                            )
-                        }
-                    }
+                    RelatedRecordCard(
+                        record = target,
+                        fallbackPlatform = record.platform,
+                        onClick = { onOpenRecord(target) }
+                    )
                     Spacer(modifier = Modifier.height(16.dp))
                 }
             }

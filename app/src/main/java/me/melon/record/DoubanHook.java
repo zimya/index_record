@@ -9,6 +9,9 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.net.Uri;
 import android.os.Build;
+import android.os.Bundle;
+import android.os.IBinder;
+import android.os.Parcel;
 import android.os.ParcelFileDescriptor;
 
 import de.robv.android.xposed.IXposedHookLoadPackage;
@@ -44,6 +47,9 @@ public class DoubanHook implements IXposedHookLoadPackage {
     private static final String LEGACY_CACHE_DIR = "index_record_cache";
     private static final String QUEUE_DIR = "index_record_queue";
     private static final Set<ClassLoader> hookedClassLoaders = Collections.synchronizedSet(new HashSet<>());
+    private static final String BRIDGE_DESCRIPTOR = "me.melon.record.sync.IRecordSyncBridge";
+    private static final int TRANSACTION_SYNC_FILE = IBinder.FIRST_CALL_TRANSACTION + 1;
+    private static volatile IBinder mSyncBinder = null;
 
     @Override
     public void handleLoadPackage(final XC_LoadPackage.LoadPackageParam lpparam) throws Throwable {
@@ -82,6 +88,14 @@ public class DoubanHook implements IXposedHookLoadPackage {
                 public void onReceive(Context context, Intent intent) {
                     if ("me.melon.record.ACTION_SYNC".equals(intent.getAction())) {
                         XposedBridge.log(TAG + "Received ACTION_SYNC broadcast, syncing queue...");
+                        Bundle extras = intent.getExtras();
+                        if (extras != null) {
+                            IBinder binder = extras.getBinder("sync_binder");
+                            if (binder != null) {
+                                mSyncBinder = binder;
+                                XposedBridge.log(TAG + "Acquired live sync binder from app!");
+                            }
+                        }
                         executor.submit(() -> trySyncToApp());
                     }
                 }
@@ -274,6 +288,16 @@ public class DoubanHook implements IXposedHookLoadPackage {
                 }
                 if (captureTs <= 0L) captureTs = System.currentTimeMillis();
 
+                // 优先通过 Binder 直传同步，彻底规避 Android 11+ Package Visibility / ContentProvider 限制
+                if (mSyncBinder != null && mSyncBinder.isBinderAlive()) {
+                    if (syncViaBinder(payloadFile, url, hostApp, captureTs)) {
+                        meta.delete();
+                        payloadFile.delete();
+                        XposedBridge.log(TAG + "Synced via Binder and deleted " + token);
+                        continue;
+                    }
+                }
+
                 Uri payloadUri = Uri.parse("content://me.melon.record.provider/raw_payload/" + token);
                 ParcelFileDescriptor pfd = null;
                 try {
@@ -305,11 +329,54 @@ public class DoubanHook implements IXposedHookLoadPackage {
                 if (mContext.getContentResolver().insert(uri, values) != null) {
                     meta.delete();
                     payloadFile.delete();
+                    XposedBridge.log(TAG + "Synced and deleted " + token);
                 } else {
                     return;
                 }
             }
         } catch (Throwable ignored) {}
+    }
+
+    private boolean syncViaBinder(File payloadFile, String url, String hostApp, long timestamp) {
+        IBinder binder = mSyncBinder;
+        if (binder == null || !binder.isBinderAlive()) {
+            mSyncBinder = null;
+            return false;
+        }
+        Parcel data = Parcel.obtain();
+        Parcel reply = Parcel.obtain();
+        ParcelFileDescriptor pfd = null;
+        try {
+            pfd = ParcelFileDescriptor.open(payloadFile, ParcelFileDescriptor.MODE_READ_ONLY);
+            if (pfd == null) return false;
+
+            data.writeInterfaceToken(BRIDGE_DESCRIPTOR);
+            data.writeString(url);
+            data.writeString(hostApp);
+            data.writeLong(timestamp);
+            data.writeInt(1); // has PFD
+            pfd.writeToParcel(data, 0);
+
+            boolean status = binder.transact(TRANSACTION_SYNC_FILE, data, reply, 0);
+            if (status) {
+                reply.readException();
+                int res = reply.readInt();
+                return res == 1;
+            }
+            return false;
+        } catch (Throwable t) {
+            XposedBridge.log(TAG + "Binder sync error: " + t.getMessage());
+            if (t instanceof android.os.DeadObjectException) {
+                mSyncBinder = null;
+            }
+            return false;
+        } finally {
+            if (pfd != null) {
+                try { pfd.close(); } catch (Throwable ignored) {}
+            }
+            data.recycle();
+            reply.recycle();
+        }
     }
 
     private void enqueueCapture(String url, byte[] bytes, String contentType) throws IOException {

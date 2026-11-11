@@ -77,7 +77,7 @@ import me.melon.record.logic.BarData
 import me.melon.record.logic.DistributionRange
 import me.melon.record.ui.theme.DoubanGreen
 import me.melon.record.ui.theme.TiebaBlue
-import me.melon.record.ui.theme.TwitterBlue
+import me.melon.record.ui.theme.XBlack
 import me.melon.record.ui.theme.XiaohongshuRed
 import me.melon.record.ui.theme.ZhihuBlue
 import me.melon.record.viewmodel.StatsViewModel
@@ -1132,7 +1132,7 @@ fun colorFromPackage(pkg: String): Color {
         "com.douban.frodo", "douban" -> DoubanGreen
         "com.baidu.tieba", "tieba" -> TiebaBlue
         "com.xingin.xhs", "xiaohongshu" -> XiaohongshuRed
-        "com.twitter.android", "twitter" -> TwitterBlue
+        "com.twitter.android", "twitter" -> XBlack
         else -> {
             val h = (pkg.hashCode().toLong().ushr(1) % 360L).toFloat()
             Color.hsv(h, 0.65f, 0.90f)

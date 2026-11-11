@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyListState
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
@@ -37,7 +38,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.compose.runtime.saveable.rememberSaveable
+
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -82,7 +83,8 @@ private data class ZhihuTopicRef(
 fun QuestionDetailScreen(
     record: UniversalRecord,
     onBack: () -> Unit,
-    onOpenAnswer: (UniversalRecord) -> Unit
+    onOpenAnswer: (UniversalRecord) -> Unit,
+    listState: LazyListState = rememberLazyListState()
 ) {
     var sort by remember { mutableStateOf(AnswerSort.VOTEUP) }
     val meta = remember(record.extraMetadata) {
@@ -163,7 +165,7 @@ fun QuestionDetailScreen(
     }
 
     val sdf = remember { SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.getDefault()) }
-    val listState = rememberSaveable(record.platformId, saver = LazyListState.Saver) { LazyListState() }
+
 
     Scaffold(
         contentWindowInsets = WindowInsets(0, 0, 0, 0),

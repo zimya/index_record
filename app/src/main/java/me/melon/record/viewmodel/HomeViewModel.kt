@@ -55,6 +55,10 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
 
     private fun sendSyncBroadcast() {
         val app = getApplication<Application>()
+        me.melon.record.sync.RecordSyncBridge.init(app)
+        val bundle = android.os.Bundle().apply {
+            putBinder("sync_binder", me.melon.record.sync.RecordSyncBridge)
+        }
         val targetPackages = listOf(
             "com.zhihu.android",
             "com.douban.frodo",
@@ -71,6 +75,7 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
             try {
                 val intent = Intent("me.melon.record.ACTION_SYNC").apply {
                     setPackage(pkg)
+                    putExtras(bundle)
                     addFlags(Intent.FLAG_RECEIVER_FOREGROUND)
                     addFlags(Intent.FLAG_INCLUDE_STOPPED_PACKAGES)
                 }
@@ -81,6 +86,7 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
         }
         try {
             val genericIntent = Intent("me.melon.record.ACTION_SYNC").apply {
+                putExtras(bundle)
                 addFlags(Intent.FLAG_RECEIVER_FOREGROUND)
             }
             app.sendBroadcast(genericIntent, null, options)
@@ -221,6 +227,12 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
     val navStack = mutableStateListOf<UniversalRecord>()
     var lastNavAction by mutableStateOf(NavAction.PUSH)
     val homeListState = LazyListState()
+
+    // 详情页滚动状态放在 ViewModel 中，返回后仍能恢复到原位置
+    private val detailListStates = mutableMapOf<String, LazyListState>()
+
+    fun detailListState(key: String): LazyListState =
+        detailListStates.getOrPut(key) { LazyListState() }
 
     fun pushDetail(record: UniversalRecord) {
         if (navStack.isNotEmpty() && navStack.last().id == record.id && record.id != 0L) {

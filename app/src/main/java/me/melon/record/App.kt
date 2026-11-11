@@ -12,8 +12,11 @@ class App : Application(), ImageLoaderFactory {
     override fun onCreate() {
         super.onCreate()
 
+        me.melon.record.settings.RecordSettings.init(this)
+
         // 初始化数据库
         ObjectBox.init(this)
+        me.melon.record.sync.RecordSyncBridge.init(this)
 
         // 仅在 Debug 模式下开启浏览器调试
         if (BuildConfig.DEBUG) {

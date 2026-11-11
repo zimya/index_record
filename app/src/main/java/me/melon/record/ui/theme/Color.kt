@@ -46,12 +46,12 @@ val TiebaLightText = Color(0xFF3050D6)
 val TiebaDarkContainer = Color(0xFF15224D)
 val TiebaDarkText = Color(0xFF8AA3FF)
 
-// Twitter 蓝
-val TwitterBlue = Color(0xFF1D9BF0)
-val TwitterLightContainer = Color(0xFFE8F5FE)
-val TwitterLightText = Color(0xFF0C7BBF)
-val TwitterDarkContainer = Color(0xFF0E273D)
-val TwitterDarkText = Color(0xFF6DC3FA)
+// 𝕏 黑
+val XBlack = Color(0xFF000000)
+val XLightContainer = Color(0xFFF0F0F0)
+val XLightText = Color(0xFF0F1419)
+val XDarkContainer = Color(0xFF242628)
+val XDarkText = Color(0xFFE7E9EA)
 
 data class PlatformThemeColor(
     val brand: Color,
@@ -82,9 +82,9 @@ fun getPlatformThemeColor(platform: String, isDark: Boolean): PlatformThemeColor
             PlatformThemeColor(TiebaBlue, TiebaLightContainer, TiebaLightText)
         }
         "twitter", "com.twitter.android" -> if (isDark) {
-            PlatformThemeColor(TwitterBlue, TwitterDarkContainer, TwitterDarkText)
+            PlatformThemeColor(XBlack, XDarkContainer, XDarkText)
         } else {
-            PlatformThemeColor(TwitterBlue, TwitterLightContainer, TwitterLightText)
+            PlatformThemeColor(XBlack, XLightContainer, XLightText)
         }
         else -> if (isDark) {
             PlatformThemeColor(IndexBlue, Color(0xFF2A2B30), Color(0xFFD0D0D5))

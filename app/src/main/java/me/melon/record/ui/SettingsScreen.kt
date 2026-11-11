@@ -1,5 +1,8 @@
 package me.melon.record.ui
 
+import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
@@ -7,9 +10,13 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.widthIn
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.RadioButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
@@ -17,11 +24,15 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.ui.Alignment
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import me.melon.record.settings.TweetRecordMode
 import me.melon.record.ui.theme.ThemeMode
 import me.melon.record.viewmodel.SettingsViewModel
 
@@ -29,6 +40,7 @@ import me.melon.record.viewmodel.SettingsViewModel
 @Composable
 fun SettingsScreen(viewModel: SettingsViewModel = viewModel()) {
     val themeMode by viewModel.themeMode.collectAsState()
+    val tweetRecordMode by viewModel.tweetRecordMode.collectAsState()
 
     Scaffold(
         contentWindowInsets = WindowInsets(0, 0, 0, 0),
@@ -46,54 +58,91 @@ fun SettingsScreen(viewModel: SettingsViewModel = viewModel()) {
             modifier = Modifier
                 .padding(padding)
                 .fillMaxSize()
+                .verticalScroll(rememberScrollState())
                 .padding(horizontal = 16.dp)
         ) {
             Spacer(modifier = Modifier.height(12.dp))
-            Text("主题", style = MaterialTheme.typography.titleMedium)
-            Spacer(modifier = Modifier.height(8.dp))
+            SettingsSectionTitle("外观")
+            SettingsDropdownRow(
+                title = "主题",
+                selected = themeMode,
+                options = listOf(ThemeMode.SYSTEM, ThemeMode.LIGHT, ThemeMode.DARK),
+                label = {
+                    when (it) {
+                        ThemeMode.SYSTEM -> "跟随系统"
+                        ThemeMode.LIGHT -> "明亮"
+                        ThemeMode.DARK -> "暗黑"
+                    }
+                },
+                onSelect = viewModel::setThemeMode
+            )
 
-            ThemeOptionRow(
-                title = "跟随系统",
-                selected = themeMode == ThemeMode.SYSTEM,
-                onClick = { viewModel.setThemeMode(ThemeMode.SYSTEM) }
-            )
-            ThemeOptionRow(
-                title = "明亮",
-                selected = themeMode == ThemeMode.LIGHT,
-                onClick = { viewModel.setThemeMode(ThemeMode.LIGHT) }
-            )
-            ThemeOptionRow(
-                title = "暗黑",
-                selected = themeMode == ThemeMode.DARK,
-                onClick = { viewModel.setThemeMode(ThemeMode.DARK) }
+            Spacer(modifier = Modifier.height(24.dp))
+            SettingsSectionTitle("记录")
+            SettingsDropdownRow(
+                title = "记录推文的形式",
+                selected = tweetRecordMode,
+                options = listOf(TweetRecordMode.PUSH, TweetRecordMode.READ),
+                label = { if (it == TweetRecordMode.PUSH) "推送" else "阅读" },
+                onSelect = viewModel::setTweetRecordMode
             )
         }
     }
 }
 
 @Composable
-private fun ThemeOptionRow(
+private fun SettingsSectionTitle(title: String) {
+    Text(
+        text = title,
+        style = MaterialTheme.typography.titleSmall,
+        color = MaterialTheme.colorScheme.primary,
+        modifier = Modifier.padding(horizontal = 12.dp, vertical = 8.dp)
+    )
+}
+
+@Composable
+private fun <T> SettingsDropdownRow(
     title: String,
-    selected: Boolean,
-    onClick: () -> Unit
+    selected: T,
+    options: List<T>,
+    label: (T) -> String,
+    onSelect: (T) -> Unit
 ) {
-    androidx.compose.material3.Surface(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(vertical = 4.dp),
-        color = MaterialTheme.colorScheme.surface,
-        shape = MaterialTheme.shapes.medium,
-        tonalElevation = 1.dp,
-        onClick = onClick
-    ) {
-        androidx.compose.foundation.layout.Row(
+    var expanded by remember { mutableStateOf(false) }
+
+    Box(modifier = Modifier.fillMaxWidth()) {
+        Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(horizontal = 12.dp, vertical = 10.dp),
-            verticalAlignment = Alignment.CenterVertically
+                .clickable(role = Role.Button) { expanded = true }
+                .padding(horizontal = 12.dp, vertical = 16.dp)
         ) {
-            RadioButton(selected = selected, onClick = onClick)
-            Text(title, modifier = Modifier.padding(start = 8.dp))
+            Text(title, style = MaterialTheme.typography.bodyLarge)
+            Text(
+                text = label(selected),
+                style = MaterialTheme.typography.bodyMedium,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                modifier = Modifier.padding(top = 4.dp)
+            )
+        }
+        DropdownMenu(
+            expanded = expanded,
+            onDismissRequest = { expanded = false },
+            modifier = Modifier.widthIn(min = 240.dp)
+        ) {
+            options.forEach { option ->
+                DropdownMenuItem(
+                    text = { Text(label(option)) },
+                    onClick = {
+                        expanded = false
+                        onSelect(option)
+                    },
+                    modifier = Modifier.background(
+                        if (option == selected) MaterialTheme.colorScheme.surfaceVariant
+                        else Color.Transparent
+                    )
+                )
+            }
         }
     }
 }

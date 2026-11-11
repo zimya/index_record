@@ -15,6 +15,8 @@ import me.melon.record.data.model.RawData
 import me.melon.record.data.model.UniversalRecord
 import me.melon.record.data.model.UniversalRecord_
 import me.melon.record.parser.ParserRegistry
+import me.melon.record.parser.x.XParser
+import me.melon.record.settings.RecordSettings
 import me.melon.record.parser.zhihu.ZhihuFeedParser
 import me.melon.record.parser.zhihu.ZhihuItemV2Parser
 import me.melon.record.parser.zhihu.ZhihuRelations
@@ -83,7 +85,14 @@ object DataProcessor {
                 for (raw in chunk) {
                     val cleanUrl = if (raw.url.contains("?")) raw.url.substringBefore("?") else raw.url
                     try {
-                        val records = ParserRegistry.parse(raw, cleanUrl)
+                        // 在本应用进程读取设置，避免 Hook 跨进程读取私有偏好设置。
+                        val records = if (XParser.canHandle(cleanUrl, raw) &&
+                            !RecordSettings.tweetRecordMode.shouldProcess(raw.url)
+                        ) {
+                            emptyList()
+                        } else {
+                            ParserRegistry.parse(raw, cleanUrl)
+                        }
                         parsedItems.add(ParsedItem(raw.id, cleanUrl, records))
                     } catch (e: Exception) {
                         Log.e(TAG, "Failed to process raw ID: ${raw.id}", e)
@@ -122,6 +131,8 @@ object DataProcessor {
                                         record.extraMetadata = ZhihuRelations.mergeQuestionExtra(existing.extraMetadata, record.extraMetadata)
                                     } else if (record.platform == "douban" && record.recordType == "subject") {
                                         record.extraMetadata = me.melon.record.parser.douban.DoubanRelations.mergeSubjectExtra(existing.extraMetadata, record.extraMetadata)
+                                    } else if (record.platform == "twitter") {
+                                        record.extraMetadata = me.melon.record.parser.x.XRelations.mergeTweetExtra(existing.extraMetadata, record.extraMetadata)
                                     }
                                 }
                                 recordBox.put(record)
@@ -154,6 +165,10 @@ object DataProcessor {
                                                 recordBox, sType.ifBlank { "movie" }, sId, sTitle
                                             )
                                         }
+                                    } catch (_: Exception) {}
+                                } else if (record.platform == "twitter") {
+                                    try {
+                                        me.melon.record.parser.x.XRelations.linkTweetRelations(recordBox, record)
                                     } catch (_: Exception) {}
                                 }
                             }

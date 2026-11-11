@@ -24,6 +24,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyListState
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -100,7 +102,8 @@ private enum class RelatedFilter { ALL, INTEREST, REVIEW, TOPIC }
 fun SubjectDetailScreen(
     record: UniversalRecord,
     onBack: () -> Unit,
-    onOpenRecord: (UniversalRecord) -> Unit
+    onOpenRecord: (UniversalRecord) -> Unit,
+    listState: LazyListState = rememberLazyListState()
 ) {
     val context = LocalContext.current
     var currentRecord by remember(record) { mutableStateOf(record) }
@@ -109,6 +112,9 @@ fun SubjectDetailScreen(
     var isIntroExpanded by remember { mutableStateOf(false) }
     var relatedFilter by remember { mutableStateOf(RelatedFilter.ALL) }
     var relatedRecords by remember { mutableStateOf<List<UniversalRecord>>(emptyList()) }
+    var contentReady by remember { mutableStateOf(false) }
+    // 数据未加载完成前不使用缓存的滚动状态，否则列表项不足时位置会被钳制并写回缓存
+    val pendingListState = remember { LazyListState() }
 
     // 监听与主动查询条目本体最新数据以及关联短评长评
     LaunchedEffect(record.platformId) {
@@ -135,6 +141,7 @@ fun SubjectDetailScreen(
                 }
 
                 refreshData()
+                contentReady = true
 
                 // 实时订阅更新，保证后台无论何时解析入库条目均可瞬时响应刷新
                 val sub = box.query()
@@ -308,7 +315,8 @@ fun SubjectDetailScreen(
                 .fillMaxSize()
                 .background(animatedBgColor)
                 .padding(innerPadding)
-                .padding(horizontal = 16.dp)
+                .padding(horizontal = 16.dp),
+            state = if (contentReady) listState else pendingListState
         ) {
             // --- 顶部头部：海报 + 标题 + 原名 + 年份 + 基础标签 ---
             item {

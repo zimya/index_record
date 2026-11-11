@@ -3,6 +3,7 @@ package me.melon.record.parser
 import me.melon.record.data.model.RawData
 import me.melon.record.data.model.UniversalRecord
 import me.melon.record.parser.douban.DoubanParser
+import me.melon.record.parser.x.XParser
 import me.melon.record.parser.zhihu.ZhihuParser
 
 /**
@@ -13,7 +14,8 @@ object ParserRegistry {
 
     private val parsers: List<RawDataParser> = listOf(
         ZhihuParser,
-        DoubanParser
+        DoubanParser,
+        XParser
     )
 
     fun findParser(cleanUrl: String, raw: RawData): RawDataParser? {

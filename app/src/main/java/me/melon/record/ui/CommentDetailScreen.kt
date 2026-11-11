@@ -1,5 +1,6 @@
 package me.melon.record.ui
 
+
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -14,7 +15,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.outlined.ThumbDownOffAlt
 import androidx.compose.material.icons.outlined.ThumbUpOffAlt
-import androidx.compose.material3.Button
+
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -34,6 +35,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
+
 import androidx.compose.ui.unit.dp
 import me.melon.record.markdown.RenderMarkdownText
 import com.google.gson.JsonObject
@@ -45,6 +47,7 @@ import me.melon.record.data.model.UniversalRecord
 import me.melon.record.data.model.UniversalRecord_
 import me.melon.record.ui.components.AvatarImage
 import me.melon.record.ui.components.RatingStars
+import me.melon.record.ui.components.RelatedRecordCard
 import me.melon.record.parser.douban.DoubanUtils.safeDouble
 import org.jsoup.Jsoup
 import java.text.SimpleDateFormat
@@ -66,7 +69,7 @@ fun CommentDetailScreen(
 
             var current = record
             var guard = 0
-            while ((current.parentId.startsWith("zhihu_comment_") || current.parentId.startsWith("douban_comment_")) && guard < 30) {
+            while ((current.parentId.startsWith("zhihu_comment_") || current.parentId.startsWith("douban_comment_") || current.parentId.startsWith("twitter_comment_")) && guard < 30) {
                 val parent = box.query()
                     .equal(UniversalRecord_.platformId, current.parentId, io.objectbox.query.QueryBuilder.StringOrder.CASE_SENSITIVE)
                     .build()
@@ -77,10 +80,23 @@ fun CommentDetailScreen(
 
             val targetId = current.parentId
             related = if (targetId.isNotBlank()) {
-                box.query()
+                val found = box.query()
                     .equal(UniversalRecord_.platformId, targetId, io.objectbox.query.QueryBuilder.StringOrder.CASE_SENSITIVE)
                     .build()
                     .findFirst()
+                if (found == null && (targetId.startsWith("twitter_tweet_") || targetId.startsWith("twitter_comment_"))) {
+                    val altTargetId = if (targetId.startsWith("twitter_tweet_")) {
+                        "twitter_comment_" + targetId.removePrefix("twitter_tweet_")
+                    } else {
+                        "twitter_tweet_" + targetId.removePrefix("twitter_comment_")
+                    }
+                    box.query()
+                        .equal(UniversalRecord_.platformId, altTargetId, io.objectbox.query.QueryBuilder.StringOrder.CASE_SENSITIVE)
+                        .build()
+                        .findFirst()
+                } else {
+                    found
+                }
             } else {
                 null
             }
@@ -189,12 +205,11 @@ fun CommentDetailScreen(
 
             val target = related
             if (target != null) {
-                Button(
-                    onClick = { onOpenParent(target) },
-                    modifier = Modifier.fillMaxWidth()
-                ) {
-                    Text("跳转到关联内容")
-                }
+                RelatedRecordCard(
+                    record = target,
+                    fallbackPlatform = record.platform,
+                    onClick = { onOpenParent(target) }
+                )
             }
         }
     }

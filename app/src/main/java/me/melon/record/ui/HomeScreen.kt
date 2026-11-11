@@ -225,19 +225,22 @@ fun HomeScreen(viewModel: HomeViewModel = viewModel()) {
                             QuestionDetailScreen(
                                 record = targetRecord,
                                 onBack = { viewModel.popDetail() },
-                                onOpenAnswer = { viewModel.pushDetail(it) }
+                                onOpenAnswer = { viewModel.pushDetail(it) },
+                                listState = viewModel.detailListState(targetRecord.platformId)
                             )
                         } else if (targetRecord.recordType == "subject") {
                             SubjectDetailScreen(
                                 record = targetRecord,
                                 onBack = { viewModel.popDetail() },
-                                onOpenRecord = { viewModel.pushDetail(it) }
+                                onOpenRecord = { viewModel.pushDetail(it) },
+                                listState = viewModel.detailListState(targetRecord.platformId)
                             )
                         } else {
                             RecordDetailScreen(
                                 record = targetRecord,
                                 onBack = { viewModel.popDetail() },
-                                onOpenRecord = { viewModel.pushDetail(it) }
+                                onOpenRecord = { viewModel.pushDetail(it) },
+                                listState = viewModel.detailListState(targetRecord.platformId)
                             )
                         }
                     }

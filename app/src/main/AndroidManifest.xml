@@ -21,7 +21,7 @@
     >
 
 	    <!-- 这里的 android:exported="true" 是 Android 12+ 必须的 -->
-	    <activity
+        <activity
             android:name=".MainActivity"
             android:exported="true"
             android:theme="@style/Theme.Webrecorder"
@@ -32,6 +32,27 @@
 	            <category android:name="android.intent.category.LAUNCHER" />
 	        </intent-filter>
 	    </activity>
+
+        <!-- 匹配系统/宿主应用的通用 queries 声明（CustomTabs / HTTP / HTTPS），确保在 Android 11+ 上对宿主应用可见 -->
+        <activity
+            android:name=".ui.VisibilityHolderActivity"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data android:scheme="https" />
+                <data android:scheme="http" />
+            </intent-filter>
+        </activity>
+
+        <service
+            android:name=".provider.SyncHostService"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.support.customtabs.action.CustomTabsService" />
+            </intent-filter>
+        </service>
 
         <meta-data android:name="xposedmodule" android:value="true" />
 

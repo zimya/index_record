@@ -55,6 +55,7 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import me.melon.record.data.model.UniversalRecord
 import me.melon.record.ui.components.FilterBottomSheet
+import me.melon.record.ui.components.HomeRecordCard
 import me.melon.record.ui.components.RecordItem
 import me.melon.record.ui.components.RefreshResultHint
 import me.melon.record.ui.theme.getPlatformThemeColor
@@ -934,12 +935,10 @@ private fun AnswerGroupItem(
     val isDark = isAppInDarkTheme()
     val platformColor = getPlatformThemeColor("zhihu", isDark)
 
-    Card(
+    HomeRecordCard(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(horizontal = 12.dp, vertical = 6.dp),
-        elevation = CardDefaults.cardElevation(2.dp),
-        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface)
+            .padding(horizontal = 12.dp, vertical = 6.dp)
     ) {
         Column(modifier = Modifier.padding(16.dp)) {
             Surface(
@@ -1027,12 +1026,10 @@ private fun InterestGroupItem(
     val isDark = isAppInDarkTheme()
     val platformColor = getPlatformThemeColor("douban", isDark)
 
-    Card(
+    HomeRecordCard(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(horizontal = 12.dp, vertical = 6.dp),
-        elevation = CardDefaults.cardElevation(2.dp),
-        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface)
+            .padding(horizontal = 12.dp, vertical = 6.dp)
     ) {
         Column(modifier = Modifier.padding(16.dp)) {
             Surface(

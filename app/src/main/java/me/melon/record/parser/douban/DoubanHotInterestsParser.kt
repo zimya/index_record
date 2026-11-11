@@ -12,25 +12,30 @@ import me.melon.record.parser.douban.DoubanUtils.safeString
 import java.util.regex.Pattern
 
 /**
- * 豆瓣书影音游热评/短评解析器。
+ * 豆瓣书影音游热评和普通短评解析器。
  * 例如：
  * https://frodo.douban.com/api/v2/movie/1292722/hot_interests
  * https://frodo.douban.com/api/v2/game/26817171/hot_interests
  * https://frodo.douban.com/api/v2/book/1007305/hot_interests
  * https://frodo.douban.com/api/v2/music/35282427/hot_interests
+ * https://frodo.douban.com/api/v2/tv/2373195/interests
  */
 object DoubanHotInterestsParser {
 
     private val PATTERN_HOT_INTERESTS = Pattern.compile("^https?://[^/]*douban\\.com/api/v2/([^/]+)/(\\d+)/hot_interests/?$")
+    private val PATTERN_INTERESTS = Pattern.compile("^https?://[^/]*douban\\.com/api/v2/([^/]+)/(\\d+)/interests/?$")
     private val gson = Gson()
 
+    private fun matchUrl(cleanUrl: String) = sequenceOf(PATTERN_HOT_INTERESTS, PATTERN_INTERESTS)
+        .map { it.matcher(cleanUrl) }
+        .firstOrNull { it.matches() }
+
     fun canHandle(cleanUrl: String): Boolean {
-        return PATTERN_HOT_INTERESTS.matcher(cleanUrl).matches()
+        return matchUrl(cleanUrl) != null
     }
 
     fun parse(raw: RawData, cleanUrl: String): List<UniversalRecord> {
-        val matcher = PATTERN_HOT_INTERESTS.matcher(cleanUrl)
-        if (!matcher.find()) return emptyList()
+        val matcher = matchUrl(cleanUrl) ?: return emptyList()
 
         val subjectType = matcher.group(1) ?: "item"
         val subjectId = matcher.group(2) ?: ""

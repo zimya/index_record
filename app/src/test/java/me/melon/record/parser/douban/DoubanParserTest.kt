@@ -1,5 +1,6 @@
 package me.melon.record.parser.douban
 
+import com.google.gson.JsonParser
 import me.melon.record.data.model.RawData
 import me.melon.record.parser.ParserRegistry
 import org.junit.Assert.assertEquals
@@ -108,6 +109,83 @@ class DoubanParserTest {
         assertTrue(first.content.contains("那对对死无所畏惧的老夫妇"))
         assertEquals("电影短评：泰坦尼克号", first.title)
         assertTrue(first.extraMetadata.contains("\"star_count\":5"))
+    }
+
+    @Test
+    fun testDoubanTvInterests() {
+        val url = "https://frodo.douban.com/api/v2/tv/2373195/interests?start=0&count=20&status=mixed&order_by=latest"
+        val cleanUrl = url.substringBefore('?')
+        val raw = RawData(
+            url = url,
+            json = loadFixture("v2_interests.json"),
+            hostApp = "com.douban.frodo",
+            timestamp = 1794407394000L
+        )
+
+        assertTrue(DoubanParser.canHandle(cleanUrl, raw))
+        val records = ParserRegistry.parse(raw, cleanUrl)!!
+        assertEquals(20, records.size)
+
+        val first = records.first()
+        assertEquals("douban", first.platform)
+        assertEquals("interest", first.recordType)
+        assertEquals("com.douban.frodo", first.sourceApp)
+        assertEquals("douban_interest_4987032379", first.platformId)
+        assertEquals("douban_tv_2373195", first.parentId)
+        assertTrue(first.title.startsWith("剧集短评："))
+        assertEquals("从第一季看不到过多人性的东西 待我再看看后四季", first.content)
+        assertEquals("飞天螺旋桨", first.authorName)
+        assertEquals("207209503", first.authorId)
+        assertEquals("https://img9.doubanio.com/icon/up207209503-5.webp", first.authorAvatar)
+        assertEquals(url, first.sourceUrl)
+        assertEquals(1794406392000L, first.publishTime)
+        assertEquals(raw.timestamp, first.captureTime)
+
+        val extra = JsonParser.parseString(first.extraMetadata).asJsonObject
+        assertEquals("tv", extra.get("subject_type").asString)
+        assertEquals("2373195", extra.get("subject_id").asString)
+        assertEquals("done", extra.get("status").asString)
+        assertEquals("中国香港", extra.get("ip_info").asString)
+        assertEquals(4, extra.get("rating_value").asInt)
+        assertEquals(4, extra.get("star_count").asInt)
+        assertEquals(0, extra.get("vote_count").asInt)
+
+        val unrated = records.first { it.platformId == "douban_interest_4009903480" }
+        val unratedExtra = JsonParser.parseString(unrated.extraMetadata).asJsonObject
+        assertFalse(unratedExtra.has("rating_value"))
+        assertFalse(unratedExtra.has("star_count"))
+
+        val listItems = me.melon.record.ui.groupRecordsForHome(records)
+        assertEquals(1, listItems.size)
+        val group = listItems.single() as me.melon.record.ui.InterestGroupListItem
+        assertEquals("剧集短评", group.typeLabel)
+        assertEquals(20, group.interests.size)
+    }
+
+    @Test
+    fun testDoubanInterestsSubjectTypesAndDeduplicationIds() {
+        for (subjectType in listOf("movie", "tv", "book", "music", "game", "drama")) {
+            val url = "https://frodo.douban.com/api/v2/$subjectType/2373195/interests/"
+            val raw = RawData(url = url, json = loadFixture("v2_interests.json"), hostApp = "com.douban.frodo")
+            assertTrue(DoubanParser.canHandle(url, raw))
+            val records = ParserRegistry.parse(raw, url)!!
+            val hotUrl = url.replace("/interests/", "/hot_interests/")
+            val hotRecords = ParserRegistry.parse(raw.copy(url = hotUrl), hotUrl)!!
+
+            assertEquals(20, records.size)
+            assertTrue(records.all { it.parentId == "douban_${subjectType}_2373195" })
+            assertEquals(hotRecords.map { it.platformId }, records.map { it.platformId })
+        }
+    }
+
+    @Test
+    fun testDoubanInterestsEmptyAndInvalidResponses() {
+        val url = "https://frodo.douban.com/api/v2/tv/2373195/interests"
+        for (json in listOf("{\"interests\":[]}", "{}", "not json")) {
+            val raw = RawData(url = url, json = json, hostApp = "com.douban.frodo")
+            assertEquals(emptyList<me.melon.record.data.model.UniversalRecord>(), ParserRegistry.parse(raw, url))
+        }
+        assertFalse(DoubanHotInterestsParser.canHandle("$url/4987032379"))
     }
 
     @Test

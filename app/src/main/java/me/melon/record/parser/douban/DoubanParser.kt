@@ -6,7 +6,7 @@ import me.melon.record.parser.RawDataParser
 
 /**
  * 豆瓣平台总解析器。
- * 负责分发和调度豆瓣各种类型（小组帖子、小组评论、书影音游热评、长评、长评评论、论坛话题贴、话题讨论）的解析工作。
+ * 负责分发和调度豆瓣各种类型（小组帖子、小组评论、书影音游热评/短评、长评、长评评论、论坛话题贴、话题讨论）的解析工作。
  */
 object DoubanParser : RawDataParser {
 

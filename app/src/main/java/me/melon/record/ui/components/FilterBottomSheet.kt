@@ -1,6 +1,7 @@
 package me.melon.record.ui.components
 
 import android.app.TimePickerDialog
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -39,6 +40,9 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Check
+import me.melon.record.ui.theme.PlatformThemeColor
+import me.melon.record.ui.theme.getPlatformThemeColor
+import me.melon.record.ui.theme.isAppInDarkTheme
 import me.melon.record.viewmodel.HomeViewModel
 import java.text.SimpleDateFormat
 import java.time.Instant
@@ -53,13 +57,13 @@ import java.util.Locale
 fun FilterBottomSheet(
     filter: HomeViewModel.HomeFilter,
     availableApps: List<String>,
-    availablePlatforms: List<String>,
     availableTypes: List<String>,
     onDismiss: () -> Unit,
-    onApply: (startMillis: Long?, endMillis: Long?, apps: Set<String>, platforms: Set<String>, types: Set<String>) -> Unit,
+    onApply: (startMillis: Long?, endMillis: Long?, apps: Set<String>, types: Set<String>) -> Unit,
     onClear: () -> Unit
 ) {
     val context = LocalContext.current
+    val isDark = isAppInDarkTheme()
     val zone = remember { ZoneId.systemDefault() }
     val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
     val scrollState = rememberScrollState()
@@ -67,7 +71,6 @@ fun FilterBottomSheet(
     var startMillis by remember { mutableStateOf(filter.startMillis) }
     var endMillis by remember { mutableStateOf(filter.endMillis) }
     var selectedApps by remember { mutableStateOf(filter.apps) }
-    var selectedPlatforms by remember { mutableStateOf(filter.platforms) }
     var selectedTypes by remember { mutableStateOf(filter.types) }
 
     var pickingStart by remember { mutableStateOf(true) }
@@ -117,31 +120,6 @@ fun FilterBottomSheet(
 
                 Spacer(modifier = Modifier.height(12.dp))
 
-                Text("平台", style = MaterialTheme.typography.labelLarge, color = MaterialTheme.colorScheme.secondary)
-                Spacer(modifier = Modifier.height(8.dp))
-                if (availablePlatforms.isEmpty()) {
-                    Text("暂无可筛选的平台", color = MaterialTheme.colorScheme.outline)
-                } else {
-                    FlowRow(
-                        modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.spacedBy(8.dp),
-                        verticalArrangement = Arrangement.spacedBy(8.dp)
-                    ) {
-                        for (p in availablePlatforms) {
-                            val selected = p in selectedPlatforms
-                            FilterChipWithCheck(
-                                selected = selected,
-                                onClick = {
-                                    selectedPlatforms = if (selected) selectedPlatforms - p else selectedPlatforms + p
-                                },
-                                label = platformLabel(p)
-                            )
-                        }
-                    }
-                }
-
-                Spacer(modifier = Modifier.height(12.dp))
-
                 Text("类型", style = MaterialTheme.typography.labelLarge, color = MaterialTheme.colorScheme.secondary)
                 Spacer(modifier = Modifier.height(8.dp))
                 if (availableTypes.isEmpty()) {
@@ -184,7 +162,8 @@ fun FilterBottomSheet(
                                 onClick = {
                                     selectedApps = if (selected) selectedApps - p else selectedApps + p
                                 },
-                                label = appLabel(p)
+                                label = appLabel(p),
+                                themeColor = getPlatformThemeColor(p, isDark)
                             )
                         }
                     }
@@ -203,7 +182,7 @@ fun FilterBottomSheet(
                 ) { Text("清空") }
 
                 Button(
-                    onClick = { onApply(startMillis, endMillis, selectedApps, selectedPlatforms, selectedTypes) },
+                    onClick = { onApply(startMillis, endMillis, selectedApps, selectedTypes) },
                     modifier = Modifier.weight(1f)
                 ) { Text("应用") }
             }
@@ -256,12 +235,23 @@ fun FilterBottomSheet(
 private fun FilterChipWithCheck(
     selected: Boolean,
     onClick: () -> Unit,
-    label: String
+    label: String,
+    themeColor: PlatformThemeColor? = null
 ) {
     FilterChip(
         selected = selected,
         onClick = onClick,
         label = { Text(label) },
+        colors = FilterChipDefaults.filterChipColors(
+            selectedContainerColor = themeColor?.container ?: MaterialTheme.colorScheme.secondaryContainer,
+            selectedLabelColor = themeColor?.text ?: MaterialTheme.colorScheme.onSecondaryContainer,
+            selectedLeadingIconColor = themeColor?.text ?: MaterialTheme.colorScheme.onSecondaryContainer
+        ),
+        border = if (selected && themeColor != null) {
+            BorderStroke(1.dp, themeColor.text.copy(alpha = 0.5f))
+        } else {
+            FilterChipDefaults.filterChipBorder(enabled = true, selected = selected)
+        },
         leadingIcon = if (selected) {
             {
                 Icon(
@@ -290,17 +280,6 @@ private fun appLabel(pkg: String): String {
         "com.xingin.xhs" -> "小红书"
         "com.twitter.android" -> "Twitter(X)"
         else -> pkg
-    }
-}
-
-private fun platformLabel(platform: String): String {
-    return when (platform) {
-        "zhihu" -> "知乎"
-        "douban" -> "豆瓣"
-        "tieba" -> "贴吧"
-        "xiaohongshu" -> "小红书"
-        "twitter" -> "Twitter(X)"
-        else -> platform
     }
 }
 

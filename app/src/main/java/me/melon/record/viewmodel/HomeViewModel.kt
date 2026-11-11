@@ -30,14 +30,12 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
         val startMillis: Long? = null,
         val endMillis: Long? = null,
         val apps: Set<String> = emptySet(),
-        val platforms: Set<String> = emptySet(),
         val types: Set<String> = emptySet()
     ) {
         val isActive: Boolean
             get() = startMillis != null ||
                     endMillis != null ||
                     apps.isNotEmpty() ||
-                    platforms.isNotEmpty() ||
                     types.isNotEmpty()
     }
 
@@ -114,10 +112,6 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
         _filter.value = _filter.value.copy(apps = apps)
     }
 
-    fun updatePlatforms(platforms: Set<String>) {
-        _filter.value = _filter.value.copy(platforms = platforms)
-    }
-
     fun updateTypes(types: Set<String>) {
         _filter.value = _filter.value.copy(types = types)
     }
@@ -149,15 +143,6 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
         return (directApps + fallbackApps).distinct().sorted()
     }
 
-    private fun queryAvailablePlatforms(): List<String> {
-        val query = recordBox.query().build()
-        val platforms = query.property(UniversalRecord_.platform).distinct().findStrings()
-            ?.filter { !it.isNullOrBlank() }
-            ?.sorted() ?: emptyList()
-        query.close()
-        return platforms
-    }
-
     private fun queryAvailableTypes(): List<String> {
         val query = recordBox.query().build()
         val types = query.property(UniversalRecord_.recordType).distinct().findStrings()
@@ -174,19 +159,6 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
             }
 
         trySend(queryAvailableApps())
-
-        awaitClose {
-            subscription.cancel()
-        }
-    }.flowOn(Dispatchers.IO)
-
-    val availablePlatformsFlow: Flow<List<String>> = callbackFlow {
-        val subscription = ObjectBox.store.subscribe(UniversalRecord::class.java)
-            .observer {
-                trySend(queryAvailablePlatforms())
-            }
-
-        trySend(queryAvailablePlatforms())
 
         awaitClose {
             subscription.cancel()
@@ -348,7 +320,6 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
         val start = filterState.startMillis
         val end = filterState.endMillis
         val apps = filterState.apps
-        val platforms = filterState.platforms
         val types = filterState.types
         val allowComments = trimmedQuery.isNotEmpty() || ("comment" in types)
 
@@ -359,7 +330,6 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
                 if (end != null && record.captureTime > end) return@filter false
                 val sourceApp = resolveSourceApp(record)
                 if (apps.isNotEmpty() && sourceApp !in apps) return@filter false
-                if (platforms.isNotEmpty() && record.platform !in platforms) return@filter false
                 if (types.isNotEmpty() && record.recordType !in types) return@filter false
                 true
             }

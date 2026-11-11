@@ -374,12 +374,6 @@ fun RecordDetailScreen(
                             )
                         }
                     }
-                    val sdf = SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.getDefault())
-                    Text(
-                        text = sdf.format(Date(record.publishTime)),
-                        style = MaterialTheme.typography.bodySmall,
-                        color = MaterialTheme.colorScheme.outline
-                    )
                 }
                 HorizontalDivider(modifier = Modifier.padding(vertical = 16.dp))
             }
@@ -394,6 +388,13 @@ fun RecordDetailScreen(
                         viewerUrls = urls
                         viewerIndex = index
                     }
+                )
+                Spacer(modifier = Modifier.height(8.dp))
+                val sdf = remember { SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.getDefault()) }
+                Text(
+                    text = sdf.format(Date(record.publishTime)),
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.outline
                 )
                 Spacer(modifier = Modifier.height(16.dp))
             }
@@ -564,13 +565,6 @@ fun RecordDetailScreen(
                                     color = MaterialTheme.colorScheme.primary,
                                     fontWeight = FontWeight.Bold
                                 )
-                                Spacer(modifier = Modifier.width(8.dp))
-                                val sdf = java.text.SimpleDateFormat("yyyy-MM-dd HH:mm", java.util.Locale.getDefault())
-                                Text(
-                                    text = sdf.format(java.util.Date(comment.publishTime)),
-                                    style = MaterialTheme.typography.labelSmall,
-                                    color = MaterialTheme.colorScheme.outline
-                                )
                                 Spacer(modifier = Modifier.weight(1f))
                                 if (likeCount > 0) {
                                     Icon(
@@ -608,6 +602,13 @@ fun RecordDetailScreen(
                                 text = cleanContent,
                                 style = MaterialTheme.typography.bodyMedium,
                                 color = MaterialTheme.colorScheme.onSurface
+                            )
+                            Spacer(modifier = Modifier.height(8.dp))
+                            val sdf = remember { SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.getDefault()) }
+                            Text(
+                                text = sdf.format(Date(comment.publishTime)),
+                                style = MaterialTheme.typography.labelSmall,
+                                color = MaterialTheme.colorScheme.outline
                             )
                         }
                     }

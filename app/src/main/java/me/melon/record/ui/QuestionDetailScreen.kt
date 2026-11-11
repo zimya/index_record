@@ -308,14 +308,6 @@ fun QuestionDetailScreen(
                                         fontWeight = FontWeight.Bold,
                                         color = MaterialTheme.colorScheme.primary
                                     )
-                                    val ts = (if (ref.updatedTimeSec > 0) ref.updatedTimeSec else ref.createdTimeSec) * 1000
-                                    if (ts > 0) {
-                                        Text(
-                                            text = sdf.format(Date(ts)),
-                                            style = MaterialTheme.typography.labelSmall,
-                                            color = MaterialTheme.colorScheme.outline
-                                        )
-                                    }
                                 }
                                 if (ref.voteupCount > 0) {
                                     Icon(
@@ -338,6 +330,15 @@ fun QuestionDetailScreen(
                                     text = excerpt,
                                     style = MaterialTheme.typography.bodyMedium,
                                     color = MaterialTheme.colorScheme.onSurface
+                                )
+                            }
+                            val ts = (if (ref.updatedTimeSec > 0) ref.updatedTimeSec else ref.createdTimeSec) * 1000
+                            if (ts > 0) {
+                                Spacer(modifier = Modifier.height(8.dp))
+                                Text(
+                                    text = sdf.format(Date(ts)),
+                                    style = MaterialTheme.typography.labelSmall,
+                                    color = MaterialTheme.colorScheme.outline
                                 )
                             }
                             if (!enabled) {

@@ -157,12 +157,6 @@ fun CommentDetailScreen(
                     Spacer(modifier = Modifier.width(8.dp))
                     RatingStars(starCount)
                 }
-                Spacer(modifier = Modifier.width(12.dp))
-                Text(
-                    text = sdf.format(Date(record.publishTime)),
-                    style = MaterialTheme.typography.bodySmall,
-                    color = MaterialTheme.colorScheme.outline
-                )
                 Spacer(modifier = Modifier.weight(1f))
                 if (likeCount > 0) {
                     Icon(
@@ -200,6 +194,12 @@ fun CommentDetailScreen(
                 modifier = Modifier.fillMaxWidth(),
                 enableScroll = false,
                 selectable = true,
+            )
+            Spacer(modifier = Modifier.height(8.dp))
+            Text(
+                text = sdf.format(Date(record.publishTime)),
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.outline
             )
             Spacer(modifier = Modifier.height(24.dp))
 

@@ -104,7 +104,6 @@ fun HomeScreen(viewModel: HomeViewModel = viewModel()) {
     val searchQuery by viewModel.searchQuery.collectAsState()
     val filter by viewModel.filter.collectAsState()
     val availableApps by viewModel.availableAppsFlow.collectAsState(initial = emptyList())
-    val availablePlatforms by viewModel.availablePlatformsFlow.collectAsState(initial = emptyList())
     val availableTypes by viewModel.availableTypesFlow.collectAsState(initial = emptyList())
     val rawPendingCount by viewModel.rawPendingCountFlow.collectAsState(initial = 0L)
     val syncProgress by viewModel.syncProgress.collectAsState()
@@ -253,14 +252,12 @@ fun HomeScreen(viewModel: HomeViewModel = viewModel()) {
         FilterBottomSheet(
             filter = filter,
             availableApps = availableApps,
-            availablePlatforms = availablePlatforms,
             availableTypes = availableTypes,
             onDismiss = { showFilterSheet = false },
-            onApply = { start, end, apps, platforms, types ->
+            onApply = { start, end, apps, types ->
                 val normalized = if (start != null && end != null && start > end) end to start else start to end
                 viewModel.updateTimeRange(normalized.first, normalized.second)
                 viewModel.updateApps(apps)
-                viewModel.updatePlatforms(platforms)
                 viewModel.updateTypes(types)
                 showFilterSheet = false
             },

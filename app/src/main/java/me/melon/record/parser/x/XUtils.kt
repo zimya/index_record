@@ -159,31 +159,16 @@ object XUtils {
                         val previewUrl = mediaInfo?.safeJsonObject("preview_image")?.safeString("original_img_url")
                             ?: mediaInfo?.safeString("original_img_url")
                             ?: ""
-                        val variants = mediaInfo?.safeJsonArray("variants")
-                        var bestVideoUrl = ""
-                        var maxBitrate = -1L
-                        if (variants != null) {
-                            for (vElem in variants) {
-                                if (!vElem.isJsonObject) continue
-                                val vObj = vElem.asJsonObject
-                                val contentType = vObj.safeString("content_type")
-                                if (contentType == "video/mp4") {
-                                    val br = vObj.safeLong("bitrate", -1L)
-                                    val vUrl = vObj.safeString("url")
-                                    if (br > maxBitrate && vUrl.isNotBlank()) {
-                                        maxBitrate = br
-                                        bestVideoUrl = vUrl
-                                    }
-                                }
-                            }
-                        }
+                        val bestVideoUrl = selectMp4Url(mediaInfo?.safeJsonArray("variants"))
 
                         if (previewUrl.isNotBlank()) {
                             mediaUrls.add(previewUrl)
                         }
 
                         if (bestVideoUrl.isNotBlank()) {
-                            if (previewUrl.isNotBlank()) {
+                            if (mediaType == "ApiGif") {
+                                mediaMarkdownBlocks.add("[GIF]($bestVideoUrl)")
+                            } else if (previewUrl.isNotBlank()) {
                                 mediaMarkdownBlocks.add("[![视频封面]($previewUrl)]($bestVideoUrl)\n\n[▶ 点击播放视频]($bestVideoUrl)")
                             } else {
                                 mediaMarkdownBlocks.add("[▶ 点击播放视频]($bestVideoUrl)")
@@ -226,28 +211,12 @@ object XUtils {
                     when (type) {
                         "video", "animated_gif" -> {
                             val videoInfo = mObj.safeJsonObject("video_info")
-                            val variants = videoInfo?.safeJsonArray("variants")
-                            var bestVideoUrl = ""
-                            var maxBitrate = -1L
-
-                            if (variants != null) {
-                                for (vElem in variants) {
-                                    if (!vElem.isJsonObject) continue
-                                    val vObj = vElem.asJsonObject
-                                    val contentType = vObj.safeString("content_type")
-                                    if (contentType == "video/mp4") {
-                                        val br = vObj.safeLong("bitrate", -1L)
-                                        val vUrl = vObj.safeString("url")
-                                        if (br > maxBitrate && vUrl.isNotBlank()) {
-                                            maxBitrate = br
-                                            bestVideoUrl = vUrl
-                                        }
-                                    }
-                                }
-                            }
+                            val bestVideoUrl = selectMp4Url(videoInfo?.safeJsonArray("variants"))
 
                             if (bestVideoUrl.isNotBlank()) {
-                                if (imgUrl.isNotBlank()) {
+                                if (type == "animated_gif") {
+                                    mediaMarkdownBlocks.add("[GIF]($bestVideoUrl)")
+                                } else if (imgUrl.isNotBlank()) {
                                     mediaMarkdownBlocks.add("[![视频封面]($imgUrl)]($bestVideoUrl)\n\n[▶ 点击播放视频]($bestVideoUrl)")
                                 } else {
                                     mediaMarkdownBlocks.add("[▶ 点击播放视频]($bestVideoUrl)")
@@ -271,6 +240,24 @@ object XUtils {
         }
 
         return text.trim()
+    }
+
+    private fun selectMp4Url(variants: JsonArray?): String {
+        var bestUrl = ""
+        var maxBitrate = -1L
+        for (element in variants ?: return "") {
+            if (!element.isJsonObject) continue
+            val variant = element.asJsonObject
+            if (variant.safeString("content_type") != "video/mp4") continue
+            val url = variant.safeString("url")
+            val bitrate = variant.safeLong("bitrate", variant.safeLong("bit_rate", -1L))
+            // 兼容未提供码率的 GIF，仍应选中第一个有效 MP4。
+            if (url.isNotBlank() && (bestUrl.isBlank() || bitrate > maxBitrate)) {
+                bestUrl = url
+                maxBitrate = bitrate
+            }
+        }
+        return bestUrl
     }
 
     /**

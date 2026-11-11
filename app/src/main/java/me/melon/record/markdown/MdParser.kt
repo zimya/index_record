@@ -111,7 +111,15 @@ private fun convertCommonMarkBlock(node: org.commonmark.node.Node, doc: MdDocume
                 listOf(MdMathBlock(textOnly.removePrefix("$$").removeSuffix("$$").trim()))
             } else {
                 val inlines = convertCommonMarkInlines(node.firstChild)
-                splitInlinesByImages(inlines)
+                val link = inlines.singleOrNull() as? MdLink
+                if (link != null &&
+                    (link.children.singleOrNull() as? MdText)?.text == "GIF" &&
+                    link.destination.substringBefore('?').endsWith(".mp4", ignoreCase = true)
+                ) {
+                    listOf(MdGif(link.destination))
+                } else {
+                    splitInlinesByImages(inlines)
+                }
             }
         }
         is FencedCodeBlock -> listOf(MdFencedCodeBlock(node.info.orEmpty(), node.literal.orEmpty()))

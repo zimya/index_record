@@ -34,6 +34,8 @@ class MdStrikethrough : MdNode()
 
 class MdLink(val destination: String, val title: String = "") : MdNode()
 
+class MdGif(val url: String) : MdNode()
+
 class MdImage(
     val url: String,
     val altText: String = "",

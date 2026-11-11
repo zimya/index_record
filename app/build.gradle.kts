@@ -86,6 +86,10 @@ dependencies {
     implementation("org.commonmark:commonmark-ext-gfm-strikethrough:0.24.0")
     implementation("org.commonmark:commonmark-ext-footnotes:0.24.0")
 
+    // 使用应用内 MP4 extractor，避免系统 VideoView 无法解析部分 𝕏 GIF。
+    implementation("androidx.media3:media3-exoplayer:1.3.1")
+
+
     implementation("io.coil-kt:coil-compose:2.6.0")
     implementation("androidx.palette:palette-ktx:1.0.0")
 

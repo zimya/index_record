@@ -230,6 +230,7 @@ private fun RenderBlockNode(
                 RenderParagraph(node, onLinkClick, onFootnoteClick, footnoteRefRequesters)
             }
         }
+        is MdGif -> RenderGif(node.url, onLinkClick)
         is MdFencedCodeBlock -> RenderCodeBlock(node)
         is MdMathBlock -> RenderMathBlock(node.formula)
         is MdBlockQuote -> RenderBlockQuote(node, imageUrls, onImageClick, onLinkClick, onFootnoteClick, footnoteRefRequesters)

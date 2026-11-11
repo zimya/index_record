@@ -54,6 +54,7 @@ internal fun serializeNodeToMarkdown(node: MdNode, sb: StringBuilder) {
         is MdInlineMath -> sb.append("$").append(node.formula).append("$")
         is MdMathBlock -> sb.append("$$\n").append(node.formula.trim()).append("\n$$")
         is MdImage -> sb.append("![").append(node.altText).append("](").append(node.url).append(")")
+        is MdGif -> sb.append("[GIF](").append(node.url).append(")")
         is MdLink -> {
             sb.append("[")
             serializeChildren(node, sb)

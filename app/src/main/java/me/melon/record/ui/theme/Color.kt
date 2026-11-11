@@ -46,6 +46,8 @@ val TiebaLightText = Color(0xFF3050D6)
 val TiebaDarkContainer = Color(0xFF15224D)
 val TiebaDarkText = Color(0xFF8AA3FF)
 
+val WeiboOrange = Color(0xFFE96B10)
+
 // 𝕏 黑
 val XBlack = Color(0xFF000000)
 val XLightContainer = Color(0xFFF0F0F0)
@@ -80,6 +82,11 @@ fun getPlatformThemeColor(platform: String, isDark: Boolean): PlatformThemeColor
             PlatformThemeColor(TiebaBlue, TiebaDarkContainer, TiebaDarkText)
         } else {
             PlatformThemeColor(TiebaBlue, TiebaLightContainer, TiebaLightText)
+        }
+        "weibo", "com.sina.weibo", "com.weico.international" -> if (isDark) {
+            PlatformThemeColor(WeiboOrange, Color(0xFF3B2314), Color(0xFFFFB77A))
+        } else {
+            PlatformThemeColor(WeiboOrange, Color(0xFFFFF0E3), Color(0xFF963E00))
         }
         "twitter", "com.twitter.android" -> if (isDark) {
             PlatformThemeColor(XBlack, XDarkContainer, XDarkText)

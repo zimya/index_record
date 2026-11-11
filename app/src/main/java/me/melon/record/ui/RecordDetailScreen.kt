@@ -146,7 +146,7 @@ fun RecordDetailScreen(
             }
 
             val all = rootComments.toMutableList()
-            val seen = rootComments.map { it.platformId }.toMutableSet()
+            val seen = rootComments.map { it.platformId }.toMutableSet().apply { add(record.platformId) }
             var frontier = rootComments.map { it.platformId }
 
             while (frontier.isNotEmpty()) {
@@ -176,6 +176,12 @@ fun RecordDetailScreen(
                 if (record.platform == "zhihu" && record.recordType == "answer" && record.parentId.startsWith("zhihu_question_")) {
                     relatedRecord = box.query()
                         .equal(UniversalRecord_.platformId, record.parentId, io.objectbox.query.QueryBuilder.StringOrder.CASE_SENSITIVE)
+                        .build()
+                        .findFirst()
+                } else if (record.platform == "weibo" && record.parentId.isNotBlank()) {
+                    relatedRecord = box.query()
+                        .equal(UniversalRecord_.platformId, record.parentId, io.objectbox.query.QueryBuilder.StringOrder.CASE_SENSITIVE)
+                        .equal(UniversalRecord_.platform, "weibo", io.objectbox.query.QueryBuilder.StringOrder.CASE_SENSITIVE)
                         .build()
                         .findFirst()
                 } else if (record.platform == "douban" && record.parentId.startsWith("douban_")) {
@@ -269,7 +275,9 @@ fun RecordDetailScreen(
         }
 
         val result = mutableListOf<CommentRow>()
+        val visited = mutableSetOf(record.platformId)
         fun visit(node: UniversalRecord, depth: Int) {
+            if (!visited.add(node.platformId)) return
             result.add(CommentRow(node, depth))
             val children = childrenByParent[node.platformId].orEmpty().sortedBy { it.publishTime }
             for (c in children) visit(c, depth + 1)
@@ -415,7 +423,7 @@ fun RecordDetailScreen(
                         horizontalArrangement = Arrangement.spacedBy(8.dp),
                         verticalArrangement = Arrangement.spacedBy(8.dp)
                     ) {
-                        if (record.platform == "twitter") {
+                        if (record.platform == "twitter" || record.platform == "weibo") {
                             val likeCount = if (metadata.has("like_count") && !metadata.get("like_count").isJsonNull) {
                                 metadata.get("like_count").asLong
                             } else if (metadata.has("voteup_count") && !metadata.get("voteup_count").isJsonNull) {
@@ -549,7 +557,7 @@ fun RecordDetailScreen(
                             .fillMaxWidth()
                             .clickable { onOpenRecord(comment) }
                             .padding(
-                                start = (depth * 24).dp,
+                                start = (depth.coerceAtMost(4) * 24).dp,
                                 bottom = 12.dp
                             ),
                         color = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = if (depth > 0) 0.2f else 0.4f),

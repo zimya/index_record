@@ -13,6 +13,18 @@ import java.time.ZoneId
 class StatsCalculatorTest {
 
     @Test
+    fun testWeiboSourceApps() {
+        val fallback = UniversalRecord(platform = "weibo", recordType = "status")
+        val official = UniversalRecord(platform = "weibo", recordType = "status", sourceApp = "com.sina.weibo")
+        val international = UniversalRecord(platform = "weibo", recordType = "comment", sourceApp = "com.weico.international")
+        assertEquals("com.sina.weibo", StatsCalculator.resolveSourceApp(fallback))
+        assertEquals("com.sina.weibo", StatsCalculator.resolveSourceApp(official))
+        assertEquals("com.weico.international", StatsCalculator.resolveSourceApp(international))
+        val stats = StatsCalculator.computeState(listOf(fallback, official, international))
+        assertEquals(mapOf("com.sina.weibo" to 2, "com.weico.international" to 1), stats.topApps.toMap())
+    }
+
+    @Test
     fun testWordCountUtils() {
         val count1 = WordCountUtils.countWords("标题", "这是正文内容。")
         // 标(1) 题(1) 这(1) 是(1) 正(1) 文(1) 内(1) 容(1) -> 8

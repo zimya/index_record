@@ -33,6 +33,7 @@ import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import me.melon.record.settings.TweetRecordMode
+import me.melon.record.settings.WeiboRecordMode
 import me.melon.record.ui.theme.ThemeMode
 import me.melon.record.viewmodel.SettingsViewModel
 
@@ -41,6 +42,7 @@ import me.melon.record.viewmodel.SettingsViewModel
 fun SettingsScreen(viewModel: SettingsViewModel = viewModel()) {
     val themeMode by viewModel.themeMode.collectAsState()
     val tweetRecordMode by viewModel.tweetRecordMode.collectAsState()
+    val weiboRecordMode by viewModel.weiboRecordMode.collectAsState()
 
     Scaffold(
         contentWindowInsets = WindowInsets(0, 0, 0, 0),
@@ -85,6 +87,13 @@ fun SettingsScreen(viewModel: SettingsViewModel = viewModel()) {
                 options = listOf(TweetRecordMode.PUSH, TweetRecordMode.READ),
                 label = { if (it == TweetRecordMode.PUSH) "推送" else "阅读" },
                 onSelect = viewModel::setTweetRecordMode
+            )
+            SettingsDropdownRow(
+                title = "记录微博的形式",
+                selected = weiboRecordMode,
+                options = listOf(WeiboRecordMode.PUSH, WeiboRecordMode.READ),
+                label = { if (it == WeiboRecordMode.PUSH) "推送" else "阅读" },
+                onSelect = viewModel::setWeiboRecordMode
             )
         }
     }

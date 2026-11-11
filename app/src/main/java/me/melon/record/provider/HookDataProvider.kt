@@ -97,6 +97,8 @@ class HookDataProvider : ContentProvider() {
             "com.baidu.tieba",
             "com.xingin.xhs",
             "com.twitter.android",
+            "com.sina.weibo",
+            "com.weico.international",
             ctx.packageName
         )
         if (pkgs.none { it in allow }) throw SecurityException("caller not allowed")

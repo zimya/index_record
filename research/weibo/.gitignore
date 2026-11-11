@@ -1,0 +1,4 @@
+local/
+*.md
+*.json
+*.py

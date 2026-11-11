@@ -115,6 +115,7 @@ object StatsCalculator {
             "tieba" -> "com.baidu.tieba"
             "xiaohongshu", "xhs" -> "com.xingin.xhs"
             "twitter", "x" -> "com.twitter.android"
+            "weibo" -> "com.sina.weibo"
             else -> if (record.platform.isNotBlank()) record.platform else "unknown"
         }
     }

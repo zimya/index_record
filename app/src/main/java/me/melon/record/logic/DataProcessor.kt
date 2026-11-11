@@ -16,10 +16,47 @@ import me.melon.record.data.model.UniversalRecord
 import me.melon.record.data.model.UniversalRecord_
 import me.melon.record.parser.ParserRegistry
 import me.melon.record.parser.x.XParser
+import me.melon.record.parser.weibo.WeiboParser
 import me.melon.record.settings.RecordSettings
 import me.melon.record.parser.zhihu.ZhihuFeedParser
 import me.melon.record.parser.zhihu.ZhihuItemV2Parser
 import me.melon.record.parser.zhihu.ZhihuRelations
+
+/** Mutates only the incoming Weibo payload; generic identity/author fallbacks remain below. */
+internal fun mergeWeiboRecord(existing: UniversalRecord, incoming: UniversalRecord) {
+    if (existing.platform != "weibo" || incoming.platform != "weibo") return
+
+    fun metadata(value: String): JsonObject = runCatching {
+        JsonParser.parseString(value).asJsonObject
+    }.getOrElse { JsonObject() }
+    val oldMeta = metadata(existing.extraMetadata)
+    val newMeta = metadata(incoming.extraMetadata)
+    fun fullText(meta: JsonObject): Boolean = meta.get("full_text")?.let {
+        it.isJsonPrimitive && it.asJsonPrimitive.isBoolean && it.asBoolean
+    } == true
+
+    // is_long_text can mean a truncated preview, not a fetched full-text body.
+    val oldFull = fullText(oldMeta)
+    val newFull = fullText(newMeta)
+    val keepOld = existing.content.isNotBlank() && (
+        incoming.content.isBlank() ||
+            (oldFull && !newFull) ||
+            (oldFull == newFull && existing.content.length > incoming.content.length)
+        )
+    if (keepOld) incoming.content = existing.content
+
+    for ((key, value) in newMeta.entrySet()) {
+        val empty = value.isJsonNull ||
+            (value.isJsonPrimitive && value.asJsonPrimitive.isString && value.asString.isBlank()) ||
+            (value.isJsonArray && value.asJsonArray.size() == 0) ||
+            (value.isJsonObject && value.asJsonObject.size() == 0)
+        if (!empty && key != "full_text") oldMeta.add(key, value)
+    }
+    // Completeness belongs to the selected body, not to the latest response.
+    oldMeta.remove("full_text")
+    if (if (keepOld) oldFull else newFull) oldMeta.addProperty("full_text", true)
+    incoming.extraMetadata = oldMeta.toString()
+}
 
 object DataProcessor {
 
@@ -86,8 +123,10 @@ object DataProcessor {
                     val cleanUrl = if (raw.url.contains("?")) raw.url.substringBefore("?") else raw.url
                     try {
                         // 在本应用进程读取设置，避免 Hook 跨进程读取私有偏好设置。
-                        val records = if (XParser.canHandle(cleanUrl, raw) &&
-                            !RecordSettings.tweetRecordMode.shouldProcess(raw.url)
+                        val records = if ((XParser.canHandle(cleanUrl, raw) &&
+                            !RecordSettings.tweetRecordMode.shouldProcess(raw.url)) ||
+                            (WeiboParser.canHandle(cleanUrl, raw) &&
+                                !RecordSettings.weiboRecordMode.shouldProcess(raw.url))
                         ) {
                             emptyList()
                         } else {
@@ -114,6 +153,7 @@ object DataProcessor {
 
                                 if (existing != null) {
                                     record.id = existing.id
+                                    mergeWeiboRecord(existing, record)
                                     if (record.parentId.isBlank()) record.parentId = existing.parentId
                                     if (record.title.isBlank()) record.title = existing.title
                                     if (record.content.isBlank() || (record.recordType == "subject" && record.content == record.title)) {

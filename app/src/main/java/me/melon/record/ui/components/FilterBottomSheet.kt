@@ -279,12 +279,15 @@ private fun appLabel(pkg: String): String {
         "com.baidu.tieba" -> "贴吧"
         "com.xingin.xhs" -> "小红书"
         "com.twitter.android" -> "Twitter(X)"
+        "com.sina.weibo" -> "微博"
+        "com.weico.international" -> "微博国际版"
         else -> pkg
     }
 }
 
 private fun typeLabel(type: String): String {
     return when (type) {
+        "status" -> "微博"
         "question" -> "问题"
         "answer" -> "回答"
         "article" -> "文章"

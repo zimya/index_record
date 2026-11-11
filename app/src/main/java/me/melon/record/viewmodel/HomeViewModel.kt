@@ -62,7 +62,9 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
             "com.douban.frodo",
             "com.baidu.tieba",
             "com.xingin.xhs",
-            "com.twitter.android"
+            "com.twitter.android",
+            "com.sina.weibo",
+            "com.weico.international"
         )
         val options = if (Build.VERSION.SDK_INT >= 34) {
             BroadcastOptions.makeBasic()
@@ -137,6 +139,7 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
                 "tieba" -> "com.baidu.tieba"
                 "xiaohongshu" -> "com.xingin.xhs"
                 "twitter" -> "com.twitter.android"
+                "weibo" -> "com.sina.weibo"
                 else -> ""
             }
         }.filter { it.isNotBlank() }
@@ -370,6 +373,7 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
             "tieba" -> "com.baidu.tieba"
             "xiaohongshu" -> "com.xingin.xhs"
             "twitter" -> "com.twitter.android"
+            "weibo" -> "com.sina.weibo"
             else -> ""
         }
     }

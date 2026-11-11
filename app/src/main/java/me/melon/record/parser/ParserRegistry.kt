@@ -4,6 +4,7 @@ import me.melon.record.data.model.RawData
 import me.melon.record.data.model.UniversalRecord
 import me.melon.record.parser.douban.DoubanParser
 import me.melon.record.parser.x.XParser
+import me.melon.record.parser.weibo.WeiboParser
 import me.melon.record.parser.tieba.TiebaParser
 import me.melon.record.parser.zhihu.ZhihuParser
 
@@ -17,7 +18,8 @@ object ParserRegistry {
         ZhihuParser,
         DoubanParser,
         XParser,
-        TiebaParser
+        TiebaParser,
+        WeiboParser
     )
 
     fun findParser(cleanUrl: String, raw: RawData): RawDataParser? {

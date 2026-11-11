@@ -4,5 +4,7 @@
         <item>com.douban.frodo</item>
         <item>com.twitter.android</item>
         <item>com.baidu.tieba</item>
+        <item>com.sina.weibo</item>
+        <item>com.weico.international</item>
     </string-array>
 </resources>

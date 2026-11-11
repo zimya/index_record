@@ -48,6 +48,7 @@ fun RecordItem(record: UniversalRecord, searchQuery: String, onClick: () -> Unit
         "douban" -> "豆瓣"
         "tieba" -> "贴吧"
         "twitter" -> "Twitter(X)"
+        "weibo" -> "微博"
         "xiaohongshu" -> "小红书"
         else -> record.platform.replaceFirstChar { it.uppercase() }
     }
@@ -63,6 +64,7 @@ fun RecordItem(record: UniversalRecord, searchQuery: String, onClick: () -> Unit
         "interest" -> "短评"
         "subject" -> "条目"
         "tweet" -> "推文"
+        "status" -> "微博"
         else -> record.recordType
     }
 
@@ -70,7 +72,11 @@ fun RecordItem(record: UniversalRecord, searchQuery: String, onClick: () -> Unit
         if (record.platform == "tieba") TiebaMetadata(record) else null
     }
     val displayTitle = record.title.ifBlank {
-        tiebaMeta?.text("thread_title").orEmpty().ifBlank { "无标题" }
+        tiebaMeta?.text("thread_title").orEmpty().ifBlank {
+            if (record.platform == "weibo") {
+                if (record.recordType == "comment") "微博评论" else "${record.authorName.ifBlank { "微博用户" }}的微博"
+            } else "无标题"
+        }
     }
 
     HomeRecordCard(
@@ -160,7 +166,7 @@ fun RecordItem(record: UniversalRecord, searchQuery: String, onClick: () -> Unit
                 )
             }
 
-            if (record.platform == "twitter") {
+            if (record.platform == "twitter" || record.platform == "weibo") {
                 val twitterMeta = remember(record.extraMetadata) {
                     try {
                         JsonParser.parseString(record.extraMetadata).asJsonObject
@@ -263,10 +269,13 @@ private fun getPreviewText(record: UniversalRecord): String {
         else -> record.content
     }
 
+    val preview = if (record.platform == "weibo") {
+        raw.replace(Regex("!\\[[^\\]]*\\]\\([^\\n]*\\)"), "[图片]")
+    } else raw
     val text = try {
-        Jsoup.parse(raw).text()
+        Jsoup.parse(preview).text()
     } catch (_: Exception) {
-        raw
+        preview
     }
     return text.replace('\n', ' ').replace('\r', ' ').trim()
 }

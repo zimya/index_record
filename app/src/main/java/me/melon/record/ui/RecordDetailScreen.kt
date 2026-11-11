@@ -240,9 +240,8 @@ fun RecordDetailScreen(
         }
     }
 
-    // 数据未加载完成前不使用缓存的滚动状态，否则列表项不足时位置会被钳制并写回缓存
+    // 等列表项完整后再挂载列表，避免临时显示顶部以及钳制保存的滚动位置。
     val contentReady = commentsLoaded && relatedLoaded
-    val pendingListState = remember { LazyListState() }
 
     data class CommentRow(val record: UniversalRecord, val depth: Int)
 
@@ -306,12 +305,14 @@ fun RecordDetailScreen(
             )
         }
     ) { padding ->
+        if (!contentReady) return@Scaffold
+
         LazyColumn(
             modifier = Modifier
                 .padding(padding)
                 .fillMaxSize()
                 .padding(horizontal = 16.dp),
-            state = if (contentReady) listState else pendingListState
+            state = listState
         ) {
             item {
                 Spacer(modifier = Modifier.height(16.dp))

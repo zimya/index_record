@@ -217,17 +217,6 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
         navStack.add(record)
     }
 
-    fun openTiebaDetail(record: UniversalRecord) {
-        val index = navStack.indexOfLast {
-            it.platform == record.platform && it.platformId == record.platformId
-        }
-        if (index >= 0) {
-            lastNavAction = NavAction.POP
-            while (navStack.lastIndex > index) navStack.removeAt(navStack.lastIndex)
-        } else {
-            pushDetail(record)
-        }
-    }
 
     fun popDetail(): Boolean {
         if (navStack.isNotEmpty()) {

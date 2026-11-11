@@ -219,7 +219,7 @@ fun HomeScreen(viewModel: HomeViewModel = viewModel()) {
                             TiebaDetailScreen(
                                 record = targetRecord,
                                 onBack = { viewModel.popDetail() },
-                                onOpenRecord = { viewModel.openTiebaDetail(it) },
+                                onOpenRecord = { viewModel.pushDetail(it) },
                                 listState = viewModel.detailListState(targetRecord.platformId),
                                 firstFloorListState = viewModel.detailListState("${targetRecord.platformId}:first_floor_replies")
                             )

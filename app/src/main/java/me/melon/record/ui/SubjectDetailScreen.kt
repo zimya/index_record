@@ -113,8 +113,7 @@ fun SubjectDetailScreen(
     var relatedFilter by remember { mutableStateOf(RelatedFilter.ALL) }
     var relatedRecords by remember { mutableStateOf<List<UniversalRecord>>(emptyList()) }
     var contentReady by remember { mutableStateOf(false) }
-    // 数据未加载完成前不使用缓存的滚动状态，否则列表项不足时位置会被钳制并写回缓存
-    val pendingListState = remember { LazyListState() }
+    // 等列表项完整后再挂载列表，避免临时显示顶部以及钳制保存的滚动位置。
 
     // 监听与主动查询条目本体最新数据以及关联短评长评
     LaunchedEffect(record.platformId) {
@@ -310,13 +309,15 @@ fun SubjectDetailScreen(
             )
         }
     ) { innerPadding ->
+        if (!contentReady) return@Scaffold
+
         LazyColumn(
             modifier = Modifier
                 .fillMaxSize()
                 .background(animatedBgColor)
                 .padding(innerPadding)
                 .padding(horizontal = 16.dp),
-            state = if (contentReady) listState else pendingListState
+            state = listState
         ) {
             // --- 顶部头部：海报 + 标题 + 原名 + 年份 + 基础标签 ---
             item {

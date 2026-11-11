@@ -48,6 +48,7 @@ fun RelatedRecordCard(
         record.recordType == "subject" -> "所属豆瓣条目"
         record.recordType == "question" -> "对应知乎问题"
         platform == "twitter" -> "关联 X 推文"
+        platform == "tieba" -> "所属贴吧主帖"
         else -> "关联内容"
     }
     val title = remember(record.title, record.content, record.authorName) {

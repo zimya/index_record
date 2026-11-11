@@ -290,6 +290,8 @@ private fun typeLabel(type: String): String {
         "article" -> "文章"
         "comment" -> "评论"
         "topic" -> "帖子"
+        "thread" -> "主帖"
+        "floor" -> "楼层"
         "review" -> "长评"
         "interest" -> "短评"
         "subject" -> "条目"

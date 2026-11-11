@@ -131,6 +131,9 @@ object DataProcessor {
                                         record.extraMetadata = ZhihuRelations.mergeQuestionExtra(existing.extraMetadata, record.extraMetadata)
                                     } else if (record.platform == "douban" && record.recordType == "subject") {
                                         record.extraMetadata = me.melon.record.parser.douban.DoubanRelations.mergeSubjectExtra(existing.extraMetadata, record.extraMetadata)
+                                    } else if (record.platform == "tieba") {
+                                        record.content = me.melon.record.parser.tieba.TiebaRelations.mergeRecordContent(existing, record)
+                                        record.extraMetadata = me.melon.record.parser.tieba.TiebaRelations.mergeExtra(existing.extraMetadata, record.extraMetadata)
                                     } else if (record.platform == "twitter") {
                                         record.extraMetadata = me.melon.record.parser.x.XRelations.mergeTweetExtra(existing.extraMetadata, record.extraMetadata)
                                     }

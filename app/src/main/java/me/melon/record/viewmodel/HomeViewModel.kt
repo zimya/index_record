@@ -214,6 +214,18 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
         navStack.add(record)
     }
 
+    fun openTiebaDetail(record: UniversalRecord) {
+        val index = navStack.indexOfLast {
+            it.platform == record.platform && it.platformId == record.platformId
+        }
+        if (index >= 0) {
+            lastNavAction = NavAction.POP
+            while (navStack.lastIndex > index) navStack.removeAt(navStack.lastIndex)
+        } else {
+            pushDetail(record)
+        }
+    }
+
     fun popDetail(): Boolean {
         if (navStack.isNotEmpty()) {
             lastNavAction = NavAction.POP
@@ -325,6 +337,7 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
 
         return data.asSequence()
             .filter { record ->
+                if (record.platform == "tieba" && record.recordType != "thread") return@filter false
                 if (!allowComments && record.recordType == "comment") return@filter false
                 if (start != null && record.captureTime < start) return@filter false
                 if (end != null && record.captureTime > end) return@filter false
@@ -342,6 +355,7 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
                         record.platform.contains(q, ignoreCase = true) ||
                         record.recordType.contains(q, ignoreCase = true) ||
                         record.extraMetadata.contains(q, ignoreCase = true) ||
+                        record.sourceUrl.contains(q, ignoreCase = true) ||
                         resolveSourceApp(record).contains(q, ignoreCase = true)
             }
             .toList()

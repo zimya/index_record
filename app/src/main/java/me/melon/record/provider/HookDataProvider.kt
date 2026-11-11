@@ -12,7 +12,7 @@ import me.melon.record.logic.DataProcessor
 import io.objectbox.Box
 import java.io.File
 import java.io.FileNotFoundException
-import java.nio.charset.StandardCharsets
+import me.melon.record.sync.RawPayloadCodec
 
 class HookDataProvider : ContentProvider() {
 
@@ -66,7 +66,7 @@ class HookDataProvider : ContentProvider() {
                 if (!file.exists()) return null
                 val bytes = file.readBytes()
                 file.delete()
-                String(bytes, StandardCharsets.UTF_8)
+                RawPayloadCodec.encode(bytes, host)
             } else {
                 values.getAsString("json") ?: ""
             }

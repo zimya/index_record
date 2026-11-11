@@ -33,6 +33,7 @@ import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import com.google.gson.JsonParser
 import me.melon.record.data.model.UniversalRecord
+import me.melon.record.viewmodel.TiebaMetadata
 import me.melon.record.ui.theme.getPlatformThemeColor
 import me.melon.record.ui.theme.isAppInDarkTheme
 import org.jsoup.Jsoup
@@ -54,13 +55,22 @@ fun RecordItem(record: UniversalRecord, searchQuery: String, onClick: () -> Unit
         "question" -> "问题"
         "answer" -> "回答"
         "article" -> "文章"
-        "comment" -> "评论"
+        "comment" -> if (record.platform == "tieba") "楼中楼" else "评论"
+        "thread" -> "主帖"
+        "floor" -> "楼层"
         "topic" -> "帖子"
         "review" -> "长评"
         "interest" -> "短评"
         "subject" -> "条目"
         "tweet" -> "推文"
         else -> record.recordType
+    }
+
+    val tiebaMeta = remember(record.platform, record.extraMetadata) {
+        if (record.platform == "tieba") TiebaMetadata(record) else null
+    }
+    val displayTitle = record.title.ifBlank {
+        tiebaMeta?.text("thread_title").orEmpty().ifBlank { "无标题" }
     }
 
     HomeRecordCard(
@@ -102,12 +112,28 @@ fun RecordItem(record: UniversalRecord, searchQuery: String, onClick: () -> Unit
             Spacer(modifier = Modifier.height(8.dp))
 
             Text(
-                text = highlightText(record.title.ifEmpty { "无标题" }, searchQuery),
+                text = highlightText(displayTitle, searchQuery),
                 style = MaterialTheme.typography.titleMedium,
                 fontWeight = FontWeight.Bold,
                 maxLines = 2,
                 overflow = TextOverflow.Ellipsis
             )
+
+            if (tiebaMeta != null) {
+                val contextLabel = listOfNotNull(
+                    tiebaMeta.text("forum_name").takeIf { it.isNotBlank() }?.let { "${it}吧" },
+                    tiebaMeta.number("floor")?.takeIf { it > 0 }?.let { "$it 楼" }
+                ).joinToString(" · ")
+                if (contextLabel.isNotBlank()) {
+                    Text(
+                        text = highlightText(contextLabel, searchQuery),
+                        style = MaterialTheme.typography.labelSmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis
+                    )
+                }
+            }
 
             Spacer(modifier = Modifier.height(4.dp))
 

@@ -14,7 +14,7 @@ import me.melon.record.ObjectBox
 import me.melon.record.data.model.RawData
 import me.melon.record.logic.DataProcessor
 import java.io.FileInputStream
-import java.nio.charset.StandardCharsets
+
 
 object RecordSyncBridge : Binder() {
     private const val TAG = "RecordSyncBridge"
@@ -56,7 +56,7 @@ object RecordSyncBridge : Binder() {
                     try {
                         val json = FileInputStream(pfd.fileDescriptor).use { fis ->
                             val bytes = fis.readBytes()
-                            String(bytes, StandardCharsets.UTF_8)
+                            RawPayloadCodec.encode(bytes, hostApp)
                         }
                         success = saveRawData(url, hostApp, json, timestamp)
                     } catch (e: Exception) {

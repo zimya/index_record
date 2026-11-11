@@ -1,0 +1,4 @@
+# Raw host responses and device screenshots can contain personal/session data.
+*
+!.gitignore
+!README.md

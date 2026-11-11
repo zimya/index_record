@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<network-security-config>
+    <base-config cleartextTrafficPermitted="false" />
+    <!-- Observed Tieba avatar/emoticon responses supply HTTP URLs on these exact hosts. -->
+    <domain-config cleartextTrafficPermitted="true">
+        <domain>tb.himg.baidu.com</domain>
+        <domain>tb1.bdstatic.com</domain>
+    </domain-config>
+</network-security-config>

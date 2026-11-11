@@ -1,0 +1,75 @@
+{
+  "_fixture_source": "research/tieba/1794413979309629000.json; selected actual fields, values unchanged; decoded PbFloorResIdl",
+  "error": {
+    "errmsg": "",
+    "errorno": "0",
+    "usermsg": ""
+  },
+  "data": {
+    "thread": {
+      "first_post_id": "0",
+      "id": "11177080968",
+      "reply_num": "144",
+      "title": "反T1装甲就剩俩了"
+    },
+    "forum": {
+      "id": "17019292",
+      "name": "抗压背锅"
+    },
+    "page": {
+      "current_page": "1",
+      "has_more": "0",
+      "total_count": "1"
+    },
+    "post": {
+      "author_id": "0",
+      "floor": "5",
+      "id": "154118752470",
+      "sub_post_number": "0",
+      "tid": "0",
+      "time": "1794105035",
+      "title": "回复：反T1装甲就剩俩了",
+      "author": {
+        "id": "2849386814",
+        "name": "祈祷从心开始丶",
+        "name_show": "祈祷从心开始丶",
+        "portrait": "tb.1.6fcb7f.2FX69SwDMKGrbOnBwhVCLw?t=1794413977"
+      },
+      "content": [
+        {
+          "c": "",
+          "link": "",
+          "src": "",
+          "text": "身子和腿还在",
+          "type": "0",
+          "uid": "0"
+        }
+      ]
+    },
+    "subpost_list": [
+      {
+        "author_id": "0",
+        "floor": "0",
+        "id": "154131512696",
+        "time": "1794407752",
+        "title": "",
+        "author": {
+          "id": "167845888",
+          "name": "920696726",
+          "name_show": "920696726",
+          "portrait": "tb.1.4512073e.FseQElwaKKfWHvAsJc_Rqg?t=1794413977"
+        },
+        "content": [
+          {
+            "c": "",
+            "link": "",
+            "src": "",
+            "text": "器官活化，互相掐架",
+            "type": "0",
+            "uid": "0"
+          }
+        ]
+      }
+    ]
+  }
+}

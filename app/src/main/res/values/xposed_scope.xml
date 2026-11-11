@@ -3,5 +3,6 @@
         <item>com.zhihu.android</item>
         <item>com.douban.frodo</item>
         <item>com.twitter.android</item>
+        <item>com.baidu.tieba</item>
     </string-array>
 </resources>

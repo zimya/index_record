@@ -215,7 +215,15 @@ fun HomeScreen(viewModel: HomeViewModel = viewModel()) {
                         },
                         label = "DetailStackTransition"
                     ) { targetRecord ->
-                        if (targetRecord.recordType == "comment") {
+                        if (targetRecord.platform == "tieba" && targetRecord.recordType in setOf("thread", "floor", "comment")) {
+                            TiebaDetailScreen(
+                                record = targetRecord,
+                                onBack = { viewModel.popDetail() },
+                                onOpenRecord = { viewModel.openTiebaDetail(it) },
+                                listState = viewModel.detailListState(targetRecord.platformId),
+                                firstFloorListState = viewModel.detailListState("${targetRecord.platformId}:first_floor_replies")
+                            )
+                        } else if (targetRecord.recordType == "comment") {
                             CommentDetailScreen(
                                 record = targetRecord,
                                 onBack = { viewModel.popDetail() },

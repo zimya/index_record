@@ -1,0 +1,38 @@
+[
+  {
+    "source": "1794417060889_19771_127037029400026.bin",
+    "fixture": "page-empty.bin",
+    "url": "https://tiebac.baidu.com/c/f/pb/page?format=protobuf",
+    "original_bytes": 7486,
+    "original_sha256": "0bba712802e577dd5d5735fa41135cf88e8b4cf4a195b7f822699bf15d069fc1",
+    "fixture_bytes": 26,
+    "fixture_sha256": "694ec0ae51ff0b6debad867a478aee444f25a4a00b58d2c794603d30f4c5819b"
+  },
+  {
+    "source": "1794417075762_19771_127051900145646.bin",
+    "fixture": "list-149242.bin",
+    "url": "https://tiebac.baidu.com/c/f/pb/list?format=protobuf",
+    "original_bytes": 149242,
+    "original_sha256": "2c5e25c505fd52f9b4f9ff95f2716aae6e6b90f754581589cbbc6848658a2aa8",
+    "fixture_bytes": 11090,
+    "fixture_sha256": "d15b380ed45a05bb3181fe5f15eb6f0c3725c956b47b6675388f020b09b0e1b8"
+  },
+  {
+    "source": "1794417075778_19771_127051915726844.bin",
+    "fixture": "list-156592.bin",
+    "url": "https://tiebac.baidu.com/c/f/pb/list?format=protobuf",
+    "original_bytes": 156592,
+    "original_sha256": "ffd1d3f28fc47ebe790cc06eeebc5aae5d243fcc1fc12d337271c39f56c96274",
+    "fixture_bytes": 11712,
+    "fixture_sha256": "1340d37792bf9d4fe6da6e93df0e2ab86b91cbf73eccf549c8fadce282e850b2"
+  },
+  {
+    "source": "1794417546508_19771_127522652130362.bin",
+    "fixture": "floor-41963.bin",
+    "url": "https://tiebac.baidu.com/c/f/pb/floor?format=protobuf",
+    "original_bytes": 41963,
+    "original_sha256": "d6c47d9a607bbbd53501e75c15213050c497093d6d291a4259608d535502e5aa",
+    "fixture_bytes": 4352,
+    "fixture_sha256": "4a47575ef74c4b37f652f217ba2083653d66140084d3c08c8e88eeff2d43ea52"
+  }
+]

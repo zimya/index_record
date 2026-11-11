@@ -78,7 +78,7 @@ import java.util.Locale
 private enum class CommentSort { DEFAULT, LATEST }
 
 @Composable
-private fun MetadataBadge(icon: ImageVector, text: String) {
+internal fun MetadataBadge(icon: ImageVector, text: String) {
     Surface(
         color = MaterialTheme.colorScheme.tertiaryContainer,
         shape = MaterialTheme.shapes.small

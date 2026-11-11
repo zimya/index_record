@@ -1,0 +1,12 @@
+base.apk
+frida-server*
+frida-release.json
+tools/
+*.log
+window.xml
+*-cache.bin
+*.java
+*.bundle.js
+[0-9]*.json
+*.js
+*.xml

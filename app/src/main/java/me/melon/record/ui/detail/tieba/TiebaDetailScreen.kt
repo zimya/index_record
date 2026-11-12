@@ -5,7 +5,6 @@ import android.net.Uri
 import android.widget.Toast
 import androidx.activity.compose.BackHandler
 
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -51,6 +50,7 @@ import me.melon.record.ui.components.DetailTopAppBar
 import me.melon.record.ui.components.ImageViewerDialog
 import me.melon.record.ui.components.RelatedRecordCard
 import me.melon.record.viewmodel.TiebaMetadata
+import kotlinx.coroutines.delay
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -69,6 +69,7 @@ fun TiebaDetailScreen(
         viewerUrls = urls
         viewerIndex = index
     }
+    var highlightedReplyId by remember(record.platformId) { mutableStateOf<String?>(null) }
     val current = data.current
     val isThread = current.recordType == "thread" && !showFirstFloorReplies
     val floor = data.floor
@@ -88,11 +89,16 @@ fun TiebaDetailScreen(
 
     // A search result for a sub-reply opens its owning floor and locates that reply.
     LaunchedEffect(record.platformId, data.loaded) {
-        if (data.loaded && current.recordType == "comment" &&
-            listState.firstVisibleItemIndex == 0 && listState.firstVisibleItemScrollOffset == 0
-        ) {
+        if (data.loaded && current.recordType == "comment") {
             val index = replies.indexOfFirst { it.platformId == current.platformId }
-            if (index >= 0) listState.scrollToItem(index + 1)
+            if (index >= 0) {
+                if (listState.firstVisibleItemIndex == 0 && listState.firstVisibleItemScrollOffset == 0) {
+                    listState.scrollToItem(index + 1)
+                }
+                highlightedReplyId = current.platformId
+                delay(1_000)
+                highlightedReplyId = null
+            }
         }
     }
 
@@ -204,8 +210,8 @@ fun TiebaDetailScreen(
                 if (isThread) {
                     items(data.floors, key = { it.platformId }) { post ->
                         Surface(
-                            modifier = Modifier.padding(horizontal = 16.dp).fillMaxWidth()
-                                .clickable { onOpenRecord(post) },
+                            onClick = { onOpenRecord(post) },
+                            modifier = Modifier.padding(horizontal = 16.dp).fillMaxWidth(),
                             shape = MaterialTheme.shapes.medium
                         ) {
                             Column(Modifier.padding(12.dp)) {
@@ -221,7 +227,7 @@ fun TiebaDetailScreen(
                     }
                 } else {
                     items(replies, key = { it.platformId }) { reply ->
-                        val selected = current.recordType == "comment" && reply.platformId == current.platformId
+                        val selected = reply.platformId == highlightedReplyId
                         Surface(
                             modifier = Modifier.padding(horizontal = 16.dp).fillMaxWidth(),
                             shape = MaterialTheme.shapes.medium,

@@ -30,7 +30,7 @@ internal fun TiebaReplyPreview(
         color = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f),
         shape = MaterialTheme.shapes.small
     ) {
-        Column(Modifier.padding(10.dp)) {
+        Column(Modifier.padding(vertical = 10.dp)) {
             // Text(
             //     "层主：${owner.authorName.ifBlank { "昵称未记录" }}",
             //     style = MaterialTheme.typography.labelMedium,
@@ -46,7 +46,10 @@ internal fun TiebaReplyPreview(
                 val target = meta.text("reply_to_name").ifBlank { meta.text("reply_to_id") }
                 Text(
                     "${reply.authorName.ifBlank { "昵称未记录" }}${if (target.isBlank() || preview.startsWith("回复")) "" else " 回复 $target"}：$preview",
-                    modifier = Modifier.fillMaxWidth().clickable { onOpenRecord(reply) }.padding(vertical = 6.dp),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .clickable { onOpenRecord(reply) }
+                        .padding(horizontal = 10.dp, vertical = 6.dp),
                     style = MaterialTheme.typography.bodySmall,
                     maxLines = 2,
                     overflow = TextOverflow.Ellipsis

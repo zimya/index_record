@@ -46,7 +46,7 @@ fun RecordItem(record: UniversalRecord, searchQuery: String, onClick: () -> Unit
         "zhihu" -> "知乎"
         "douban" -> "豆瓣"
         "tieba" -> "贴吧"
-        "twitter" -> "Twitter(X)"
+        "twitter" -> "𝕏"
         "weibo" -> "微博"
         "xiaohongshu" -> "小红书"
         else -> record.platform.replaceFirstChar { it.uppercase() }

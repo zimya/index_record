@@ -94,12 +94,6 @@ internal fun HeatmapSection(
                 Spacer(modifier = Modifier.height(16.dp))
 
                 if (topApps.isNotEmpty()) {
-                    Text(
-                        "应用分布榜单",
-                        style = MaterialTheme.typography.labelMedium,
-                        fontWeight = FontWeight.SemiBold,
-                        color = MaterialTheme.colorScheme.secondary
-                    )
                     Spacer(modifier = Modifier.height(8.dp))
                     FlowRow(
                         modifier = Modifier.fillMaxWidth(),

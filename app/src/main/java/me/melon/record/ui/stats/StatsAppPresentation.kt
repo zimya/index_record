@@ -28,7 +28,7 @@ fun appLabel(pkg: String): String {
         "com.douban.frodo", "douban" -> "豆瓣"
         "com.baidu.tieba", "tieba" -> "贴吧"
         "com.xingin.xhs", "xiaohongshu" -> "小红书"
-        "com.twitter.android", "twitter" -> "Twitter(X)"
+        "com.twitter.android", "twitter" -> "𝕏"
         "com.sina.weibo", "weibo" -> "微博"
         "com.weico.international" -> "微博国际版"
         else -> if (pkg.isBlank() || pkg == "unknown") "其他" else pkg

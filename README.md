@@ -43,7 +43,7 @@
 - [x] **百度贴吧** (主帖、楼层、楼中楼)
 - [x] **Twitter (X)** (推文)
 - [x] **微博** (博文)
-- [x] Threads
+- [x] **Threads**（thread）
 - [ ] Reddit
 - [ ] 酷安
 - [ ] 虎扑

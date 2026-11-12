@@ -72,27 +72,27 @@ private fun queryTiebaDetail(record: UniversalRecord): TiebaDetailData {
     val current = find(record.platformId) ?: record
     val parent = if (current.recordType == "comment") find(current.parentId) else null
     val threadId = when {
-        current.recordType == "thread" -> current.platformId
+        current.recordType == "lou" -> current.platformId
         current.parentId.startsWith("tieba_thread_") -> current.parentId
-        parent?.recordType == "thread" -> parent.platformId
+        parent?.recordType == "lou" -> parent.platformId
         parent?.parentId?.startsWith("tieba_thread_") == true -> parent.parentId
         else -> TiebaMetadata(current).text("thread_id").takeIf { it.isNotBlank() }
             ?.let { "tieba_thread_$it" }.orEmpty()
     }
-    val thread = if (current.recordType == "thread") current else find(threadId)
-        ?.takeIf { it.recordType == "thread" }
+    val thread = if (current.recordType == "lou") current else find(threadId)
+        ?.takeIf { it.recordType == "lou" }
     val floor = when (current.recordType) {
-        "thread", "floor" -> current
-        else -> parent?.takeIf { it.recordType == "floor" || it.recordType == "thread" }
+        "lou", "floor" -> current
+        else -> parent?.takeIf { it.recordType == "floor" || it.recordType == "lou" }
     }
-    val roots = if (current.recordType == "thread") children(listOf(current.platformId)) else emptyList()
+    val roots = if (current.recordType == "lou") children(listOf(current.platformId)) else emptyList()
     val floors = roots.filter { it.recordType == "floor" }
         .sortedWith(compareBy<UniversalRecord> {
             TiebaMetadata(it).number("floor")?.takeIf { n -> n > 0 } ?: Long.MAX_VALUE
         }.thenBy { it.platformId })
     val replyParents = buildList {
         addAll(floors.map { it.platformId })
-        if (current.recordType != "thread") floor?.let { add(it.platformId) }
+        if (current.recordType != "lou") floor?.let { add(it.platformId) }
         if (current.recordType == "comment" && current.parentId.isNotBlank()) add(current.parentId)
     }
     val replies = (roots.filter { it.recordType == "comment" } +

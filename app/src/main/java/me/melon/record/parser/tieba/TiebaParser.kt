@@ -141,7 +141,7 @@ object TiebaParser : RawDataParser {
             val time = post.number("time").takeIf { it > 0 }
                 ?: if (isThread) thread.number("create_time", "createTime") else 0L
             val record = UniversalRecord(
-                platform = platform, recordType = if (isSub) "comment" else if (isThread) "thread" else "floor",
+                platform = platform, recordType = if (isSub) "comment" else if (isThread) "lou" else "floor",
                 sourceApp = raw.hostApp.ifBlank { "com.baidu.tieba" },
                 platformId = if (isThread) threadId else "tieba_post_$pid",
                 title = if (isThread) title.ifBlank { post.text("title") } else "",

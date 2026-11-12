@@ -286,7 +286,7 @@ private fun appLabel(pkg: String): String {
     }
 }
 
-private fun typeLabel(type: String): String {
+internal fun typeLabel(type: String): String {
     return when (type) {
         "status" -> "微博"
         "question" -> "问题"
@@ -295,7 +295,8 @@ private fun typeLabel(type: String): String {
         "pin" -> "想法"
         "comment" -> "评论"
         "topic" -> "帖子"
-        "thread" -> "主帖"
+        "lou" -> "贴吧主帖"
+        "thread" -> "thread"
         "floor" -> "楼层"
         "review" -> "长评"
         "interest" -> "短评"

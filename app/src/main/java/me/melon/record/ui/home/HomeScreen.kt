@@ -143,7 +143,7 @@ fun HomeScreen(viewModel: HomeViewModel = viewModel()) {
                         },
                         label = "DetailStackTransition"
                     ) { targetRecord ->
-                        if (targetRecord.platform == "tieba" && targetRecord.recordType in setOf("thread", "floor", "comment")) {
+                        if (targetRecord.platform == "tieba" && targetRecord.recordType in setOf("lou", "floor", "comment")) {
                             TiebaDetailScreen(
                                 record = targetRecord,
                                 onBack = { viewModel.popDetail() },

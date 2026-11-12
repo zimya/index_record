@@ -1,6 +1,7 @@
 package me.melon.record
 
 import android.content.Context
+
 import me.melon.record.data.model.MyObjectBox // 编译后自动生成的
 import io.objectbox.BoxStore
 
@@ -14,6 +15,7 @@ object ObjectBox {
     val isInitialized: Boolean
         get() = ::store.isInitialized
 
+    @Synchronized
     fun init(context: Context) {
         if (!::store.isInitialized) {
             store = MyObjectBox.builder()

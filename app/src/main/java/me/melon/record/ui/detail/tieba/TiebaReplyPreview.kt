@@ -24,7 +24,7 @@ internal fun TiebaReplyPreview(
     onOpenFloor: () -> Unit,
     onOpenRecord: (UniversalRecord) -> Unit
 ) {
-    if (replies.isEmpty() && (owner.recordType == "thread" || TiebaMetadata(owner).number("reply_count") == 0L)) return
+    if (replies.isEmpty() && (owner.recordType == "lou" || TiebaMetadata(owner).number("reply_count") == 0L)) return
     Surface(
         modifier = Modifier.fillMaxWidth().padding(top = 10.dp),
         color = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f),

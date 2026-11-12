@@ -21,7 +21,7 @@ data class UniversalRecord(
 
     // 1. 来源标识 (Routing)
     @Index var platform: String = "",     // 平台： "zhihu", "douban", "twitter", "tieba"
-    @Index var recordType: String = "",   // 类型： "article", "answer", "comment", "tweet", "thread"
+    @Index var recordType: String = "",   // 类型： "article", "answer", "comment", "tweet", "thread"（Threads 主帖）, "lou"（贴吧主帖）
     @Index var sourceApp: String? = null,
 
     // 2. 唯一标识 (Deduplication) - 用于防止重复记录同一条内容

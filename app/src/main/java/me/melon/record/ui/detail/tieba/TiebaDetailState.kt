@@ -19,7 +19,7 @@ internal fun rememberTiebaDetailData(record: UniversalRecord): TiebaDetailData {
 }
 
 internal fun tiebaFloorLabel(record: UniversalRecord): String {
-    if (record.recordType == "thread") return "1 楼 · 首楼"
+    if (record.recordType == "lou") return "1 楼 · 首楼"
     val floor = TiebaMetadata(record).number("floor")?.takeIf { it > 0 }
     return floor?.let { "$it 楼" } ?: "楼号未记录"
 }

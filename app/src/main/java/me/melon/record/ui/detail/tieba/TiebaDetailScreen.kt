@@ -71,7 +71,7 @@ fun TiebaDetailScreen(
     }
     var highlightedReplyId by remember(record.platformId) { mutableStateOf<String?>(null) }
     val current = data.current
-    val isThread = current.recordType == "thread" && !showFirstFloorReplies
+    val isThread = current.recordType == "lou" && !showFirstFloorReplies
     val floor = data.floor
     val parentId = floor?.platformId ?: current.parentId
     val replies = data.repliesByParent[parentId].orEmpty()

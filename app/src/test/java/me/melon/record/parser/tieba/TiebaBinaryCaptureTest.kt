@@ -33,8 +33,8 @@ class TiebaBinaryCaptureTest {
     private fun assertList(records: List<UniversalRecord>) {
         assertEquals(34, records.size)
         assertEquals(34, records.map { it.platformId }.toSet().size)
-        assertEquals(mapOf("thread" to 1, "floor" to 15, "comment" to 18), records.groupingBy { it.recordType }.eachCount())
-        val first = records.single { it.recordType == "thread" }
+        assertEquals(mapOf("lou" to 1, "floor" to 15, "comment" to 18), records.groupingBy { it.recordType }.eachCount())
+        val first = records.single { it.recordType == "lou" }
         assertEquals(threadId, first.platformId)
         assertEquals("154122455593", meta(first).text("post_id"))
         assertEquals(title, first.title)
@@ -42,7 +42,7 @@ class TiebaBinaryCaptureTest {
         assertEquals(1794191960000L, first.publishTime)
         assertEquals(88L, meta(first).number("reply_count"))
                 assertEquals(19L, meta(first).number("favlists_count"))
-                assertTrue(records.filter { it.recordType != "thread" }.none { meta(it).has("favlists_count") })
+                assertTrue(records.filter { it.recordType != "lou" }.none { meta(it).has("favlists_count") })
         assertEquals(1L, meta(first).number("floor"))
         val image = meta(first).objects("content_segments").single { it.number("type") == 3L }
         assertEquals(image.text("origin_src"), meta(first).array("image_urls").single().asString)
@@ -92,7 +92,7 @@ class TiebaBinaryCaptureTest {
         assertEquals(19L, thread.number("collect_num"))
         fun mainPost() = TiebaParser.parse(
             RawData(url = listUrl, json = root.toString()), listUrl.substringBefore('?')
-        ).single { it.recordType == "thread" }
+        ).single { it.recordType == "lou" }
         thread.addProperty("collect_num", 0)
         assertEquals(0L, meta(mainPost()).get("favlists_count").asLong)
         thread.remove("collect_num")
@@ -237,7 +237,7 @@ class TiebaBinaryCaptureTest {
                 val metadata = meta(record)
                 val tid = metadata.text("thread_id")
                 val pid = metadata.text("post_id")
-                val expectedUrl = if (record.recordType == "thread") "https://tieba.baidu.com/p/$tid"
+                val expectedUrl = if (record.recordType == "lou") "https://tieba.baidu.com/p/$tid"
                     else "https://tieba.baidu.com/p/$tid?pid=$pid#$pid"
                 assertEquals(expectedUrl, record.sourceUrl)
                 assertEquals(url, metadata.text("capture_url"))

@@ -52,11 +52,11 @@ class TiebaParserTest {
             post(pid, 5, b(15, wire(n(1, pid), b(2, sub(301)))))
         ), url)
         assertEquals(4, records.size)
-        assertEquals("https://tieba.baidu.com/p/$tid", records.single { it.recordType == "thread" }.sourceUrl)
+        assertEquals("https://tieba.baidu.com/p/$tid", records.single { it.recordType == "lou" }.sourceUrl)
         for (record in records) {
             assertEquals(url, meta(record).text("capture_url"))
             val postId = meta(record).text("post_id")
-            if (record.recordType != "thread")
+            if (record.recordType != "lou")
                 assertEquals("https://tieba.baidu.com/p/$tid?pid=$postId#$postId", record.sourceUrl)
         }
         assertEquals("https://tieba.baidu.com/p/$tid?pid=300#300", records.single { it.platformId == "tieba_post_300" }.sourceUrl)
@@ -104,7 +104,7 @@ class TiebaParserTest {
             post(pid, 5, b(5, text("直接回帖")), n(13, 9), n(19, 42), b(15, preview))
         ))
         assertEquals(4, records.size)
-        val main = records.single { it.recordType == "thread" }
+        val main = records.single { it.recordType == "lou" }
         assertEquals("tieba_thread_$tid", main.platformId)
         assertEquals("", main.parentId)
         assertEquals("真实标题", main.title)
@@ -145,7 +145,7 @@ class TiebaParserTest {
 
     @Test fun floorResponseForFirstFloorAttachesCommentsToThread() {
         val records = parse(b(2, wire(b(3, post(100, 1)), b(4, sub(302)), b(5, thread()))), floorUrl)
-        assertEquals(listOf("thread", "comment"), records.map { it.recordType })
+        assertEquals(listOf("lou", "comment"), records.map { it.recordType })
         assertEquals("tieba_thread_$tid", records[1].parentId)
     }
 
@@ -161,7 +161,7 @@ class TiebaParserTest {
         val first = post(100, 0, n(19, 42), b(5, text("完整正文")))
         val records = parse(b(2, wire(b(38, first), b(6, first), b(8, thread()), b(13, user()))))
         assertEquals(1, records.size)
-        assertEquals("thread", records.single().recordType)
+        assertEquals("lou", records.single().recordType)
         assertEquals("昵称", records.single().authorName)
     }
 
@@ -292,7 +292,7 @@ class TiebaParserTest {
 
     @Test fun modernPageFirstFloorAndFloorReplyCountUseDecompiledTags() {
         val first = parse(b(2, wire(b(97, post(100, 0)), b(8, thread())))).single()
-        assertEquals("thread", first.recordType)
+        assertEquals("lou", first.recordType)
         val floor = parse(b(2, wire(b(3, post(pid, 5)), b(5, thread()), n(13, 27))), floorUrl).single()
         assertEquals(27L, meta(floor).number("reply_count"))
     }
@@ -303,7 +303,7 @@ class TiebaParserTest {
         val url = "https://tiebac.baidu.com/c/f/pb/list?format=protobuf"
         assertTrue(TiebaParser.canHandle(url, RawData()))
         val records = parse(bytes, url)
-        assertEquals(listOf("thread", "floor"), records.map { it.recordType })
+        assertEquals(listOf("lou", "floor"), records.map { it.recordType })
         assertEquals("昵称", records[0].authorName)
         assertEquals("列表贴吧", meta(records[1]).text("forum_name"))
         assertEquals(2L, meta(records[1]).number("page"))

@@ -24,6 +24,7 @@ import me.melon.record.data.model.UniversalRecord
 import me.melon.record.data.model.UniversalRecord_
 import me.melon.record.logic.DataProcessor
 
+
 class HomeViewModel(application: Application) : AndroidViewModel(application) {
 
     data class HomeFilter(
@@ -331,7 +332,7 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
 
         return data.asSequence()
             .filter { record ->
-                if (record.platform == "tieba" && record.recordType != "thread") return@filter false
+                if (record.platform == "tieba" && record.recordType != "lou") return@filter false
                 if (!allowComments && record.recordType == "comment") return@filter false
                 if (start != null && record.captureTime < start) return@filter false
                 if (end != null && record.captureTime > end) return@filter false

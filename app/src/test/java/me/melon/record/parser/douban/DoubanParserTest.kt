@@ -155,9 +155,9 @@ class DoubanParserTest {
         assertFalse(unratedExtra.has("rating_value"))
         assertFalse(unratedExtra.has("star_count"))
 
-        val listItems = me.melon.record.ui.groupRecordsForHome(records)
+        val listItems = me.melon.record.ui.home.groupRecordsForHome(records)
         assertEquals(1, listItems.size)
-        val group = listItems.single() as me.melon.record.ui.InterestGroupListItem
+        val group = listItems.single() as me.melon.record.ui.home.InterestGroupListItem
         assertEquals("剧集短评", group.typeLabel)
         assertEquals(20, group.interests.size)
     }
@@ -198,10 +198,10 @@ class DoubanParserTest {
         assertEquals(5, records.size)
 
         // 验证在首页中短评被聚合为一个条目标题卡片
-        val listItems = me.melon.record.ui.groupRecordsForHome(records)
+        val listItems = me.melon.record.ui.home.groupRecordsForHome(records)
         assertEquals(1, listItems.size)
-        assertTrue(listItems[0] is me.melon.record.ui.InterestGroupListItem)
-        val groupItem = listItems[0] as me.melon.record.ui.InterestGroupListItem
+        assertTrue(listItems[0] is me.melon.record.ui.home.InterestGroupListItem)
+        val groupItem = listItems[0] as me.melon.record.ui.home.InterestGroupListItem
         assertEquals("泰坦尼克号", groupItem.subjectTitle)
         assertEquals("电影短评", groupItem.typeLabel)
         assertEquals(5, groupItem.interests.size)

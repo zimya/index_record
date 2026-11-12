@@ -10,7 +10,7 @@ import androidx.compose.material3.Surface
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.viewmodel.compose.viewModel
-import me.melon.record.ui.MainScreen
+import me.melon.record.ui.main.MainScreen
 import me.melon.record.ui.theme.IndexRecordTheme
 import me.melon.record.viewmodel.SettingsViewModel
 

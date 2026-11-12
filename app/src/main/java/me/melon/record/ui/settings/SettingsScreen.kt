@@ -1,4 +1,4 @@
-package me.melon.record.ui
+package me.melon.record.ui.settings
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable

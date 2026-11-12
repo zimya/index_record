@@ -1,4 +1,8 @@
-package me.melon.record.ui
+package me.melon.record.ui.main
+
+import me.melon.record.ui.home.HomeScreen
+import me.melon.record.ui.settings.SettingsScreen
+import me.melon.record.ui.stats.StatsScreen
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.WindowInsets

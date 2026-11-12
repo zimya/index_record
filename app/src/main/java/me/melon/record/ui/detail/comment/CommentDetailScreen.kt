@@ -1,4 +1,4 @@
-package me.melon.record.ui
+package me.melon.record.ui.detail.comment
 
 
 import androidx.compose.foundation.rememberScrollState
@@ -11,22 +11,16 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.outlined.ThumbDownOffAlt
 import androidx.compose.material.icons.outlined.ThumbUpOffAlt
 
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBar
-import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -35,7 +29,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 
 import androidx.compose.ui.unit.dp
@@ -46,8 +39,10 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import me.melon.record.ObjectBox
 import me.melon.record.data.model.UniversalRecord
+import me.melon.record.ui.components.DetailTopAppBar
 import me.melon.record.data.model.UniversalRecord_
 import me.melon.record.ui.components.AvatarImage
+import me.melon.record.ui.components.EngagementCount
 import me.melon.record.ui.components.RatingStars
 import me.melon.record.ui.components.RelatedRecordCard
 import me.melon.record.parser.douban.DoubanUtils.safeDouble
@@ -120,18 +115,7 @@ fun CommentDetailScreen(
     Scaffold(
         contentWindowInsets = WindowInsets(0, 0, 0, 0),
         topBar = {
-            TopAppBar(
-                title = { Text("评论详情", style = MaterialTheme.typography.titleMedium) },
-                navigationIcon = {
-                    IconButton(onClick = onBack) {
-                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back")
-                    }
-                },
-                colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = Color.Transparent,
-                    titleContentColor = MaterialTheme.colorScheme.primary,
-                )
-            )
+            DetailTopAppBar(title = "评论详情", onBack = onBack)
         }
     ) { padding ->
         Column(
@@ -162,33 +146,11 @@ fun CommentDetailScreen(
                 }
                 Spacer(modifier = Modifier.weight(1f))
                 if (likeCount > 0) {
-                    Icon(
-                        imageVector = Icons.Outlined.ThumbUpOffAlt,
-                        contentDescription = null,
-                        tint = MaterialTheme.colorScheme.outline,
-                        modifier = Modifier.size(14.dp)
-                    )
-                    Spacer(modifier = Modifier.width(4.dp))
-                    Text(
-                        text = likeCount.toString(),
-                        style = MaterialTheme.typography.labelSmall,
-                        color = MaterialTheme.colorScheme.outline
-                    )
+                    EngagementCount(count = likeCount, icon = Icons.Outlined.ThumbUpOffAlt)
                 }
                 if (dislikeCount > 0) {
                     Spacer(modifier = Modifier.width(8.dp))
-                    Icon(
-                        imageVector = Icons.Outlined.ThumbDownOffAlt,
-                        contentDescription = null,
-                        tint = MaterialTheme.colorScheme.outline,
-                        modifier = Modifier.size(14.dp)
-                    )
-                    Spacer(modifier = Modifier.width(4.dp))
-                    Text(
-                        text = dislikeCount.toString(),
-                        style = MaterialTheme.typography.labelSmall,
-                        color = MaterialTheme.colorScheme.outline
-                    )
+                    EngagementCount(count = dislikeCount, icon = Icons.Outlined.ThumbDownOffAlt)
                 }
             }
             Spacer(modifier = Modifier.height(12.dp))

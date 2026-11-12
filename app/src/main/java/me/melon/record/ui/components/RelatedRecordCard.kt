@@ -43,18 +43,11 @@ fun RelatedRecordCard(
         }
     }
     val platformColor = getPlatformThemeColor(platform, isAppInDarkTheme())
-    val label = when {
-        record.recordType == "subject" -> "所属豆瓣条目"
-        record.recordType == "question" -> "对应知乎问题"
-        platform == "twitter" -> "关联 X 推文"
-        platform == "threads" -> if (record.recordType == "comment") "回复的 Threads 评论" else "关联 Threads 主帖"
-        platform == "weibo" -> if (record.recordType == "comment") "回复的微博评论" else "关联微博"
-        platform == "tieba" -> "所属贴吧主帖"
-        else -> "关联内容"
-    }
-    val title = remember(record.title, record.content, record.authorName) {
+    val label = relatedRecordLabel(platform, record.recordType)
+    val title = remember(platform, record.title, record.content, record.authorName) {
         record.title.ifBlank {
-            Jsoup.parse(record.content).text().ifBlank { record.authorName }
+            (if (platform == "reddit") redditPreviewText(record.content) else Jsoup.parse(record.content).text())
+                .ifBlank { record.authorName }
         }
     }
 
@@ -96,4 +89,15 @@ fun RelatedRecordCard(
             )
         }
     }
+}
+
+internal fun relatedRecordLabel(platform: String, recordType: String): String = when {
+    recordType == "subject" -> "所属豆瓣条目"
+    recordType == "question" -> "对应知乎问题"
+    platform == "twitter" -> "关联 X 推文"
+    platform == "threads" -> if (recordType == "comment") "回复的 Threads 评论" else "关联 Threads 主帖"
+    platform == "reddit" -> if (recordType == "comment") "回复的 Reddit 评论" else "所属 Reddit 帖子"
+    platform == "weibo" -> if (recordType == "comment") "回复的微博评论" else "关联微博"
+    platform == "tieba" -> "所属贴吧主帖"
+    else -> "关联内容"
 }

@@ -58,10 +58,21 @@ enum class ThreadsRecordMode {
     }
 }
 
+enum class RedditRecordMode {
+    PUSH,
+    READ;
+
+    companion object {
+        fun fromStoredValue(value: Any?): RedditRecordMode =
+            entries.firstOrNull { it.name == value } ?: READ
+    }
+}
+
 object RecordSettings {
     private const val TWEET_RECORD_MODE = "tweet_record_mode"
     private const val WEIBO_RECORD_MODE = "weibo_record_mode"
     private const val THREADS_RECORD_MODE = "threads_record_mode"
+    private const val REDDIT_RECORD_MODE = "reddit_record_mode"
     private const val COLLAPSE_MULTIPLE_ITEMS = "collapse_multiple_items"
     private val _collapseMultipleItems = MutableStateFlow(true)
     val collapseMultipleItems = _collapseMultipleItems.asStateFlow()
@@ -76,6 +87,12 @@ object RecordSettings {
         prefs.edit().putBoolean(COLLAPSE_MULTIPLE_ITEMS, enabled).apply()
         _collapseMultipleItems.value = enabled
     }
+
+    var redditRecordMode: RedditRecordMode
+        get() = RedditRecordMode.fromStoredValue(prefs.all[REDDIT_RECORD_MODE])
+        set(value) {
+            prefs.edit().putString(REDDIT_RECORD_MODE, value.name).apply()
+        }
 
     var threadsRecordMode: ThreadsRecordMode
         get() = ThreadsRecordMode.fromStoredValue(prefs.all[THREADS_RECORD_MODE])

@@ -8,6 +8,7 @@ import me.melon.record.parser.weibo.WeiboParser
 import me.melon.record.parser.tieba.TiebaParser
 import me.melon.record.parser.threads.ThreadsParser
 import me.melon.record.parser.zhihu.ZhihuParser
+import me.melon.record.parser.reddit.RedditParser
 
 /**
  * 平台解析器注册中心。
@@ -21,7 +22,8 @@ object ParserRegistry {
         XParser,
         TiebaParser,
         WeiboParser,
-        ThreadsParser
+        ThreadsParser,
+        RedditParser
     )
 
     fun findParser(cleanUrl: String, raw: RawData): RawDataParser? {

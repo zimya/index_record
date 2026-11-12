@@ -10,6 +10,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import me.melon.record.data.model.UniversalRecord
+import me.melon.record.markdown.MarkdownContentFormat
 import me.melon.record.markdown.RenderMarkdownText
 import java.text.SimpleDateFormat
 import java.util.Date
@@ -22,7 +23,9 @@ internal fun RecordDetailBody(record: UniversalRecord, onImageClick: (List<Strin
         modifier = Modifier.fillMaxWidth(),
         enableScroll = false,
         selectable = true,
-        onImageClick = onImageClick
+        onImageClick = onImageClick,
+        contentFormat = if (record.platform == "reddit") MarkdownContentFormat.MARKDOWN else MarkdownContentFormat.AUTO,
+        enableMath = record.platform != "reddit"
     )
     Spacer(modifier = Modifier.height(8.dp))
     val sdf = remember { SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.getDefault()) }

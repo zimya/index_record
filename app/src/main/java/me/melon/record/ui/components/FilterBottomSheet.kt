@@ -162,7 +162,7 @@ fun FilterBottomSheet(
                                 onClick = {
                                     selectedApps = if (selected) selectedApps - p else selectedApps + p
                                 },
-                                label = appLabel(p),
+                                label = filterAppLabel(p),
                                 themeColor = getPlatformThemeColor(p, isDark)
                             )
                         }
@@ -272,7 +272,7 @@ private fun formatDateTime(millis: Long?): String {
     return sdf.format(Date(millis))
 }
 
-private fun appLabel(pkg: String): String {
+internal fun filterAppLabel(pkg: String): String {
     return when (pkg) {
         "com.zhihu.android" -> "知乎"
         "com.douban.frodo" -> "豆瓣"
@@ -280,6 +280,7 @@ private fun appLabel(pkg: String): String {
         "com.xingin.xhs" -> "小红书"
         "com.twitter.android" -> "𝕏"
         "com.instagram.barcelona", "threads" -> "Threads"
+        "com.reddit.frontpage", "reddit" -> "Reddit"
         "com.sina.weibo" -> "微博"
         "com.weico.international" -> "微博国际版"
         else -> pkg
@@ -295,6 +296,7 @@ internal fun typeLabel(type: String): String {
         "pin" -> "想法"
         "comment" -> "评论"
         "topic" -> "帖子"
+        "post" -> "帖子"
         "lou" -> "贴吧主帖"
         "thread" -> "thread"
         "floor" -> "楼层"

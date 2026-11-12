@@ -100,6 +100,8 @@ dependencies {
     debugImplementation("io.objectbox:objectbox-android-objectbrowser:3.7.1")
 
     testImplementation("junit:junit:4.13.2")
+    // Exercise the exact Java projection used inside Reddit's hooked process (Android supplies org.json).
+    testImplementation("org.json:json:20240303")
 
     // Xposed
     compileOnly(files("libs/api-82.jar"))

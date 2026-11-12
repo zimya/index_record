@@ -89,15 +89,13 @@ fun RenderMarkdownText(
     enableScroll: Boolean = true,
     onImageClick: ((List<String>, Int) -> Unit)? = null,
     onLinkClick: ((String) -> Unit)? = null,
+    contentFormat: MarkdownContentFormat = MarkdownContentFormat.AUTO,
+    enableMath: Boolean = true,
     header: (@Composable () -> Unit)? = null,
     footer: (@Composable () -> Unit)? = null,
 ) {
-    val document = remember(markdown) {
-        if (markdown.contains("<p>") || markdown.contains("</div>") || markdown.contains("<figure")) {
-            htmlToMdAst(markdown)
-        } else {
-            markdownToMdAst(markdown)
-        }
+    val document = remember(markdown, contentFormat, enableMath) {
+        contentToMdAst(markdown, contentFormat, enableMath)
     }
     RenderMarkdownDocument(
         document = document,

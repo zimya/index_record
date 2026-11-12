@@ -11,6 +11,7 @@
         <package android:name="com.xingin.xhs" />
         <package android:name="com.twitter.android" />
         <package android:name="com.instagram.barcelona" />
+        <package android:name="com.reddit.frontpage" />
         <package android:name="com.sina.weibo" />
         <package android:name="com.weico.international" />
     </queries>
@@ -71,7 +72,7 @@
 
         <meta-data
             android:name="xposeddescription"
-            android:value="记录知乎、豆瓣、X、Threads 和百度贴吧的浏览内容"
+            android:value="记录知乎、豆瓣、X、Threads、Reddit 和百度贴吧的浏览内容"
         />
 
         <meta-data android:name="xposedminversion" android:value="93" />

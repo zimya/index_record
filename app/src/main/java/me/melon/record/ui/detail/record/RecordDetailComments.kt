@@ -3,6 +3,7 @@ package me.melon.record.ui.detail.record
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -10,6 +11,8 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.ChatBubbleOutline
+import androidx.compose.material.icons.outlined.Share
 import androidx.compose.material.icons.outlined.RemoveRedEye
 import androidx.compose.material.icons.outlined.ThumbDownOffAlt
 import androidx.compose.material.icons.outlined.ThumbUpOffAlt
@@ -17,17 +20,22 @@ import androidx.compose.material3.FilterChip
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.google.gson.JsonObject
 import com.google.gson.JsonParser
 import me.melon.record.data.model.UniversalRecord
+import me.melon.record.markdown.MarkdownContentFormat
+import me.melon.record.markdown.RenderMarkdownText
 import me.melon.record.ui.components.AvatarImage
 import me.melon.record.ui.components.EngagementCount
+import me.melon.record.ui.components.RedditMetadata
 import me.melon.record.ui.components.engagementCount
 import me.melon.record.ui.components.viewEngagementCount
 import java.text.SimpleDateFormat
@@ -35,15 +43,20 @@ import java.util.Date
 import org.jsoup.Jsoup
 import java.util.Locale
 
+internal fun recordDetailCommentCountLabel(platform: String, count: Int): String =
+    if (platform == "reddit") "已记录回复 ($count)" else "评论 ($count)"
+
 @Composable
 internal fun RecordDetailCommentsHeader(
     count: Int,
     commentSort: RecordDetailCommentSort,
+    platform: String = "",
+    hasNextPage: Boolean? = null,
     onSortChange: (RecordDetailCommentSort) -> Unit
 ) {
     Column(modifier = Modifier.fillMaxWidth()) {
         Text(
-            text = "评论 (${count})",
+            text = recordDetailCommentCountLabel(platform, count),
             style = MaterialTheme.typography.titleMedium,
             fontWeight = FontWeight.Bold,
             modifier = Modifier.padding(vertical = 16.dp)
@@ -52,7 +65,7 @@ internal fun RecordDetailCommentsHeader(
             FilterChip(
                 selected = commentSort == RecordDetailCommentSort.DEFAULT,
                 onClick = { onSortChange(RecordDetailCommentSort.DEFAULT) },
-                label = { Text("默认") }
+                label = { Text(if (platform == "reddit") "净票数" else "默认") }
             )
             FilterChip(
                 selected = commentSort == RecordDetailCommentSort.LATEST,
@@ -64,7 +77,11 @@ internal fun RecordDetailCommentsHeader(
 }
 
 @Composable
-internal fun RecordDetailCommentItem(row: RecordDetailCommentRow, onOpenRecord: (UniversalRecord) -> Unit) {
+internal fun RecordDetailCommentItem(
+    row: RecordDetailCommentRow,
+    onOpenRecord: (UniversalRecord) -> Unit,
+    onImageClick: ((List<String>, Int) -> Unit)? = null
+) {
     val comment = row.record
     val depth = row.depth
     val commentMeta = remember(comment.extraMetadata) {
@@ -74,8 +91,12 @@ internal fun RecordDetailCommentItem(row: RecordDetailCommentRow, onOpenRecord: 
             JsonObject()
         }
     }
-    val likeCount = commentMeta.engagementCount("like_count", "likeCount")
-    val dislikeCount = if (commentMeta.has("dislike_count") && !commentMeta.get("dislike_count").isJsonNull) commentMeta.get("dislike_count").asLong else 0L
+    val redditMetadata = remember(comment.platform, comment.extraMetadata) {
+        if (comment.platform == "reddit") RedditMetadata(comment.extraMetadata) else null
+    }
+    val likeCount = if (redditMetadata != null) redditMetadata.score
+        else commentMeta.engagementCount("like_count", "likeCount").takeIf { it > 0L }
+    val dislikeCount = if (redditMetadata == null && commentMeta.has("dislike_count") && !commentMeta.get("dislike_count").isJsonNull) commentMeta.get("dislike_count").asLong else 0L
 
     Surface(
         onClick = { onOpenRecord(comment) },
@@ -89,24 +110,63 @@ internal fun RecordDetailCommentItem(row: RecordDetailCommentRow, onOpenRecord: 
         shape = MaterialTheme.shapes.medium
     ) {
         Column(modifier = Modifier.padding(12.dp)) {
+            if (comment.platform == "reddit") {
+                row.missingParentId?.let { parentId ->
+                    Text(
+                        text = "孤立分支 · ${redditMissingParentNotice(parentId)}",
+                        style = MaterialTheme.typography.labelSmall,
+                        color = MaterialTheme.colorScheme.error,
+                        modifier = Modifier.padding(bottom = 6.dp)
+                    )
+                }
+                if (row.hasInvalidParentChain) {
+                    Text(
+                        text = "孤立分支 · 父回复关系异常",
+                        style = MaterialTheme.typography.labelSmall,
+                        color = MaterialTheme.colorScheme.error,
+                        modifier = Modifier.padding(bottom = 6.dp)
+                    )
+                }
+                if (depth >= 4) {
+                    Text(
+                        text = "本分支第 ${depth + 1} 级回复",
+                        style = MaterialTheme.typography.labelSmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        modifier = Modifier.padding(bottom = 4.dp)
+                    )
+                }
+            }
             Row(verticalAlignment = Alignment.CenterVertically) {
                 AvatarImage(url = comment.authorAvatar, size = 28.dp)
                 Spacer(modifier = Modifier.width(8.dp))
                 Text(
-                    text = comment.authorName,
+                    text = comment.authorName.ifBlank { if (comment.platform == "reddit") "Reddit 用户" else "" },
                     style = MaterialTheme.typography.labelLarge,
                     color = MaterialTheme.colorScheme.primary,
-                    fontWeight = FontWeight.Bold
+                    fontWeight = FontWeight.Bold,
+                    modifier = if (redditMetadata != null) Modifier.weight(1f) else Modifier,
+                    maxLines = if (redditMetadata != null) 1 else Int.MAX_VALUE,
+                    overflow = if (redditMetadata != null) TextOverflow.Ellipsis else TextOverflow.Clip
                 )
-                Spacer(modifier = Modifier.weight(1f))
-                if (likeCount > 0) {
-                    EngagementCount(count = likeCount, icon = Icons.Outlined.ThumbUpOffAlt)
+                Spacer(modifier = if (redditMetadata != null) Modifier.width(8.dp) else Modifier.weight(1f))
+
+                likeCount?.let {
+                    EngagementCount(count = it, icon = Icons.Outlined.ThumbUpOffAlt)
+                }
+                redditMetadata?.commentCount?.let {
+                    Spacer(modifier = Modifier.width(8.dp))
+                    EngagementCount(count = it, icon = Icons.Outlined.ChatBubbleOutline)
+                }
+                redditMetadata?.shareCount?.let {
+                    Spacer(modifier = Modifier.width(8.dp))
+                    EngagementCount(count = it, icon = Icons.Outlined.Share)
                 }
                 if (dislikeCount > 0) {
                     Spacer(modifier = Modifier.width(8.dp))
                     EngagementCount(count = dislikeCount, icon = Icons.Outlined.ThumbDownOffAlt)
                 }
             }
+
             if (comment.platform == "threads") {
                 val viewsCount = commentMeta.viewEngagementCount(comment.platform)
                 if (viewsCount > 0L) {
@@ -117,19 +177,35 @@ internal fun RecordDetailCommentItem(row: RecordDetailCommentRow, onOpenRecord: 
                 }
             }
             Spacer(modifier = Modifier.height(4.dp))
-            val cleanContent = Jsoup.parse(comment.content).text()
-            Text(
-                text = cleanContent,
-                style = MaterialTheme.typography.bodyMedium,
-                color = MaterialTheme.colorScheme.onSurface
-            )
+            if (comment.platform == "reddit") {
+                RenderMarkdownText(
+                    markdown = comment.content,
+                    modifier = Modifier.fillMaxWidth(),
+                    enableScroll = false,
+                    selectable = false,
+                    onImageClick = onImageClick,
+                    contentFormat = MarkdownContentFormat.MARKDOWN,
+                    enableMath = false
+                )
+            } else {
+                val cleanContent = Jsoup.parse(comment.content).text()
+                Text(
+                    text = cleanContent,
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.onSurface
+                )
+            }
+
             Spacer(modifier = Modifier.height(8.dp))
             val sdf = remember { SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.getDefault()) }
-            Text(
-                text = sdf.format(Date(comment.publishTime)),
-                style = MaterialTheme.typography.labelSmall,
-                color = MaterialTheme.colorScheme.outline
-            )
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Text(
+                    text = if (comment.platform == "reddit" && comment.publishTime <= 0L) "发布时间未知" else sdf.format(Date(comment.publishTime)),
+                    style = MaterialTheme.typography.labelSmall,
+                    color = MaterialTheme.colorScheme.outline
+                )
+
+            }
         }
     }
 }

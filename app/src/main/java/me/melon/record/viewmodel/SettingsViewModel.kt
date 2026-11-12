@@ -8,6 +8,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import me.melon.record.ui.theme.ThemeMode
 import me.melon.record.settings.RecordSettings
+import me.melon.record.settings.RedditRecordMode
 import me.melon.record.settings.TweetRecordMode
 import me.melon.record.settings.WeiboRecordMode
 import me.melon.record.settings.ThreadsRecordMode
@@ -27,10 +28,18 @@ class SettingsViewModel(application: Application) : AndroidViewModel(application
     private val _threadsRecordMode = MutableStateFlow(RecordSettings.threadsRecordMode)
     val threadsRecordMode: StateFlow<ThreadsRecordMode> = _threadsRecordMode.asStateFlow()
 
+    private val _redditRecordMode = MutableStateFlow(RecordSettings.redditRecordMode)
+    val redditRecordMode: StateFlow<RedditRecordMode> = _redditRecordMode.asStateFlow()
+
     val collapseMultipleItems: StateFlow<Boolean> = RecordSettings.collapseMultipleItems
 
     fun setCollapseMultipleItems(enabled: Boolean) {
         RecordSettings.setCollapseMultipleItems(enabled)
+    }
+
+    fun setRedditRecordMode(mode: RedditRecordMode) {
+        RecordSettings.redditRecordMode = mode
+        _redditRecordMode.value = mode
     }
 
     fun setThreadsRecordMode(mode: ThreadsRecordMode) {

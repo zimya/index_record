@@ -2,6 +2,7 @@ package me.melon.record.ui.stats
 
 import androidx.compose.ui.graphics.Color
 import me.melon.record.ui.theme.DoubanGreen
+import me.melon.record.ui.theme.RedditOrange
 import me.melon.record.ui.theme.TiebaBlue
 import me.melon.record.ui.theme.XBlack
 import me.melon.record.ui.theme.XiaohongshuRed
@@ -14,6 +15,7 @@ fun colorFromPackage(pkg: String): Color {
         "com.baidu.tieba", "tieba" -> TiebaBlue
         "com.xingin.xhs", "xiaohongshu" -> XiaohongshuRed
         "com.twitter.android", "twitter", "com.instagram.barcelona", "threads" -> XBlack
+        "com.reddit.frontpage", "reddit" -> RedditOrange
         "com.sina.weibo", "com.weico.international", "weibo" -> me.melon.record.ui.theme.WeiboOrange
         else -> {
             val h = (pkg.hashCode().toLong().ushr(1) % 360L).toFloat()
@@ -30,6 +32,7 @@ fun appLabel(pkg: String): String {
         "com.xingin.xhs", "xiaohongshu" -> "小红书"
         "com.twitter.android", "twitter" -> "𝕏"
         "com.instagram.barcelona", "threads" -> "Threads"
+        "com.reddit.frontpage", "reddit" -> "Reddit"
         "com.sina.weibo", "weibo" -> "微博"
         "com.weico.international" -> "微博国际版"
         else -> if (pkg.isBlank() || pkg == "unknown") "其他" else pkg

@@ -2,6 +2,8 @@ package me.melon.record.ui.components
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
+import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -13,6 +15,8 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.ChatBubbleOutline
 import androidx.compose.material.icons.outlined.RemoveRedEye
 import androidx.compose.material.icons.outlined.Repeat
+import androidx.compose.material.icons.outlined.Share
+
 import androidx.compose.material.icons.outlined.ThumbUp
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -40,6 +44,7 @@ import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
 
+@OptIn(ExperimentalLayoutApi::class)
 @Composable
 fun RecordItem(record: UniversalRecord, searchQuery: String, onClick: () -> Unit) {
     val platformLabel = when (record.platform) {
@@ -48,26 +53,14 @@ fun RecordItem(record: UniversalRecord, searchQuery: String, onClick: () -> Unit
         "tieba" -> "贴吧"
         "twitter" -> "𝕏"
         "threads" -> "Threads"
+        "reddit" -> "Reddit"
         "weibo" -> "微博"
         "xiaohongshu" -> "小红书"
         else -> record.platform.replaceFirstChar { it.uppercase() }
     }
-    val typeLabel = when (record.recordType) {
-        "question" -> "问题"
-        "answer" -> "回答"
-        "article" -> "文章"
-        "pin" -> "想法"
-        "comment" -> if (record.platform == "tieba") "楼中楼" else "评论"
-        "lou" -> "主帖"
-        "thread" -> "thread"
-        "floor" -> "楼层"
-        "topic" -> "帖子"
-        "review" -> "长评"
-        "interest" -> "短评"
-        "subject" -> "条目"
-        "tweet" -> "推文"
-        "status" -> "微博"
-        else -> record.recordType
+    val typeLabel = recordTypeLabel(record)
+    val redditMetadata = remember(record.platform, record.extraMetadata) {
+        if (record.platform == "reddit") RedditMetadata(record.extraMetadata) else null
     }
 
     val tiebaMeta = remember(record.platform, record.extraMetadata) {
@@ -79,6 +72,8 @@ fun RecordItem(record: UniversalRecord, searchQuery: String, onClick: () -> Unit
                 if (record.recordType == "comment") "微博评论" else "${record.authorName.ifBlank { "微博用户" }}的微博"
             } else if (record.platform == "threads") {
                 if (record.recordType == "comment") "Threads 回复" else "${record.authorName.ifBlank { "Threads 用户" }}的帖子"
+            } else if (record.platform == "reddit") {
+                if (record.recordType == "comment") "Reddit 回复" else "${record.authorName.ifBlank { "Reddit 用户" }}的帖子"
             } else "无标题"
         }
     }
@@ -145,6 +140,22 @@ fun RecordItem(record: UniversalRecord, searchQuery: String, onClick: () -> Unit
                 }
             }
 
+            if (redditMetadata != null) {
+                val contextLabel = listOfNotNull(
+                    redditMetadata.subreddit.takeIf { it.isNotBlank() }?.let { "r/$it" },
+                    redditMetadata.flair.takeIf { it.isNotBlank() }
+                ).joinToString(" · ")
+                if (contextLabel.isNotBlank()) {
+                    Text(
+                        text = highlightText(contextLabel, searchQuery),
+                        style = MaterialTheme.typography.labelSmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis
+                    )
+                }
+            }
+
             Spacer(modifier = Modifier.height(4.dp))
 
             Text(
@@ -158,7 +169,9 @@ fun RecordItem(record: UniversalRecord, searchQuery: String, onClick: () -> Unit
                 overflow = TextOverflow.Ellipsis
             )
 
-            val previewText = getPreviewText(record)
+            val previewText = if (record.platform == "reddit") {
+                remember(record.content) { getPreviewText(record) }
+            } else getPreviewText(record)
             if (previewText.isNotBlank()) {
                 Spacer(modifier = Modifier.height(6.dp))
                 Text(
@@ -170,7 +183,21 @@ fun RecordItem(record: UniversalRecord, searchQuery: String, onClick: () -> Unit
                 )
             }
 
-            if (record.platform in setOf("twitter", "weibo", "threads")) {
+            if (redditMetadata != null) {
+                if (redditMetadata.score != null ||
+                    redditMetadata.commentCount != null || redditMetadata.shareCount != null
+                ) {
+                    Spacer(modifier = Modifier.height(8.dp))
+                    FlowRow(
+                        horizontalArrangement = Arrangement.spacedBy(16.dp),
+                        verticalArrangement = Arrangement.spacedBy(4.dp)
+                    ) {
+                        redditMetadata.score?.let { StatItem(Icons.Outlined.ThumbUp, me.melon.record.parser.x.XUtils.formatCount(it)) }
+                        redditMetadata.commentCount?.let { StatItem(Icons.Outlined.ChatBubbleOutline, me.melon.record.parser.x.XUtils.formatCount(it)) }
+                        redditMetadata.shareCount?.let { StatItem(Icons.Outlined.Share, me.melon.record.parser.x.XUtils.formatCount(it)) }
+                    }
+                }
+            } else if (record.platform in setOf("twitter", "weibo", "threads")) {
                 val twitterMeta = remember(record.extraMetadata) {
                     try {
                         JsonParser.parseString(record.extraMetadata).asJsonObject
@@ -207,14 +234,15 @@ fun RecordItem(record: UniversalRecord, searchQuery: String, onClick: () -> Unit
                 }
             }
 
-            if (searchQuery.isNotEmpty() && record.content.contains(searchQuery, ignoreCase = true)) {
+            val snippetContent = if (record.platform == "reddit") previewText else record.content
+            if (searchQuery.isNotEmpty() && snippetContent.contains(searchQuery, ignoreCase = true)) {
                 Spacer(modifier = Modifier.height(8.dp))
                 Surface(
                     color = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f),
                     shape = MaterialTheme.shapes.small
                 ) {
                     Text(
-                        text = getContentSnippet(record.content, searchQuery),
+                        text = getContentSnippet(snippetContent, searchQuery),
                         style = MaterialTheme.typography.bodySmall,
                         modifier = Modifier.padding(8.dp),
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
@@ -227,7 +255,30 @@ fun RecordItem(record: UniversalRecord, searchQuery: String, onClick: () -> Unit
     }
 }
 
+internal fun recordTypeLabel(record: UniversalRecord): String = when (record.recordType) {
+    "question" -> "问题"
+    "answer" -> "回答"
+    "article" -> "文章"
+    "pin" -> "想法"
+    "comment" -> when (record.platform) {
+        "tieba" -> "楼中楼"
+        "reddit" -> "回复"
+        else -> "评论"
+    }
+    "lou" -> "主帖"
+    "thread" -> "thread"
+    "floor" -> "楼层"
+    "topic", "post" -> "帖子"
+    "review" -> "长评"
+    "interest" -> "短评"
+    "subject" -> "条目"
+    "tweet" -> "推文"
+    "status" -> "微博"
+    else -> record.recordType
+}
+
 private fun getPreviewText(record: UniversalRecord): String {
+    if (record.platform == "reddit") return redditPreviewText(record.content)
     val raw = when (record.recordType) {
         "question" -> {
             if (record.content.isNotBlank()) {

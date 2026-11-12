@@ -37,6 +37,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import me.melon.record.settings.RedditRecordMode
 import me.melon.record.settings.TweetRecordMode
 import me.melon.record.settings.WeiboRecordMode
 import me.melon.record.settings.ThreadsRecordMode
@@ -50,6 +51,7 @@ fun SettingsScreen(viewModel: SettingsViewModel = viewModel()) {
     val tweetRecordMode by viewModel.tweetRecordMode.collectAsState()
     val weiboRecordMode by viewModel.weiboRecordMode.collectAsState()
     val threadsRecordMode by viewModel.threadsRecordMode.collectAsState()
+    val redditRecordMode by viewModel.redditRecordMode.collectAsState()
     val collapseMultipleItems by viewModel.collapseMultipleItems.collectAsState()
 
     Scaffold(
@@ -129,6 +131,13 @@ fun SettingsScreen(viewModel: SettingsViewModel = viewModel()) {
                 options = listOf(ThreadsRecordMode.PUSH, ThreadsRecordMode.READ),
                 label = { if (it == ThreadsRecordMode.PUSH) "推送" else "阅读" },
                 onSelect = viewModel::setThreadsRecordMode
+            )
+            SettingsDropdownRow(
+                title = "记录 Reddit 的形式",
+                selected = redditRecordMode,
+                options = listOf(RedditRecordMode.PUSH, RedditRecordMode.READ),
+                label = { if (it == RedditRecordMode.PUSH) "推送" else "阅读" },
+                onSelect = viewModel::setRedditRecordMode
             )
         }
     }

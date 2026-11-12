@@ -2,6 +2,18 @@ package me.melon.record.ui.components
 
 import com.google.gson.JsonObject
 
+/** Missing/invalid values stay unknown; signed scores must not use the clamped like-count helper. */
+internal fun JsonObject.signedScore(): Long? = optionalLong("score")
+
+internal fun JsonObject.optionalLong(key: String): Long? {
+    val value = get(key)?.takeIf { it.isJsonPrimitive }?.asJsonPrimitive ?: return null
+    if (!value.isNumber && !value.isString) return null
+    return value.asString.toLongOrNull()
+}
+
+internal fun JsonObject.optionalEngagementCount(key: String): Long? =
+    optionalLong(key)?.takeIf { it >= 0L }
+
 /** Accept legacy metadata keys and their generic aliases without failing on null/malformed counts. */
 internal fun JsonObject.engagementCount(vararg keys: String): Long {
     for (key in keys) {

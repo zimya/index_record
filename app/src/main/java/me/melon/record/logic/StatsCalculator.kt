@@ -116,6 +116,7 @@ object StatsCalculator {
             "xiaohongshu", "xhs" -> "com.xingin.xhs"
             "twitter", "x" -> "com.twitter.android"
             "threads" -> "com.instagram.barcelona"
+            "reddit" -> "com.reddit.frontpage"
             "weibo" -> "com.sina.weibo"
             else -> if (record.platform.isNotBlank()) record.platform else "unknown"
         }
@@ -126,6 +127,15 @@ object StatsCalculator {
         weeks: Int = 52,
         zone: ZoneId = ZoneId.systemDefault()
     ): ComputedStats {
+        val statisticalRecords = records.filter { record ->
+            when (record.platform.trim().lowercase()) {
+                "reddit" -> record.recordType == "post"
+                "tieba" -> record.recordType == "lou"
+                "twitter", "x" -> record.recordType == "tweet"
+                "weibo" -> record.recordType == "status"
+                else -> true
+            }
+        }
         val today = LocalDate.now(zone)
         val currentMonth = YearMonth.now(zone)
 
@@ -142,7 +152,7 @@ object StatsCalculator {
         var earliestDate: LocalDate? = null
         var latestDate: LocalDate? = null
 
-        for (r in records) {
+        for (r in statisticalRecords) {
             val pkg = resolveSourceApp(r)
             val captureInstant = Instant.ofEpochMilli(r.captureTime)
             val dateTime = captureInstant.atZone(zone)
@@ -339,7 +349,7 @@ object StatsCalculator {
         return ComputedStats(
             todayWordCount = todayWordCount,
             todayRecordCount = todayRecordCount,
-            totalRecordCount = records.size.toLong(),
+            totalRecordCount = statisticalRecords.size.toLong(),
             totalWordCount = totalWordCount,
             currentStreakDays = currentStreak,
             maxStreakDays = maxStreak,

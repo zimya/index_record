@@ -1,0 +1,15 @@
+{
+  "request": null,
+  "response": {"data": {"homeV3": {"elements": {"edges": [
+    {"node": {"__typename": "CellGroup", "groupId": "t3_1xr0ctd", "adPayload": null, "cells": [
+      {"__typename": "MetadataCell", "authorName": "u/IdiotStickWasTkn", "createdAt": "2026-11-08T15:00:07.097000+0000", "detailsString": "r/theydidthemath", "joinSubredditId": "t5_2x23b"},
+      {"__typename": "TitleCell", "title": "[REQUEST] Would the pennies be worth more then $35?"},
+      {"__typename": "ImageCell", "media": {"__typename": "CellMediaSource", "isObfuscated": false, "path": "https://preview.redd.it/khmd70h3le0i1.jpeg?width=640&auto=webp&s=104ab638642028033e4dd34451ab35c74af373aa"}},
+      {"__typename": "ActionCell", "score": 4020, "isScoreHidden": false, "commentCount": 409, "crosspostCount": null, "shareCount": 46}
+    ]}},
+    {"node": {"__typename": "CellGroup", "groupId": "t3_1x0zpmg", "adPayload": {"__typename": "AdPayload", "callToAction": "Learn More", "isCreatedFromAdsUi": true}, "cells": [
+      {"__typename": "AdMetadataCell", "authorName": "u/TradeStation"},
+      {"__typename": "TitleCell", "title": "Trusted, low-latency execution with smart routing, real-time fills, and stable performance even during peak volatility, multi-leg options, and high-volume news events."}
+    ]}}
+  ]}}}}
+}

@@ -19,6 +19,8 @@ import org.commonmark.node.Emphasis
 import org.commonmark.node.FencedCodeBlock
 import org.commonmark.node.HardLineBreak
 import org.commonmark.node.Heading
+import org.commonmark.node.HtmlBlock
+import org.commonmark.node.HtmlInline
 import org.commonmark.node.Image
 import org.commonmark.node.IndentedCodeBlock
 import org.commonmark.node.Link
@@ -46,11 +48,17 @@ private val commonMarkParser = Parser.builder()
 /**
  * 将标准 Markdown 文本解析为 MdDocument AST。
  */
-fun markdownToMdAst(markdown: String): MdDocument {
+fun markdownToMdAst(
+    markdown: String,
+    enableMath: Boolean = true,
+    preserveHtml: Boolean = false,
+    normalizeFootnotes: Boolean = true
+): MdDocument {
     val doc = MdDocument()
+    val options = MdParseOptions(enableMath, preserveHtml)
 
     // Ensure footnote definitions in single-line flattened documents start on a new block line
-    val normalizedMarkdown = if (markdown.contains("[^")) {
+    val normalizedMarkdown = if (normalizeFootnotes && markdown.contains("[^")) {
         markdown.replace(Regex("""(?<!\n)\s*(\[\^[^\]]+\]:)"""), "\n\n$1")
     } else {
         markdown
@@ -59,23 +67,25 @@ fun markdownToMdAst(markdown: String): MdDocument {
     val root = commonMarkParser.parse(normalizedMarkdown)
     var child = root.firstChild
     while (child != null) {
-        val blocks = convertCommonMarkBlock(child, doc)
+        val blocks = convertCommonMarkBlock(child, doc, options)
         doc.appendChildren(blocks)
         child = child.next
     }
     return doc
 }
 
-private fun convertCommonMarkBlock(node: org.commonmark.node.Node, doc: MdDocument): List<MdNode> {
+private data class MdParseOptions(val enableMath: Boolean, val preserveHtml: Boolean)
+
+private fun convertCommonMarkBlock(node: org.commonmark.node.Node, doc: MdDocument, options: MdParseOptions): List<MdNode> {
     return when (node) {
         is FootnoteDefinition -> {
             val inlines = mutableListOf<MdNode>()
             var c = node.firstChild
             while (c != null) {
                 if (c is Paragraph) {
-                    inlines.addAll(convertCommonMarkInlines(c.firstChild))
+                    inlines.addAll(convertCommonMarkInlines(c.firstChild, options))
                 } else {
-                    inlines.addAll(convertCommonMarkBlock(c, doc))
+                    inlines.addAll(convertCommonMarkBlock(c, doc, options))
                 }
                 c = c.next
             }
@@ -104,13 +114,13 @@ private fun convertCommonMarkBlock(node: org.commonmark.node.Node, doc: MdDocume
             )
             emptyList()
         }
-        is Heading -> listOf(MdHeading(node.level).apply { appendChildren(convertCommonMarkInlines(node.firstChild)) })
+        is Heading -> listOf(MdHeading(node.level).apply { appendChildren(convertCommonMarkInlines(node.firstChild, options)) })
         is Paragraph -> {
             val textOnly = node.extractRawText().trim()
-            if (textOnly.startsWith("$$") && textOnly.endsWith("$$") && textOnly.length >= 4) {
+            if (options.enableMath && textOnly.startsWith("$$") && textOnly.endsWith("$$") && textOnly.length >= 4) {
                 listOf(MdMathBlock(textOnly.removePrefix("$$").removeSuffix("$$").trim()))
             } else {
-                val inlines = convertCommonMarkInlines(node.firstChild)
+                val inlines = convertCommonMarkInlines(node.firstChild, options)
                 val link = inlines.singleOrNull() as? MdLink
                 if (link != null &&
                     (link.children.singleOrNull() as? MdText)?.text == "GIF" &&
@@ -124,10 +134,13 @@ private fun convertCommonMarkBlock(node: org.commonmark.node.Node, doc: MdDocume
         }
         is FencedCodeBlock -> listOf(MdFencedCodeBlock(node.info.orEmpty(), node.literal.orEmpty()))
         is IndentedCodeBlock -> listOf(MdFencedCodeBlock("", node.literal.orEmpty()))
+        is HtmlBlock -> if (options.preserveHtml) {
+            listOf(MdParagraph().apply { appendChild(MdText(node.literal.orEmpty())) })
+        } else emptyList()
         is BlockQuote -> listOf(MdBlockQuote().apply {
             var c = node.firstChild
             while (c != null) {
-                appendChildren(convertCommonMarkBlock(c, doc))
+                appendChildren(convertCommonMarkBlock(c, doc, options))
                 c = c.next
             }
         })
@@ -138,7 +151,7 @@ private fun convertCommonMarkBlock(node: org.commonmark.node.Node, doc: MdDocume
                     val item = MdListItem()
                     var ic = c.firstChild
                     while (ic != null) {
-                        item.appendChildren(convertCommonMarkBlock(ic, doc))
+                        item.appendChildren(convertCommonMarkBlock(ic, doc, options))
                         ic = ic.next
                     }
                     appendChild(item)
@@ -153,7 +166,7 @@ private fun convertCommonMarkBlock(node: org.commonmark.node.Node, doc: MdDocume
                     val item = MdListItem()
                     var ic = c.firstChild
                     while (ic != null) {
-                        item.appendChildren(convertCommonMarkBlock(ic, doc))
+                        item.appendChildren(convertCommonMarkBlock(ic, doc, options))
                         ic = ic.next
                     }
                     appendChild(item)
@@ -169,14 +182,14 @@ private fun convertCommonMarkBlock(node: org.commonmark.node.Node, doc: MdDocume
                     is TableHead -> {
                         var rc = c.firstChild
                         while (rc != null) {
-                            if (rc is TableRow) table.appendChild(convertCommonMarkTableRow(rc, isHeader = true))
+                            if (rc is TableRow) table.appendChild(convertCommonMarkTableRow(rc, isHeader = true, options = options))
                             rc = rc.next
                         }
                     }
                     is TableBody -> {
                         var rc = c.firstChild
                         while (rc != null) {
-                            if (rc is TableRow) table.appendChild(convertCommonMarkTableRow(rc, isHeader = false))
+                            if (rc is TableRow) table.appendChild(convertCommonMarkTableRow(rc, isHeader = false, options = options))
                             rc = rc.next
                         }
                     }
@@ -190,7 +203,7 @@ private fun convertCommonMarkBlock(node: org.commonmark.node.Node, doc: MdDocume
     }
 }
 
-private fun convertCommonMarkTableRow(row: TableRow, isHeader: Boolean): MdTableRow {
+private fun convertCommonMarkTableRow(row: TableRow, isHeader: Boolean, options: MdParseOptions): MdTableRow {
     val mdRow = MdTableRow(isHeader)
     var c = row.firstChild
     while (c != null) {
@@ -202,7 +215,7 @@ private fun convertCommonMarkTableRow(row: TableRow, isHeader: Boolean): MdTable
                 else -> MdTableAlignment.NONE
             }
             val cell = MdTableCell(isHeader = c.isHeader, alignment = align)
-            cell.appendChildren(convertCommonMarkInlines(c.firstChild))
+            cell.appendChildren(convertCommonMarkInlines(c.firstChild, options))
             mdRow.appendChild(cell)
         }
         c = c.next
@@ -210,17 +223,18 @@ private fun convertCommonMarkTableRow(row: TableRow, isHeader: Boolean): MdTable
     return mdRow
 }
 
-private fun convertCommonMarkInlines(first: org.commonmark.node.Node?): List<MdNode> {
+private fun convertCommonMarkInlines(first: org.commonmark.node.Node?, options: MdParseOptions): List<MdNode> {
     val list = mutableListOf<MdNode>()
     var cur = first
     while (cur != null) {
         when (cur) {
-            is Text -> list.addAll(parseInlineTokensInText(cur.literal))
-            is Emphasis -> list.add(MdEmphasis().apply { appendChildren(convertCommonMarkInlines(cur.firstChild)) })
-            is StrongEmphasis -> list.add(MdStrongEmphasis().apply { appendChildren(convertCommonMarkInlines(cur.firstChild)) })
-            is Strikethrough -> list.add(MdStrikethrough().apply { appendChildren(convertCommonMarkInlines(cur.firstChild)) })
+            is Text -> if (options.enableMath) list.addAll(parseInlineTokensInText(cur.literal)) else list.add(MdText(cur.literal))
+            is HtmlInline -> if (options.preserveHtml) list.add(MdText(cur.literal.orEmpty()))
+            is Emphasis -> list.add(MdEmphasis().apply { appendChildren(convertCommonMarkInlines(cur.firstChild, options)) })
+            is StrongEmphasis -> list.add(MdStrongEmphasis().apply { appendChildren(convertCommonMarkInlines(cur.firstChild, options)) })
+            is Strikethrough -> list.add(MdStrikethrough().apply { appendChildren(convertCommonMarkInlines(cur.firstChild, options)) })
             is Code -> list.add(MdInlineCode(cur.literal))
-            is Link -> list.add(MdLink(cur.destination, cur.title.orEmpty()).apply { appendChildren(convertCommonMarkInlines(cur.firstChild)) })
+            is Link -> list.add(MdLink(cur.destination, cur.title.orEmpty()).apply { appendChildren(convertCommonMarkInlines(cur.firstChild, options)) })
             is Image -> list.add(MdImage(cur.destination, cur.title.orEmpty()))
             is FootnoteReference -> {
                 val index = cur.label.toIntOrNull() ?: 0

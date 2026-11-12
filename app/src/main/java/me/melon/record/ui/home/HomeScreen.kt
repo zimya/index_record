@@ -25,6 +25,9 @@ import me.melon.record.ui.components.FilterBottomSheet
 import me.melon.record.viewmodel.HomeViewModel
 import androidx.compose.runtime.saveable.rememberSaveable
 
+internal fun usesRecordDetailForComment(platform: String): Boolean =
+    platform in setOf("weibo", "threads", "reddit")
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeScreen(viewModel: HomeViewModel = viewModel()) {
@@ -151,7 +154,7 @@ fun HomeScreen(viewModel: HomeViewModel = viewModel()) {
                                 listState = viewModel.detailListState(targetRecord.platformId),
                                 firstFloorListState = viewModel.detailListState("${targetRecord.platformId}:first_floor_replies")
                             )
-                        } else if (targetRecord.recordType == "comment" && targetRecord.platform !in setOf("weibo", "threads")) {
+                        } else if (targetRecord.recordType == "comment" && !usesRecordDetailForComment(targetRecord.platform)) {
                             CommentDetailScreen(
                                 record = targetRecord,
                                 onBack = { viewModel.popDetail() },

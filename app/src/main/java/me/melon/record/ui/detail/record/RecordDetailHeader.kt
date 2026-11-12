@@ -80,6 +80,7 @@ internal fun RecordDetailHeader(record: UniversalRecord, onImageClick: (List<Str
                         when (record.platform) {
                             "douban" -> "豆瓣用户"
                             "threads" -> "Threads 用户"
+                            "reddit" -> "Reddit 用户"
                             else -> ""
                         }
                     },

@@ -12,6 +12,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import me.melon.record.ObjectBox
 import me.melon.record.data.model.RawData
+import me.melon.record.data.model.RawData_
 import me.melon.record.data.model.UniversalRecord
 import me.melon.record.data.model.UniversalRecord_
 import me.melon.record.parser.ParserRegistry
@@ -22,6 +23,12 @@ import me.melon.record.settings.RecordSettings
 import me.melon.record.parser.zhihu.ZhihuFeedParser
 import me.melon.record.parser.zhihu.ZhihuItemV2Parser
 import me.melon.record.parser.zhihu.ZhihuRelations
+import me.melon.record.parser.reddit.RedditParser
+import me.melon.record.parser.reddit.RedditRelations
+import me.melon.record.parser.reddit.RedditReadBuffer
+import me.melon.record.parser.reddit.ObjectBoxRedditReadStorage
+import me.melon.record.data.model.RedditPendingRecord
+import me.melon.record.settings.RedditRecordMode
 
 /** Mutates only the incoming Weibo payload; generic identity/author fallbacks remain below. */
 internal fun mergeWeiboRecord(existing: UniversalRecord, incoming: UniversalRecord) {
@@ -110,10 +117,40 @@ object DataProcessor {
         var total = initialCount
         _syncProgress.value = SyncProgress(isRunning = true, total = total, processed = 0)
 
-        data class ParsedItem(val rawId: Long, val cleanUrl: String, val records: List<UniversalRecord>?)
+        val redditReadMode = RecordSettings.redditRecordMode == RedditRecordMode.READ
+        val redditReadBuffer = if (redditReadMode) RedditReadBuffer(ObjectBoxRedditReadStorage(
+            ObjectBox.store.boxFor(RedditPendingRecord::class.java)
+        )) else null
+        data class ParsedItem(
+            val rawId: Long,
+            val cleanUrl: String,
+            val records: List<UniversalRecord>?,
+            val reddit: Boolean = false,
+            val readPosts: Set<String> = emptySet()
+        )
 
         val query = rawBox.query().build()
         try {
+            // Older debug captures were not projected at the hook. Learn ad context from every
+            // pending Reddit payload before a sparse detail can be mistaken for an organic post.
+            val redditAds = linkedSetOf<String>()
+
+            val redditQuery = rawBox.query().equal(RawData_.hostApp, RedditParser.HOST_APP,
+                io.objectbox.query.QueryBuilder.StringOrder.CASE_SENSITIVE).build()
+            try {
+                var offset = 0L
+                while (true) {
+                    val rawItems = redditQuery.find(offset, CHUNK_SIZE)
+                    if (rawItems.isEmpty()) break
+                    rawItems.forEach {
+                        redditAds.addAll(RedditParser.advertisingPostIds(it))
+
+                    }
+                    offset += rawItems.size
+                }
+            } finally {
+                redditQuery.close()
+            }
             while (true) {
                 // 每次仅提取最多 CHUNK_SIZE 条，避免一次性加载所有巨型 JSON/HTML 导致 OOM
                 val chunk = query.find(0, CHUNK_SIZE)
@@ -132,15 +169,22 @@ object DataProcessor {
                                                                 !RecordSettings.threadsRecordMode.shouldProcess(raw.url))
                         ) {
                             emptyList()
+                        } else if (RedditParser.canHandle(cleanUrl, raw)) {
+                            // Parse every fragment; READ admission happens transactionally in the persistent buffer.
+                            RedditParser.parseWithAdvertisingIds(raw, cleanUrl, redditAds)
                         } else {
                             ParserRegistry.parse(raw, cleanUrl)
                         }
                         if (raw.hostApp == "com.instagram.barcelona") {
                                                     Log.i(TAG, "Threads parsed ${records?.size ?: 0} records from $cleanUrl (${raw.json.length} chars)")
                                                 }
-                                                parsedItems.add(ParsedItem(raw.id, cleanUrl, records))
+                        val reddit = RedditParser.canHandle(cleanUrl, raw)
+                        val readPosts = if (reddit && redditReadMode) RedditParser.readPostIds(raw)
+                            .filterNot { it in redditAds.map(RedditParser::postId) }.toSet() else emptySet()
+                        parsedItems.add(ParsedItem(raw.id, cleanUrl, records, reddit, readPosts))
                     } catch (e: Exception) {
                         Log.e(TAG, "Failed to process raw ID: ${raw.id}", e)
+                        if (RedditParser.canHandle(cleanUrl, raw)) throw e // Retain fragments on staging/parse failures.
                         parsedItems.add(ParsedItem(raw.id, cleanUrl, emptyList()))
                     }
                 }
@@ -149,21 +193,24 @@ object DataProcessor {
                 val processedRawIds = ArrayList<Long>(chunk.size)
                 ObjectBox.store.runInTx {
                     for (item in parsedItems) {
-                        val records = item.records
+                        val records = if (item.reddit && redditReadBuffer != null) {
+                            redditReadBuffer.accept(item.records.orEmpty(), item.readPosts, System.currentTimeMillis())
+                        } else item.records
                         if (!records.isNullOrEmpty()) {
                             for (record in records) {
-                                val existing = recordBox.query()
+                                val existingQuery = recordBox.query()
                                     .equal(UniversalRecord_.platformId, record.platformId, io.objectbox.query.QueryBuilder.StringOrder.CASE_SENSITIVE)
                                     .build()
-                                    .findFirst()
+                                val existing = try { existingQuery.findFirst() } finally { existingQuery.close() }
 
                                 if (existing != null) {
                                     record.id = existing.id
                                     mergeWeiboRecord(existing, record)
                                     me.melon.record.parser.threads.ThreadsRelations.mergeRecord(existing, record)
+                                    RedditRelations.mergeRecord(existing, record)
                                     if (record.parentId.isBlank()) record.parentId = existing.parentId
                                     if (record.title.isBlank()) record.title = existing.title
-                                    if (record.content.isBlank() || (record.recordType == "subject" && record.content == record.title)) {
+                                    if (record.platform != "reddit" && (record.content.isBlank() || (record.recordType == "subject" && record.content == record.title))) {
                                         if (existing.content.isNotBlank() && !(existing.recordType == "subject" && existing.content == existing.title)) {
                                             record.content = existing.content
                                         }

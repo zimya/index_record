@@ -44,7 +44,7 @@
     },
     {
       "id": "3:367225781728979501",
-      "lastPropertyId": "14:2996248193774028585",
+      "lastPropertyId": "15:6977318464854663329",
       "name": "UniversalRecord",
       "properties": [
         {
@@ -125,13 +125,20 @@
           "id": "14:2996248193774028585",
           "name": "extraMetadata",
           "type": 9
+        },
+        {
+          "id": "15:6977318464854663329",
+          "name": "sourceApp",
+          "indexId": "6:1262651967169746590",
+          "type": 9,
+          "flags": 2048
         }
       ],
       "relations": []
     }
   ],
   "lastEntityId": "4:2231706528930721350",
-  "lastIndexId": "5:1638814160326313513",
+  "lastIndexId": "6:1262651967169746590",
   "lastRelationId": "0:0",
   "lastSequenceId": "0:0",
   "modelVersion": 5,

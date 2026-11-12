@@ -24,6 +24,7 @@ import androidx.compose.ui.unit.dp
 import com.google.gson.JsonObject
 import com.google.gson.JsonParser
 import me.melon.record.data.model.UniversalRecord
+import me.melon.record.ui.components.RedditMetadata
 import me.melon.record.ui.components.engagementCount
 import me.melon.record.ui.components.viewEngagementCount
 
@@ -37,6 +38,9 @@ internal fun RecordDetailMetadata(record: UniversalRecord) {
             JsonObject()
         }
     }
+    val redditMetadata = remember(record.platform, record.extraMetadata) {
+        if (record.platform == "reddit") RedditMetadata(record.extraMetadata) else null
+    }
 
     if (metadata.size() > 0) {
         Spacer(modifier = Modifier.height(8.dp))
@@ -45,7 +49,9 @@ internal fun RecordDetailMetadata(record: UniversalRecord) {
             horizontalArrangement = Arrangement.spacedBy(8.dp),
             verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
-            if (record.platform in setOf("twitter", "weibo", "threads")) {
+            if (redditMetadata != null) {
+                RecordDetailRedditMetadata(redditMetadata)
+            } else if (record.platform in setOf("twitter", "weibo", "threads")) {
                 val likeCount = metadata.engagementCount("like_count", "likeCount", "voteup_count")
                 val rtCount = metadata.engagementCount("retweet_count", "repost_count", "repostCount")
                 val repCount = metadata.engagementCount("reply_count", "comment_count", "commentCount")

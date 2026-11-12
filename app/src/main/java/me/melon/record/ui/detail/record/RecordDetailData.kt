@@ -14,6 +14,7 @@ import me.melon.record.ObjectBox
 import me.melon.record.data.model.UniversalRecord_
 
 internal class RecordDetailData {
+    var refreshedRecord by mutableStateOf<UniversalRecord?>(null)
     var allComments by mutableStateOf<List<UniversalRecord>>(emptyList())
     var relatedRecord by mutableStateOf<UniversalRecord?>(null)
     var commentsLoaded by mutableStateOf(false)
@@ -22,6 +23,7 @@ internal class RecordDetailData {
 
 @Composable
 internal fun rememberRecordDetailData(record: UniversalRecord): RecordDetailData {
+    if (record.platform == "reddit") return rememberRedditRecordDetailData(record)
     val data = remember { RecordDetailData() }
     with(data) {
         LaunchedEffect(record.platformId) {

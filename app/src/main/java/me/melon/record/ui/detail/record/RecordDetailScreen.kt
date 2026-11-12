@@ -27,6 +27,7 @@ import androidx.compose.ui.unit.dp
 import me.melon.record.data.model.UniversalRecord
 import me.melon.record.ui.components.DetailTopAppBar
 import me.melon.record.ui.components.ImageViewerDialog
+import me.melon.record.ui.components.RedditMetadata
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.getValue
@@ -69,10 +70,14 @@ fun RecordDetailScreen(
     var viewerUrls by remember { mutableStateOf<List<String>>(emptyList()) }
     var viewerIndex by remember { mutableStateOf(0) }
     val data = rememberRecordDetailData(record)
+    val detailRecord = data.refreshedRecord ?: record
+    val redditMetadata = remember(detailRecord.platform, detailRecord.extraMetadata) {
+        if (detailRecord.platform == "reddit") RedditMetadata(detailRecord.extraMetadata) else null
+    }
 
     // 等列表项完整后再挂载列表，避免临时显示顶部以及钳制保存的滚动位置。
     val contentReady = data.commentsLoaded && data.relatedLoaded
-    val commentRows = rememberRecordDetailCommentRows(data.allComments, commentSort, record)
+    val commentRows = rememberRecordDetailCommentRows(data.allComments, commentSort, detailRecord)
     val onImageClick: (List<String>, Int) -> Unit = { urls, index ->
         viewerUrls = urls
         viewerIndex = index
@@ -83,8 +88,9 @@ fun RecordDetailScreen(
         topBar = {
             DetailTopAppBar(
                 title = when {
-                    record.platform == "threads" -> if (record.recordType == "comment") "Threads · 回复" else "Threads · 主帖"
-                    record.platform == "zhihu" && record.recordType == "pin" -> "知乎 · 想法"
+                    detailRecord.platform == "reddit" -> if (detailRecord.recordType == "comment") "Reddit · 回复" else "Reddit · 帖子"
+                    detailRecord.platform == "threads" -> if (detailRecord.recordType == "comment") "Threads · 回复" else "Threads · 主帖"
+                    detailRecord.platform == "zhihu" && detailRecord.recordType == "pin" -> "知乎 · 想法"
                     else -> "内容详情"
                 },
                 onBack = onBack
@@ -100,17 +106,27 @@ fun RecordDetailScreen(
                 .padding(horizontal = 16.dp),
             state = listState
         ) {
-            item { RecordDetailHeader(record, onImageClick) }
-            item { RecordDetailBody(record, onImageClick) }
-            item { RecordDetailMetadata(record) }
-            item { RecordDetailRelatedRecord(record, data.relatedRecord, onOpenRecord) }
+            item { RecordDetailHeader(detailRecord, onImageClick) }
+            item { RecordDetailBody(detailRecord, onImageClick) }
+            item { RecordDetailMetadata(detailRecord) }
+            item { RecordDetailRelatedRecord(detailRecord, data.relatedRecord, onOpenRecord) }
 
-            if (commentRows.isNotEmpty()) {
+            if (commentRows.isNotEmpty() || detailRecord.platform == "reddit") {
                 item {
-                    RecordDetailCommentsHeader(commentRows.size, commentSort) { commentSort = it }
+                    RecordDetailCommentsHeader(
+                        count = commentRows.size,
+                        commentSort = commentSort,
+                        platform = detailRecord.platform,
+                        hasNextPage = redditMetadata?.commentsHasNextPage
+                    ) { commentSort = it }
                 }
-                items(commentRows.size) { index ->
-                    RecordDetailCommentItem(commentRows[index], onOpenRecord)
+                items(
+                    count = commentRows.size,
+                    key = if (detailRecord.platform == "reddit") {
+                        { index: Int -> "comment:${commentRows[index].record.platformId}" }
+                    } else null
+                ) { index ->
+                    RecordDetailCommentItem(commentRows[index], onOpenRecord, onImageClick)
                 }
                 item { Spacer(modifier = Modifier.height(32.dp)) }
             }

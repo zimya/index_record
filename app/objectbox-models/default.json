@@ -135,10 +135,53 @@
         }
       ],
       "relations": []
+    },
+    {
+      "id": "5:5444947321499550715",
+      "lastPropertyId": "6:5855839857158131513",
+      "name": "RedditPendingRecord",
+      "properties": [
+        {
+          "id": "1:8351824438427369096",
+          "name": "id",
+          "type": 6,
+          "flags": 1
+        },
+        {
+          "id": "2:5721004247924757329",
+          "name": "platformId",
+          "indexId": "7:2555775090552673207",
+          "type": 9,
+          "flags": 2080
+        },
+        {
+          "id": "3:3354430786402826363",
+          "name": "postId",
+          "indexId": "8:7498183938758355444",
+          "type": 9,
+          "flags": 2048
+        },
+        {
+          "id": "4:8204952500425870562",
+          "name": "confirmed",
+          "type": 1
+        },
+        {
+          "id": "5:1750534683834978076",
+          "name": "recordJson",
+          "type": 9
+        },
+        {
+          "id": "6:5855839857158131513",
+          "name": "updatedAt",
+          "type": 6
+        }
+      ],
+      "relations": []
     }
   ],
-  "lastEntityId": "4:2231706528930721350",
-  "lastIndexId": "6:1262651967169746590",
+  "lastEntityId": "5:5444947321499550715",
+  "lastIndexId": "8:7498183938758355444",
   "lastRelationId": "0:0",
   "lastSequenceId": "0:0",
   "modelVersion": 5,

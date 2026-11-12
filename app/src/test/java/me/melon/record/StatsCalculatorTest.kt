@@ -21,7 +21,32 @@ class StatsCalculatorTest {
         assertEquals("com.sina.weibo", StatsCalculator.resolveSourceApp(official))
         assertEquals("com.weico.international", StatsCalculator.resolveSourceApp(international))
         val stats = StatsCalculator.computeState(listOf(fallback, official, international))
-        assertEquals(mapOf("com.sina.weibo" to 2, "com.weico.international" to 1), stats.topApps.toMap())
+        assertEquals(mapOf("com.sina.weibo" to 2), stats.topApps.toMap())
+    }
+
+    @Test
+    fun repliesDoNotAffectAnyStatisticsForPostOnlyPlatforms() {
+        val zone = ZoneId.of("UTC")
+        val today = LocalDate.now(zone)
+        val now = today.atTime(12, 0).atZone(zone).toInstant().toEpochMilli()
+        val postTypes = mapOf("reddit" to "post", "tieba" to "lou", "twitter" to "tweet", "weibo" to "status", "x" to "tweet")
+        val posts = postTypes.map { (platform, type) ->
+            UniversalRecord(platform = platform, recordType = type, captureTime = now, content = "main post")
+        }
+        val replies = postTypes.keys.flatMap { platform ->
+            listOf(0L, 1L, 2L).map { daysAgo ->
+                UniversalRecord(platform = platform, recordType = "comment", captureTime = now - daysAgo * 86400_000L, content = "reply text")
+            }
+        } + UniversalRecord(platform = "tieba", recordType = "floor", captureTime = now, content = "floor reply")
+        val otherPlatformReplies = listOf("zhihu", "douban", "threads").map {
+            UniversalRecord(platform = it, recordType = "comment", captureTime = now, content = "other reply")
+        }
+        val expected = StatsCalculator.computeState(posts + otherPlatformReplies, zone = zone)
+        assertEquals(8L, expected.totalRecordCount)
+        assertEquals(8, expected.todayRecordCount)
+        assertEquals(16L, expected.totalWordCount)
+        assertEquals(expected, StatsCalculator.computeState(posts + otherPlatformReplies + replies, zone = zone))
+        assertEquals(StatsCalculator.computeState(emptyList(), zone = zone), StatsCalculator.computeState(replies, zone = zone))
     }
 
     @Test
@@ -54,7 +79,7 @@ class StatsCalculatorTest {
             UniversalRecord(id = 2, captureTime = todayMilli - 86400_000L, title = "T2", content = "C2", platform = "zhihu"),
             UniversalRecord(id = 3, captureTime = todayMilli - 86400_000L * 2, title = "T3", content = "C3", platform = "douban"),
             UniversalRecord(id = 4, captureTime = todayMilli - 86400_000L * 4, title = "T4", content = "C4", platform = "douban"),
-            UniversalRecord(id = 5, captureTime = todayMilli - 86400_000L * 5, title = "T5", content = "C5", platform = "tieba")
+            UniversalRecord(id = 5, captureTime = todayMilli - 86400_000L * 5, title = "T5", content = "C5", platform = "tieba", recordType = "lou")
         )
 
         val stats = StatsCalculator.computeState(records, weeks = 52, zone = zone)

@@ -48,6 +48,12 @@ val TiebaDarkText = Color(0xFF8AA3FF)
 
 val WeiboOrange = Color(0xFFE96B10)
 
+val RedditOrange = Color(0xFFFF4500)
+val RedditLightContainer = Color(0xFFFFEDE5)
+val RedditLightText = Color(0xFFA92E00)
+val RedditDarkContainer = Color(0xFF3C1D12)
+val RedditDarkText = Color(0xFFFFAB87)
+
 // 𝕏 黑
 val XBlack = Color(0xFF000000)
 val XLightContainer = Color(0xFFF0F0F0)
@@ -92,6 +98,11 @@ fun getPlatformThemeColor(platform: String, isDark: Boolean): PlatformThemeColor
             PlatformThemeColor(XBlack, XDarkContainer, XDarkText)
         } else {
             PlatformThemeColor(XBlack, XLightContainer, XLightText)
+        }
+        "reddit", "com.reddit.frontpage" -> if (isDark) {
+            PlatformThemeColor(RedditOrange, RedditDarkContainer, RedditDarkText)
+        } else {
+            PlatformThemeColor(RedditOrange, RedditLightContainer, RedditLightText)
         }
         else -> if (isDark) {
             PlatformThemeColor(IndexBlue, Color(0xFF2A2B30), Color(0xFFD0D0D5))

@@ -1,0 +1,87 @@
+{
+  "request": null,
+  "response": {"data": {"postInfoById": {
+    "__typename": "SubredditPost", "id": "t3_1xr0ctd",
+    "title": "[REQUEST] Would the pennies be worth more then $35?",
+    "commentCount": 409, "isNsfw": false, "isLocked": false,
+    "subreddit": {"id": "t5_2x23b", "name": "theydidthemath"},
+    "commentForest": {
+      "__typename": "CommentForest", "appliedSort": "CONFIDENCE",
+      "pageInfo": {"commentCount": 318, "hasNextPage": true},
+      "trees": [
+        {"depth": 0, "parentId": null, "childCount": 0, "more": null, "node": {
+          "__typename": "Comment", "id": "t1_19sbxrda0a4mb", "score": 1, "isScoreHidden": true,
+          "createdAt": "2026-11-08T15:00:08.652000+0000", "distinguishedAs": "MODERATOR",
+          "permalink": "/r/theydidthemath/comments/1xr0ctd/request_would_the_pennies_be_worth_more_then_35/19sbxrda0a4mb/",
+          "authorInfo": {"id": "t2_6l4z3", "name": "AutoModerator"},
+          "content": {"markdown": "###General Discussion Thread\n\n---\n\nThis is a [Request] post. If you would like to submit a comment that does not either attempt to answer the question, ask for clarification, or explain why it would be infeasible to answer, you *must* post your comment as a reply to this one. Top level (directly replying to the OP) comments that do not do one of those things will be removed.\n\n---\n\n\n*I am a bot, and this action was performed automatically. Please [contact the moderators of this subreddit](/message/compose/?to=/r/theydidthemath) if you have any questions or concerns.*"}
+        }},
+        {"depth": 0, "parentId": null, "childCount": 85, "more": null, "node": {
+          "__typename": "Comment", "id": "t1_19sby1qmk6i90", "score": 2344, "isScoreHidden": false,
+          "createdAt": "2026-11-08T15:06:36.188000+0000",
+          "permalink": "/r/theydidthemath/comments/1xr0ctd/request_would_the_pennies_be_worth_more_then_35/19sby1qmk6i90/",
+          "authorInfo": {"id": "t2_2kpuexc49r", "name": "bumbadabumbumbum", "iconSmall": {"url": "https://www.redditstatic.com/avatars/defaults/v2/avatar_default_7.png"}},
+          "content": {"markdown": "approximating that a penny weighs 2.5g, it is found that 6350g of pennies are in the bags. 6350/2.5 = 2540 pennies. since 100 pennies is $1, this means there's $25.40 worth of pennies."}
+        }},
+        {"depth": 1, "parentId": "t1_19sby1qmk6i90", "childCount": 63, "more": null, "node": {
+          "__typename": "Comment", "id": "t1_19sby6zvvh1ph", "score": 804, "isScoreHidden": false,
+          "createdAt": "2026-11-08T15:09:52.633000+0000",
+          "permalink": "/r/theydidthemath/comments/1xr0ctd/request_would_the_pennies_be_worth_more_then_35/19sby6zvvh1ph/",
+          "authorInfo": {"id": "t2_v7uh22fcx", "name": "Correct-Matter8530"},
+          "content": {"markdown": "Not necessarily. If these are copper U.S. pennies, they're \\~3.1g/penny. But the smelting value of the raw material is close to the listed $35. Just try and avoid going to jail for doing it."}
+        }},
+        {"depth": 2, "parentId": "t1_19sby6zvvh1ph", "childCount": 21, "more": null, "node": {
+          "__typename": "Comment", "id": "t1_19sbyzvnmw736", "score": 387, "isScoreHidden": false,
+          "createdAt": "2026-11-08T15:27:51.884000+0000",
+          "permalink": "/r/theydidthemath/comments/1xr0ctd/request_would_the_pennies_be_worth_more_then_35/19sbyzvnmw736/",
+          "authorInfo": {"id": "t2_104m6uj6", "name": "DrButtgerms"},
+          "content": {"markdown": "All copper pennies are only minted before 1982. I would highly doubt these bags are all those at that price, unless someone is cleaning out a hoarder's place or something \n\nPoint being, it's likely a mixture"}
+        }},
+        {"depth": 3, "parentId": "t1_19sbyzvnmw736", "childCount": 7, "more": null, "node": {
+          "__typename": "Comment", "id": "t1_19scabna0anl1", "score": 83, "isScoreHidden": false,
+          "createdAt": "2026-11-08T19:41:48.902000+0000",
+          "permalink": "/r/theydidthemath/comments/1xr0ctd/request_would_the_pennies_be_worth_more_then_35/19scabna0anl1/",
+          "authorInfo": {"id": "t2_2lvaqgl6b2", "name": "Bodonwil"},
+          "content": {"markdown": ">All copper pennies are only minted before 1982.\n\nSort of true. Pennies minted before 1982 were various mixtures of **bronze** and were not pure copper. You can find the ratio of copper to tin online as it varies a bit over the last century. So a penny from 1965 might have slightly more tin than copper, for example. \n\nI used this knowledge once to mix a stack of 7-10 pennies of various years to smelt a nice blank of bronze that had a slight goldish tint to it. \n\nIt is **legal** to melt pennies for artistic reasons, which is what I was doing at the time (easier than ordering bronze pellets from a jewelry supply company.) The law everyone talks about is really to prevent a corporation from picking out millions of older pennies and mass melting them down for the raw metal. Government doesn't care if you do it for small-scale artistic reasons, like using it to cast a bronze miniature or something."}
+        }},
+        {"depth": 4, "parentId": "t1_19scabna0anl1", "childCount": 5, "more": null, "node": {
+          "__typename": "Comment", "id": "t1_19scstab6srtu", "score": 12, "isScoreHidden": false,
+          "createdAt": "2026-11-09T02:36:21.828000+0000",
+          "permalink": "/r/theydidthemath/comments/1xr0ctd/request_would_the_pennies_be_worth_more_then_35/19scstab6srtu/",
+          "authorInfo": {"id": "t2_n4bdlgqc", "name": "Shot-Log3751"},
+          "content": {"markdown": "So you could melt these and make a piece of art to sell for more than 35?"}
+        }},
+        {"depth": 5, "parentId": "t1_19scstab6srtu", "childCount": 3, "more": null, "node": {
+          "__typename": "Comment", "id": "t1_19sdtaotibmqp", "score": 12, "isScoreHidden": false,
+          "createdAt": "2026-11-09T16:14:19.686000+0000",
+          "permalink": "/r/theydidthemath/comments/1xr0ctd/request_would_the_pennies_be_worth_more_then_35/19sdtaotibmqp/",
+          "authorInfo": {"id": "t2_2lvaqgl6b2", "name": "Bodonwil"},
+          "content": {"markdown": "Yeah in theory that'd be ok. If you melted down a ton of pennies to make a bronze statue of Lincoln thats allowed. Now there is bound to be some grey areas. If you melted them down to make bullion bars and went through tons and tons of pennies, enough to get the governments attention, then don't expect to be covered by saying it was for artistic purposes. \n\nI think the art exception was to allow those penny smashing machines at tourist spots to continue to be a thing. Thats a protected form of currency destruction."}
+        }},
+        {"depth": 6, "parentId": "t1_19sdtaotibmqp", "childCount": 2, "more": null, "node": {
+          "__typename": "Comment", "id": "t1_19sg2le5j9p0l", "score": 2, "isScoreHidden": false,
+          "createdAt": "2026-11-10T22:37:01.665000+0000",
+          "permalink": "/r/theydidthemath/comments/1xr0ctd/request_would_the_pennies_be_worth_more_then_35/19sg2le5j9p0l/",
+          "authorInfo": {"id": "t2_2j215s6x74", "name": "Far_Vehicle_2255"},
+          "content": {"markdown": "Well wasnt the penny retired? Whats the point of pennies now then if they cant be melted down into bullions on a mass scale if they dont even count as money anymore?"}
+        }},
+        {"depth": 7, "parentId": "t1_19sg2le5j9p0l", "childCount": 0, "more": null, "node": {
+          "__typename": "Comment", "id": "t1_19she0uv0rbac", "score": 5, "isScoreHidden": false,
+          "createdAt": "2026-11-11T16:20:24.383000+0000",
+          "permalink": "/r/theydidthemath/comments/1xr0ctd/request_would_the_pennies_be_worth_more_then_35/19she0uv0rbac/",
+          "authorInfo": {"id": "t2_1u68bzw91x", "name": "Sweet-Look-1111"},
+          "content": {"markdown": "not minting =\\\\= not usable "}
+        }},
+        {"depth": 2, "parentId": "t1_19sby6zvvh1ph", "childCount": 12, "more": null, "node": {
+          "__typename": "Comment", "id": "t1_19sbygie802qq", "score": -6, "isScoreHidden": false,
+          "createdAt": "2026-11-08T15:15:48.147000+0000",
+          "permalink": "/r/theydidthemath/comments/1xr0ctd/request_would_the_pennies_be_worth_more_then_35/19sbygie802qq/",
+          "authorInfo": {"id": "t2_nencfo76", "name": "shaggy237"},
+          "content": {"markdown": "Can't you do it now that they are no longer legal tender?"}
+        }},
+        {"depth": 4, "parentId": "t1_19sgaxaz4oe77", "childCount": 4, "node": null,
+          "more": {"count": 4, "cursor": "commenttree:c1fe7ce1,::4:d1:t1_19sgaxaz4oe77", "isTooDeepForCount": false}}
+      ]
+    }
+  }}}
+}

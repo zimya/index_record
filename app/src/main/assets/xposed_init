@@ -4,3 +4,4 @@ me.melon.record.XHook
 me.melon.record.TiebaHook
 me.melon.record.WeiboHook
 me.melon.record.ThreadsHook
+me.melon.record.RedditHook

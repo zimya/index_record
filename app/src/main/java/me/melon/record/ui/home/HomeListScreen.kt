@@ -7,7 +7,7 @@ import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.*
-import androidx.compose.material3.pulltorefresh.PullToRefreshContainer
+
 import androidx.compose.material3.pulltorefresh.rememberPullToRefreshState
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -289,12 +289,16 @@ fun PullToRefreshListScreen(
                     .padding(top = 8.dp)
             )
 
-            if (pullState.isRefreshing || pullState.verticalOffset > 0) {
-                PullToRefreshContainer(
-                    state = pullState,
-                    modifier = Modifier.align(Alignment.TopCenter)
-                )
-            }
+            HomePullRefreshBar(
+                state = pullState,
+                loading = pullState.isRefreshing || showSync,
+                syncFraction = if (showSync && syncProgress.total > 0) {
+                    syncProgress.processed.toFloat() / syncProgress.total.toFloat()
+                } else {
+                    null
+                },
+                modifier = Modifier.align(Alignment.TopCenter)
+            )
         }
     }
 }

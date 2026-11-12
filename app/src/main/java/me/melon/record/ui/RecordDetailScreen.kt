@@ -292,7 +292,12 @@ fun RecordDetailScreen(
         contentWindowInsets = WindowInsets(0, 0, 0, 0),
         topBar = {
             TopAppBar(
-                title = { Text("内容详情", style = MaterialTheme.typography.titleMedium) },
+                title = {
+                    Text(
+                        if (record.platform == "zhihu" && record.recordType == "pin") "知乎 · 想法" else "内容详情",
+                        style = MaterialTheme.typography.titleMedium
+                    )
+                },
                 navigationIcon = {
                     IconButton(onClick = onBack) {
                         Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back")

@@ -135,7 +135,21 @@ fun zhihuStructuredContentToMarkdown(scElement: JsonElement?): String {
                 }
             }
             "card" -> {
-                // Ignore app UI cards like reward_tail_truncate
+                val card = seg.getAsJsonObject("card")
+                if (card?.safeString("card_type") == "matrix-image-card") {
+                    // extra_info is encoded JSON; a malformed image card must not lose the text.
+                    val extra = runCatching {
+                        com.google.gson.JsonParser.parseString(card.safeString("extra_info")).asJsonObject
+                    }.getOrNull()
+                    val images = extra?.getAsJsonObject("image_list")?.getAsJsonArray("images")
+                    images?.forEach { element ->
+                        if (element.isJsonObject) {
+                            val image = element.asJsonObject
+                            val url = image.safeString("url").ifBlank { image.safeString("original_url") }
+                            if (url.isNotBlank()) blocks.add("![]($url)")
+                        }
+                    }
+                }
             }
         }
     }

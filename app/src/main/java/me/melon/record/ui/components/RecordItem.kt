@@ -56,6 +56,7 @@ fun RecordItem(record: UniversalRecord, searchQuery: String, onClick: () -> Unit
         "question" -> "问题"
         "answer" -> "回答"
         "article" -> "文章"
+        "pin" -> "想法"
         "comment" -> if (record.platform == "tieba") "楼中楼" else "评论"
         "thread" -> "主帖"
         "floor" -> "楼层"

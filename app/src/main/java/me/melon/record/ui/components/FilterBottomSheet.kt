@@ -291,6 +291,7 @@ private fun typeLabel(type: String): String {
         "question" -> "问题"
         "answer" -> "回答"
         "article" -> "文章"
+        "pin" -> "想法"
         "comment" -> "评论"
         "topic" -> "帖子"
         "thread" -> "主帖"

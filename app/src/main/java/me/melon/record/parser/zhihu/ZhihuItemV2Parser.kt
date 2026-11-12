@@ -69,6 +69,26 @@ object ZhihuItemV2Parser {
             if (statsObj.has("favorites")) extraJson.add("favlists_count", statsObj.get("favorites"))
         }
 
+        if (effectiveType == "pin") {
+            val title = headerObj?.safeString("text").orEmpty()
+                .ifBlank { itemObj.safeString("title") }
+            return UniversalRecord(
+                platform = "zhihu",
+                recordType = "pin",
+                sourceApp = raw.hostApp,
+                platformId = "zhihu_pin_$id",
+                title = title,
+                content = content,
+                authorId = authorId,
+                authorName = authorName,
+                authorAvatar = authorAvatar,
+                sourceUrl = "https://www.zhihu.com/pin/$id",
+                publishTime = publishTime,
+                captureTime = raw.timestamp,
+                extraMetadata = gson.toJson(extraJson)
+            )
+        }
+
         if (effectiveType == "article") {
             val title = headerObj?.safeString("text")?.ifBlank { itemObj.safeString("title") } ?: "知乎文章 $id"
             val sourceUrl = if (raw.url.contains("next-render")) "https://zhuanlan.zhihu.com/p/$id" else raw.url

@@ -11,11 +11,11 @@ import java.util.regex.Pattern
 
 /**
  * 知乎评论解析器。
- * 支持回答/文章的根评论（root_comment）与楼中楼子评论（child_comment）。
+ * 支持回答/文章/想法的根评论（root_comment）与楼中楼子评论（child_comment）。
  */
 object ZhihuCommentParser {
 
-    private val PATTERN_ZHIHU_ROOT_COMMENT = Pattern.compile("https?://api\\.zhihu\\.com/comment_v5/(answers|articles)/(\\d+)/root_comment.*")
+    private val PATTERN_ZHIHU_ROOT_COMMENT = Pattern.compile("https?://api\\.zhihu\\.com/comment_v5/(answers|articles|pins)/(\\d+)/root_comment.*")
     private val PATTERN_ZHIHU_CHILD_COMMENT = Pattern.compile("https?://api\\.zhihu\\.com/comment_v5/comment/(\\d+)/child_comment.*")
 
     private val gson = Gson()
@@ -38,7 +38,11 @@ object ZhihuCommentParser {
             if (matcher.find()) {
                 val resourceType = matcher.group(1)
                 val resourceId = matcher.group(2)
-                fallbackParentId = if (resourceType == "answers") "zhihu_answer_$resourceId" else "zhihu_article_$resourceId"
+                fallbackParentId = when (resourceType) {
+                    "answers" -> "zhihu_answer_$resourceId"
+                    "pins" -> "zhihu_pin_$resourceId"
+                    else -> "zhihu_article_$resourceId"
+                }
             }
         } else {
             val matcher = PATTERN_ZHIHU_CHILD_COMMENT.matcher(cleanUrl)

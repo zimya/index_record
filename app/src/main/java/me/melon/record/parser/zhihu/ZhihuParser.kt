@@ -12,11 +12,14 @@ object ZhihuParser : RawDataParser {
 
     override val platform: String = "zhihu"
 
+    private fun isPinV2Url(url: String): Boolean =
+        Regex("https?://api\\.zhihu\\.com/pins/v2/[0-9]+/?").matches(url)
+
     override fun canHandle(cleanUrl: String, raw: RawData): Boolean {
         if (!cleanUrl.contains("zhihu.com") && raw.hostApp != "com.zhihu.android") {
             return false
         }
-        return ZhihuArticleParser.canHandle(cleanUrl) ||
+        return isPinV2Url(cleanUrl) || ZhihuArticleParser.canHandle(cleanUrl) ||
                 ZhihuAnswerParser.canHandle(cleanUrl) ||
                 ZhihuQuestionParser.canHandle(cleanUrl) ||
                 ZhihuFeedParser.canHandle(cleanUrl) ||
@@ -25,6 +28,9 @@ object ZhihuParser : RawDataParser {
 
     override fun parse(raw: RawData, cleanUrl: String): List<UniversalRecord> {
         return when {
+            isPinV2Url(cleanUrl) -> listOfNotNull(ZhihuItemV2Parser.parse(
+                com.google.gson.JsonParser.parseString(raw.json).asJsonObject, raw, defaultType = "pin"
+            ))
             ZhihuFeedParser.canHandle(cleanUrl) -> ZhihuFeedParser.parse(raw, cleanUrl)
             ZhihuArticleParser.canHandle(cleanUrl) -> ZhihuArticleParser.parse(raw, cleanUrl)
             ZhihuAnswerParser.canHandle(cleanUrl) -> ZhihuAnswerParser.parse(raw, cleanUrl)

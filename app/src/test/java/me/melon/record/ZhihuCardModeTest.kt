@@ -26,6 +26,79 @@ class ZhihuCardModeTest {
     }
 
     @Test
+    fun testPinCommentsParsing() {
+        val raw = RawData(
+            id = 5,
+            url = "https://api.zhihu.com/comment_v5/pins/2103900882941261531/root_comment?order_by=score&limit=20&offset=",
+            json = loadExample("comment_v5_pins.json"),
+            hostApp = "com.zhihu.android",
+            timestamp = 1794439353000L
+        )
+        val parser = me.melon.record.parser.zhihu.ZhihuParser
+        val cleanUrl = raw.url.substringBefore('?')
+        assertTrue(parser.canHandle(cleanUrl, raw))
+        val records = parser.parse(raw, cleanUrl)
+        val root = records.single { it.platformId == "zhihu_comment_11615615183" }
+        assertEquals("zhihu_pin_2103900882941261531", root.parentId)
+        assertEquals("comment", root.recordType)
+        assertEquals("最多四两", root.authorName)
+        assertTrue(root.content.contains("让蝽娘拿个钝器"))
+        assertEquals(1794427437000L, root.publishTime)
+        val child = records.single { it.platformId == "zhihu_comment_11616082446" }
+        assertEquals(root.platformId, child.parentId)
+        assertTrue(child.content.contains("这不是娘"))
+        val ids = records.map { it.platformId }.toSet()
+        assertTrue(records.all { it.parentId == "zhihu_pin_2103900882941261531" || it.parentId in ids })
+
+        for ((resource, type) in listOf("answers" to "answer", "articles" to "article")) {
+            val url = "https://api.zhihu.com/comment_v5/$resource/123/root_comment"
+            assertTrue(parser.canHandle(url, raw))
+            val comments = parser.parse(raw, url)
+            assertEquals("zhihu_${type}_123", comments.first().parentId)
+        }
+        val childUrl = "https://api.zhihu.com/comment_v5/comment/11615615183/child_comment"
+        assertTrue(parser.canHandle(childUrl, raw))
+    }
+
+    @Test
+    fun testPinV2Parsing() {
+        val raw = RawData(
+            id = 4,
+            url = "https://api.zhihu.com/pins/v2/2103900882941261531?scene=follow&single_content=1",
+            json = loadExample("pin_v2_example.json"),
+            hostApp = "com.zhihu.android",
+            timestamp = 1732554840000L
+        )
+        val cleanUrl = raw.url.substringBefore('?')
+        val parser = me.melon.record.parser.zhihu.ZhihuParser
+        assertTrue(parser.canHandle(cleanUrl, raw))
+        val record = parser.parse(raw, cleanUrl).single()
+        assertEquals("pin", record.recordType)
+        assertEquals("zhihu_pin_2103900882941261531", record.platformId)
+        assertEquals("拟人设计练习 麻皮蝽", record.title)
+        assertEquals("斜绿天蛾", record.authorName)
+        assertTrue(record.authorAvatar.contains("v2-eb665fa780d6c2ffe7908debeb029b04"))
+        assertEquals("https://www.zhihu.com/pin/2103900882941261531", record.sourceUrl)
+        assertTrue(record.parentId.isBlank())
+        assertTrue(record.content.contains("麻皮蝽 Erthesina fullo"))
+        assertTrue(record.content.contains("![](https://pic1.zhimg.com/v2-31b18de43ad4af65c9fad36b8bb36b7b.png?"))
+        assertTrue(markdownToMdAst(record.content).children.isNotEmpty())
+        val extra = JsonParser.parseString(record.extraMetadata).asJsonObject
+        assertEquals("广东", extra.get("ip_info").asString)
+        assertEquals(21, extra.get("voteup_count").asInt)
+        assertEquals(7, extra.get("comment_count").asInt)
+        assertEquals(3, extra.get("favlists_count").asInt)
+
+        val item = JsonParser.parseString(raw.json).asJsonObject
+        item.remove("type")
+        item.remove("header")
+        val untitled = DataProcessor.parseZhihuItemV2(item, raw, defaultType = "pin")!!
+        assertEquals("pin", untitled.recordType)
+        assertTrue(untitled.title.isBlank())
+        assertFalse(parser.canHandle("https://api.zhihu.com/pins/v2/123/comments", raw))
+    }
+
+    @Test
     fun testAnswerV2Conversion() {
         val jsonStr = loadExample("answer_v2_example.json")
         val json = JsonParser.parseString(jsonStr).asJsonObject

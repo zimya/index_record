@@ -1,6 +1,5 @@
 package me.melon.record.ui.components
 
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -59,7 +58,8 @@ fun RelatedRecordCard(
     }
 
     Card(
-        modifier = modifier.fillMaxWidth().clickable(onClick = onClick),
+        onClick = onClick,
+        modifier = modifier.fillMaxWidth(),
         shape = RoundedCornerShape(12.dp),
         colors = CardDefaults.cardColors(containerColor = platformColor.container)
     ) {

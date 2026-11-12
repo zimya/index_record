@@ -1,6 +1,5 @@
 package me.melon.record.ui.components
 
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -83,8 +82,8 @@ fun RecordItem(record: UniversalRecord, searchQuery: String, onClick: () -> Unit
     HomeRecordCard(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(horizontal = 12.dp, vertical = 6.dp)
-            .clickable { onClick() }
+            .padding(horizontal = 12.dp, vertical = 6.dp),
+        onClick = onClick
     ) {
         Column(modifier = Modifier.padding(16.dp)) {
             Row(

@@ -46,31 +46,39 @@ internal fun AnswerGroupItem(
     HomeRecordCard(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(horizontal = 12.dp, vertical = 6.dp)
+            .padding(horizontal = 12.dp, vertical = 6.dp),
+        onClick = if (collapsible) ({ expanded = !expanded }) else null
     ) {
-        Column(modifier = Modifier.padding(16.dp)) {
-            Surface(
-                color = platformColor.container,
-                shape = MaterialTheme.shapes.small
-            ) {
-                Text(
-                    text = "知乎 · 回答",
-                    style = MaterialTheme.typography.labelSmall,
-                    modifier = Modifier.padding(horizontal = 6.dp, vertical = 2.dp),
-                    color = platformColor.text,
-                    fontWeight = FontWeight.Medium
-                )
-            }
-
-            Spacer(modifier = Modifier.height(8.dp))
-
-            GroupTitle(
-                title = questionTitle,
-                searchQuery = searchQuery,
-                collapsible = collapsible,
-                expanded = expanded,
-                onToggle = { expanded = !expanded }
+        Column(
+            modifier = Modifier.padding(
+                top = 16.dp,
+                bottom = if (!collapsible || expanded) 0.dp else 16.dp
             )
+        ) {
+            Column(modifier = Modifier.padding(horizontal = 16.dp)) {
+                Surface(
+                    color = platformColor.container,
+                    shape = MaterialTheme.shapes.small
+                ) {
+                    Text(
+                        text = "知乎 · 回答",
+                        style = MaterialTheme.typography.labelSmall,
+                        modifier = Modifier.padding(horizontal = 6.dp, vertical = 2.dp),
+                        color = platformColor.text,
+                        fontWeight = FontWeight.Medium
+                    )
+                }
+
+                Spacer(modifier = Modifier.height(8.dp))
+
+                GroupTitle(
+                    title = questionTitle,
+                    searchQuery = searchQuery,
+                    collapsible = collapsible,
+                    expanded = expanded
+                )
+
+            }
 
             AnimatedVisibility(
                 visible = !collapsible || expanded,
@@ -78,20 +86,25 @@ internal fun AnswerGroupItem(
                 exit = shrinkVertically(tween(250)) + fadeOut(tween(250))
             ) {
                 Column {
-                    Spacer(modifier = Modifier.height(10.dp))
-
                     val sdf = remember { SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.getDefault()) }
                     answers.forEachIndexed { index, answer ->
                         if (index > 0) {
-                            Spacer(modifier = Modifier.height(10.dp))
-                            HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.6f))
-                            Spacer(modifier = Modifier.height(10.dp))
+                            HorizontalDivider(
+                                modifier = Modifier.padding(horizontal = 16.dp),
+                                color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.6f)
+                            )
                         }
 
                         Column(
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .clickable { onOpenAnswer(answer) }
+                                .padding(
+                                    start = 16.dp,
+                                    end = 16.dp,
+                                    top = 10.dp,
+                                    bottom = if (index == answers.lastIndex) 16.dp else 10.dp
+                                )
                         ) {
                             Row(
                                 modifier = Modifier.fillMaxWidth(),
@@ -147,31 +160,39 @@ internal fun InterestGroupItem(
     HomeRecordCard(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(horizontal = 12.dp, vertical = 6.dp)
+            .padding(horizontal = 12.dp, vertical = 6.dp),
+        onClick = if (collapsible) ({ expanded = !expanded }) else null
     ) {
-        Column(modifier = Modifier.padding(16.dp)) {
-            Surface(
-                color = platformColor.container,
-                shape = MaterialTheme.shapes.small
-            ) {
-                Text(
-                    text = "豆瓣 · $typeLabel",
-                    style = MaterialTheme.typography.labelSmall,
-                    modifier = Modifier.padding(horizontal = 6.dp, vertical = 2.dp),
-                    color = platformColor.text,
-                    fontWeight = FontWeight.Medium
-                )
-            }
-
-            Spacer(modifier = Modifier.height(8.dp))
-
-            GroupTitle(
-                title = subjectTitle,
-                searchQuery = searchQuery,
-                collapsible = collapsible,
-                expanded = expanded,
-                onToggle = { expanded = !expanded }
+        Column(
+            modifier = Modifier.padding(
+                top = 16.dp,
+                bottom = if (!collapsible || expanded) 0.dp else 16.dp
             )
+        ) {
+            Column(modifier = Modifier.padding(horizontal = 16.dp)) {
+                Surface(
+                    color = platformColor.container,
+                    shape = MaterialTheme.shapes.small
+                ) {
+                    Text(
+                        text = "豆瓣 · $typeLabel",
+                        style = MaterialTheme.typography.labelSmall,
+                        modifier = Modifier.padding(horizontal = 6.dp, vertical = 2.dp),
+                        color = platformColor.text,
+                        fontWeight = FontWeight.Medium
+                    )
+                }
+
+                Spacer(modifier = Modifier.height(8.dp))
+
+                GroupTitle(
+                    title = subjectTitle,
+                    searchQuery = searchQuery,
+                    collapsible = collapsible,
+                    expanded = expanded
+                )
+
+            }
 
             AnimatedVisibility(
                 visible = !collapsible || expanded,
@@ -179,20 +200,25 @@ internal fun InterestGroupItem(
                 exit = shrinkVertically(tween(250)) + fadeOut(tween(250))
             ) {
                 Column {
-                    Spacer(modifier = Modifier.height(10.dp))
-
                     val sdf = remember { SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.getDefault()) }
                     interests.forEachIndexed { index, interest ->
                         if (index > 0) {
-                            Spacer(modifier = Modifier.height(10.dp))
-                            HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.6f))
-                            Spacer(modifier = Modifier.height(10.dp))
+                            HorizontalDivider(
+                                modifier = Modifier.padding(horizontal = 16.dp),
+                                color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.6f)
+                            )
                         }
 
                         Column(
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .clickable { onOpenInterest(interest) }
+                                .padding(
+                                    start = 16.dp,
+                                    end = 16.dp,
+                                    top = 10.dp,
+                                    bottom = if (index == interests.lastIndex) 16.dp else 10.dp
+                                )
                         ) {
                             Row(
                                 modifier = Modifier.fillMaxWidth(),
@@ -236,8 +262,7 @@ private fun GroupTitle(
     title: String,
     searchQuery: String,
     collapsible: Boolean,
-    expanded: Boolean,
-    onToggle: () -> Unit
+    expanded: Boolean
 ) {
     val rotation by animateFloatAsState(
         targetValue = if (expanded) 180f else 0f,
@@ -247,12 +272,6 @@ private fun GroupTitle(
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .then(
-                if (collapsible) Modifier.clickable(
-                    onClickLabel = if (expanded) "收起" else "展开",
-                    onClick = onToggle
-                ) else Modifier
-            )
             .heightIn(min = 48.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {

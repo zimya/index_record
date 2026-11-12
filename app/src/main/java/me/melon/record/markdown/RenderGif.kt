@@ -6,7 +6,9 @@ import android.content.Context
 import android.util.Log
 import android.view.TextureView
 import android.widget.Toast
+
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -16,6 +18,8 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -45,11 +49,13 @@ import androidx.media3.exoplayer.ExoPlayer
 import me.melon.record.BuildConfig
 
 @androidx.annotation.OptIn(UnstableApi::class)
+
 @Composable
 internal fun RenderGif(url: String, onLinkClick: (String) -> Unit) {
     val context = LocalContext.current
     val lifecycleOwner = LocalLifecycleOwner.current
     var attempt by remember(url) { mutableStateOf(0) }
+    var showMenu by remember(url) { mutableStateOf(false) }
     key(url, lifecycleOwner, attempt) {
         var loading by remember { mutableStateOf(true) }
         var failed by remember { mutableStateOf(false) }
@@ -100,7 +106,11 @@ internal fun RenderGif(url: String, onLinkClick: (String) -> Unit) {
             }
         }
 
-        Column(modifier = Modifier.fillMaxWidth()) {
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .clickable(onClickLabel = "GIF 菜单") { showMenu = true }
+        ) {
             if (failed) {
                 Column(modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp)) {
                     Text("GIF 播放失败", color = MaterialTheme.colorScheme.onSurfaceVariant)
@@ -125,14 +135,22 @@ internal fun RenderGif(url: String, onLinkClick: (String) -> Unit) {
                     if (loading) CircularProgressIndicator()
                 }
             }
-            TextButton(
-                onClick = {
-                    val clipboard = context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
-                    clipboard.setPrimaryClip(ClipData.newPlainText("GIF", url))
-                    Toast.makeText(context, "GIF 链接已复制", Toast.LENGTH_SHORT).show()
+            // Popup 与正文不在同一布局层级，不能共享正文的文本选区注册器。
+            androidx.compose.foundation.text.selection.DisableSelection {
+                DropdownMenu(
+                    expanded = showMenu,
+                    onDismissRequest = { showMenu = false }
+                ) {
+                    DropdownMenuItem(
+                        text = { Text("复制 GIF 链接") },
+                        onClick = {
+                            showMenu = false
+                            val clipboard = context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+                            clipboard.setPrimaryClip(ClipData.newPlainText("GIF", url))
+                            Toast.makeText(context, "GIF 链接已复制", Toast.LENGTH_SHORT).show()
+                        }
+                    )
                 }
-            ) {
-                Text("复制 GIF 链接")
             }
         }
     }

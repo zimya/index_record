@@ -1,6 +1,6 @@
 package me.melon.record.ui.detail.question
 
-import androidx.compose.foundation.clickable
+
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -18,6 +18,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import me.melon.record.data.model.UniversalRecord
 import me.melon.record.ui.components.AvatarImage
@@ -39,9 +40,10 @@ internal fun QuestionAnswerCard(
     }
 
     Surface(
+        onClick = { stored?.let(onOpenAnswer) },
+        enabled = enabled,
         modifier = Modifier
             .fillMaxWidth()
-            .clickable(enabled = enabled) { onOpenAnswer(stored!!) }
             .padding(bottom = 12.dp),
         color = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = if (enabled) 0.35f else 0.18f),
         shape = MaterialTheme.shapes.medium
@@ -67,7 +69,9 @@ internal fun QuestionAnswerCard(
                 Text(
                     text = excerpt,
                     style = MaterialTheme.typography.bodyMedium,
-                    color = MaterialTheme.colorScheme.onSurface
+                    color = MaterialTheme.colorScheme.onSurface,
+                    maxLines = 5,
+                    overflow = TextOverflow.Ellipsis
                 )
             }
             val ts = (if (ref.updatedTimeSec > 0) ref.updatedTimeSec else ref.createdTimeSec) * 1000

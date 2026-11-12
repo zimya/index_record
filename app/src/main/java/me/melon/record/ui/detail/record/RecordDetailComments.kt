@@ -1,6 +1,6 @@
 package me.melon.record.ui.detail.record
 
-import androidx.compose.foundation.clickable
+
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -75,9 +75,9 @@ internal fun RecordDetailCommentItem(row: RecordDetailCommentRow, onOpenRecord: 
     val dislikeCount = if (commentMeta.has("dislike_count") && !commentMeta.get("dislike_count").isJsonNull) commentMeta.get("dislike_count").asLong else 0L
 
     Surface(
+        onClick = { onOpenRecord(comment) },
         modifier = Modifier
             .fillMaxWidth()
-            .clickable { onOpenRecord(comment) }
             .padding(
                 start = (depth.coerceAtMost(4) * 24).dp,
                 bottom = 12.dp

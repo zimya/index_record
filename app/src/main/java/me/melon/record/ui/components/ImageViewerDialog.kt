@@ -76,7 +76,11 @@ fun ImageViewerDialog(
                 Box(
                     modifier = Modifier
                         .fillMaxSize()
-                        .transformable(state)
+                        .transformable(
+                            state = state,
+                            // 原始比例下将单指拖动交给外层 Pager，避免缩放手势抢占翻页。
+                            canPan = { scale > 1f }
+                        )
                         .graphicsLayer(
                             scaleX = scale,
                             scaleY = scale,

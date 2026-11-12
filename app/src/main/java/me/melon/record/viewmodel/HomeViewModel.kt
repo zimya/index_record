@@ -63,6 +63,7 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
             "com.baidu.tieba",
             "com.xingin.xhs",
             "com.twitter.android",
+            "com.instagram.barcelona",
             "com.sina.weibo",
             "com.weico.international"
         )
@@ -139,6 +140,7 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
                 "tieba" -> "com.baidu.tieba"
                 "xiaohongshu" -> "com.xingin.xhs"
                 "twitter" -> "com.twitter.android"
+                "threads" -> "com.instagram.barcelona"
                 "weibo" -> "com.sina.weibo"
                 else -> ""
             }
@@ -362,6 +364,7 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
             "tieba" -> "com.baidu.tieba"
             "xiaohongshu" -> "com.xingin.xhs"
             "twitter" -> "com.twitter.android"
+            "threads" -> "com.instagram.barcelona"
             "weibo" -> "com.sina.weibo"
             else -> ""
         }

@@ -47,6 +47,7 @@ fun RecordItem(record: UniversalRecord, searchQuery: String, onClick: () -> Unit
         "douban" -> "豆瓣"
         "tieba" -> "贴吧"
         "twitter" -> "𝕏"
+        "threads" -> "Threads"
         "weibo" -> "微博"
         "xiaohongshu" -> "小红书"
         else -> record.platform.replaceFirstChar { it.uppercase() }
@@ -75,6 +76,8 @@ fun RecordItem(record: UniversalRecord, searchQuery: String, onClick: () -> Unit
         tiebaMeta?.text("thread_title").orEmpty().ifBlank {
             if (record.platform == "weibo") {
                 if (record.recordType == "comment") "微博评论" else "${record.authorName.ifBlank { "微博用户" }}的微博"
+            } else if (record.platform == "threads") {
+                if (record.recordType == "comment") "Threads 回复" else "${record.authorName.ifBlank { "Threads 用户" }}的帖子"
             } else "无标题"
         }
     }
@@ -166,7 +169,7 @@ fun RecordItem(record: UniversalRecord, searchQuery: String, onClick: () -> Unit
                 )
             }
 
-            if (record.platform == "twitter" || record.platform == "weibo") {
+            if (record.platform in setOf("twitter", "weibo", "threads")) {
                 val twitterMeta = remember(record.extraMetadata) {
                     try {
                         JsonParser.parseString(record.extraMetadata).asJsonObject
@@ -175,25 +178,10 @@ fun RecordItem(record: UniversalRecord, searchQuery: String, onClick: () -> Unit
                     }
                 }
                 if (twitterMeta != null) {
-                    val lk = if (twitterMeta.has("like_count") && !twitterMeta.get("like_count").isJsonNull) {
-                        twitterMeta.get("like_count").asLong
-                    } else if (twitterMeta.has("voteup_count") && !twitterMeta.get("voteup_count").isJsonNull) {
-                        twitterMeta.get("voteup_count").asLong
-                    } else 0L
-
-                    val rt = if (twitterMeta.has("retweet_count") && !twitterMeta.get("retweet_count").isJsonNull) {
-                        twitterMeta.get("retweet_count").asLong
-                    } else 0L
-
-                    val rp = if (twitterMeta.has("reply_count") && !twitterMeta.get("reply_count").isJsonNull) {
-                        twitterMeta.get("reply_count").asLong
-                    } else if (twitterMeta.has("comment_count") && !twitterMeta.get("comment_count").isJsonNull) {
-                        twitterMeta.get("comment_count").asLong
-                    } else 0L
-
-                    val vw = if (twitterMeta.has("views_count") && !twitterMeta.get("views_count").isJsonNull) {
-                        twitterMeta.get("views_count").asLong
-                    } else 0L
+                    val lk = twitterMeta.engagementCount("like_count", "likeCount", "voteup_count")
+                    val rt = twitterMeta.engagementCount("retweet_count", "repost_count", "repostCount")
+                    val rp = twitterMeta.engagementCount("reply_count", "comment_count", "commentCount")
+                    val vw = twitterMeta.viewEngagementCount(record.platform)
 
                     if (lk > 0L || rt > 0L || rp > 0L || vw > 0L) {
                         Spacer(modifier = Modifier.height(8.dp))
@@ -269,7 +257,7 @@ private fun getPreviewText(record: UniversalRecord): String {
         else -> record.content
     }
 
-    val preview = if (record.platform == "weibo") {
+    val preview = if (record.platform in setOf("weibo", "threads")) {
         raw.replace(Regex("!\\[[^\\]]*\\]\\([^\\n]*\\)"), "[图片]")
     } else raw
     val text = try {
@@ -277,7 +265,10 @@ private fun getPreviewText(record: UniversalRecord): String {
     } catch (_: Exception) {
         preview
     }
-    return text.replace('\n', ' ').replace('\r', ' ').trim()
+    val plainText = if (record.platform == "threads") {
+            text.replace(Regex("""\\([\\`*_{}\[\]<>#!|~])"""), "$1")
+        } else text
+        return plainText.replace('\n', ' ').replace('\r', ' ').trim()
 }
 
 @Composable

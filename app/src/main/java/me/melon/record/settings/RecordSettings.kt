@@ -40,9 +40,28 @@ enum class WeiboRecordMode {
     }
 }
 
+enum class ThreadsRecordMode {
+    PUSH,
+    READ;
+
+    fun shouldProcess(url: String): Boolean {
+        if (this == PUSH) return true
+        val path = runCatching { java.net.URI(url).path }.getOrNull() ?: return false
+        // 仅接受详情/回复入口；首页、资料页及通用 media/GraphQL 接口可能预加载帖子。
+        return Regex("^/api/v1/text_feed/[0-9]+/replies_streaming/?$").matches(path) ||
+            path.trimEnd('/') == "/api/v1/feed/text_post_app_replies"
+    }
+
+    companion object {
+        fun fromStoredValue(value: Any?): ThreadsRecordMode =
+            entries.firstOrNull { it.name == value } ?: READ
+    }
+}
+
 object RecordSettings {
     private const val TWEET_RECORD_MODE = "tweet_record_mode"
-        private const val WEIBO_RECORD_MODE = "weibo_record_mode"
+    private const val WEIBO_RECORD_MODE = "weibo_record_mode"
+    private const val THREADS_RECORD_MODE = "threads_record_mode"
     private const val COLLAPSE_MULTIPLE_ITEMS = "collapse_multiple_items"
     private val _collapseMultipleItems = MutableStateFlow(true)
     val collapseMultipleItems = _collapseMultipleItems.asStateFlow()
@@ -57,6 +76,12 @@ object RecordSettings {
         prefs.edit().putBoolean(COLLAPSE_MULTIPLE_ITEMS, enabled).apply()
         _collapseMultipleItems.value = enabled
     }
+
+    var threadsRecordMode: ThreadsRecordMode
+        get() = ThreadsRecordMode.fromStoredValue(prefs.all[THREADS_RECORD_MODE])
+        set(value) {
+            prefs.edit().putString(THREADS_RECORD_MODE, value.name).apply()
+        }
 
     var weiboRecordMode: WeiboRecordMode
         get() = WeiboRecordMode.fromStoredValue(prefs.all[WEIBO_RECORD_MODE])

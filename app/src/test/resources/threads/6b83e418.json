@@ -1,0 +1,297 @@
+{
+  "medias": [],
+  "threads": [
+    {
+      "thread_type": "thread",
+      "thread_items": [
+        {
+          "post": {
+            "pk": 8000000000000000019,
+            "id": "8000000000000000019_90001",
+            "media_type": 18,
+            "like_count": 0,
+            "taken_at": 1700000000,
+            "code": "sample10",
+            "permalink": "https://www.threads.com/@sample/post/sample10",
+            "user": {
+              "pk": 90001,
+              "id": "90001",
+              "username": "user_90001",
+              "full_name": "Author 90001",
+              "profile_pic_url": "https://example.test/avatar/90001.jpg"
+            },
+            "image_versions2": {
+              "candidates": [
+                {
+                  "width": 360,
+                  "height": 639,
+                  "url": "https://example.test/image/sample10-0.jpg"
+                }
+              ]
+            },
+            "text_post_app_info": {
+              "is_reply": false,
+              "reply_level": 0,
+              "direct_reply_count": 0,
+              "repost_count": 0,
+              "quote_count": 0,
+              "text_fragments": {
+                "fragments": []
+              },
+              "share_info": {
+                "reposted_post": {
+                  "pk": 8000000000000000020,
+                  "id": "8000000000000000020_90006",
+                  "media_type": 8,
+                  "like_count": 12794,
+                  "taken_at": 1700000000,
+                  "code": "sample11",
+                  "permalink": "https://www.threads.com/@sample/post/sample11",
+                  "user": {
+                    "pk": 90006,
+                    "id": "90006",
+                    "username": "user_90006",
+                    "full_name": "Author 90006",
+                    "profile_pic_url": "https://example.test/avatar/90006.jpg"
+                  },
+                  "caption": {
+                    "pk": "8000000000000000021",
+                    "content_type": "comment",
+                    "text": "Sample text sample11\nSecond line *literal*"
+                  },
+                  "text_with_entities": {
+                    "text": "Sample text sample11\nSecond line *literal*"
+                  },
+                  "image_versions2": {
+                    "candidates": [
+                      {
+                        "width": 360,
+                        "height": 639,
+                        "url": "https://example.test/image/sample11-0.jpg"
+                      }
+                    ]
+                  },
+                  "carousel_media": [
+                    {
+                      "pk": 8000000000000000022,
+                      "id": "8000000000000000022_90006",
+                      "media_type": 2,
+                      "image_versions2": {
+                        "candidates": [
+                          {
+                            "width": 360,
+                            "height": 639,
+                            "url": "https://example.test/image/item-0.jpg"
+                          }
+                        ]
+                      },
+                      "video_versions": [
+                        {
+                          "width": 720,
+                          "height": 1280,
+                          "type": 101,
+                          "bandwidth": 3271357,
+                          "url": "https://example.test/video/0.mp4"
+                        },
+                        {
+                          "width": 720,
+                          "height": 1280,
+                          "type": 102,
+                          "bandwidth": 3271357,
+                          "url": "https://example.test/video/1.mp4"
+                        },
+                        {
+                          "width": 720,
+                          "height": 1280,
+                          "type": 103,
+                          "bandwidth": 3271357,
+                          "url": "https://example.test/video/2.mp4"
+                        }
+                      ],
+                      "text_post_app_info": {
+                        "share_info": {
+                          "quoted_post": null
+                        }
+                      }
+                    },
+                    {
+                      "pk": 8000000000000000023,
+                      "id": "8000000000000000023_90006",
+                      "media_type": 2,
+                      "image_versions2": {
+                        "candidates": [
+                          {
+                            "width": 360,
+                            "height": 639,
+                            "url": "https://example.test/image/item-0.jpg"
+                          }
+                        ]
+                      },
+                      "video_versions": [
+                        {
+                          "width": 720,
+                          "height": 1280,
+                          "type": 101,
+                          "bandwidth": 2507957,
+                          "url": "https://example.test/video/0.mp4"
+                        },
+                        {
+                          "width": 720,
+                          "height": 1280,
+                          "type": 102,
+                          "bandwidth": 2507957,
+                          "url": "https://example.test/video/1.mp4"
+                        },
+                        {
+                          "width": 720,
+                          "height": 1280,
+                          "type": 103,
+                          "bandwidth": 2507957,
+                          "url": "https://example.test/video/2.mp4"
+                        }
+                      ],
+                      "text_post_app_info": {
+                        "share_info": {
+                          "quoted_post": null
+                        }
+                      }
+                    },
+                    {
+                      "pk": 8000000000000000024,
+                      "id": "8000000000000000024_90006",
+                      "media_type": 1,
+                      "image_versions2": {
+                        "candidates": [
+                          {
+                            "width": 1080,
+                            "height": 1918,
+                            "url": "https://example.test/image/item-0.jpg"
+                          },
+                          {
+                            "width": 640,
+                            "height": 1137,
+                            "url": "https://example.test/image/item-1.jpg"
+                          }
+                        ]
+                      },
+                      "text_post_app_info": {
+                        "share_info": {
+                          "quoted_post": null
+                        }
+                      }
+                    }
+                  ],
+                  "text_post_app_info": {
+                    "is_reply": false,
+                    "reply_level": 0,
+                    "direct_reply_count": 50,
+                    "repost_count": 2400,
+                    "reshare_count": 152,
+                    "quote_count": 18,
+                    "text_fragments": {
+                      "fragments": [
+                        {
+                          "fragment_type": "plaintext",
+                          "plaintext": "Sample text sample11\nSecond line *literal*"
+                        }
+                      ]
+                    },
+                    "share_info": {
+                      "reposted_post": null,
+                      "quoted_post": null
+                    }
+                  }
+                },
+                "quoted_post": null
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "thread_type": "thread",
+      "thread_items": [
+        {
+          "post": {
+            "pk": 8000000000000000025,
+            "id": "8000000000000000025_90001",
+            "media_type": 18,
+            "like_count": 0,
+            "taken_at": 1700000000,
+            "code": "sample12",
+            "permalink": "https://www.threads.com/@sample/post/sample12",
+            "user": {
+              "pk": 90001,
+              "id": "90001",
+              "username": "user_90001",
+              "full_name": "Author 90001",
+              "profile_pic_url": "https://example.test/avatar/90001.jpg"
+            },
+            "image_versions2": {
+              "candidates": []
+            },
+            "text_post_app_info": {
+              "is_reply": false,
+              "reply_level": 0,
+              "direct_reply_count": 0,
+              "repost_count": 0,
+              "quote_count": 0,
+              "text_fragments": {
+                "fragments": []
+              },
+              "share_info": {
+                "reposted_post": {
+                  "pk": 8000000000000000026,
+                  "id": "8000000000000000026_90007",
+                  "media_type": 19,
+                  "like_count": 29618,
+                  "taken_at": 1700000000,
+                  "code": "sample13",
+                  "permalink": "https://www.threads.com/@sample/post/sample13",
+                  "user": {
+                    "pk": 90007,
+                    "id": "90007",
+                    "username": "user_90007",
+                    "full_name": "Author 90007",
+                    "profile_pic_url": "https://example.test/avatar/90007.jpg"
+                  },
+                  "caption": {
+                    "pk": "8000000000000000027",
+                    "content_type": "comment",
+                    "text": "Sample text sample13\nSecond line *literal*"
+                  },
+                  "image_versions2": {
+                    "candidates": []
+                  },
+                  "text_post_app_info": {
+                    "is_reply": false,
+                    "reply_level": 0,
+                    "direct_reply_count": 312,
+                    "repost_count": 5824,
+                    "reshare_count": 587,
+                    "quote_count": 249,
+                    "text_fragments": {
+                      "fragments": [
+                        {
+                          "fragment_type": "plaintext",
+                          "plaintext": "Sample text sample13\nSecond line *literal*"
+                        }
+                      ]
+                    },
+                    "share_info": {
+                      "reposted_post": null,
+                      "quoted_post": null
+                    }
+                  }
+                },
+                "quoted_post": null
+              }
+            }
+          }
+        }
+      ]
+    }
+  ],
+  "status": "ok"
+}

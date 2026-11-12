@@ -88,7 +88,7 @@ fun getPlatformThemeColor(platform: String, isDark: Boolean): PlatformThemeColor
         } else {
             PlatformThemeColor(WeiboOrange, Color(0xFFFFF0E3), Color(0xFF963E00))
         }
-        "twitter", "com.twitter.android" -> if (isDark) {
+        "twitter", "com.twitter.android", "threads", "com.instagram.barcelona" -> if (isDark) {
             PlatformThemeColor(XBlack, XDarkContainer, XDarkText)
         } else {
             PlatformThemeColor(XBlack, XLightContainer, XLightText)

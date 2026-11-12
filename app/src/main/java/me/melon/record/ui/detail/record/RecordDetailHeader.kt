@@ -76,7 +76,13 @@ internal fun RecordDetailHeader(record: UniversalRecord, onImageClick: (List<Str
         Column(modifier = Modifier.weight(1f)) {
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Text(
-                    text = record.authorName.ifBlank { if (record.platform == "douban") "豆瓣用户" else "" },
+                    text = record.authorName.ifBlank {
+                        when (record.platform) {
+                            "douban" -> "豆瓣用户"
+                            "threads" -> "Threads 用户"
+                            else -> ""
+                        }
+                    },
                     style = MaterialTheme.typography.bodyMedium,
                     fontWeight = FontWeight.Medium,
                     color = MaterialTheme.colorScheme.primary,

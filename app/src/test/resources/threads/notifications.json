@@ -1,0 +1,56 @@
+{
+  "new_stories": [
+    {
+      "args": {
+        "extra": {
+          "media_dict": {
+            "pk": 8000000000000000028,
+            "id": "8000000000000000028_90008",
+            "media_type": 19,
+            "like_count": 18,
+            "taken_at": 1700000000,
+            "code": "sample14",
+            "permalink": "https://www.threads.com/@sample/post/sample14",
+            "user": {
+              "pk": 90008,
+              "id": "90008",
+              "username": "user_90008",
+              "full_name": "Author 90008",
+              "profile_pic_url": "https://example.test/avatar/90008.jpg"
+            },
+            "caption": {
+              "pk": "8000000000000000029",
+              "content_type": "comment",
+              "text": "Sample text sample14\nSecond line *literal*"
+            },
+            "image_versions2": {
+              "candidates": []
+            },
+            "text_post_app_info": {
+              "is_reply": false,
+              "reply_level": 0,
+              "direct_reply_count": 33,
+              "repost_count": 0,
+              "quote_count": 0,
+              "text_fragments": {
+                "fragments": [
+                  {
+                    "fragment_type": "plaintext",
+                    "plaintext": "Sample text sample14\nSecond line *literal*"
+                  }
+                ]
+              },
+              "share_info": {
+                "quoted_post": null,
+                "reposted_post": null
+              }
+            }
+          }
+        }
+      }
+    }
+  ],
+  "old_stories": [],
+  "priority_stories": [],
+  "status": "ok"
+}

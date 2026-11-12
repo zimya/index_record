@@ -1,0 +1,10 @@
+{
+  "user": {
+    "pk": 90009,
+    "id": "90009",
+    "username": "user_90009",
+    "full_name": "Author 90009",
+    "profile_pic_url": "https://example.test/avatar/90009.jpg"
+  },
+  "status": "ok"
+}

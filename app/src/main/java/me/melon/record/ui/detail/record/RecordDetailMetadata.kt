@@ -11,6 +11,8 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.BookmarkBorder
 import androidx.compose.material.icons.outlined.ChatBubbleOutline
 import androidx.compose.material.icons.outlined.Place
+import androidx.compose.material.icons.outlined.FormatQuote
+import androidx.compose.material.icons.outlined.Share
 import androidx.compose.material.icons.outlined.RemoveRedEye
 import androidx.compose.material.icons.outlined.Repeat
 import androidx.compose.material.icons.outlined.StarOutline
@@ -22,6 +24,8 @@ import androidx.compose.ui.unit.dp
 import com.google.gson.JsonObject
 import com.google.gson.JsonParser
 import me.melon.record.data.model.UniversalRecord
+import me.melon.record.ui.components.engagementCount
+import me.melon.record.ui.components.viewEngagementCount
 
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
@@ -41,30 +45,12 @@ internal fun RecordDetailMetadata(record: UniversalRecord) {
             horizontalArrangement = Arrangement.spacedBy(8.dp),
             verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
-            if (record.platform == "twitter" || record.platform == "weibo") {
-                val likeCount = if (metadata.has("like_count") && !metadata.get("like_count").isJsonNull) {
-                    metadata.get("like_count").asLong
-                } else if (metadata.has("voteup_count") && !metadata.get("voteup_count").isJsonNull) {
-                    metadata.get("voteup_count").asLong
-                } else 0L
-
-                val rtCount = if (metadata.has("retweet_count") && !metadata.get("retweet_count").isJsonNull) {
-                    metadata.get("retweet_count").asLong
-                } else 0L
-
-                val repCount = if (metadata.has("reply_count") && !metadata.get("reply_count").isJsonNull) {
-                    metadata.get("reply_count").asLong
-                } else if (metadata.has("comment_count") && !metadata.get("comment_count").isJsonNull) {
-                    metadata.get("comment_count").asLong
-                } else 0L
-
-                val bmCount = if (metadata.has("bookmark_count") && !metadata.get("bookmark_count").isJsonNull) {
-                    metadata.get("bookmark_count").asLong
-                } else 0L
-
-                val viewsCount = if (metadata.has("views_count") && !metadata.get("views_count").isJsonNull) {
-                    metadata.get("views_count").asLong
-                } else 0L
+            if (record.platform in setOf("twitter", "weibo", "threads")) {
+                val likeCount = metadata.engagementCount("like_count", "likeCount", "voteup_count")
+                val rtCount = metadata.engagementCount("retweet_count", "repost_count", "repostCount")
+                val repCount = metadata.engagementCount("reply_count", "comment_count", "commentCount")
+                val bmCount = metadata.engagementCount("bookmark_count", "bookmarkCount")
+                val viewsCount = metadata.viewEngagementCount(record.platform)
 
                 if (likeCount > 0L) {
                     MetadataBadge(Icons.Outlined.ThumbUp, me.melon.record.parser.x.XUtils.formatCount(likeCount))
@@ -74,6 +60,16 @@ internal fun RecordDetailMetadata(record: UniversalRecord) {
                 }
                 if (repCount > 0L) {
                     MetadataBadge(Icons.Outlined.ChatBubbleOutline, me.melon.record.parser.x.XUtils.formatCount(repCount))
+                }
+                if (record.platform == "threads") {
+                    val quoteCount = metadata.engagementCount("quote_count")
+                    val shareCount = metadata.engagementCount("reshare_count")
+                    if (quoteCount > 0L) {
+                        MetadataBadge(Icons.Outlined.FormatQuote, "引用 ${me.melon.record.parser.x.XUtils.formatCount(quoteCount)}")
+                    }
+                    if (shareCount > 0L) {
+                        MetadataBadge(Icons.Outlined.Share, "分享 ${me.melon.record.parser.x.XUtils.formatCount(shareCount)}")
+                    }
                 }
                 if (bmCount > 0L) {
                     MetadataBadge(Icons.Outlined.BookmarkBorder, me.melon.record.parser.x.XUtils.formatCount(bmCount))

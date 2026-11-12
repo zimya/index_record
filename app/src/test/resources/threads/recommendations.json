@@ -1,0 +1,14 @@
+{
+  "users": [
+    {
+      "pk": 90010,
+      "id": "90010",
+      "username": "user_90010",
+      "full_name": "Author 90010",
+      "profile_pic_url": "https://example.test/avatar/90010.jpg"
+    }
+  ],
+  "is_recommend_account": true,
+  "user_tstf_groups": [],
+  "status": "ok"
+}

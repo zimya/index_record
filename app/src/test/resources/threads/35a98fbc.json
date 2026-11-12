@@ -1,0 +1,70 @@
+{
+  "medias": [],
+  "threads": [
+    {
+      "thread_type": "thread",
+      "thread_items": [
+        {
+          "post": {
+            "pk": 8000000000000000001,
+            "id": "8000000000000000001_90001",
+            "media_type": 1,
+            "like_count": 21,
+            "taken_at": 1700000000,
+            "code": "sample1",
+            "permalink": "https://www.threads.com/@sample/post/sample1",
+            "user": {
+              "pk": 90001,
+              "id": "90001",
+              "username": "user_90001",
+              "full_name": "Author 90001",
+              "profile_pic_url": "https://example.test/avatar/90001.jpg"
+            },
+            "caption": {
+              "pk": "8000000000000000002",
+              "content_type": "comment",
+              "text": "Sample text sample1\nSecond line *literal*"
+            },
+            "text_with_entities": {
+              "text": "Sample text sample1\nSecond line *literal*"
+            },
+            "image_versions2": {
+              "candidates": [
+                {
+                  "width": 600,
+                  "height": 600,
+                  "url": "https://example.test/image/sample1-0.jpg"
+                },
+                {
+                  "width": 600,
+                  "height": 600,
+                  "url": "https://example.test/image/sample1-1.jpg"
+                }
+              ]
+            },
+            "text_post_app_info": {
+              "is_reply": false,
+              "reply_level": 0,
+              "direct_reply_count": 33,
+              "repost_count": 0,
+              "quote_count": 0,
+              "text_fragments": {
+                "fragments": [
+                  {
+                    "fragment_type": "plaintext",
+                    "plaintext": "Sample text sample1\nSecond line *literal*"
+                  }
+                ]
+              },
+              "share_info": {
+                "reposted_post": null,
+                "quoted_post": null
+              }
+            }
+          }
+        }
+      ]
+    }
+  ],
+  "status": "ok"
+}

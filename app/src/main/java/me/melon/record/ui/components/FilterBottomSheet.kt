@@ -279,6 +279,7 @@ private fun appLabel(pkg: String): String {
         "com.baidu.tieba" -> "贴吧"
         "com.xingin.xhs" -> "小红书"
         "com.twitter.android" -> "𝕏"
+        "com.instagram.barcelona", "threads" -> "Threads"
         "com.sina.weibo" -> "微博"
         "com.weico.international" -> "微博国际版"
         else -> pkg

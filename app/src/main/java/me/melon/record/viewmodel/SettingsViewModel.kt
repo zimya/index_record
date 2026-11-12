@@ -10,6 +10,7 @@ import me.melon.record.ui.theme.ThemeMode
 import me.melon.record.settings.RecordSettings
 import me.melon.record.settings.TweetRecordMode
 import me.melon.record.settings.WeiboRecordMode
+import me.melon.record.settings.ThreadsRecordMode
 
 class SettingsViewModel(application: Application) : AndroidViewModel(application) {
     private val prefs = application.getSharedPreferences("settings", Context.MODE_PRIVATE)
@@ -23,10 +24,18 @@ class SettingsViewModel(application: Application) : AndroidViewModel(application
     private val _weiboRecordMode = MutableStateFlow(RecordSettings.weiboRecordMode)
     val weiboRecordMode: StateFlow<WeiboRecordMode> = _weiboRecordMode.asStateFlow()
 
+    private val _threadsRecordMode = MutableStateFlow(RecordSettings.threadsRecordMode)
+    val threadsRecordMode: StateFlow<ThreadsRecordMode> = _threadsRecordMode.asStateFlow()
+
     val collapseMultipleItems: StateFlow<Boolean> = RecordSettings.collapseMultipleItems
 
     fun setCollapseMultipleItems(enabled: Boolean) {
         RecordSettings.setCollapseMultipleItems(enabled)
+    }
+
+    fun setThreadsRecordMode(mode: ThreadsRecordMode) {
+        RecordSettings.threadsRecordMode = mode
+        _threadsRecordMode.value = mode
     }
 
     fun setWeiboRecordMode(mode: WeiboRecordMode) {

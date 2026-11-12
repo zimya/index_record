@@ -82,7 +82,11 @@ fun RecordDetailScreen(
         contentWindowInsets = WindowInsets(0, 0, 0, 0),
         topBar = {
             DetailTopAppBar(
-                title = if (record.platform == "zhihu" && record.recordType == "pin") "知乎 · 想法" else "内容详情",
+                title = when {
+                    record.platform == "threads" -> if (record.recordType == "comment") "Threads · 回复" else "Threads · 主帖"
+                    record.platform == "zhihu" && record.recordType == "pin" -> "知乎 · 想法"
+                    else -> "内容详情"
+                },
                 onBack = onBack
             )
         }

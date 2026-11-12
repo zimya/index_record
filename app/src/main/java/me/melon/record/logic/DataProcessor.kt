@@ -17,6 +17,7 @@ import me.melon.record.data.model.UniversalRecord_
 import me.melon.record.parser.ParserRegistry
 import me.melon.record.parser.x.XParser
 import me.melon.record.parser.weibo.WeiboParser
+import me.melon.record.parser.threads.ThreadsParser
 import me.melon.record.settings.RecordSettings
 import me.melon.record.parser.zhihu.ZhihuFeedParser
 import me.melon.record.parser.zhihu.ZhihuItemV2Parser
@@ -126,13 +127,18 @@ object DataProcessor {
                         val records = if ((XParser.canHandle(cleanUrl, raw) &&
                             !RecordSettings.tweetRecordMode.shouldProcess(raw.url)) ||
                             (WeiboParser.canHandle(cleanUrl, raw) &&
-                                !RecordSettings.weiboRecordMode.shouldProcess(raw.url))
+                                !RecordSettings.weiboRecordMode.shouldProcess(raw.url)) ||
+                                                            (ThreadsParser.canHandle(cleanUrl, raw) &&
+                                                                !RecordSettings.threadsRecordMode.shouldProcess(raw.url))
                         ) {
                             emptyList()
                         } else {
                             ParserRegistry.parse(raw, cleanUrl)
                         }
-                        parsedItems.add(ParsedItem(raw.id, cleanUrl, records))
+                        if (raw.hostApp == "com.instagram.barcelona") {
+                                                    Log.i(TAG, "Threads parsed ${records?.size ?: 0} records from $cleanUrl (${raw.json.length} chars)")
+                                                }
+                                                parsedItems.add(ParsedItem(raw.id, cleanUrl, records))
                     } catch (e: Exception) {
                         Log.e(TAG, "Failed to process raw ID: ${raw.id}", e)
                         parsedItems.add(ParsedItem(raw.id, cleanUrl, emptyList()))
@@ -154,6 +160,7 @@ object DataProcessor {
                                 if (existing != null) {
                                     record.id = existing.id
                                     mergeWeiboRecord(existing, record)
+                                    me.melon.record.parser.threads.ThreadsRelations.mergeRecord(existing, record)
                                     if (record.parentId.isBlank()) record.parentId = existing.parentId
                                     if (record.title.isBlank()) record.title = existing.title
                                     if (record.content.isBlank() || (record.recordType == "subject" && record.content == record.title)) {

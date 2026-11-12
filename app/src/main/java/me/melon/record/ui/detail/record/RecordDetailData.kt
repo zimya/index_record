@@ -83,10 +83,10 @@ internal fun rememberRecordDetailData(record: UniversalRecord): RecordDetailData
                             .equal(UniversalRecord_.platformId, record.parentId, io.objectbox.query.QueryBuilder.StringOrder.CASE_SENSITIVE)
                             .build()
                             .findFirst()
-                    } else if (record.platform == "weibo" && record.parentId.isNotBlank()) {
+                    } else if (record.platform in setOf("weibo", "threads") && record.parentId.isNotBlank()) {
                         relatedRecord = box.query()
                             .equal(UniversalRecord_.platformId, record.parentId, io.objectbox.query.QueryBuilder.StringOrder.CASE_SENSITIVE)
-                            .equal(UniversalRecord_.platform, "weibo", io.objectbox.query.QueryBuilder.StringOrder.CASE_SENSITIVE)
+                            .equal(UniversalRecord_.platform, record.platform, io.objectbox.query.QueryBuilder.StringOrder.CASE_SENSITIVE)
                             .build()
                             .findFirst()
                     } else if (record.platform == "douban" && record.parentId.startsWith("douban_")) {

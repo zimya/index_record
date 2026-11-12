@@ -2,6 +2,7 @@ package me.melon.record.ui.home
 
 import androidx.activity.compose.BackHandler
 import androidx.compose.animation.*
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.LazyColumn
@@ -198,7 +199,17 @@ fun PullToRefreshListScreen(
                 .nestedScroll(pullState.nestedScrollConnection)
         ) {
             Column(modifier = Modifier.fillMaxSize()) {
-                if (showSync) {
+                AnimatedVisibility(
+                    visible = showSync,
+                    enter = expandVertically(
+                        expandFrom = Alignment.Top,
+                        animationSpec = tween(300)
+                    ) + fadeIn(animationSpec = tween(300)),
+                    exit = shrinkVertically(
+                        shrinkTowards = Alignment.Top,
+                        animationSpec = tween(250)
+                    ) + fadeOut(animationSpec = tween(250))
+                ) {
                     HomeSyncProgress(
                         syncProgress = syncProgress,
                         rawPendingCount = rawPendingCount,

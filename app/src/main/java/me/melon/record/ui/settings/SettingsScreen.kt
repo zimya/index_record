@@ -39,6 +39,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import me.melon.record.settings.TweetRecordMode
 import me.melon.record.settings.WeiboRecordMode
+import me.melon.record.settings.ThreadsRecordMode
 import me.melon.record.ui.theme.ThemeMode
 import me.melon.record.viewmodel.SettingsViewModel
 
@@ -48,6 +49,7 @@ fun SettingsScreen(viewModel: SettingsViewModel = viewModel()) {
     val themeMode by viewModel.themeMode.collectAsState()
     val tweetRecordMode by viewModel.tweetRecordMode.collectAsState()
     val weiboRecordMode by viewModel.weiboRecordMode.collectAsState()
+    val threadsRecordMode by viewModel.threadsRecordMode.collectAsState()
     val collapseMultipleItems by viewModel.collapseMultipleItems.collectAsState()
 
     Scaffold(
@@ -120,6 +122,13 @@ fun SettingsScreen(viewModel: SettingsViewModel = viewModel()) {
                 options = listOf(WeiboRecordMode.PUSH, WeiboRecordMode.READ),
                 label = { if (it == WeiboRecordMode.PUSH) "推送" else "阅读" },
                 onSelect = viewModel::setWeiboRecordMode
+            )
+            SettingsDropdownRow(
+                title = "记录 Threads 的形式",
+                selected = threadsRecordMode,
+                options = listOf(ThreadsRecordMode.PUSH, ThreadsRecordMode.READ),
+                label = { if (it == ThreadsRecordMode.PUSH) "推送" else "阅读" },
+                onSelect = viewModel::setThreadsRecordMode
             )
         }
     }

@@ -47,6 +47,7 @@ fun RelatedRecordCard(
         record.recordType == "subject" -> "所属豆瓣条目"
         record.recordType == "question" -> "对应知乎问题"
         platform == "twitter" -> "关联 X 推文"
+        platform == "threads" -> if (record.recordType == "comment") "回复的 Threads 评论" else "关联 Threads 主帖"
         platform == "weibo" -> if (record.recordType == "comment") "回复的微博评论" else "关联微博"
         platform == "tieba" -> "所属贴吧主帖"
         else -> "关联内容"

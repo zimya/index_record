@@ -151,7 +151,7 @@ fun HomeScreen(viewModel: HomeViewModel = viewModel()) {
                                 listState = viewModel.detailListState(targetRecord.platformId),
                                 firstFloorListState = viewModel.detailListState("${targetRecord.platformId}:first_floor_replies")
                             )
-                        } else if (targetRecord.recordType == "comment" && targetRecord.platform != "weibo") {
+                        } else if (targetRecord.recordType == "comment" && targetRecord.platform !in setOf("weibo", "threads")) {
                             CommentDetailScreen(
                                 record = targetRecord,
                                 onBack = { viewModel.popDetail() },

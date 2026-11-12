@@ -1,0 +1,5 @@
+# Device captures may contain account data, cookies and private browsing history.
+# Keep original APKs, decoded resources and unsanitized payloads local.
+*
+!.gitignore
+!README.md

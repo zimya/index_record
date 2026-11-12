@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.RemoveRedEye
 import androidx.compose.material.icons.outlined.ThumbDownOffAlt
 import androidx.compose.material.icons.outlined.ThumbUpOffAlt
 import androidx.compose.material3.FilterChip
@@ -27,6 +28,8 @@ import com.google.gson.JsonParser
 import me.melon.record.data.model.UniversalRecord
 import me.melon.record.ui.components.AvatarImage
 import me.melon.record.ui.components.EngagementCount
+import me.melon.record.ui.components.engagementCount
+import me.melon.record.ui.components.viewEngagementCount
 import java.text.SimpleDateFormat
 import java.util.Date
 import org.jsoup.Jsoup
@@ -71,7 +74,7 @@ internal fun RecordDetailCommentItem(row: RecordDetailCommentRow, onOpenRecord: 
             JsonObject()
         }
     }
-    val likeCount = if (commentMeta.has("like_count") && !commentMeta.get("like_count").isJsonNull) commentMeta.get("like_count").asLong else 0L
+    val likeCount = commentMeta.engagementCount("like_count", "likeCount")
     val dislikeCount = if (commentMeta.has("dislike_count") && !commentMeta.get("dislike_count").isJsonNull) commentMeta.get("dislike_count").asLong else 0L
 
     Surface(
@@ -102,6 +105,15 @@ internal fun RecordDetailCommentItem(row: RecordDetailCommentRow, onOpenRecord: 
                 if (dislikeCount > 0) {
                     Spacer(modifier = Modifier.width(8.dp))
                     EngagementCount(count = dislikeCount, icon = Icons.Outlined.ThumbDownOffAlt)
+                }
+            }
+            if (comment.platform == "threads") {
+                val viewsCount = commentMeta.viewEngagementCount(comment.platform)
+                if (viewsCount > 0L) {
+                    Spacer(modifier = Modifier.height(4.dp))
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        EngagementCount(count = viewsCount, icon = Icons.Outlined.RemoveRedEye)
+                    }
                 }
             }
             Spacer(modifier = Modifier.height(4.dp))

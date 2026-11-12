@@ -1,0 +1,394 @@
+{
+  "medias": [],
+  "threads": [
+    {
+      "thread_type": "thread",
+      "thread_items": [
+        {
+          "post": {
+            "pk": 8000000000000000003,
+            "id": "8000000000000000003_90002",
+            "media_type": 19,
+            "like_count": 1,
+            "taken_at": 1700000000,
+            "code": "sample2",
+            "permalink": "https://www.threads.com/@sample/post/sample2",
+            "user": {
+              "pk": 90002,
+              "id": "90002",
+              "username": "user_90002",
+              "full_name": "Author 90002",
+              "profile_pic_url": "https://example.test/avatar/90002.jpg"
+            },
+            "caption": {
+              "pk": "8000000000000000004",
+              "content_type": "comment",
+              "text": "Sample text sample2\nSecond line *literal*"
+            },
+            "image_versions2": {
+              "candidates": []
+            },
+            "text_post_app_info": {
+              "is_reply": true,
+              "reply_level": 1,
+              "direct_reply_count": 1,
+              "repost_count": 0,
+              "quote_count": 0,
+              "reply_to_post_id": 8000000000000000001,
+              "text_fragments": {
+                "fragments": [
+                  {
+                    "fragment_type": "plaintext",
+                    "plaintext": "Sample text sample2\nSecond line *literal*"
+                  }
+                ]
+              },
+              "share_info": {
+                "reposted_post": null,
+                "quoted_post": null
+              }
+            }
+          }
+        },
+        {
+          "post": {
+            "pk": 8000000000000000005,
+            "id": "8000000000000000005_90001",
+            "media_type": 19,
+            "like_count": 0,
+            "taken_at": 1700000000,
+            "code": "sample3",
+            "permalink": "https://www.threads.com/@sample/post/sample3",
+            "user": {
+              "pk": 90001,
+              "id": "90001",
+              "username": "user_90001",
+              "full_name": "Author 90001",
+              "profile_pic_url": "https://example.test/avatar/90001.jpg"
+            },
+            "caption": {
+              "pk": "8000000000000000006",
+              "content_type": "comment",
+              "text": "Sample text sample3\nSecond line *literal*"
+            },
+            "image_versions2": {
+              "candidates": []
+            },
+            "text_post_app_info": {
+              "is_reply": true,
+              "reply_level": 2,
+              "direct_reply_count": 0,
+              "repost_count": 0,
+              "quote_count": 0,
+              "reply_to_post_id": 8000000000000000003,
+              "text_fragments": {
+                "fragments": [
+                  {
+                    "fragment_type": "plaintext",
+                    "plaintext": "Sample text sample3\nSecond line *literal*"
+                  }
+                ]
+              },
+              "share_info": {
+                "reposted_post": null,
+                "quoted_post": null
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "thread_type": "thread",
+      "thread_items": [
+        {
+          "post": {
+            "pk": 8000000000000000007,
+            "id": "8000000000000000007_90003",
+            "media_type": 19,
+            "like_count": 1,
+            "taken_at": 1700000000,
+            "code": "sample4",
+            "permalink": "https://www.threads.com/@sample/post/sample4",
+            "user": {
+              "pk": 90003,
+              "id": "90003",
+              "username": "user_90003",
+              "full_name": "Author 90003",
+              "profile_pic_url": "https://example.test/avatar/90003.jpg"
+            },
+            "caption": {
+              "pk": "8000000000000000008",
+              "content_type": "comment",
+              "text": "Sample text sample4\nSecond line *literal*"
+            },
+            "image_versions2": {
+              "candidates": []
+            },
+            "text_post_app_info": {
+              "is_reply": true,
+              "reply_level": 1,
+              "direct_reply_count": 1,
+              "repost_count": 0,
+              "quote_count": 0,
+              "reply_to_post_id": 8000000000000000001,
+              "text_fragments": {
+                "fragments": [
+                  {
+                    "fragment_type": "plaintext",
+                    "plaintext": "Sample text sample4\nSecond line *literal*"
+                  }
+                ]
+              },
+              "share_info": {
+                "reposted_post": null,
+                "quoted_post": null
+              }
+            }
+          }
+        },
+        {
+          "post": {
+            "pk": 8000000000000000009,
+            "id": "8000000000000000009_90001",
+            "media_type": 19,
+            "like_count": 0,
+            "taken_at": 1700000000,
+            "code": "sample5",
+            "permalink": "https://www.threads.com/@sample/post/sample5",
+            "user": {
+              "pk": 90001,
+              "id": "90001",
+              "username": "user_90001",
+              "full_name": "Author 90001",
+              "profile_pic_url": "https://example.test/avatar/90001.jpg"
+            },
+            "caption": {
+              "pk": "8000000000000000010",
+              "content_type": "comment",
+              "text": "Sample text sample5\nSecond line *literal*"
+            },
+            "image_versions2": {
+              "candidates": []
+            },
+            "text_post_app_info": {
+              "is_reply": true,
+              "reply_level": 2,
+              "direct_reply_count": 0,
+              "repost_count": 0,
+              "quote_count": 0,
+              "reply_to_post_id": 8000000000000000007,
+              "text_fragments": {
+                "fragments": [
+                  {
+                    "fragment_type": "plaintext",
+                    "plaintext": "Sample text sample5\nSecond line *literal*"
+                  }
+                ]
+              },
+              "share_info": {
+                "reposted_post": null,
+                "quoted_post": null
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "thread_type": "thread",
+      "thread_items": [
+        {
+          "post": {
+            "pk": 8000000000000000011,
+            "id": "8000000000000000011_90004",
+            "media_type": 19,
+            "like_count": 1,
+            "taken_at": 1700000000,
+            "code": "sample6",
+            "permalink": "https://www.threads.com/@sample/post/sample6",
+            "user": {
+              "pk": 90004,
+              "id": "90004",
+              "username": "user_90004",
+              "full_name": "Author 90004",
+              "profile_pic_url": "https://example.test/avatar/90004.jpg"
+            },
+            "caption": {
+              "pk": "8000000000000000012",
+              "content_type": "comment",
+              "text": "Sample text sample6\nSecond line *literal*"
+            },
+            "image_versions2": {
+              "candidates": []
+            },
+            "text_post_app_info": {
+              "is_reply": true,
+              "reply_level": 1,
+              "direct_reply_count": 1,
+              "repost_count": 0,
+              "quote_count": 0,
+              "reply_to_post_id": 8000000000000000001,
+              "text_fragments": {
+                "fragments": [
+                  {
+                    "fragment_type": "plaintext",
+                    "plaintext": "Sample text sample6\nSecond line *literal*"
+                  }
+                ]
+              },
+              "share_info": {
+                "reposted_post": null,
+                "quoted_post": null
+              }
+            }
+          }
+        },
+        {
+          "post": {
+            "pk": 8000000000000000013,
+            "id": "8000000000000000013_90001",
+            "media_type": 19,
+            "like_count": 0,
+            "taken_at": 1700000000,
+            "code": "sample7",
+            "permalink": "https://www.threads.com/@sample/post/sample7",
+            "user": {
+              "pk": 90001,
+              "id": "90001",
+              "username": "user_90001",
+              "full_name": "Author 90001",
+              "profile_pic_url": "https://example.test/avatar/90001.jpg"
+            },
+            "caption": {
+              "pk": "8000000000000000014",
+              "content_type": "comment",
+              "text": "Sample text sample7\nSecond line *literal*"
+            },
+            "image_versions2": {
+              "candidates": []
+            },
+            "text_post_app_info": {
+              "is_reply": true,
+              "reply_level": 2,
+              "direct_reply_count": 0,
+              "repost_count": 0,
+              "quote_count": 0,
+              "reply_to_post_id": 8000000000000000011,
+              "text_fragments": {
+                "fragments": [
+                  {
+                    "fragment_type": "plaintext",
+                    "plaintext": "Sample text sample7\nSecond line *literal*"
+                  }
+                ]
+              },
+              "share_info": {
+                "reposted_post": null,
+                "quoted_post": null
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "thread_type": "thread",
+      "thread_items": [
+        {
+          "post": {
+            "pk": 8000000000000000015,
+            "id": "8000000000000000015_90005",
+            "media_type": 19,
+            "like_count": 1,
+            "taken_at": 1700000000,
+            "code": "sample8",
+            "permalink": "https://www.threads.com/@sample/post/sample8",
+            "user": {
+              "pk": 90005,
+              "id": "90005",
+              "username": "user_90005",
+              "full_name": "Author 90005",
+              "profile_pic_url": "https://example.test/avatar/90005.jpg"
+            },
+            "caption": {
+              "pk": "8000000000000000016",
+              "content_type": "comment",
+              "text": "Sample text sample8\nSecond line *literal*"
+            },
+            "image_versions2": {
+              "candidates": []
+            },
+            "text_post_app_info": {
+              "is_reply": true,
+              "reply_level": 1,
+              "direct_reply_count": 1,
+              "repost_count": 0,
+              "quote_count": 0,
+              "reply_to_post_id": 8000000000000000001,
+              "text_fragments": {
+                "fragments": [
+                  {
+                    "fragment_type": "plaintext",
+                    "plaintext": "Sample text sample8\nSecond line *literal*"
+                  }
+                ]
+              },
+              "share_info": {
+                "reposted_post": null,
+                "quoted_post": null
+              }
+            }
+          }
+        },
+        {
+          "post": {
+            "pk": 8000000000000000017,
+            "id": "8000000000000000017_90001",
+            "media_type": 19,
+            "like_count": 0,
+            "taken_at": 1700000000,
+            "code": "sample9",
+            "permalink": "https://www.threads.com/@sample/post/sample9",
+            "user": {
+              "pk": 90001,
+              "id": "90001",
+              "username": "user_90001",
+              "full_name": "Author 90001",
+              "profile_pic_url": "https://example.test/avatar/90001.jpg"
+            },
+            "caption": {
+              "pk": "8000000000000000018",
+              "content_type": "comment",
+              "text": "Sample text sample9\nSecond line *literal*"
+            },
+            "image_versions2": {
+              "candidates": []
+            },
+            "text_post_app_info": {
+              "is_reply": true,
+              "reply_level": 2,
+              "direct_reply_count": 0,
+              "repost_count": 0,
+              "quote_count": 0,
+              "reply_to_post_id": 8000000000000000015,
+              "text_fragments": {
+                "fragments": [
+                  {
+                    "fragment_type": "plaintext",
+                    "plaintext": "Sample text sample9\nSecond line *literal*"
+                  }
+                ]
+              },
+              "share_info": {
+                "reposted_post": null,
+                "quoted_post": null
+              }
+            }
+          }
+        }
+      ]
+    }
+  ],
+  "status": "ok"
+}

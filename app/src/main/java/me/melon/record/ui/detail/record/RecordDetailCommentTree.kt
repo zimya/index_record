@@ -4,6 +4,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import com.google.gson.JsonParser
 import me.melon.record.data.model.UniversalRecord
+import me.melon.record.ui.components.engagementCount
 
 internal enum class RecordDetailCommentSort { DEFAULT, LATEST }
 
@@ -32,7 +33,7 @@ internal fun rememberRecordDetailCommentRows(
     fun likeCount(r: UniversalRecord): Long {
         return try {
             val obj = JsonParser.parseString(r.extraMetadata).asJsonObject
-            if (obj.has("like_count") && !obj.get("like_count").isJsonNull) obj.get("like_count").asLong else 0L
+            obj.engagementCount("like_count", "likeCount")
         } catch (_: Exception) {
             0L
         }

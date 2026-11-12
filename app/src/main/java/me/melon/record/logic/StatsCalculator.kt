@@ -113,7 +113,6 @@ object StatsCalculator {
             "zhihu" -> "com.zhihu.android"
             "douban" -> "com.douban.frodo"
             "tieba" -> "com.baidu.tieba"
-            "xiaohongshu", "xhs" -> "com.xingin.xhs"
             "twitter", "x" -> "com.twitter.android"
             "threads" -> "com.instagram.barcelona"
             "reddit" -> "com.reddit.frontpage"

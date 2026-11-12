@@ -5,7 +5,6 @@ import me.melon.record.ui.theme.DoubanGreen
 import me.melon.record.ui.theme.RedditOrange
 import me.melon.record.ui.theme.TiebaBlue
 import me.melon.record.ui.theme.XBlack
-import me.melon.record.ui.theme.XiaohongshuRed
 import me.melon.record.ui.theme.ZhihuBlue
 
 fun colorFromPackage(pkg: String): Color {
@@ -13,7 +12,6 @@ fun colorFromPackage(pkg: String): Color {
         "com.zhihu.android", "zhihu" -> ZhihuBlue
         "com.douban.frodo", "douban" -> DoubanGreen
         "com.baidu.tieba", "tieba" -> TiebaBlue
-        "com.xingin.xhs", "xiaohongshu" -> XiaohongshuRed
         "com.twitter.android", "twitter", "com.instagram.barcelona", "threads" -> XBlack
         "com.reddit.frontpage", "reddit" -> RedditOrange
         "com.sina.weibo", "com.weico.international", "weibo" -> me.melon.record.ui.theme.WeiboOrange
@@ -29,7 +27,6 @@ fun appLabel(pkg: String): String {
         "com.zhihu.android", "zhihu" -> "知乎"
         "com.douban.frodo", "douban" -> "豆瓣"
         "com.baidu.tieba", "tieba" -> "贴吧"
-        "com.xingin.xhs", "xiaohongshu" -> "小红书"
         "com.twitter.android", "twitter" -> "𝕏"
         "com.instagram.barcelona", "threads" -> "Threads"
         "com.reddit.frontpage", "reddit" -> "Reddit"

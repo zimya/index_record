@@ -1,0 +1,42 @@
+[
+  {
+    "file": "graphql_HomeTimeline.json",
+    "url": "https://api.x.com/graphql/ReFu1Zs_f4GRKnj0FeW9Rg/HomeTimeline",
+    "hostApp": "com.twitter.android",
+    "timestamp": 1794523529489,
+    "sourceBin": "1794523529489_68380975333079.bin",
+    "sha256": "76616837a127c6f60b540203deb8924212b7d1dc545040023dbaf851a51d0ec4"
+  },
+  {
+    "file": "graphql_ConversationTimeline.json",
+    "url": "https://api.x.com/graphql/SNs4kye4lnlklqpFC6SCtw/ConversationTimeline",
+    "hostApp": "com.twitter.android",
+    "timestamp": 1794523557338,
+    "sourceBin": "1794523557338_68408824226610.bin",
+    "sha256": "b10a1d0ca7912c6d18123df320e88a3cf1936d5648c7d74742bad7a9c69c054c"
+  },
+  {
+    "file": "graphql_BookmarksTimelineQuery.json",
+    "url": "https://api.x.com/graphql/OaASvY3iNBBU8r1ENpxUxQ/BookmarksTimelineQuery",
+    "hostApp": "com.twitter.android",
+    "timestamp": 1794523587124,
+    "sourceBin": "1794523587124_68438609735817.bin",
+    "sha256": "24296f075f3c4d597e7038c8d878dd1504145a00178e12ed72aa68e601bbc8af"
+  },
+  {
+    "file": "graphql_UserProfileFavoritesTimelineQuery.json",
+    "url": "https://api.x.com/graphql/POnlJt30N6mI4bX4E9nkSA/UserProfileFavoritesTimelineQuery",
+    "hostApp": "com.twitter.android",
+    "timestamp": 1794523598395,
+    "sourceBin": "1794523598395_68449880817532.bin",
+    "sha256": "6a307f7144b08c3afb3e9a06a56271d7f02ba2e0b355424ad90779569316dda1"
+  },
+  {
+    "file": "graphql_SearchTimelineQuery.json",
+    "url": "https://api.x.com/graphql/z8S7aXB4CGiCyFQP255TeQ/SearchTimelineQuery",
+    "hostApp": "com.twitter.android",
+    "timestamp": 1794523602181,
+    "sourceBin": "1794523602181_68453666659822.bin",
+    "sha256": "c5fd8df1eeb649d1e3fb77be191b2c94b6eacf89f69a3e0ead6dfbdb846b532e"
+  }
+]

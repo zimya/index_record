@@ -95,7 +95,6 @@ class HookDataProvider : ContentProvider() {
             "com.zhihu.android",
             "com.douban.frodo",
             "com.baidu.tieba",
-            "com.xingin.xhs",
             "com.twitter.android",
             "com.instagram.barcelona",
             "com.reddit.frontpage",

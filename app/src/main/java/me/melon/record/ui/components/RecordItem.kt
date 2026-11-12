@@ -55,7 +55,6 @@ fun RecordItem(record: UniversalRecord, searchQuery: String, onClick: () -> Unit
         "threads" -> "Threads"
         "reddit" -> "Reddit"
         "weibo" -> "微博"
-        "xiaohongshu" -> "小红书"
         else -> record.platform.replaceFirstChar { it.uppercase() }
     }
     val typeLabel = recordTypeLabel(record)

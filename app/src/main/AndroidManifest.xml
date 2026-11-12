@@ -8,7 +8,6 @@
         <package android:name="com.zhihu.android" />
         <package android:name="com.douban.frodo" />
         <package android:name="com.baidu.tieba" />
-        <package android:name="com.xingin.xhs" />
         <package android:name="com.twitter.android" />
         <package android:name="com.instagram.barcelona" />
         <package android:name="com.reddit.frontpage" />

@@ -85,7 +85,7 @@ fun FilterBottomSheet(
     ) {
         Column(modifier = Modifier
             .fillMaxWidth()
-            .fillMaxHeight(0.6f)
+            .fillMaxHeight(0.85f)
             .navigationBarsPadding()
             .padding(horizontal = 16.dp, vertical = 12.dp)
         ) {
@@ -97,6 +97,8 @@ fun FilterBottomSheet(
                 Text("过滤器", style = MaterialTheme.typography.titleMedium)
                 Spacer(modifier = Modifier.height(12.dp))
 
+                Text("时间", style = MaterialTheme.typography.labelLarge, color = MaterialTheme.colorScheme.onSurface)
+                Spacer(modifier = Modifier.height(8.dp))
                 Row(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.spacedBy(12.dp)
@@ -120,7 +122,7 @@ fun FilterBottomSheet(
 
                 Spacer(modifier = Modifier.height(12.dp))
 
-                Text("类型", style = MaterialTheme.typography.labelLarge, color = MaterialTheme.colorScheme.secondary)
+                Text("类型", style = MaterialTheme.typography.labelLarge, color = MaterialTheme.colorScheme.onSurface)
                 Spacer(modifier = Modifier.height(8.dp))
                 if (availableTypes.isEmpty()) {
                     Text("暂无可筛选的类型", color = MaterialTheme.colorScheme.outline)
@@ -145,7 +147,7 @@ fun FilterBottomSheet(
 
                 Spacer(modifier = Modifier.height(12.dp))
 
-                Text("宿主 App", style = MaterialTheme.typography.labelLarge, color = MaterialTheme.colorScheme.secondary)
+                Text("宿主 App", style = MaterialTheme.typography.labelLarge, color = MaterialTheme.colorScheme.onSurface)
                 Spacer(modifier = Modifier.height(8.dp))
                 if (availableApps.isEmpty()) {
                     Text("暂无可筛选的 App（需要新记录写入后才会出现）", color = MaterialTheme.colorScheme.outline)
@@ -277,7 +279,6 @@ internal fun filterAppLabel(pkg: String): String {
         "com.zhihu.android" -> "知乎"
         "com.douban.frodo" -> "豆瓣"
         "com.baidu.tieba" -> "贴吧"
-        "com.xingin.xhs" -> "小红书"
         "com.twitter.android" -> "𝕏"
         "com.instagram.barcelona", "threads" -> "Threads"
         "com.reddit.frontpage", "reddit" -> "Reddit"
@@ -290,19 +291,20 @@ internal fun filterAppLabel(pkg: String): String {
 internal fun typeLabel(type: String): String {
     return when (type) {
         "status" -> "微博"
-        "question" -> "问题"
-        "answer" -> "回答"
-        "article" -> "文章"
-        "pin" -> "想法"
+        "question" -> "知乎问题"
+        "answer" -> "知乎回答"
+        "article" -> "知乎文章"
+        "pin" -> "知乎想法"
         "comment" -> "评论"
-        "topic" -> "帖子"
-        "post" -> "帖子"
+        "topic" -> "豆瓣帖子"
+        "post" -> "Reddit 帖子"
         "lou" -> "贴吧主帖"
-        "thread" -> "thread"
-        "floor" -> "楼层"
-        "review" -> "长评"
-        "interest" -> "短评"
-        "subject" -> "条目"
+        "thread" -> "Threads 帖子"
+        "tweet" -> "𝕏 推文"
+        "floor" -> "贴吧楼层"
+        "review" -> "豆瓣长评"
+        "interest" -> "豆瓣短评"
+        "subject" -> "豆瓣条目"
         else -> type
     }
 }

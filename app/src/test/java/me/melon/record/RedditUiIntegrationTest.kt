@@ -122,7 +122,7 @@ class RedditUiIntegrationTest {
 
     @Test
     fun postAndReplyLabelsAndNavigationUseSharedRecordUi() {
-        assertEquals("帖子", typeLabel("post"))
+        assertEquals("Reddit 帖子", typeLabel("post"))
         assertEquals("评论", typeLabel("comment"))
         assertEquals("帖子", recordTypeLabel(UniversalRecord(platform = "reddit", recordType = "post")))
         assertEquals("回复", recordTypeLabel(UniversalRecord(platform = "reddit", recordType = "comment")))
@@ -166,6 +166,6 @@ class RedditUiIntegrationTest {
     fun legacyLikeCountsStillClampInsteadOfChangingOtherPlatformSemantics() {
         assertEquals(0L, JsonParser.parseString("""{"like_count":-7}""").asJsonObject.engagementCount("like_count"))
         assertEquals("Threads", appLabel("threads"))
-        assertEquals("thread", typeLabel("thread"))
+        assertEquals("Threads 帖子", typeLabel("thread"))
     }
 }

@@ -25,8 +25,8 @@ class XParserTest {
 
     @Test
     fun testHomeTimeline() {
-        val url = "https://x.com/i/api/graphql/KmJCeZ__ef1fNos7tKN_fg/HomeTimeline"
-        val cleanUrl = "https://x.com/i/api/graphql/KmJCeZ__ef1fNos7tKN_fg/HomeTimeline"
+        val url = "https://api.x.com/graphql/ReFu1Zs_f4GRKnj0FeW9Rg/HomeTimeline"
+        val cleanUrl = url
         val json = loadFixture("graphql_HomeTimeline.json")
 
         val raw = RawData(
@@ -38,33 +38,36 @@ class XParserTest {
         assertTrue(XParser.canHandle(cleanUrl, raw))
         val records = ParserRegistry.parse(raw, cleanUrl)
         assertNotNull(records)
-        assertTrue(records!!.size >= 30)
-        listOf("2110812392867193288", "2113645476633280797", "2117665231065239830").forEach { adId ->
+        // 本次手机响应包含 28 个非广告时间线条目。
+        assertTrue(records!!.size >= 28)
+        listOf("2116264863253368881", "2120268439897911489", "2120278509843062807",
+            "2121002344964108362", "2107528206568006125", "2119699087402692874",
+            "2110446548211700221").forEach { adId ->
             assertFalse(records.any { it.platformId == "twitter_tweet_$adId" })
         }
 
         // 验证其中包含原创推文
-        val tweet = records.firstOrNull { it.recordType == "tweet" && it.platformId == "twitter_tweet_2120191790774960630" }
+        val tweet = records.firstOrNull { it.recordType == "tweet" && it.platformId == "twitter_tweet_2120929354549166490" }
         assertNotNull(tweet)
         assertEquals("twitter", tweet!!.platform)
         assertEquals("com.twitter.android", tweet.sourceApp)
-        assertTrue(tweet.authorName.isNotBlank())
-        assertTrue(tweet.content.isNotBlank())
-        assertTrue(tweet.publishTime > 0)
+        assertEquals("Aurora", tweet.authorName)
+        assertTrue(tweet.content.contains("Gemini 4 Hydrogen 已经上线 antigravity"))
+        assertEquals(1794503937000L, tweet.publishTime)
 
         // 验证元数据
         val meta = JsonParser.parseString(tweet.extraMetadata).asJsonObject
-        assertTrue(meta.has("tweet_id"))
-        assertTrue(meta.has("screen_name"))
-        assertTrue(meta.has("voteup_count"))
+        assertEquals("2120929354549166490", meta.get("tweet_id").asString)
+        assertEquals("Aurora0x3f", meta.get("screen_name").asString)
+        assertEquals(198L, meta.get("voteup_count").asLong)
     }
 
     @Test
     fun testConversationTimelineWithReplies() {
         val url = "https://api.x.com/graphql/SNs4kye4lnlklqpFC6SCtw/ConversationTimeline"
         val cleanUrl = url
-        // 复用浏览器端 JSON 样本测试通用推文结构；这不是手机端响应样本。
-        val json = loadFixture("graphql_tweetDetail.json")
+        // 来自 Android 客户端缓存 bin 的真实详情响应，包含两级回复和广告。
+        val json = loadFixture("graphql_ConversationTimeline.json")
 
         val raw = RawData(
             url = url,
@@ -77,45 +80,40 @@ class XParserTest {
         assertNotNull(records)
         assertTrue(records!!.isNotEmpty())
 
-        // 验证 Focal Tweet (原创推文)
-        val focalTweet = records.firstOrNull { it.platformId == "twitter_tweet_2120100463588917395" }
-        assertNotNull(focalTweet)
-        assertEquals("tweet", focalTweet!!.recordType)
+        val focalTweet = records.single { it.platformId == "twitter_tweet_2120806999126626618" }
+        assertEquals("tweet", focalTweet.recordType)
         assertEquals("", focalTweet.parentId)
-        assertTrue(focalTweet.content.contains("Gemini 4 carbon"))
-        assertEquals("Hope C 陈刀仔", focalTweet.authorName)
+        assertTrue(focalTweet.content.contains("世界真是个巨大的草台班子"))
+        assertEquals("码农暖爸", focalTweet.authorName)
+        assertEquals(1794474765000L, focalTweet.publishTime)
 
         val focalMeta = JsonParser.parseString(focalTweet.extraMetadata).asJsonObject
-        assertEquals("EdwinCh43136084", focalMeta.get("screen_name").asString)
-        assertEquals(71L, focalMeta.get("voteup_count").asLong)
-        assertEquals(10L, focalMeta.get("comment_count").asLong)
+        assertEquals("Delroy715", focalMeta.get("screen_name").asString)
+        assertEquals(238L, focalMeta.get("voteup_count").asLong)
+        assertEquals(28L, focalMeta.get("comment_count").asLong)
 
-        // 验证回复评论 (Replies)
         val replies = records.filter { it.recordType == "comment" }
-        assertTrue(replies.isNotEmpty())
+        val topReply = replies.single { it.platformId == "twitter_comment_2120807002012270856" }
+        assertEquals(focalTweet.platformId, topReply.parentId)
+        assertTrue(topReply.content.contains("1/ 抓包实录"))
+        assertEquals("码农暖爸", topReply.authorName)
 
-        // 一级回复：回复给 focal tweet
-        val topReply = replies.firstOrNull { it.platformId == "twitter_comment_2120145328502628821" }
-        assertNotNull(topReply)
-        assertEquals("twitter_tweet_2120100463588917395", topReply!!.parentId)
-        assertTrue(topReply.content.contains("下个月价钱都要翻倍了"))
-        assertEquals("Unicorn", topReply.authorName)
+        val subReply = replies.single { it.platformId == "twitter_comment_2120807004545683677" }
+        // 此现代响应没有 legacy.conversation_id_str；解析阶段暂用 tweet 前缀，
+        // 入库后的 XRelations 再按已存在的父评论校正。这里验证原始父 ID 未丢失。
+        assertEquals(topReply.platformId.replace("twitter_comment_", "twitter_tweet_"), subReply.parentId)
+        assertTrue(subReply.content.contains("2/ 而在 SSE 流式模式"))
 
-        // 二级回复：回复给一级回复
-        val subReply = replies.firstOrNull { it.platformId == "twitter_comment_2120148488252260365" }
-        assertNotNull(subReply)
-        assertEquals("twitter_comment_2120145328502628821", subReply!!.parentId)
-        assertTrue(subReply.content.contains("下个月Argon应该没人用了"))
-
-        // 详情底部的附加推荐模块不应生成记录。
-        assertFalse(records.any { it.platformId == "twitter_tweet_2120045931299316212" })
+        // 实际响应中的 promoted conversationthread 不能成为推文或评论。
+        val adIds = setOf("2082948371141288050", "2111180223446143055", "2120991413378625835", "2120120527352205628")
+        assertFalse(records.any { it.platformId.removePrefix("twitter_tweet_").removePrefix("twitter_comment_") in adIds })
     }
 
     @Test
     fun testSearchTimeline() {
-        val url = "https://x.com/i/api/graphql/vLHjqbDv7TPFMBkIIO1nOA/SearchTimeline?variables=%7B%22rawQuery%22%3A%22%5C%22Kirk%20Cousins%5C%22%22%7D"
-        val cleanUrl = "https://x.com/i/api/graphql/vLHjqbDv7TPFMBkIIO1nOA/SearchTimeline"
-        val json = loadFixture("graphql_SearchTimeline.json")
+        val url = "https://api.x.com/graphql/z8S7aXB4CGiCyFQP255TeQ/SearchTimelineQuery"
+        val cleanUrl = url
+        val json = loadFixture("graphql_SearchTimelineQuery.json")
 
         val raw = RawData(
             url = url,
@@ -127,14 +125,17 @@ class XParserTest {
         val records = ParserRegistry.parse(raw, cleanUrl)
         assertNotNull(records)
         assertTrue(records!!.size >= 20)
-        assertTrue(records.any { it.platformId.startsWith("twitter_tweet_") })
+        val tweet = records.single { it.platformId == "twitter_tweet_1861072804239847914" }
+                assertEquals("Ben Dicken", tweet.authorName)
+                assertTrue(tweet.content.contains("Java and Kotlin are quick!"))
+                assertEquals(1732549308000L, tweet.publishTime)
     }
 
     @Test
     fun testBookmarks() {
-        val url = "https://x.com/i/api/graphql/fjf5b5Lu82lYMSBRhppK2g/Bookmarks?variables=%7B%22count%22%3A20%7D"
-        val cleanUrl = "https://x.com/i/api/graphql/fjf5b5Lu82lYMSBRhppK2g/Bookmarks"
-        val json = loadFixture("graphql_Bookmarks.json")
+        val url = "https://api.x.com/graphql/OaASvY3iNBBU8r1ENpxUxQ/BookmarksTimelineQuery"
+        val cleanUrl = url
+        val json = loadFixture("graphql_BookmarksTimelineQuery.json")
 
         val raw = RawData(
             url = url,
@@ -146,6 +147,10 @@ class XParserTest {
         val records = ParserRegistry.parse(raw, cleanUrl)
         assertNotNull(records)
         assertTrue(records!!.size >= 15)
+        val bookmark = records.single { it.platformId == "twitter_tweet_2120503022824616232" }
+        assertEquals("lifcc", bookmark.authorName)
+        assertTrue(bookmark.content.contains("最近疯传的 X GIF 保存方法"))
+        assertEquals(1794402292000L, bookmark.publishTime)
         for (rec in records) {
             assertEquals("twitter", rec.platform)
             assertTrue(rec.authorName.isNotBlank())
@@ -155,9 +160,9 @@ class XParserTest {
 
     @Test
     fun testLikes() {
-        val url = "https://x.com/i/api/graphql/ZjyvI1V9gajq5eclHCObzA/Likes?variables=%7B%22userId%22%3A%221227809033110769664%22%7D"
-        val cleanUrl = "https://x.com/i/api/graphql/ZjyvI1V9gajq5eclHCObzA/Likes"
-        val json = loadFixture("graphql_Likes.json")
+        val url = "https://api.x.com/graphql/POnlJt30N6mI4bX4E9nkSA/UserProfileFavoritesTimelineQuery"
+        val cleanUrl = url
+        val json = loadFixture("graphql_UserProfileFavoritesTimelineQuery.json")
 
         val raw = RawData(
             url = url,
@@ -169,6 +174,10 @@ class XParserTest {
         val records = ParserRegistry.parse(raw, cleanUrl)
         assertNotNull(records)
         assertTrue(records!!.size >= 15)
+        val liked = records.single { it.platformId == "twitter_comment_2117281617186017693" }
+        assertEquals("Yuhang Shen", liked.authorName)
+        assertTrue(liked.content.contains("8.2分在影视圈已经是很高的分数了"))
+        assertEquals(1793634249000L, liked.publishTime)
     }
 
     @Test

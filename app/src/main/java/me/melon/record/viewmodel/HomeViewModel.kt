@@ -62,7 +62,6 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
             "com.zhihu.android",
             "com.douban.frodo",
             "com.baidu.tieba",
-            "com.xingin.xhs",
             "com.twitter.android",
             "com.instagram.barcelona",
             "com.reddit.frontpage",
@@ -140,7 +139,6 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
                 "zhihu" -> "com.zhihu.android"
                 "douban" -> "com.douban.frodo"
                 "tieba" -> "com.baidu.tieba"
-                "xiaohongshu" -> "com.xingin.xhs"
                 "twitter" -> "com.twitter.android"
                 "threads" -> "com.instagram.barcelona"
                 "reddit" -> "com.reddit.frontpage"
@@ -365,7 +363,6 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
             "zhihu" -> "com.zhihu.android"
             "douban" -> "com.douban.frodo"
             "tieba" -> "com.baidu.tieba"
-            "xiaohongshu" -> "com.xingin.xhs"
             "twitter" -> "com.twitter.android"
             "threads" -> "com.instagram.barcelona"
             "reddit" -> "com.reddit.frontpage"

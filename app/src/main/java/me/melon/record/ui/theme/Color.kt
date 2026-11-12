@@ -32,13 +32,6 @@ val ZhihuBlueLightText = Color(0xFF0066CC)
 val ZhihuBlueDarkContainer = Color(0xFF102842)
 val ZhihuBlueDarkText = Color(0xFF70B8FF)
 
-// 小红书红
-val XiaohongshuRed = Color(0xFFFF2442)
-val XiaohongshuLightContainer = Color(0xFFFFE8EC)
-val XiaohongshuLightText = Color(0xFFCC102C)
-val XiaohongshuDarkContainer = Color(0xFF381018)
-val XiaohongshuDarkText = Color(0xFFFF7A8F)
-
 // 贴吧蓝紫
 val TiebaBlue = Color(0xFF4E6EF2)
 val TiebaLightContainer = Color(0xFFEDF1FF)
@@ -78,11 +71,6 @@ fun getPlatformThemeColor(platform: String, isDark: Boolean): PlatformThemeColor
             PlatformThemeColor(DoubanGreen, DoubanGreenDarkContainer, DoubanGreenDarkText)
         } else {
             PlatformThemeColor(DoubanGreen, DoubanGreenLightContainer, DoubanGreenLightText)
-        }
-        "xiaohongshu", "com.xingin.xhs" -> if (isDark) {
-            PlatformThemeColor(XiaohongshuRed, XiaohongshuDarkContainer, XiaohongshuDarkText)
-        } else {
-            PlatformThemeColor(XiaohongshuRed, XiaohongshuLightContainer, XiaohongshuLightText)
         }
         "tieba", "com.baidu.tieba" -> if (isDark) {
             PlatformThemeColor(TiebaBlue, TiebaDarkContainer, TiebaDarkText)

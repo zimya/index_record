@@ -2,6 +2,8 @@ package me.melon.record.settings
 
 import android.content.Context
 import android.content.SharedPreferences
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
 
 enum class TweetRecordMode {
     PUSH,
@@ -41,10 +43,19 @@ enum class WeiboRecordMode {
 object RecordSettings {
     private const val TWEET_RECORD_MODE = "tweet_record_mode"
         private const val WEIBO_RECORD_MODE = "weibo_record_mode"
+    private const val COLLAPSE_MULTIPLE_ITEMS = "collapse_multiple_items"
+    private val _collapseMultipleItems = MutableStateFlow(true)
+    val collapseMultipleItems = _collapseMultipleItems.asStateFlow()
     private lateinit var prefs: SharedPreferences
 
     fun init(context: Context) {
         prefs = context.applicationContext.getSharedPreferences("settings", Context.MODE_PRIVATE)
+        _collapseMultipleItems.value = prefs.getBoolean(COLLAPSE_MULTIPLE_ITEMS, true)
+    }
+
+    fun setCollapseMultipleItems(enabled: Boolean) {
+        prefs.edit().putBoolean(COLLAPSE_MULTIPLE_ITEMS, enabled).apply()
+        _collapseMultipleItems.value = enabled
     }
 
     var weiboRecordMode: WeiboRecordMode

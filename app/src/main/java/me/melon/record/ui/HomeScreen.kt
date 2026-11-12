@@ -4,6 +4,7 @@ import androidx.activity.compose.BackHandler
 import androidx.compose.animation.*
 import androidx.compose.animation.core.FastOutSlowInEasing
 import androidx.compose.animation.core.animateFloat
+import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.core.updateTransition
 import androidx.compose.foundation.background
@@ -17,6 +18,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.ExpandMore
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.FilterList
 import androidx.compose.material.icons.outlined.FilterList
@@ -942,6 +944,9 @@ private fun AnswerGroupItem(
 ) {
     val isDark = isAppInDarkTheme()
     val platformColor = getPlatformThemeColor("zhihu", isDark)
+    val collapseByDefault by me.melon.record.settings.RecordSettings.collapseMultipleItems.collectAsState()
+    var expanded by rememberSaveable(collapseByDefault) { mutableStateOf(!collapseByDefault) }
+    val collapsible = answers.size > 1
 
     HomeRecordCard(
         modifier = Modifier
@@ -964,60 +969,67 @@ private fun AnswerGroupItem(
 
             Spacer(modifier = Modifier.height(8.dp))
 
-            Text(
-                text = highlightText(questionTitle.ifBlank { "无标题" }, searchQuery),
-                style = MaterialTheme.typography.titleMedium,
-                fontWeight = FontWeight.Bold,
-                maxLines = 2,
-                overflow = TextOverflow.Ellipsis
+            GroupTitle(
+                title = questionTitle,
+                searchQuery = searchQuery,
+                collapsible = collapsible,
+                expanded = expanded,
+                onToggle = { expanded = !expanded }
             )
 
-            Spacer(modifier = Modifier.height(10.dp))
-
-            val sdf = remember { SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.getDefault()) }
-            answers.forEachIndexed { index, answer ->
-                if (index > 0) {
+            AnimatedVisibility(
+                visible = !collapsible || expanded,
+                enter = expandVertically(tween(250)) + fadeIn(tween(250)),
+                exit = shrinkVertically(tween(250)) + fadeOut(tween(250))
+            ) {
+                Column {
                     Spacer(modifier = Modifier.height(10.dp))
-                    HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.6f))
-                    Spacer(modifier = Modifier.height(10.dp))
-                }
 
-                Column(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .clickable { onOpenAnswer(answer) }
-                ) {
-                    Row(
-                        modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.SpaceBetween,
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        Text(
-                            text = highlightText(answer.authorName.ifBlank { "未知作者" }, searchQuery),
-                            style = MaterialTheme.typography.bodySmall,
-                            color = MaterialTheme.colorScheme.primary,
-                            maxLines = 1,
-                            overflow = TextOverflow.Ellipsis
-                        )
-                        Text(
-                            text = "浏览于 ${sdf.format(Date(answer.captureTime))}",
-                            style = MaterialTheme.typography.labelSmall,
-                            color = MaterialTheme.colorScheme.outline
-                        )
-                    }
+                    val sdf = remember { SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.getDefault()) }
+                    answers.forEachIndexed { index, answer ->
+                        if (index > 0) {
+                            Spacer(modifier = Modifier.height(10.dp))
+                            HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.6f))
+                            Spacer(modifier = Modifier.height(10.dp))
+                        }
 
-                    val previewText = previewFromRecordContent(answer.content)
-                    if (previewText.isNotBlank()) {
-                        Spacer(modifier = Modifier.height(6.dp))
-                        Text(
-                            text = highlightText(previewText, searchQuery),
-                            style = MaterialTheme.typography.bodySmall,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant,
-                            maxLines = 2,
-                            overflow = TextOverflow.Ellipsis
-                        )
-                    }
-                }
+                        Column(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .clickable { onOpenAnswer(answer) }
+                        ) {
+                            Row(
+                                modifier = Modifier.fillMaxWidth(),
+                                horizontalArrangement = Arrangement.SpaceBetween,
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
+                                Text(
+                                    text = highlightText(answer.authorName.ifBlank { "未知作者" }, searchQuery),
+                                    style = MaterialTheme.typography.bodySmall,
+                                    color = MaterialTheme.colorScheme.primary,
+                                    maxLines = 1,
+                                    overflow = TextOverflow.Ellipsis
+                                )
+                                Text(
+                                    text = "浏览于 ${sdf.format(Date(answer.captureTime))}",
+                                    style = MaterialTheme.typography.labelSmall,
+                                    color = MaterialTheme.colorScheme.outline
+                                )
+                            }
+
+                            val previewText = previewFromRecordContent(answer.content)
+                            if (previewText.isNotBlank()) {
+                                Spacer(modifier = Modifier.height(6.dp))
+                                Text(
+                                    text = highlightText(previewText, searchQuery),
+                                    style = MaterialTheme.typography.bodySmall,
+                                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                                    maxLines = 2,
+                                    overflow = TextOverflow.Ellipsis
+                                )
+                            }
+                        }
+                }            }
             }
         }
     }
@@ -1033,6 +1045,9 @@ private fun InterestGroupItem(
 ) {
     val isDark = isAppInDarkTheme()
     val platformColor = getPlatformThemeColor("douban", isDark)
+    val collapseByDefault by me.melon.record.settings.RecordSettings.collapseMultipleItems.collectAsState()
+    var expanded by rememberSaveable(collapseByDefault) { mutableStateOf(!collapseByDefault) }
+    val collapsible = interests.size > 1
 
     HomeRecordCard(
         modifier = Modifier
@@ -1055,61 +1070,113 @@ private fun InterestGroupItem(
 
             Spacer(modifier = Modifier.height(8.dp))
 
-            Text(
-                text = highlightText(subjectTitle.ifBlank { "无标题" }, searchQuery),
-                style = MaterialTheme.typography.titleMedium,
-                fontWeight = FontWeight.Bold,
-                maxLines = 2,
-                overflow = TextOverflow.Ellipsis
+            GroupTitle(
+                title = subjectTitle,
+                searchQuery = searchQuery,
+                collapsible = collapsible,
+                expanded = expanded,
+                onToggle = { expanded = !expanded }
             )
 
-            Spacer(modifier = Modifier.height(10.dp))
-
-            val sdf = remember { SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.getDefault()) }
-            interests.forEachIndexed { index, interest ->
-                if (index > 0) {
+            AnimatedVisibility(
+                visible = !collapsible || expanded,
+                enter = expandVertically(tween(250)) + fadeIn(tween(250)),
+                exit = shrinkVertically(tween(250)) + fadeOut(tween(250))
+            ) {
+                Column {
                     Spacer(modifier = Modifier.height(10.dp))
-                    HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.6f))
-                    Spacer(modifier = Modifier.height(10.dp))
-                }
 
-                Column(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .clickable { onOpenInterest(interest) }
-                ) {
-                    Row(
-                        modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.SpaceBetween,
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        Text(
-                            text = highlightText(interest.authorName.ifBlank { "豆瓣用户" }, searchQuery),
-                            style = MaterialTheme.typography.bodySmall,
-                            color = MaterialTheme.colorScheme.primary,
-                            maxLines = 1,
-                            overflow = TextOverflow.Ellipsis
-                        )
-                        Text(
-                            text = "浏览于 ${sdf.format(Date(interest.captureTime))}",
-                            style = MaterialTheme.typography.labelSmall,
-                            color = MaterialTheme.colorScheme.outline
-                        )
-                    }
+                    val sdf = remember { SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.getDefault()) }
+                    interests.forEachIndexed { index, interest ->
+                        if (index > 0) {
+                            Spacer(modifier = Modifier.height(10.dp))
+                            HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.6f))
+                            Spacer(modifier = Modifier.height(10.dp))
+                        }
 
-                    val previewText = previewFromRecordContent(interest.content)
-                    if (previewText.isNotBlank()) {
-                        Spacer(modifier = Modifier.height(6.dp))
-                        Text(
-                            text = highlightText(previewText, searchQuery),
-                            style = MaterialTheme.typography.bodySmall,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant,
-                            maxLines = 2,
-                            overflow = TextOverflow.Ellipsis
-                        )
-                    }
-                }
+                        Column(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .clickable { onOpenInterest(interest) }
+                        ) {
+                            Row(
+                                modifier = Modifier.fillMaxWidth(),
+                                horizontalArrangement = Arrangement.SpaceBetween,
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
+                                Text(
+                                    text = highlightText(interest.authorName.ifBlank { "豆瓣用户" }, searchQuery),
+                                    style = MaterialTheme.typography.bodySmall,
+                                    color = MaterialTheme.colorScheme.primary,
+                                    maxLines = 1,
+                                    overflow = TextOverflow.Ellipsis
+                                )
+                                Text(
+                                    text = "浏览于 ${sdf.format(Date(interest.captureTime))}",
+                                    style = MaterialTheme.typography.labelSmall,
+                                    color = MaterialTheme.colorScheme.outline
+                                )
+                            }
+
+                            val previewText = previewFromRecordContent(interest.content)
+                            if (previewText.isNotBlank()) {
+                                Spacer(modifier = Modifier.height(6.dp))
+                                Text(
+                                    text = highlightText(previewText, searchQuery),
+                                    style = MaterialTheme.typography.bodySmall,
+                                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                                    maxLines = 2,
+                                    overflow = TextOverflow.Ellipsis
+                                )
+                            }
+                        }
+                }            }
             }
+        }
+    }
+}
+
+@Composable
+private fun GroupTitle(
+    title: String,
+    searchQuery: String,
+    collapsible: Boolean,
+    expanded: Boolean,
+    onToggle: () -> Unit
+) {
+    val rotation by animateFloatAsState(
+        targetValue = if (expanded) 180f else 0f,
+        animationSpec = tween(250),
+        label = "groupArrowRotation"
+    )
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .then(
+                if (collapsible) Modifier.clickable(
+                    onClickLabel = if (expanded) "收起" else "展开",
+                    onClick = onToggle
+                ) else Modifier
+            )
+            .heightIn(min = 48.dp),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Text(
+            text = highlightText(title.ifBlank { "无标题" }, searchQuery),
+            modifier = Modifier.weight(1f),
+            style = MaterialTheme.typography.titleMedium,
+            fontWeight = FontWeight.Bold,
+            maxLines = 2,
+            overflow = TextOverflow.Ellipsis
+        )
+        if (collapsible) {
+            Spacer(Modifier.width(8.dp))
+            Icon(
+                imageVector = Icons.Default.ExpandMore,
+                contentDescription = if (expanded) "收起" else "展开",
+                modifier = Modifier.graphicsLayer { rotationZ = rotation },
+                tint = MaterialTheme.colorScheme.onSurfaceVariant
+            )
         }
     }
 }

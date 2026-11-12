@@ -23,6 +23,12 @@ class SettingsViewModel(application: Application) : AndroidViewModel(application
     private val _weiboRecordMode = MutableStateFlow(RecordSettings.weiboRecordMode)
     val weiboRecordMode: StateFlow<WeiboRecordMode> = _weiboRecordMode.asStateFlow()
 
+    val collapseMultipleItems: StateFlow<Boolean> = RecordSettings.collapseMultipleItems
+
+    fun setCollapseMultipleItems(enabled: Boolean) {
+        RecordSettings.setCollapseMultipleItems(enabled)
+    }
+
     fun setWeiboRecordMode(mode: WeiboRecordMode) {
         RecordSettings.weiboRecordMode = mode
         _weiboRecordMode.value = mode

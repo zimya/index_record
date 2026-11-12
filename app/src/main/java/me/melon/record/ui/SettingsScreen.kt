@@ -2,6 +2,11 @@ package me.melon.record.ui
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.selection.toggleable
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.material3.Switch
+import androidx.compose.ui.Alignment
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -43,6 +48,7 @@ fun SettingsScreen(viewModel: SettingsViewModel = viewModel()) {
     val themeMode by viewModel.themeMode.collectAsState()
     val tweetRecordMode by viewModel.tweetRecordMode.collectAsState()
     val weiboRecordMode by viewModel.weiboRecordMode.collectAsState()
+    val collapseMultipleItems by viewModel.collapseMultipleItems.collectAsState()
 
     Scaffold(
         contentWindowInsets = WindowInsets(0, 0, 0, 0),
@@ -78,6 +84,26 @@ fun SettingsScreen(viewModel: SettingsViewModel = viewModel()) {
                 },
                 onSelect = viewModel::setThemeMode
             )
+
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .toggleable(
+                        value = collapseMultipleItems,
+                        role = Role.Switch,
+                        onValueChange = viewModel::setCollapseMultipleItems
+                    )
+                    .padding(horizontal = 12.dp, vertical = 16.dp),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text(
+                    text = "多条目默认收起",
+                    style = MaterialTheme.typography.bodyLarge,
+                    modifier = Modifier.weight(1f)
+                )
+                Switch(checked = collapseMultipleItems, onCheckedChange = null)
+            }
 
             Spacer(modifier = Modifier.height(24.dp))
             SettingsSectionTitle("记录")

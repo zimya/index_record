@@ -19,32 +19,24 @@ internal fun contentStructure(record: UniversalRecord): ContentStructure = Conte
     hasRelatedContent = record.directRelation() != null
 )
 
-internal enum class ReplySectionStatus { UNSUPPORTED, NOT_CAPTURED, PLATFORM_EMPTY, AVAILABLE }
 
 internal data class ReplySectionPresentation(
-    val status: ReplySectionStatus,
+    val message: String?,
     val localCount: Int,
     val platformCount: Long?,
     val hasMore: Boolean?
-) {
-    val message: String get() = when (status) {
-        ReplySectionStatus.UNSUPPORTED -> "当前内容类型暂不支持展示本地回复"
-        ReplySectionStatus.NOT_CAPTURED -> "本地尚未采集到回复，不代表平台没有回复"
-        ReplySectionStatus.PLATFORM_EMPTY -> "平台报告回复数为 0，本地尚无回复记录"
-        ReplySectionStatus.AVAILABLE -> "本地记录不代表平台完整回复列表"
-    }
-}
+)
 
 internal fun replySectionPresentation(record: UniversalRecord, localCount: Int): ReplySectionPresentation {
     val metadata = PlatformMetadataAdapters(record.extraMetadata, record.platform)
     val platformCount = recordStatistics(record, StatisticsSurface.DETAIL, metadata)
         .firstOrNull { it.kind == StatisticKind.REPLY }?.value
     val hasMore = metadata.reddit?.commentsHasNextPage
-    val status = when {
-        localCount > 0 -> ReplySectionStatus.AVAILABLE
-        !contentStructure(record).supportsLocalReplies -> ReplySectionStatus.UNSUPPORTED
-        platformCount == 0L && hasMore != true -> ReplySectionStatus.PLATFORM_EMPTY
-        else -> ReplySectionStatus.NOT_CAPTURED
+    val message = when {
+        localCount > 0 -> null
+        !contentStructure(record).supportsLocalReplies -> "当前内容类型暂不支持展示本地回复"
+        platformCount == 0L && hasMore != true -> "平台报告回复数为 0，本地尚无回复记录"
+        else -> "本地尚未采集到回复"
     }
-    return ReplySectionPresentation(status, localCount, platformCount, hasMore)
+    return ReplySectionPresentation(message, localCount, platformCount, hasMore)
 }

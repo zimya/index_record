@@ -24,11 +24,12 @@ import me.melon.record.data.model.UniversalRecord
 import me.melon.record.ui.components.HomeRecordCard
 import me.melon.record.ui.theme.getPlatformThemeColor
 import me.melon.record.ui.theme.isAppInDarkTheme
-import org.jsoup.Jsoup
+
 import me.melon.record.data.PlatformCatalog
 import me.melon.record.presentation.displayAuthor
 import me.melon.record.presentation.displayCaptureTime
 import me.melon.record.presentation.StatisticsSurface
+import me.melon.record.presentation.recordPreviewText
 import me.melon.record.presentation.recordStatistics
 import me.melon.record.ui.components.StatisticCount
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -128,7 +129,7 @@ internal fun AnswerGroupItem(
                                 )
                             }
 
-                            val previewText = previewFromRecordContent(answer.content)
+                            val previewText = recordPreviewText(answer)
                             if (previewText.isNotBlank()) {
                                 Spacer(modifier = Modifier.height(6.dp))
                                 Text(
@@ -252,7 +253,7 @@ internal fun InterestGroupItem(
                                 )
                             }
 
-                            val previewText = previewFromRecordContent(interest.content)
+                            val previewText = recordPreviewText(interest)
                             if (previewText.isNotBlank()) {
                                 Spacer(modifier = Modifier.height(6.dp))
                                 Text(
@@ -308,15 +309,6 @@ private fun GroupTitle(
     }
 }
 
-private fun previewFromRecordContent(content: String): String {
-    if (content.isBlank()) return ""
-    val text = try {
-        Jsoup.parse(content).text()
-    } catch (_: Exception) {
-        content
-    }
-    return text.replace('\n', ' ').replace('\r', ' ').trim()
-}
 
 @Composable
 private fun highlightText(text: String, query: String): AnnotatedString {

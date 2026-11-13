@@ -22,7 +22,8 @@ enum class RecordBodyFormat(val storageValue: String, val renderingFormat: Markd
 fun UniversalRecord.bodyFormat(): RecordBodyFormat = RecordBodyFormat.fromStorage(contentFormat)
 
 /** Visible body text for summaries, comment text and search; excludes hidden link/media URLs. */
-fun UniversalRecord.bodyPlainText(): String {
-    val format = bodyFormat()
-    return contentToMdAst(content, format.renderingFormat, format.enableMath).toPlainText()
-}
+fun UniversalRecord.bodyPlainText(): String = bodyPlainText(content, bodyFormat())
+
+/** API excerpts use their own declared format, independently of any captured body. */
+fun bodyPlainText(content: String, format: RecordBodyFormat): String =
+    contentToMdAst(content, format.renderingFormat, format.enableMath).toPlainText()

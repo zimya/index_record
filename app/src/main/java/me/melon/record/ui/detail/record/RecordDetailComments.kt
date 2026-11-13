@@ -100,15 +100,19 @@ internal fun RecordDetailCommentItem(
             }
             Spacer(modifier = Modifier.height(4.dp))
             val body = recordBodyPresentation(comment)
-            RenderMarkdownText(
-                markdown = body.content,
-                modifier = Modifier.fillMaxWidth(),
-                enableScroll = false,
-                selectable = false,
-                onImageClick = onImageClick,
-                contentFormat = body.contentFormat,
-                enableMath = body.enableMath
-            )
+            MaterialTheme(
+                typography = MaterialTheme.typography.copy(bodyLarge = MaterialTheme.typography.bodyMedium)
+            ) {
+                RenderMarkdownText(
+                    markdown = body.content,
+                    modifier = Modifier.fillMaxWidth(),
+                    enableScroll = false,
+                    selectable = false,
+                    onImageClick = onImageClick,
+                    contentFormat = body.contentFormat,
+                    enableMath = body.enableMath
+                )
+            }
             RecordCommentStatistics(comment)
             Spacer(modifier = Modifier.height(8.dp))
             Text(displayPublishTime(comment.publishTime), style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.outline)

@@ -99,7 +99,9 @@ fun RecordDetailScreen(
                     ) { commentSort = it }
                 }
                 item {
-                    Text(replySection.message, style = MaterialTheme.typography.bodySmall)
+                    replySection.message?.let {
+                        Text(it, style = MaterialTheme.typography.bodySmall)
+                    }
                     replySection.platformCount?.let {
                         Text("平台回复数：$it", style = MaterialTheme.typography.labelSmall)
                     }

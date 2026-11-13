@@ -48,7 +48,7 @@ internal fun recordPreviewText(
     else {
         // Question excerpts are HTML from the API; subject intro/card subtitle are plain text.
         val format = if (record.recordType == "question") RecordBodyFormat.HTML else RecordBodyFormat.PLAIN_TEXT
-        record.copy(content = raw, contentFormat = format.storageValue).bodyPlainText()
+        bodyPlainText(raw, format)
     }
 }
 

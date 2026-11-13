@@ -29,10 +29,10 @@ import me.melon.record.data.model.UniversalRecord
 import me.melon.record.presentation.relatedRecordLabel
 import me.melon.record.presentation.relatedTargetNotice
 import me.melon.record.presentation.relatedTargetStateLabel
-import me.melon.record.presentation.redditPreviewText
+import me.melon.record.presentation.recordPreviewText
 import me.melon.record.ui.theme.getPlatformThemeColor
 import me.melon.record.ui.theme.isAppInDarkTheme
-import org.jsoup.Jsoup
+
 
 @Composable
 internal fun RelatedRecordCard(
@@ -49,13 +49,22 @@ internal fun RelatedRecordCard(
     val label = relatedRecordLabel(relation)
     val notice = relatedTargetNotice(targetState)
     val canOpen = record != null && targetState != RelatedTargetState.MISSING
-    val title = remember(platform, record?.title, record?.content, record?.authorName, targetState) {
+    val title = remember(
+        platform,
+        record?.platform,
+        record?.title,
+        record?.content,
+        record?.contentFormat,
+        record?.recordType,
+        record?.extraMetadata,
+        record?.authorName,
+        targetState
+    ) {
         if (targetState == RelatedTargetState.MISSING || record == null) {
             relatedTargetNotice(RelatedTargetState.MISSING).orEmpty()
         } else {
             record.title.ifBlank {
-                (if (platform == "reddit") redditPreviewText(record.content) else Jsoup.parse(record.content).text())
-                    .ifBlank { record.authorName }
+                recordPreviewText(record).ifBlank { record.authorName }
             }.ifBlank { "未记录标题" }
         }
     }

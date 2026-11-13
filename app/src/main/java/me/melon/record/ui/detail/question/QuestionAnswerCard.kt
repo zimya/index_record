@@ -1,6 +1,9 @@
 package me.melon.record.ui.detail.question
 
 
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
+import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -8,8 +11,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.width
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.ThumbUp
+
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -25,11 +27,11 @@ import me.melon.record.data.model.DetailRecord
 import me.melon.record.data.model.toEntity
 import me.melon.record.data.repository.ZhihuAnswerRef
 import me.melon.record.ui.components.AvatarImage
-import me.melon.record.ui.components.EngagementCount
-import org.jsoup.Jsoup
-import me.melon.record.presentation.displayAuthor
+import me.melon.record.ui.components.StatisticCount
+import me.melon.record.presentation.questionAnswerPresentation
 import me.melon.record.presentation.displayPublishTime
 
+@OptIn(ExperimentalLayoutApi::class)
 @Composable
 internal fun QuestionAnswerCard(
     ref: ZhihuAnswerRef,
@@ -38,9 +40,7 @@ internal fun QuestionAnswerCard(
     onOpenAnswer: (UniversalRecord) -> Unit
 ) {
     val enabled = stored != null
-    val excerpt = ref.excerpt.ifBlank {
-        stored?.let { Jsoup.parse(it.content).text().take(140) } ?: ""
-    }
+    val presentation = questionAnswerPresentation(ref, stored)
 
     Surface(
         onClick = { stored?.let { onOpenAnswer(it.toEntity()) } },
@@ -53,34 +53,40 @@ internal fun QuestionAnswerCard(
     ) {
         Column(modifier = Modifier.padding(12.dp)) {
             Row(verticalAlignment = Alignment.CenterVertically) {
-                AvatarImage(url = ref.authorAvatar, size = 32.dp)
+                AvatarImage(url = presentation.authorAvatar, size = 32.dp)
                 Spacer(modifier = Modifier.width(10.dp))
                 Column(modifier = Modifier.weight(1f)) {
                     Text(
-                        text = displayAuthor(ref.authorName),
+                        text = presentation.author,
                         style = MaterialTheme.typography.bodyMedium,
                         fontWeight = FontWeight.Bold,
                         color = MaterialTheme.colorScheme.primary
                     )
                 }
-                if (ref.voteupCount > 0) {
-                    EngagementCount(count = ref.voteupCount, icon = Icons.Outlined.ThumbUp, label = "赞同数")
-                }
+
             }
-            if (excerpt.isNotBlank()) {
+            if (presentation.preview.isNotBlank()) {
                 Spacer(modifier = Modifier.height(8.dp))
                 Text(
-                    text = excerpt,
+                    text = presentation.preview,
                     style = MaterialTheme.typography.bodyMedium,
                     color = MaterialTheme.colorScheme.onSurface,
                     maxLines = 5,
                     overflow = TextOverflow.Ellipsis
                 )
             }
-            val ts = (if (ref.updatedTimeSec > 0) ref.updatedTimeSec else ref.createdTimeSec) * 1000
+            if (presentation.statistics.isNotEmpty()) {
+                Spacer(modifier = Modifier.height(8.dp))
+                FlowRow(
+                    horizontalArrangement = Arrangement.spacedBy(16.dp),
+                    verticalArrangement = Arrangement.spacedBy(4.dp)
+                ) {
+                    presentation.statistics.forEach { StatisticCount(it) }
+                }
+            }
             Spacer(modifier = Modifier.height(8.dp))
             Text(
-                text = displayPublishTime(ts),
+                text = displayPublishTime(presentation.publishTime),
                 style = MaterialTheme.typography.labelSmall,
                 color = MaterialTheme.colorScheme.outline
             )

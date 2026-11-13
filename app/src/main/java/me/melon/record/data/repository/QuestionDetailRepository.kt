@@ -7,6 +7,7 @@ import io.objectbox.query.QueryBuilder.StringOrder
 import kotlinx.coroutines.flow.Flow
 import me.melon.record.ObjectBox
 import me.melon.record.data.model.DetailRecord
+import me.melon.record.data.model.RecordBodyFormat
 import me.melon.record.data.model.RecordIdentity
 import me.melon.record.data.model.RecordRelation
 import me.melon.record.data.model.UniversalRecord
@@ -28,7 +29,8 @@ internal data class ZhihuAnswerRef(
     val commentCount: Long,
     val authorId: String,
     val authorName: String,
-    val authorAvatar: String
+    val authorAvatar: String,
+    val excerptFormat: RecordBodyFormat = RecordBodyFormat.HTML
 )
 
 internal data class ZhihuTopicRef(val id: String, val name: String)

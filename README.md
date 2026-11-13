@@ -50,6 +50,23 @@
 ./gradlew :app:testDebugUnitTest --tests 'me.melon.record.sync.CaptureQueueTest'
 ```
 
+## 详情数据契约
+
+详情页统一采用 `Repository → 完整快照 → ViewModel StateFlow → Compose`，普通记录、贴吧、豆瓣条目、评论和知乎问题保留各自的查询策略，不在 Composable 中查询或订阅 ObjectBox。
+
+- **身份**：`data/model/RecordIdentity.kt` 集中解释存储 ID。Twitter 的 tweet/comment 捕获角色属于同一个内容身份；读取同身份的多个实体时，按捕获时间、发布时间、存储 ID 确定最新值，当前入口的导航角色保持不变。
+- **关系**：`RecordRelations.kt` 是 `parentId` 的语义边界，区分回答所属问题、回复对象、内容所属条目、楼层所属主帖和内容引用。新增平台先明确关系类型与缺失策略，不在 UI 中解释 ID 前缀。豆瓣未捕获条目可提供显式引用；缺失的 Reddit 父节点只显示提示，不构造捕获记录。
+- **快照与刷新**：`data/repository/RecordObservation.kt` 统一订阅本地记录变更，合并突发通知，在 IO 线程的同一个读事务中重建完整快照。正文、统计、评论和关联内容不分别发布。单次读失败不终止变更监听，下一次变更可恢复。
+- **不可变状态**：快照只暴露全 `val` 的 `DetailRecord` 和防御性复制的不可修改集合。ObjectBox 实体只用于存储；旧渲染组件或导航需要实体时通过 `toEntity()` 创建新值，不能修改快照。
+- **元数据与统计**：平台领域元数据使用 `TiebaMetadata`、`DoubanSubjectMetadata` 等命名字段，隐藏原始 JSON，不依赖 parser。展示统计使用 `RecordStatistic` / `CommentStatistics` 等契约，保留各平台未知值、零值、负分和排序语义，不把所有平台字段继续塞入通用元数据类。
+- **加载与生命周期**：各页使用 `DetailLoadState.Loading / Ready / Failed` 表示整页快照的加载状态。自定义导航通过 `DetailViewModelScope` 管理当前详情的 ViewModel；页面退出组合后清理，不在 Activity 中永久缓存逐条记录的详情状态。
+
+新增平台时，先补身份、关系及领域元数据测试，再实现所需的 Repository 查询策略，复用观察与加载契约，最后接入只收集状态的页面。回归验证：
+
+```sh
+./gradlew :app:testDebugUnitTest :app:assembleDebug
+```
+
 ## 路线图 (TODO)
 
 ### 平台支持

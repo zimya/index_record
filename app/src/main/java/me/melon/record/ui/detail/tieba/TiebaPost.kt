@@ -34,7 +34,7 @@ import androidx.compose.ui.unit.dp
 import me.melon.record.data.model.UniversalRecord
 import me.melon.record.markdown.RenderMarkdownText
 import me.melon.record.ui.components.AvatarImage
-import me.melon.record.viewmodel.TiebaMetadata
+import me.melon.record.data.model.TiebaMetadata
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
@@ -46,7 +46,7 @@ internal fun TiebaPost(
     onImageClick: (List<String>, Int) -> Unit,
     isMainPost: Boolean = false
 ) {
-    val meta = remember(record.extraMetadata) { TiebaMetadata(record) }
+    val meta = remember(record.extraMetadata) { TiebaMetadata(record.extraMetadata) }
     Row(verticalAlignment = Alignment.CenterVertically) {
         AvatarImage(url = record.authorAvatar, size = if (isMainPost) 40.dp else 28.dp)
         Spacer(Modifier.width(if (isMainPost) 12.dp else 8.dp))
@@ -63,7 +63,7 @@ internal fun TiebaPost(
             Text(label, style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.outline)
         }
         if (!isMainPost) {
-            meta.number("agree_count")?.takeIf { it > 0 }?.let { likes ->
+            meta.agreeCount?.takeIf { it > 0 }?.let { likes ->
                 Spacer(Modifier.width(8.dp))
                 Icon(
                     Icons.Outlined.ThumbUpOffAlt,
@@ -81,8 +81,8 @@ internal fun TiebaPost(
     } else {
         Spacer(Modifier.height(4.dp))
     }
-    val target = meta.text("reply_to_name").ifBlank {
-        meta.text("reply_to_id").takeIf { it.isNotBlank() }?.let { "用户 ID $it" }.orEmpty()
+    val target = meta.replyToName.ifBlank {
+        meta.replyToId.takeIf { it.isNotBlank() }?.let { "用户 ID $it" }.orEmpty()
     }
     if (target.isNotBlank()) {
         Text("回复 $target", style = MaterialTheme.typography.bodySmall, modifier = Modifier.padding(top = 8.dp))
@@ -118,10 +118,10 @@ internal fun TiebaPost(
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
 private fun TiebaPostStats(record: UniversalRecord) {
-    val meta = remember(record.extraMetadata) { TiebaMetadata(record) }
-    val likes = meta.number("agree_count")
-    val replies = meta.number("reply_count").takeUnless { record.recordType == "comment" }
-    val favorites = meta.number("favlists_count") ?: meta.number("bookmark_count")
+    val meta = remember(record.extraMetadata) { TiebaMetadata(record.extraMetadata) }
+    val likes = meta.agreeCount
+    val replies = meta.replyCount.takeUnless { record.recordType == "comment" }
+    val favorites = meta.favoriteCount
     if (likes == null && replies == null && favorites == null) return
 
     FlowRow(

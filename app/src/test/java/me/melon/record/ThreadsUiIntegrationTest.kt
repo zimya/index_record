@@ -3,8 +3,8 @@ package me.melon.record
 import com.google.gson.JsonParser
 import me.melon.record.data.model.UniversalRecord
 import me.melon.record.logic.StatsCalculator
-import me.melon.record.ui.components.engagementCount
-import me.melon.record.ui.components.viewEngagementCount
+import me.melon.record.presentation.engagementCount
+import me.melon.record.presentation.viewEngagementCount
 import me.melon.record.ui.stats.appLabel
 import me.melon.record.ui.stats.colorFromPackage
 import me.melon.record.ui.theme.getPlatformThemeColor

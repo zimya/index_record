@@ -49,7 +49,9 @@ import me.melon.record.data.model.UniversalRecord
 import me.melon.record.ui.components.DetailTopAppBar
 import me.melon.record.ui.components.ImageViewerDialog
 import me.melon.record.ui.components.RelatedRecordCard
-import me.melon.record.viewmodel.TiebaMetadata
+import me.melon.record.data.model.TiebaMetadata
+import me.melon.record.data.model.toEntity
+import me.melon.record.viewmodel.DetailLoadState
 import kotlinx.coroutines.delay
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -70,17 +72,19 @@ fun TiebaDetailScreen(
         viewerIndex = index
     }
     var highlightedReplyId by remember(record.platformId) { mutableStateOf<String?>(null) }
-    val current = data.current
+    val current = data.current.toEntity()
+    val thread = data.thread?.toEntity()
+    val floors = data.floors.map { it.toEntity() }
+    val repliesByParent = data.repliesByParent.mapValues { (_, values) -> values.map { it.toEntity() } }
     val isThread = current.recordType == "lou" && !showFirstFloorReplies
-    val floor = data.floor
-    val parentId = floor?.platformId ?: current.parentId
-    val replies = data.repliesByParent[parentId].orEmpty()
+    val floor = data.floor?.toEntity()
+    val replies = data.replies.map { it.toEntity() }
     val activeListState = if (showFirstFloorReplies) firstFloorListState else listState
-    val meta = remember(current.extraMetadata) { TiebaMetadata(current) }
-    val threadTitle = data.thread?.title?.ifBlank { null }
-        ?: meta.text("thread_title").ifBlank { current.title.ifBlank { "未记录标题的帖子" } }
-    val forumName = meta.text("forum_name").ifBlank {
-        data.thread?.let { TiebaMetadata(it).text("forum_name") }.orEmpty()
+    val meta = remember(current.extraMetadata) { TiebaMetadata(current.extraMetadata) }
+    val threadTitle = thread?.title?.ifBlank { null }
+        ?: meta.threadTitle.ifBlank { current.title.ifBlank { "未记录标题的帖子" } }
+    val forumName = meta.forumName.ifBlank {
+        thread?.let { TiebaMetadata(it.extraMetadata).forumName }.orEmpty()
     }
     val back: () -> Unit = {
         if (showFirstFloorReplies) showFirstFloorReplies = false else onBack()
@@ -88,8 +92,8 @@ fun TiebaDetailScreen(
     BackHandler(enabled = showFirstFloorReplies) { showFirstFloorReplies = false }
 
     // A search result for a sub-reply opens its owning floor and locates that reply.
-    LaunchedEffect(record.platformId, data.loaded) {
-        if (data.loaded && current.recordType == "comment") {
+    LaunchedEffect(record.platformId, data.loadState) {
+        if (data.loadState == DetailLoadState.Ready && current.recordType == "comment") {
             val index = replies.indexOfFirst { it.platformId == current.platformId }
             if (index >= 0) {
                 if (listState.firstVisibleItemIndex == 0 && listState.firstVisibleItemScrollOffset == 0) {
@@ -118,20 +122,20 @@ fun TiebaDetailScreen(
                 actions = {
                     TiebaSourceLink(
                         floor?.sourceUrl?.takeIf { showFirstFloorReplies && it.isNotBlank() }
-                            ?: current.sourceUrl.ifBlank { data.thread?.sourceUrl.orEmpty() }
+                            ?: current.sourceUrl.ifBlank { thread?.sourceUrl.orEmpty() }
                     )
                 }
             )
         }
     ) { padding ->
         // Do not clamp a retained scroll position while the database query is pending.
-        if (!data.loaded) {
+        if (data.loadState == DetailLoadState.Loading) {
             Column(Modifier.padding(padding).padding(16.dp)) {
                 CircularProgressIndicator()
                 Text("正在读取本地记录…", modifier = Modifier.padding(top = 12.dp))
             }
-        } else if (data.error != null) {
-            Text(data.error.orEmpty(), modifier = Modifier.padding(padding).padding(16.dp))
+        } else if (data.loadState is DetailLoadState.Failed) {
+            Text(data.loadState.message, modifier = Modifier.padding(padding).padding(16.dp))
         } else {
             LazyColumn(
                 state = activeListState,
@@ -166,7 +170,7 @@ fun TiebaDetailScreen(
                             fontWeight = FontWeight.Bold,
                             modifier = Modifier.padding(vertical = 12.dp)
                         )
-                        if (!isThread && data.thread == null) {
+                        if (!isThread && thread == null) {
                             TiebaLocalNotice("主帖尚未记录，暂时无法回主帖。")
                         }
                         // TiebaLocalNotice("仅展示本地已记录内容，不会联网补齐；平台数量为采集时记录，可能与当前数量不同。")
@@ -180,17 +184,17 @@ fun TiebaDetailScreen(
                             )
                             TiebaReplyPreview(
                                 owner = current,
-                                replies = data.repliesByParent[current.platformId].orEmpty(),
+                                replies = repliesByParent[current.platformId].orEmpty(),
                                 onOpenFloor = { showFirstFloorReplies = true },
                                 onOpenRecord = onOpenRecord
                             )
                             Spacer(Modifier.height(16.dp))
                             Text(
-                                "楼层 · 已记录 ${data.floors.size} 层",
+                                "楼层 · 已记录 ${floors.size} 层",
                                 style = MaterialTheme.typography.titleMedium
                             )
 
-                            if (data.floors.isEmpty()) TiebaLocalNotice("本地尚未记录其他楼层。")
+                            if (floors.isEmpty()) TiebaLocalNotice("本地尚未记录其他楼层。")
                         } else {
                             if (floor != null) {
                                 TiebaPost(floor, tiebaFloorLabel(floor), onImageClick)
@@ -208,7 +212,7 @@ fun TiebaDetailScreen(
                     }
                 }
                 if (isThread) {
-                    items(data.floors, key = { it.platformId }) { post ->
+                    items(floors, key = { it.platformId }) { post ->
                         Surface(
                             onClick = { onOpenRecord(post) },
                             modifier = Modifier.padding(horizontal = 16.dp).fillMaxWidth(),
@@ -218,7 +222,7 @@ fun TiebaDetailScreen(
                                 TiebaPost(post, tiebaFloorLabel(post), onImageClick)
                                 TiebaReplyPreview(
                                     owner = post,
-                                    replies = data.repliesByParent[post.platformId].orEmpty(),
+                                    replies = repliesByParent[post.platformId].orEmpty(),
                                     onOpenFloor = { onOpenRecord(post) },
                                     onOpenRecord = onOpenRecord
                                 )
@@ -241,7 +245,7 @@ fun TiebaDetailScreen(
                     }
                 }
                 if (!isThread) {
-                    data.thread?.let { thread ->
+                    thread?.let { thread ->
                         item(key = "related_thread") {
                             RelatedRecordCard(
                                 record = thread,

@@ -24,6 +24,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import me.melon.record.data.model.UniversalRecord
+import me.melon.record.presentation.redditPreviewText
 import me.melon.record.ui.theme.getPlatformThemeColor
 import me.melon.record.ui.theme.isAppInDarkTheme
 import org.jsoup.Jsoup

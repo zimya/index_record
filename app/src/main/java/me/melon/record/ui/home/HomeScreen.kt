@@ -1,6 +1,7 @@
 package me.melon.record.ui.home
 
 import me.melon.record.ui.detail.comment.CommentDetailScreen
+import me.melon.record.ui.detail.DetailViewModelScope
 import me.melon.record.ui.detail.question.QuestionDetailScreen
 import me.melon.record.ui.detail.record.RecordDetailScreen
 import me.melon.record.ui.detail.subject.SubjectDetailScreen
@@ -146,41 +147,43 @@ fun HomeScreen(viewModel: HomeViewModel = viewModel()) {
                         },
                         label = "DetailStackTransition"
                     ) { targetRecord ->
-                        if (targetRecord.platform == "tieba" && targetRecord.recordType in setOf("lou", "floor", "comment")) {
-                            TiebaDetailScreen(
-                                record = targetRecord,
-                                onBack = { viewModel.popDetail() },
-                                onOpenRecord = { viewModel.pushDetail(it) },
-                                listState = viewModel.detailListState(targetRecord.platformId),
-                                firstFloorListState = viewModel.detailListState("${targetRecord.platformId}:first_floor_replies")
-                            )
-                        } else if (targetRecord.recordType == "comment" && !usesRecordDetailForComment(targetRecord.platform)) {
-                            CommentDetailScreen(
-                                record = targetRecord,
-                                onBack = { viewModel.popDetail() },
-                                onOpenParent = { viewModel.pushDetail(it) }
-                            )
-                        } else if (targetRecord.recordType == "question") {
-                            QuestionDetailScreen(
-                                record = targetRecord,
-                                onBack = { viewModel.popDetail() },
-                                onOpenAnswer = { viewModel.pushDetail(it) },
-                                listState = viewModel.detailListState(targetRecord.platformId)
-                            )
-                        } else if (targetRecord.recordType == "subject") {
-                            SubjectDetailScreen(
-                                record = targetRecord,
-                                onBack = { viewModel.popDetail() },
-                                onOpenRecord = { viewModel.pushDetail(it) },
-                                listState = viewModel.detailListState(targetRecord.platformId)
-                            )
-                        } else {
-                            RecordDetailScreen(
-                                record = targetRecord,
-                                onBack = { viewModel.popDetail() },
-                                onOpenRecord = { viewModel.pushDetail(it) },
-                                listState = viewModel.detailListState(targetRecord.platformId)
-                            )
+                        DetailViewModelScope {
+                            if (targetRecord.platform == "tieba" && targetRecord.recordType in setOf("lou", "floor", "comment")) {
+                                TiebaDetailScreen(
+                                    record = targetRecord,
+                                    onBack = { viewModel.popDetail() },
+                                    onOpenRecord = { viewModel.pushDetail(it) },
+                                    listState = viewModel.detailListState(targetRecord.platformId),
+                                    firstFloorListState = viewModel.detailListState("${targetRecord.platformId}:first_floor_replies")
+                                )
+                            } else if (targetRecord.recordType == "comment" && !usesRecordDetailForComment(targetRecord.platform)) {
+                                CommentDetailScreen(
+                                    record = targetRecord,
+                                    onBack = { viewModel.popDetail() },
+                                    onOpenParent = { viewModel.pushDetail(it) }
+                                )
+                            } else if (targetRecord.recordType == "question") {
+                                QuestionDetailScreen(
+                                    record = targetRecord,
+                                    onBack = { viewModel.popDetail() },
+                                    onOpenAnswer = { viewModel.pushDetail(it) },
+                                    listState = viewModel.detailListState(targetRecord.platformId)
+                                )
+                            } else if (targetRecord.recordType == "subject") {
+                                SubjectDetailScreen(
+                                    record = targetRecord,
+                                    onBack = { viewModel.popDetail() },
+                                    onOpenRecord = { viewModel.pushDetail(it) },
+                                    listState = viewModel.detailListState(targetRecord.platformId)
+                                )
+                            } else {
+                                RecordDetailScreen(
+                                    record = targetRecord,
+                                    onBack = { viewModel.popDetail() },
+                                    onOpenRecord = { viewModel.pushDetail(it) },
+                                    listState = viewModel.detailListState(targetRecord.platformId)
+                                )
+                            }
                         }
                     }
                 }

@@ -29,11 +29,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import me.melon.record.data.model.DoubanSubjectMetadata
 import me.melon.record.ui.components.CoverImage
 
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
-internal fun SubjectHeader(subject: SubjectMetadata, onCoverClick: (String) -> Unit) {
+internal fun SubjectHeader(subject: DoubanSubjectMetadata, onCoverClick: (String) -> Unit) {
     with(subject) {
         Spacer(modifier = Modifier.height(12.dp))
         Row(

@@ -20,10 +20,11 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import java.util.Locale
+import me.melon.record.data.model.DoubanSubjectMetadata
 import me.melon.record.ui.components.RatingStars
 
 @Composable
-internal fun SubjectRatingCard(subject: SubjectMetadata, isDark: Boolean) {
+internal fun SubjectRatingCard(subject: DoubanSubjectMetadata, isDark: Boolean) {
     with(subject) {
         val cardBg = if (isDark) MaterialTheme.colorScheme.surface.copy(alpha = 0.65f) else MaterialTheme.colorScheme.surface
         Card(

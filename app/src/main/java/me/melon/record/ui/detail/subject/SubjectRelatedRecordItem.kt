@@ -27,14 +27,12 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import com.google.gson.JsonObject
-import com.google.gson.JsonParser
+
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
-import me.melon.record.data.model.UniversalRecord
-import me.melon.record.parser.douban.DoubanUtils.safeDouble
-import me.melon.record.parser.douban.DoubanUtils.safeLong
+import me.melon.record.data.model.DetailRecord
+import me.melon.record.data.model.DoubanSubjectRelatedMetadata
 import me.melon.record.ui.components.AvatarImage
 import me.melon.record.ui.components.RatingStars
 import me.melon.record.ui.theme.getPlatformThemeColor
@@ -42,14 +40,8 @@ import me.melon.record.ui.theme.isAppInDarkTheme
 import org.jsoup.Jsoup
 
 @Composable
-internal fun SubjectRelatedRecordItem(record: UniversalRecord, onClick: () -> Unit) {
-    val meta = remember(record.extraMetadata) {
-        try {
-            JsonParser.parseString(record.extraMetadata).asJsonObject
-        } catch (_: Exception) {
-            JsonObject()
-        }
-    }
+internal fun SubjectRelatedRecordItem(record: DetailRecord, onClick: () -> Unit) {
+    val meta = remember(record.extraMetadata) { DoubanSubjectRelatedMetadata(record) }
 
     val typeBadge = when (record.recordType) {
         "interest" -> "短评"
@@ -58,8 +50,8 @@ internal fun SubjectRelatedRecordItem(record: UniversalRecord, onClick: () -> Un
         else -> record.recordType
     }
 
-    val starCount = meta.safeDouble("star_count")
-    val voteCount = meta.safeLong("voteup_count")
+    val starCount = meta.starCount
+    val voteCount = meta.voteCount
     val isDark = isAppInDarkTheme()
 
     Card(

@@ -17,9 +17,10 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import me.melon.record.data.model.DoubanSubjectMetadata
 
 @Composable
-internal fun SubjectMetadataCard(subject: SubjectMetadata, isDark: Boolean) {
+internal fun SubjectMetadataCard(subject: DoubanSubjectMetadata, isDark: Boolean) {
     with(subject) {
         val cardBg = if (isDark) MaterialTheme.colorScheme.surface.copy(alpha = 0.65f) else MaterialTheme.colorScheme.surface
         Card(

@@ -23,10 +23,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import me.melon.record.data.model.UniversalRecord
+import me.melon.record.data.model.toEntity
 import me.melon.record.ui.components.DetailTopAppBar
-import me.melon.record.parser.douban.DoubanUtils.safeString
+
 import me.melon.record.ui.components.ImageViewerDialog
 import me.melon.record.ui.theme.isAppInDarkTheme
+import me.melon.record.viewmodel.DetailLoadState
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -37,9 +39,9 @@ fun SubjectDetailScreen(
     listState: LazyListState = rememberLazyListState()
 ) {
     val data = rememberSubjectDetailData(record)
-    val subject = rememberSubjectMetadata(data.record)
-    val relatedRecords = data.relatedRecords
-    val contentReady = data.contentReady
+    val subject = data.subject
+    val relatedRecords = data.snapshot.relatedRecords
+
     var viewerUrls by remember { mutableStateOf<List<String>>(emptyList()) }
     var viewerIndex by remember { mutableStateOf(0) }
     var isIntroExpanded by remember { mutableStateOf(false) }
@@ -58,7 +60,7 @@ fun SubjectDetailScreen(
     }
     val isDark = isAppInDarkTheme()
     val animatedBgColor = rememberSubjectBackgroundColor(
-        subject.coverUrl, subject.meta.safeString("header_bg_color")
+        subject.coverUrl, subject.headerBackgroundColor
     )
     Scaffold(
         contentWindowInsets = WindowInsets(0, 0, 0, 0),
@@ -72,7 +74,8 @@ fun SubjectDetailScreen(
             )
         }
     ) { innerPadding ->
-        if (!contentReady) return@Scaffold
+        if (data.loadState == DetailLoadState.Loading) return@Scaffold
+        val failure = data.loadState as? DetailLoadState.Failed
 
         LazyColumn(
             modifier = Modifier
@@ -82,6 +85,15 @@ fun SubjectDetailScreen(
                 .padding(horizontal = 16.dp),
             state = listState
         ) {
+            if (failure != null) {
+                item {
+                    Text(
+                        text = failure.message,
+                        modifier = Modifier.padding(vertical = 16.dp),
+                        color = MaterialTheme.colorScheme.error
+                    )
+                }
+            }
             item {
                 SubjectHeader(subject, onCoverClick = { url ->
                     viewerUrls = listOf(url)
@@ -113,7 +125,7 @@ fun SubjectDetailScreen(
                 item { SubjectRelatedEmptyState() }
             } else {
                 items(filteredList, key = { it.id }) { item ->
-                    SubjectRelatedRecordItem(record = item, onClick = { onOpenRecord(item) })
+                    SubjectRelatedRecordItem(record = item, onClick = { onOpenRecord(item.toEntity()) })
                     Spacer(modifier = Modifier.height(8.dp))
                 }
             }

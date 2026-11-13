@@ -25,9 +25,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.unit.dp
 import me.melon.record.data.model.UniversalRecord
+import me.melon.record.data.model.toEntity
 import me.melon.record.ui.components.DetailTopAppBar
 import me.melon.record.ui.components.ImageViewerDialog
 import me.melon.record.presentation.RedditMetadata
+import me.melon.record.viewmodel.DetailLoadState
 import me.melon.record.data.PlatformCatalog
 import me.melon.record.ui.components.recordTypeLabel
 import androidx.compose.runtime.mutableStateOf
@@ -82,14 +84,16 @@ fun RecordDetailScreen(
     var viewerUrls by remember { mutableStateOf<List<String>>(emptyList()) }
     var viewerIndex by remember { mutableStateOf(0) }
     val data = rememberRecordDetailData(record)
-    val detailRecord = data.refreshedRecord ?: record
+    val detailRecord = remember(data.snapshot) { data.snapshot.record.toEntity() }
+        val comments = remember(data.snapshot) { data.snapshot.comments.map { it.toEntity() } }
+
     val redditMetadata = remember(detailRecord.platform, detailRecord.extraMetadata) {
         if (detailRecord.platform == "reddit") RedditMetadata(detailRecord.extraMetadata) else null
     }
 
     // 等列表项完整后再挂载列表，避免临时显示顶部以及钳制保存的滚动位置。
-    val contentReady = data.commentsLoaded && data.relatedLoaded
-    val commentRows = rememberRecordDetailCommentRows(data.allComments, commentSort, detailRecord)
+    val contentReady = data.loadState == DetailLoadState.Ready
+    val commentRows = rememberRecordDetailCommentRows(comments, commentSort, detailRecord)
     val onImageClick: (List<String>, Int) -> Unit = { urls, index ->
         viewerUrls = urls
         viewerIndex = index
@@ -104,7 +108,12 @@ fun RecordDetailScreen(
             )
         }
     ) { padding ->
-        if (!contentReady) return@Scaffold
+        val failure = data.loadState as? DetailLoadState.Failed
+                if (failure != null) {
+                    Text(failure.message, modifier = Modifier.padding(padding).padding(16.dp))
+                    return@Scaffold
+                }
+                if (!contentReady) return@Scaffold
 
         LazyColumn(
             modifier = Modifier
@@ -115,8 +124,8 @@ fun RecordDetailScreen(
         ) {
             item { RecordDetailHeader(detailRecord, onImageClick) }
             item { RecordDetailBody(detailRecord, onImageClick) }
-            item { RecordDetailMetadata(detailRecord) }
-            item { RecordDetailRelatedRecord(detailRecord, data.relatedRecord, onOpenRecord) }
+            item { RecordDetailMetadata(data.statistics, data.hasMetadata) }
+            item { RecordDetailRelatedRecord(data.snapshot.record, data.snapshot.related, onOpenRecord) }
 
             if (commentRows.isNotEmpty() || detailRecord.platform == "reddit") {
                 item {

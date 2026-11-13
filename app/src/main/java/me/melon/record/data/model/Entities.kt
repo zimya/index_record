@@ -38,7 +38,7 @@ data class UniversalRecord(
 
     // 5. 关系与溯源 (Relation)
     var sourceUrl: String = "",           // 抓取来源链接
-    var parentId: String = "",            // 父节点ID（若是评论，则填入它回复的内容的 platformId）
+    var parentId: String = "",            // 关系目标的存储 ID；领域含义统一由 RecordRelations 解释
 
     // 6. 时间戳 (Time)
     var publishTime: Long = 0,            // 内容在平台上的发布/更新时间

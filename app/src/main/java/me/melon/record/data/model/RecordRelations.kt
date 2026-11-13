@@ -1,0 +1,34 @@
+package me.melon.record.data.model
+
+/** Relation semantics, not a generic 'parent': each kind has its own navigation/missing policy. */
+internal sealed interface RecordRelation {
+    val target: RecordIdentity
+    data class AnswerToQuestion(override val target: RecordIdentity) : RecordRelation
+    data class ReplyTo(override val target: RecordIdentity) : RecordRelation
+    data class BelongsToSubject(override val target: RecordIdentity) : RecordRelation
+    data class FloorInThread(override val target: RecordIdentity) : RecordRelation
+    data class ReferencesContent(override val target: RecordIdentity) : RecordRelation
+}
+
+/** The storage boundary is the only place that interprets the overloaded parentId column. */
+internal fun UniversalRecord.directRelation(): RecordRelation? = relationOf(platform, recordType, parentId)
+
+internal fun DetailRecord.directRelation(): RecordRelation? = relationOf(platform, recordType, parentId)
+
+private fun relationOf(platform: String, recordType: String, parentId: String): RecordRelation? {
+    if (parentId.isBlank()) return null
+    val target = RecordIdentity.of(platform, parentId)
+    return when {
+        platform == "zhihu" && recordType == "answer" && parentId.startsWith("zhihu_question_") ->
+            RecordRelation.AnswerToQuestion(target)
+        platform == "douban" && recordType != "comment" && parentId.startsWith("douban_") ->
+            RecordRelation.BelongsToSubject(target)
+        platform == "tieba" && recordType == "floor" -> RecordRelation.FloorInThread(target)
+        recordType == "comment" -> RecordRelation.ReplyTo(target)
+        platform in setOf("weibo", "threads") -> RecordRelation.ReferencesContent(target)
+        else -> null
+    }
+}
+
+internal fun UniversalRecord.replyTarget(): RecordIdentity? =
+    (directRelation() as? RecordRelation.ReplyTo)?.target

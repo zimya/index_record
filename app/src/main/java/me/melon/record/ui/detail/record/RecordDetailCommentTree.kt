@@ -5,6 +5,9 @@ import androidx.compose.runtime.remember
 import me.melon.record.presentation.RecordMetadata
 import me.melon.record.data.model.UniversalRecord
 import me.melon.record.presentation.RedditMetadata
+import me.melon.record.data.model.identity
+import me.melon.record.data.model.replyTarget
+import me.melon.record.data.repository.selectRedditComments
 import java.util.ArrayDeque
 
 internal enum class RecordDetailCommentSort { DEFAULT, LATEST }
@@ -16,40 +19,6 @@ internal data class RecordDetailCommentRow(
     val hasInvalidParentChain: Boolean = false
 )
 
-/** Keep real descendants and, on post pages only, captured branches identified by canonical post_id. */
-internal fun selectRedditComments(
-    record: UniversalRecord,
-    candidates: List<UniversalRecord>
-): List<UniversalRecord> {
-    val comments = candidates.filter {
-        it.platform == "reddit" && it.recordType == "comment" &&
-            it.platformId.isNotBlank() && it.platformId != record.platformId
-    }.distinctBy { it.platformId }
-    val byId = comments.associateBy { it.platformId }
-    val childrenByParent = comments.groupBy { it.parentId }
-    val selected = linkedSetOf(record.platformId)
-
-    if (record.recordType == "post") {
-        val ancestorSeen = mutableSetOf(record.platformId)
-        for (comment in comments) {
-            if (RedditMetadata(comment.extraMetadata).postId != record.platformId) continue
-            var current: UniversalRecord? = comment
-            // A partial payload may supply post_id on a child but omit it on its captured ancestors.
-            while (current != null && ancestorSeen.add(current.platformId)) {
-                selected.add(current.platformId)
-                current = byId[current.parentId]
-            }
-        }
-    }
-
-    val frontier = ArrayDeque<String>().apply { addAll(selected) }
-    while (frontier.isNotEmpty()) {
-        for (child in childrenByParent[frontier.removeFirst()].orEmpty()) {
-            if (selected.add(child.platformId)) frontier.addLast(child.platformId)
-        }
-    }
-    return comments.filter { it.platformId in selected }
-}
 
 @Composable
 internal fun rememberRecordDetailCommentRows(
@@ -68,20 +37,12 @@ internal fun buildRecordDetailCommentRows(
     record: UniversalRecord
 ): List<RecordDetailCommentRow> {
     val isReddit = record.platform == "reddit"
-    val comments = if (isReddit) selectRedditComments(record, allComments) else allComments.distinctBy { it.platformId }
-    val byId = comments.associateBy { it.platformId }
-    val childrenByParent = comments.groupBy { it.parentId }
+    val comments = if (isReddit) selectRedditComments(record, allComments) else allComments.distinctBy { it.identity }
+    val byId = comments.associateBy { it.identity }
+    val childrenByParent = comments.groupBy { it.replyTarget() }
     val scores = if (isReddit) comments.associate { it.platformId to RedditMetadata(it.extraMetadata).score } else emptyMap()
 
-    val altId = if (record.platform == "twitter") {
-        if (record.platformId.startsWith("twitter_tweet_")) {
-            "twitter_comment_" + record.platformId.removePrefix("twitter_tweet_")
-        } else if (record.platformId.startsWith("twitter_comment_")) {
-            "twitter_tweet_" + record.platformId.removePrefix("twitter_comment_")
-        } else ""
-    } else ""
-
-    val roots = (childrenByParent[record.platformId].orEmpty() + (if (altId.isNotBlank()) childrenByParent[altId].orEmpty() else emptyList())).distinctBy { it.platformId }
+    val roots = childrenByParent[record.identity].orEmpty()
 
     fun likeCount(r: UniversalRecord): Long {
         return RecordMetadata(r.extraMetadata, r.platform).commentLikeCount
@@ -109,15 +70,15 @@ internal fun buildRecordDetailCommentRows(
     }
 
     val result = mutableListOf<RecordDetailCommentRow>()
-    val visited = mutableSetOf(record.platformId)
+    val visited = mutableSetOf(record.identity)
     fun visit(root: UniversalRecord, missingParentId: String? = null, invalidParentChain: Boolean = false) {
         val stack = ArrayDeque<RecordDetailCommentRow>()
         stack.addLast(RecordDetailCommentRow(root, 0, missingParentId, invalidParentChain))
         while (stack.isNotEmpty()) {
             val row = stack.removeLast()
-            if (!visited.add(row.record.platformId)) continue
+            if (!visited.add(row.record.identity)) continue
             result.add(row)
-            val children = sortedSiblings(childrenByParent[row.record.platformId].orEmpty(), isRoot = false)
+            val children = sortedSiblings(childrenByParent[row.record.identity].orEmpty(), isRoot = false)
             for (child in children.asReversed()) {
                 stack.addLast(RecordDetailCommentRow(child, row.depth + 1))
             }
@@ -127,10 +88,10 @@ internal fun buildRecordDetailCommentRows(
     for (root in sortedSiblings(roots, isRoot = true)) visit(root)
 
     if (isReddit && record.recordType == "post") {
-        val orphanRoots = comments.filter { it.platformId !in visited && it.parentId !in byId }
-        for (root in sortedSiblings(orphanRoots, isRoot = true)) visit(root, missingParentId = root.parentId)
+        val orphanRoots = comments.filter { it.identity !in visited && it.replyTarget() !in byId }
+        for (root in sortedSiblings(orphanRoots, isRoot = true)) visit(root, missingParentId = root.replyTarget()?.storageIds()?.firstOrNull().orEmpty())
         // Preserve real records with malformed cyclic ancestry too, without claiming a parent is missing.
-        for (root in sortedSiblings(comments.filter { it.platformId !in visited }, isRoot = true)) {
+        for (root in sortedSiblings(comments.filter { it.identity !in visited }, isRoot = true)) {
             visit(root, invalidParentChain = true)
         }
     }

@@ -15,7 +15,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import me.melon.record.data.model.UniversalRecord
-import me.melon.record.viewmodel.TiebaMetadata
+import me.melon.record.data.model.TiebaMetadata
 
 @Composable
 internal fun TiebaReplyPreview(
@@ -24,7 +24,7 @@ internal fun TiebaReplyPreview(
     onOpenFloor: () -> Unit,
     onOpenRecord: (UniversalRecord) -> Unit
 ) {
-    if (replies.isEmpty() && (owner.recordType == "lou" || TiebaMetadata(owner).number("reply_count") == 0L)) return
+    if (replies.isEmpty() && (owner.recordType == "lou" || TiebaMetadata(owner.extraMetadata).replyCount == 0L)) return
     Surface(
         modifier = Modifier.fillMaxWidth().padding(top = 10.dp),
         color = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f),
@@ -42,8 +42,8 @@ internal fun TiebaReplyPreview(
                         .replace(Regex("\\[([^]]+)]\\([^)]*\\)"), "$1")
                         .replace('\n', ' ').trim().ifBlank { "正文尚未记录" }
                 }
-                val meta = remember(reply.extraMetadata) { TiebaMetadata(reply) }
-                val target = meta.text("reply_to_name").ifBlank { meta.text("reply_to_id") }
+                val meta = remember(reply.extraMetadata) { TiebaMetadata(reply.extraMetadata) }
+                val target = meta.replyToName.ifBlank { meta.replyToId }
                 Text(
                     "${reply.authorName.ifBlank { "昵称未记录" }}${if (target.isBlank() || preview.startsWith("回复")) "" else " 回复 $target"}：$preview",
                     modifier = Modifier

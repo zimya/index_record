@@ -21,6 +21,9 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import me.melon.record.data.model.UniversalRecord
+import me.melon.record.data.model.DetailRecord
+import me.melon.record.data.model.toEntity
+import me.melon.record.data.repository.ZhihuAnswerRef
 import me.melon.record.ui.components.AvatarImage
 import me.melon.record.ui.components.EngagementCount
 import org.jsoup.Jsoup
@@ -30,7 +33,7 @@ import java.util.Date
 @Composable
 internal fun QuestionAnswerCard(
     ref: ZhihuAnswerRef,
-    stored: UniversalRecord?,
+    stored: DetailRecord?,
     sdf: SimpleDateFormat,
     onOpenAnswer: (UniversalRecord) -> Unit
 ) {
@@ -40,7 +43,7 @@ internal fun QuestionAnswerCard(
     }
 
     Surface(
-        onClick = { stored?.let(onOpenAnswer) },
+        onClick = { stored?.let { onOpenAnswer(it.toEntity()) } },
         enabled = enabled,
         modifier = Modifier
             .fillMaxWidth()

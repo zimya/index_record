@@ -15,12 +15,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import me.melon.record.data.model.UniversalRecord
+import me.melon.record.data.model.DetailRecord
 
 internal enum class SubjectRelatedFilter { ALL, INTEREST, REVIEW, TOPIC }
 
 @Composable
-internal fun SubjectRelatedFilter(relatedRecords: List<UniversalRecord>, relatedFilter: SubjectRelatedFilter, onFilterChange: (SubjectRelatedFilter) -> Unit, interestCount: Int, reviewCount: Int, topicCount: Int) {
+internal fun SubjectRelatedFilter(relatedRecords: List<DetailRecord>, relatedFilter: SubjectRelatedFilter, onFilterChange: (SubjectRelatedFilter) -> Unit, interestCount: Int, reviewCount: Int, topicCount: Int) {
     Column(modifier = Modifier.fillMaxWidth()) {
         Row(
             modifier = Modifier.fillMaxWidth(),

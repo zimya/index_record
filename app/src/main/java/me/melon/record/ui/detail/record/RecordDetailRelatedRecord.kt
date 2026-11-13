@@ -7,36 +7,30 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import me.melon.record.data.model.DetailRecord
 import me.melon.record.data.model.UniversalRecord
+import me.melon.record.data.model.toEntity
+import me.melon.record.data.repository.RelatedContent
+import me.melon.record.presentation.redditMissingParentNotice
 import me.melon.record.ui.components.RelatedRecordCard
-
-internal fun redditMissingParentNotice(parentId: String): String {
-    if (parentId.isBlank()) return "父节点关系未记录"
-    val label = when {
-        parentId.startsWith("reddit_comment_") -> "父回复未捕获"
-        parentId.startsWith("reddit_post_") -> "父帖子未捕获"
-        else -> "父节点未捕获"
-    }
-    return "$label：$parentId"
-}
 
 @Composable
 internal fun RecordDetailRelatedRecord(
-    record: UniversalRecord,
-    relatedRecord: UniversalRecord?,
+    record: DetailRecord,
+    related: RelatedContent?,
     onOpenRecord: (UniversalRecord) -> Unit
 ) {
-    val target = relatedRecord
+    val target = related?.record
     if (target != null) {
         RelatedRecordCard(
-            record = target,
+            record = target.toEntity(),
             fallbackPlatform = record.platform,
-            onClick = { onOpenRecord(target) }
+            onClick = { onOpenRecord(target.toEntity()) }
         )
         Spacer(modifier = Modifier.height(16.dp))
-    } else if (record.platform == "reddit" && (record.recordType == "comment" || record.parentId.isNotBlank())) {
+    } else if (record.platform == "reddit" && (record.recordType == "comment" || related != null)) {
         Text(
-            text = redditMissingParentNotice(record.parentId),
+            text = redditMissingParentNotice(related?.relation?.target?.storageIds()?.firstOrNull().orEmpty()),
             style = MaterialTheme.typography.bodySmall,
             color = MaterialTheme.colorScheme.onSurfaceVariant
         )

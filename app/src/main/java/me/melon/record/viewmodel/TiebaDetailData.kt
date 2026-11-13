@@ -1,114 +1,85 @@
 package me.melon.record.viewmodel
 
-import com.google.gson.JsonObject
-import com.google.gson.JsonParser
-import io.objectbox.query.QueryBuilder.StringOrder
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.channels.awaitClose
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.callbackFlow
-import kotlinx.coroutines.flow.conflate
-import kotlinx.coroutines.flow.flowOn
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.emitAll
+import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
-import me.melon.record.ObjectBox
+import kotlinx.coroutines.flow.stateIn
+import me.melon.record.data.model.DetailRecord
 import me.melon.record.data.model.UniversalRecord
-import me.melon.record.data.model.UniversalRecord_
+import me.melon.record.data.model.immutableList
+import me.melon.record.data.model.immutableMap
+import me.melon.record.data.model.toDetailRecord
+import me.melon.record.data.repository.TiebaDetailRepository
+import me.melon.record.data.repository.TiebaDetailSnapshot
 
-/** UI metadata only; keep this independent of the capture/parser implementation. */
-internal class TiebaMetadata(record: UniversalRecord) {
-    private val json = runCatching {
-        JsonParser.parseString(record.extraMetadata).asJsonObject
-    }.getOrDefault(JsonObject())
-
-    fun text(key: String): String = runCatching {
-        json.get(key)?.takeUnless { it.isJsonNull }?.asString.orEmpty()
-    }.getOrDefault("")
-
-    fun number(key: String): Long? = text(key).toLongOrNull()?.takeIf { it >= 0 }
+internal class TiebaDetailData(
+    val current: DetailRecord,
+    val thread: DetailRecord? = null,
+    val floor: DetailRecord? = null,
+    floors: List<DetailRecord> = emptyList(),
+    repliesByParent: Map<String, List<DetailRecord>> = emptyMap(),
+    replies: List<DetailRecord> = emptyList(),
+    val loadState: DetailLoadState = DetailLoadState.Loading
+) {
+    val floors: List<DetailRecord> = immutableList(floors)
+    val repliesByParent: Map<String, List<DetailRecord>> =
+        immutableMap(repliesByParent.mapValues { immutableList(it.value) })
+    val replies: List<DetailRecord> = immutableList(replies)
 }
 
-internal data class TiebaDetailData(
-    val current: UniversalRecord,
-    val thread: UniversalRecord? = null,
-    val floor: UniversalRecord? = null,
-    val floors: List<UniversalRecord> = emptyList(),
-    val repliesByParent: Map<String, List<UniversalRecord>> = emptyMap(),
-    val loaded: Boolean = false,
-    val error: String? = null
-)
-
-internal fun observeTiebaDetail(record: UniversalRecord): Flow<TiebaDetailData> = callbackFlow {
-    val subscription = ObjectBox.store.subscribe(UniversalRecord::class.java)
-        .observer { trySend(Unit) }
-    trySend(Unit)
-    awaitClose { subscription.cancel() }
-}.conflate().map {
-    runCatching { queryTiebaDetail(record) }.getOrElse {
-        TiebaDetailData(record, loaded = true, error = "无法读取本地记录，请返回后重试")
-    }
-}.flowOn(Dispatchers.IO)
-
-private fun queryTiebaDetail(record: UniversalRecord): TiebaDetailData {
-    val box = ObjectBox.store.boxFor(UniversalRecord::class.java)
-
-    fun find(id: String): UniversalRecord? {
-        if (id.isBlank()) return null
-        val query = box.query()
-            .equal(UniversalRecord_.platform, "tieba", StringOrder.CASE_SENSITIVE)
-            .equal(UniversalRecord_.platformId, id, StringOrder.CASE_SENSITIVE)
-            .build()
-        return try { query.findFirst() } finally { query.close() }
-    }
-
-    fun children(ids: List<String>): List<UniversalRecord> {
-        if (ids.isEmpty()) return emptyList()
-        val query = box.query()
-            .equal(UniversalRecord_.platform, "tieba", StringOrder.CASE_SENSITIVE)
-            .`in`(UniversalRecord_.parentId, ids.distinct().toTypedArray(), StringOrder.CASE_SENSITIVE)
-            .build()
-        return try { query.find() } finally { query.close() }
-    }
-
-    val current = find(record.platformId) ?: record
-    val parent = if (current.recordType == "comment") find(current.parentId) else null
-    val threadId = when {
-        current.recordType == "lou" -> current.platformId
-        current.parentId.startsWith("tieba_thread_") -> current.parentId
-        parent?.recordType == "lou" -> parent.platformId
-        parent?.parentId?.startsWith("tieba_thread_") == true -> parent.parentId
-        else -> TiebaMetadata(current).text("thread_id").takeIf { it.isNotBlank() }
-            ?.let { "tieba_thread_$it" }.orEmpty()
-    }
-    val thread = if (current.recordType == "lou") current else find(threadId)
-        ?.takeIf { it.recordType == "lou" }
-    val floor = when (current.recordType) {
-        "lou", "floor" -> current
-        else -> parent?.takeIf { it.recordType == "floor" || it.recordType == "lou" }
-    }
-    val roots = if (current.recordType == "lou") children(listOf(current.platformId)) else emptyList()
-    val floors = roots.filter { it.recordType == "floor" }
-        .sortedWith(compareBy<UniversalRecord> {
-            TiebaMetadata(it).number("floor")?.takeIf { n -> n > 0 } ?: Long.MAX_VALUE
-        }.thenBy { it.platformId })
-    val replyParents = buildList {
-        addAll(floors.map { it.platformId })
-        if (current.recordType != "lou") floor?.let { add(it.platformId) }
-        if (current.recordType == "comment" && current.parentId.isNotBlank()) add(current.parentId)
-    }
-    val replies = (roots.filter { it.recordType == "comment" } +
-        children(replyParents).filter { it.recordType == "comment" } +
-        listOfNotNull(current.takeIf { it.recordType == "comment" }))
-        .distinctBy { it.platformId }
-        .sortedWith(compareBy<UniversalRecord> {
-            TiebaMetadata(it).number("sub_floor")?.takeIf { n -> n > 0 } ?: Long.MAX_VALUE
-        }.thenBy { it.publishTime.takeIf { time -> time > 0 } ?: Long.MAX_VALUE }
-            .thenBy { it.platformId })
-    return TiebaDetailData(
-        current = current,
-        thread = thread,
-        floor = floor,
-        floors = floors,
-        repliesByParent = replies.groupBy { it.parentId },
-        loaded = true
+internal class TiebaDetailViewModel(
+    record: UniversalRecord,
+    repository: TiebaDetailRepository = TiebaDetailRepository()
+) : ViewModel() {
+    private val initial = record.toDetailRecord()
+    val state: StateFlow<TiebaDetailData> = tiebaDetailStates(initial, repository.observe(initial)).stateIn(
+        scope = viewModelScope,
+        started = SharingStarted.WhileSubscribed(5_000),
+        initialValue = TiebaDetailData(initial)
     )
+}
+
+internal fun tiebaDetailStates(
+    record: DetailRecord,
+    snapshots: Flow<Result<TiebaDetailSnapshot>>
+): Flow<TiebaDetailData> = flow {
+    var latest = TiebaDetailData(record)
+    fun failed() = TiebaDetailData(
+        current = latest.current,
+        thread = latest.thread,
+        floor = latest.floor,
+        floors = latest.floors,
+        repliesByParent = latest.repliesByParent,
+        replies = latest.replies,
+        loadState = DetailLoadState.Failed("无法读取本地记录，请返回后重试")
+    )
+    emitAll(snapshots.map { result ->
+        result.fold(
+            onSuccess = { snapshot ->
+                TiebaDetailData(
+                    current = snapshot.current,
+                    thread = snapshot.thread,
+                    floor = snapshot.floor,
+                    floors = snapshot.floors,
+                    repliesByParent = snapshot.repliesByParent,
+                    replies = snapshot.replies,
+                    loadState = DetailLoadState.Ready
+                )
+            },
+            onFailure = { failure ->
+                if (failure is CancellationException) throw failure
+                failed()
+            }
+        ).also { latest = it }
+    }.catch { failure ->
+        if (failure is CancellationException) throw failure
+        emit(failed())
+    })
 }

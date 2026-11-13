@@ -3,6 +3,7 @@ package me.melon.record.parser.x
 import com.google.gson.Gson
 import com.google.gson.JsonArray
 import com.google.gson.JsonObject
+import me.melon.record.data.PlatformCatalog
 import me.melon.record.data.model.RawData
 import me.melon.record.data.model.UniversalRecord
 import me.melon.record.parser.x.XUtils.safeInt
@@ -249,7 +250,7 @@ object XTweetParser {
         val record = UniversalRecord(
             platform = "twitter",
             recordType = recordType,
-            sourceApp = raw.hostApp.ifBlank { "com.twitter.android" },
+            sourceApp = raw.hostApp.ifBlank { PlatformCatalog.defaultPackage("twitter") },
             platformId = platformId,
             title = title,
             content = content,

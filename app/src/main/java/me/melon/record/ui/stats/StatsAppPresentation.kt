@@ -23,15 +23,7 @@ fun colorFromPackage(pkg: String): Color {
 }
 
 fun appLabel(pkg: String): String {
-    return when (pkg) {
-        "com.zhihu.android", "zhihu" -> "知乎"
-        "com.douban.frodo", "douban" -> "豆瓣"
-        "com.baidu.tieba", "tieba" -> "贴吧"
-        "com.twitter.android", "twitter" -> "𝕏"
-        "com.instagram.barcelona", "threads" -> "Threads"
-        "com.reddit.frontpage", "reddit" -> "Reddit"
-        "com.sina.weibo", "weibo" -> "微博"
-        "com.weico.international" -> "微博国际版"
-        else -> if (pkg.isBlank() || pkg == "unknown") "其他" else pkg
-    }
+    return me.melon.record.data.PlatformCatalog.packageLabel(pkg)
+        ?: me.melon.record.data.PlatformCatalog.knownDisplayName(pkg)
+        ?: if (pkg.isBlank() || pkg == "unknown") "其他" else pkg
 }

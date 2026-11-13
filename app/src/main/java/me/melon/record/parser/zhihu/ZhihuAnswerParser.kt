@@ -3,10 +3,8 @@ package me.melon.record.parser.zhihu
 import com.google.gson.Gson
 import com.google.gson.JsonObject
 import com.google.gson.JsonParser
-import me.melon.record.ObjectBox
 import me.melon.record.data.model.RawData
 import me.melon.record.data.model.UniversalRecord
-import me.melon.record.data.model.UniversalRecord_
 import me.melon.record.markdown.zhihuHtmlToMarkdown
 import me.melon.record.parser.zhihu.ZhihuItemV2Parser.safeString
 import org.jsoup.Jsoup
@@ -110,19 +108,6 @@ object ZhihuAnswerParser {
 
         val createdTime = if (answerData.has("createdTime")) answerData.get("createdTime").asLong * 1000 else raw.timestamp
         val updatedTime = if (answerData.has("updatedTime")) answerData.get("updatedTime").asLong * 1000 else createdTime
-        val questionPlatformId = if (questionId.isNotBlank()) "zhihu_question_$questionId" else ""
-        val shouldBindToQuestion = if (questionPlatformId.isNotBlank() && ObjectBox.isInitialized) {
-            val recordBox = ObjectBox.store.boxFor(UniversalRecord::class.java)
-            val qQuery = recordBox.query()
-                .equal(UniversalRecord_.platformId, questionPlatformId, io.objectbox.query.QueryBuilder.StringOrder.CASE_SENSITIVE)
-                .build()
-            val exists = qQuery.count() > 0
-            qQuery.close()
-            exists
-        } else {
-            false
-        }
-
         return UniversalRecord(
             platform = "zhihu",
             recordType = "answer",
@@ -134,7 +119,7 @@ object ZhihuAnswerParser {
             authorName = authorName,
             authorAvatar = authorAvatar,
             sourceUrl = raw.url,
-            parentId = if (shouldBindToQuestion) questionPlatformId else "",
+            parentId = "",
             publishTime = updatedTime,
             captureTime = raw.timestamp,
             extraMetadata = gson.toJson(extraJson)

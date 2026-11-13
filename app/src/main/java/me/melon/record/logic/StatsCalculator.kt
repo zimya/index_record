@@ -109,16 +109,9 @@ object StatsCalculator {
     fun resolveSourceApp(record: UniversalRecord): String {
         val direct = record.sourceApp?.trim() ?: ""
         if (direct.isNotEmpty()) return direct
-        return when (record.platform.trim().lowercase()) {
-            "zhihu" -> "com.zhihu.android"
-            "douban" -> "com.douban.frodo"
-            "tieba" -> "com.baidu.tieba"
-            "twitter", "x" -> "com.twitter.android"
-            "threads" -> "com.instagram.barcelona"
-            "reddit" -> "com.reddit.frontpage"
-            "weibo" -> "com.sina.weibo"
-            else -> if (record.platform.isNotBlank()) record.platform else "unknown"
-        }
+        val platform = record.platform.trim().lowercase().let { if (it == "x") "twitter" else it }
+        return me.melon.record.data.PlatformCatalog.defaultPackage(platform)
+            .ifBlank { record.platform.ifBlank { "unknown" } }
     }
 
     fun computeState(

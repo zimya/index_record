@@ -34,6 +34,22 @@
 - **Networking**: OkHttp
 - **Parsing**: Gson, Jsoup, CommonMark
 
+## Hook 开发约定
+
+各平台 `*Hook.java` 保留抓取点、URL 筛选和平台预处理，通过组合使用公共组件，不继承 `BaseHook`：
+
+- `sync/HookCaptureClient.java`：同步广播、旧缓存迁移、Binder 文件直传与 ContentProvider 回退。使用宿主原有的单线程 executor，不依赖 ObjectBox 或 UI。
+- `sync/CaptureQueue.java`：原始字节落盘、meta 兼容读取和队列消费。先关闭完整 payload，再将 `.meta.tmp` 重命名为 `.meta` 发布；meta 四行为 URL、宿主包名、内容类型、捕获时间，仍兼容旧两/三行格式。
+- 队列仅在接收端确认成功后删除；传输失败保留并结束本轮。损坏 meta 保留并跳过，不阻塞后续有效项；未发布文件不参与同步。同步使用文件锁排除跨进程并发消费者，但确认丢失后的重试仍可能重复投递，不保证 exactly-once。
+- Reddit 的整队列广告预扫描和逐条清洗分别通过 `beforeSync` / `payloadFilter` 接入；主动过滤与传输失败是不同结果。诊断 dump 使用独立目录，不参与正常同步。
+- 旧 `index_record_cache` 迁移提交成功后才删除源文件；无法迁移的文件保留并记录日志。X 的队列软链接、微博实际宿主包名，以及 Threads/贴吧原始正文均保留。
+
+公共队列的 JVM 回归测试：
+
+```sh
+./gradlew :app:testDebugUnitTest --tests 'me.melon.record.sync.CaptureQueueTest'
+```
+
 ## 路线图 (TODO)
 
 ### 平台支持

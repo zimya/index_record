@@ -91,17 +91,7 @@ class HookDataProvider : ContentProvider() {
         val ctx = context ?: return
         val uid = Binder.getCallingUid()
         val pkgs = ctx.packageManager.getPackagesForUid(uid)?.toSet().orEmpty()
-        val allow = setOf(
-            "com.zhihu.android",
-            "com.douban.frodo",
-            "com.baidu.tieba",
-            "com.twitter.android",
-            "com.instagram.barcelona",
-            "com.reddit.frontpage",
-            "com.sina.weibo",
-            "com.weico.international",
-            ctx.packageName
-        )
+        val allow = me.melon.record.data.PlatformCatalog.hostPackages.toSet() + ctx.packageName
         if (pkgs.none { it in allow }) throw SecurityException("caller not allowed")
     }
 

@@ -58,16 +58,7 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
         val bundle = android.os.Bundle().apply {
             putBinder("sync_binder", me.melon.record.sync.RecordSyncBridge)
         }
-        val targetPackages = listOf(
-            "com.zhihu.android",
-            "com.douban.frodo",
-            "com.baidu.tieba",
-            "com.twitter.android",
-            "com.instagram.barcelona",
-            "com.reddit.frontpage",
-            "com.sina.weibo",
-            "com.weico.international"
-        )
+        val targetPackages = me.melon.record.data.PlatformCatalog.hostPackages
         val options = if (Build.VERSION.SDK_INT >= 34) {
             BroadcastOptions.makeBasic()
                 .setDeferralPolicy(BroadcastOptions.DEFERRAL_POLICY_NONE)
@@ -135,16 +126,7 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
             ?.filter { !it.isNullOrBlank() } ?: emptyList()
         query.close()
         val fallbackApps = platforms.map { p ->
-            when (p) {
-                "zhihu" -> "com.zhihu.android"
-                "douban" -> "com.douban.frodo"
-                "tieba" -> "com.baidu.tieba"
-                "twitter" -> "com.twitter.android"
-                "threads" -> "com.instagram.barcelona"
-                "reddit" -> "com.reddit.frontpage"
-                "weibo" -> "com.sina.weibo"
-                else -> ""
-            }
+            me.melon.record.data.PlatformCatalog.defaultPackage(p)
         }.filter { it.isNotBlank() }
         return (directApps + fallbackApps).distinct().sorted()
     }
@@ -359,15 +341,6 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
     private fun resolveSourceApp(record: UniversalRecord): String {
         val direct = record.sourceApp ?: ""
         if (direct.isNotBlank()) return direct
-        return when (record.platform) {
-            "zhihu" -> "com.zhihu.android"
-            "douban" -> "com.douban.frodo"
-            "tieba" -> "com.baidu.tieba"
-            "twitter" -> "com.twitter.android"
-            "threads" -> "com.instagram.barcelona"
-            "reddit" -> "com.reddit.frontpage"
-            "weibo" -> "com.sina.weibo"
-            else -> ""
-        }
+        return me.melon.record.data.PlatformCatalog.defaultPackage(record.platform)
     }
 }

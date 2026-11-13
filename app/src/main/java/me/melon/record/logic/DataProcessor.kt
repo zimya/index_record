@@ -2,7 +2,6 @@ package me.melon.record.logic
 
 import android.util.Log
 import com.google.gson.JsonObject
-import com.google.gson.JsonParser
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
@@ -12,59 +11,9 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import me.melon.record.ObjectBox
 import me.melon.record.data.model.RawData
-import me.melon.record.data.model.RawData_
 import me.melon.record.data.model.UniversalRecord
-import me.melon.record.data.model.UniversalRecord_
-import me.melon.record.parser.ParserRegistry
-import me.melon.record.parser.x.XParser
-import me.melon.record.parser.weibo.WeiboParser
-import me.melon.record.parser.threads.ThreadsParser
-import me.melon.record.settings.RecordSettings
 import me.melon.record.parser.zhihu.ZhihuFeedParser
 import me.melon.record.parser.zhihu.ZhihuItemV2Parser
-import me.melon.record.parser.zhihu.ZhihuRelations
-import me.melon.record.parser.reddit.RedditParser
-import me.melon.record.parser.reddit.RedditRelations
-import me.melon.record.parser.reddit.RedditReadBuffer
-import me.melon.record.parser.reddit.ObjectBoxRedditReadStorage
-import me.melon.record.data.model.RedditPendingRecord
-import me.melon.record.settings.RedditRecordMode
-
-/** Mutates only the incoming Weibo payload; generic identity/author fallbacks remain below. */
-internal fun mergeWeiboRecord(existing: UniversalRecord, incoming: UniversalRecord) {
-    if (existing.platform != "weibo" || incoming.platform != "weibo") return
-
-    fun metadata(value: String): JsonObject = runCatching {
-        JsonParser.parseString(value).asJsonObject
-    }.getOrElse { JsonObject() }
-    val oldMeta = metadata(existing.extraMetadata)
-    val newMeta = metadata(incoming.extraMetadata)
-    fun fullText(meta: JsonObject): Boolean = meta.get("full_text")?.let {
-        it.isJsonPrimitive && it.asJsonPrimitive.isBoolean && it.asBoolean
-    } == true
-
-    // is_long_text can mean a truncated preview, not a fetched full-text body.
-    val oldFull = fullText(oldMeta)
-    val newFull = fullText(newMeta)
-    val keepOld = existing.content.isNotBlank() && (
-        incoming.content.isBlank() ||
-            (oldFull && !newFull) ||
-            (oldFull == newFull && existing.content.length > incoming.content.length)
-        )
-    if (keepOld) incoming.content = existing.content
-
-    for ((key, value) in newMeta.entrySet()) {
-        val empty = value.isJsonNull ||
-            (value.isJsonPrimitive && value.asJsonPrimitive.isString && value.asString.isBlank()) ||
-            (value.isJsonArray && value.asJsonArray.size() == 0) ||
-            (value.isJsonObject && value.asJsonObject.size() == 0)
-        if (!empty && key != "full_text") oldMeta.add(key, value)
-    }
-    // Completeness belongs to the selected body, not to the latest response.
-    oldMeta.remove("full_text")
-    if (if (keepOld) oldFull else newFull) oldMeta.addProperty("full_text", true)
-    incoming.extraMetadata = oldMeta.toString()
-}
 
 object DataProcessor {
 
@@ -80,6 +29,8 @@ object DataProcessor {
     private val _syncProgress = MutableStateFlow(SyncProgress(isRunning = false, total = 0, processed = 0))
     val syncProgress: StateFlow<SyncProgress> = _syncProgress
 
+    // Completion state has process lifetime, not run lifetime; parsers remain stateless.
+    private val persistenceContext = RecordPersistenceContext()
     private val processingRequests = Channel<Unit>(Channel.CONFLATED)
     private val processingScope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
 
@@ -117,164 +68,25 @@ object DataProcessor {
         var total = initialCount
         _syncProgress.value = SyncProgress(isRunning = true, total = total, processed = 0)
 
-        val redditReadMode = RecordSettings.redditRecordMode == RedditRecordMode.READ
-        val redditReadBuffer = if (redditReadMode) RedditReadBuffer(ObjectBoxRedditReadStorage(
-            ObjectBox.store.boxFor(RedditPendingRecord::class.java)
-        )) else null
-        data class ParsedItem(
-            val rawId: Long,
-            val cleanUrl: String,
-            val records: List<UniversalRecord>?,
-            val reddit: Boolean = false,
-            val readPosts: Set<String> = emptySet()
-        )
+        val processing = objectBoxCaptureProcessing(CHUNK_SIZE)
+        val persistence = RecordPersistence(ObjectBoxRecordRepository(recordBox), persistenceContext)
 
         val query = rawBox.query().build()
         try {
-            // Older debug captures were not projected at the hook. Learn ad context from every
-            // pending Reddit payload before a sparse detail can be mistaken for an organic post.
-            val redditAds = linkedSetOf<String>()
-
-            val redditQuery = rawBox.query().equal(RawData_.hostApp, RedditParser.HOST_APP,
-                io.objectbox.query.QueryBuilder.StringOrder.CASE_SENSITIVE).build()
-            try {
-                var offset = 0L
-                while (true) {
-                    val rawItems = redditQuery.find(offset, CHUNK_SIZE)
-                    if (rawItems.isEmpty()) break
-                    rawItems.forEach {
-                        redditAds.addAll(RedditParser.advertisingPostIds(it))
-
-                    }
-                    offset += rawItems.size
-                }
-            } finally {
-                redditQuery.close()
-            }
+            processing.prepare()
             while (true) {
                 // 每次仅提取最多 CHUNK_SIZE 条，避免一次性加载所有巨型 JSON/HTML 导致 OOM
                 val chunk = query.find(0, CHUNK_SIZE)
                 if (chunk.isEmpty()) break
 
-                val parsedItems = ArrayList<ParsedItem>(chunk.size)
-                for (raw in chunk) {
-                    val cleanUrl = if (raw.url.contains("?")) raw.url.substringBefore("?") else raw.url
-                    try {
-                        // 在本应用进程读取设置，避免 Hook 跨进程读取私有偏好设置。
-                        val records = if ((XParser.canHandle(cleanUrl, raw) &&
-                            !RecordSettings.tweetRecordMode.shouldProcess(raw.url)) ||
-                            (WeiboParser.canHandle(cleanUrl, raw) &&
-                                !RecordSettings.weiboRecordMode.shouldProcess(raw.url)) ||
-                                                            (ThreadsParser.canHandle(cleanUrl, raw) &&
-                                                                !RecordSettings.threadsRecordMode.shouldProcess(raw.url))
-                        ) {
-                            emptyList()
-                        } else if (RedditParser.canHandle(cleanUrl, raw)) {
-                            // Parse every fragment; READ admission happens transactionally in the persistent buffer.
-                            RedditParser.parseWithAdvertisingIds(raw, cleanUrl, redditAds)
-                        } else {
-                            ParserRegistry.parse(raw, cleanUrl)
-                        }
-                        if (raw.hostApp == "com.instagram.barcelona") {
-                                                    Log.i(TAG, "Threads parsed ${records?.size ?: 0} records from $cleanUrl (${raw.json.length} chars)")
-                                                }
-                        val reddit = RedditParser.canHandle(cleanUrl, raw)
-                        val readPosts = if (reddit && redditReadMode) RedditParser.readPostIds(raw)
-                            .filterNot { it in redditAds.map(RedditParser::postId) }.toSet() else emptySet()
-                        parsedItems.add(ParsedItem(raw.id, cleanUrl, records, reddit, readPosts))
-                    } catch (e: Exception) {
-                        Log.e(TAG, "Failed to process raw ID: ${raw.id}", e)
-                        if (RedditParser.canHandle(cleanUrl, raw)) throw e // Retain fragments on staging/parse failures.
-                        parsedItems.add(ParsedItem(raw.id, cleanUrl, emptyList()))
-                    }
+                val parsedItems = chunk.map { raw ->
+                    processing.parse(raw, persistence) { e -> Log.e(TAG, "Failed to process raw ID: ${raw.id}", e) }
                 }
 
                 // 批处理事务：写入 UniversalRecord 并删除该批次 RawData
-                val processedRawIds = ArrayList<Long>(chunk.size)
                 ObjectBox.store.runInTx {
-                    for (item in parsedItems) {
-                        val records = if (item.reddit && redditReadBuffer != null) {
-                            redditReadBuffer.accept(item.records.orEmpty(), item.readPosts, System.currentTimeMillis())
-                        } else item.records
-                        if (!records.isNullOrEmpty()) {
-                            for (record in records) {
-                                val existingQuery = recordBox.query()
-                                    .equal(UniversalRecord_.platformId, record.platformId, io.objectbox.query.QueryBuilder.StringOrder.CASE_SENSITIVE)
-                                    .build()
-                                val existing = try { existingQuery.findFirst() } finally { existingQuery.close() }
-
-                                if (existing != null) {
-                                    record.id = existing.id
-                                    mergeWeiboRecord(existing, record)
-                                    me.melon.record.parser.threads.ThreadsRelations.mergeRecord(existing, record)
-                                    RedditRelations.mergeRecord(existing, record)
-                                    if (record.parentId.isBlank()) record.parentId = existing.parentId
-                                    if (record.title.isBlank()) record.title = existing.title
-                                    if (record.platform != "reddit" && (record.content.isBlank() || (record.recordType == "subject" && record.content == record.title))) {
-                                        if (existing.content.isNotBlank() && !(existing.recordType == "subject" && existing.content == existing.title)) {
-                                            record.content = existing.content
-                                        }
-                                    }
-                                    if (record.authorId.isBlank()) record.authorId = existing.authorId
-                                    if (record.authorName.isBlank()) record.authorName = existing.authorName
-                                    if (record.authorAvatar.isBlank()) record.authorAvatar = existing.authorAvatar
-                                    if (record.sourceUrl.isBlank()) record.sourceUrl = existing.sourceUrl
-                                    record.publishTime = maxOf(existing.publishTime, record.publishTime)
-                                    record.captureTime = maxOf(existing.captureTime, record.captureTime)
-                                    if (record.platform == "zhihu" && record.recordType == "question") {
-                                        record.extraMetadata = ZhihuRelations.mergeQuestionExtra(existing.extraMetadata, record.extraMetadata)
-                                    } else if (record.platform == "douban" && record.recordType == "subject") {
-                                        record.extraMetadata = me.melon.record.parser.douban.DoubanRelations.mergeSubjectExtra(existing.extraMetadata, record.extraMetadata)
-                                    } else if (record.platform == "tieba") {
-                                        record.content = me.melon.record.parser.tieba.TiebaRelations.mergeRecordContent(existing, record)
-                                        record.extraMetadata = me.melon.record.parser.tieba.TiebaRelations.mergeExtra(existing.extraMetadata, record.extraMetadata)
-                                    } else if (record.platform == "twitter") {
-                                        record.extraMetadata = me.melon.record.parser.x.XRelations.mergeTweetExtra(existing.extraMetadata, record.extraMetadata)
-                                    }
-                                }
-                                recordBox.put(record)
-
-                                if (record.platform == "zhihu" && record.recordType == "question") {
-                                    val qid = try {
-                                        JsonParser.parseString(record.extraMetadata).asJsonObject.get("question_id")?.asString ?: ""
-                                    } catch (_: Exception) {
-                                        ""
-                                    }
-                                    if (qid.isNotBlank()) {
-                                        ZhihuRelations.linkExistingAnswersToQuestion(recordBox, qid, record.platformId)
-                                    }
-                                    val answerIds = try {
-                                        ZhihuRelations.extractAnswerIdsFromQuestionExtra(record.extraMetadata)
-                                    } catch (_: Exception) {
-                                        emptyList()
-                                    }
-                                    if (answerIds.isNotEmpty()) {
-                                        ZhihuRelations.linkAnswersByIds(recordBox, record.platformId, answerIds)
-                                    }
-                                } else if (record.platform == "douban") {
-                                    try {
-                                        val meta = JsonParser.parseString(record.extraMetadata).asJsonObject
-                                        val sId = meta.get("subject_id")?.asString ?: ""
-                                        val sTitle = meta.get("subject_title")?.asString ?: ""
-                                        val sType = meta.get("subject_type")?.asString ?: ""
-                                        if (sId.isNotBlank() && sTitle.isNotBlank()) {
-                                            me.melon.record.parser.douban.DoubanRelations.linkSubjectToInterests(
-                                                recordBox, sType.ifBlank { "movie" }, sId, sTitle
-                                            )
-                                        }
-                                    } catch (_: Exception) {}
-                                } else if (record.platform == "twitter") {
-                                    try {
-                                        me.melon.record.parser.x.XRelations.linkTweetRelations(recordBox, record)
-                                    } catch (_: Exception) {}
-                                }
-                            }
-                        }
-                        processedRawIds.add(item.rawId)
-                    }
-                    if (processedRawIds.isNotEmpty()) {
-                        rawBox.remove(*processedRawIds.toLongArray())
-                    }
+                    val processedRawIds = processing.persist(parsedItems, persistence)
+                    if (processedRawIds.isNotEmpty()) rawBox.remove(*processedRawIds)
                 }
 
                 processed += chunk.size

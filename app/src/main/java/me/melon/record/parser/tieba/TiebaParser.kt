@@ -4,6 +4,7 @@ import com.google.gson.JsonArray
 import com.google.gson.JsonElement
 import com.google.gson.JsonObject
 import com.google.gson.JsonParser
+import me.melon.record.data.PlatformCatalog
 import me.melon.record.data.model.RawData
 import me.melon.record.data.model.UniversalRecord
 import me.melon.record.parser.RawDataParser
@@ -142,7 +143,7 @@ object TiebaParser : RawDataParser {
                 ?: if (isThread) thread.number("create_time", "createTime") else 0L
             val record = UniversalRecord(
                 platform = platform, recordType = if (isSub) "comment" else if (isThread) "lou" else "floor",
-                sourceApp = raw.hostApp.ifBlank { "com.baidu.tieba" },
+                sourceApp = raw.hostApp.ifBlank { PlatformCatalog.defaultPackage("tieba") },
                 platformId = if (isThread) threadId else "tieba_post_$pid",
                 title = if (isThread) title.ifBlank { post.text("title") } else "",
                 content = rendered.markdown, authorId = authorId,

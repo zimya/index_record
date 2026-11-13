@@ -2,7 +2,7 @@ package me.melon.record.ui.detail.record
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
-import com.google.gson.JsonParser
+import me.melon.record.presentation.doubanSubjectReference
 import me.melon.record.data.model.UniversalRecord
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableStateOf
@@ -100,27 +100,7 @@ internal fun rememberRecordDetailData(record: UniversalRecord): RecordDetailData
                             relatedRecord = found
                         } else {
                             // 若尚未捕获条目本体，根据记录中的 subject 元数据构造一个条目引用，点击后可查看聚合短评/长评
-                            try {
-                                val meta = JsonParser.parseString(record.extraMetadata).asJsonObject
-                                val sId = if (meta.has("subject_id") && !meta.get("subject_id").isJsonNull) meta.get("subject_id").asString else ""
-                                val sTitle = if (meta.has("subject_title") && !meta.get("subject_title").isJsonNull) meta.get("subject_title").asString else ""
-                                val sType = if (meta.has("subject_type") && !meta.get("subject_type").isJsonNull) meta.get("subject_type").asString else "movie"
-                                if (sId.isNotBlank() && sTitle.isNotBlank()) {
-                                    relatedRecord = UniversalRecord(
-                                        platform = "douban",
-                                        recordType = "subject",
-                                        sourceApp = record.sourceApp,
-                                        platformId = record.parentId,
-                                        title = sTitle,
-                                        content = sTitle,
-                                        extraMetadata = record.extraMetadata
-                                    )
-                                } else {
-                                    relatedRecord = null
-                                }
-                            } catch (_: Exception) {
-                                relatedRecord = null
-                            }
+                            relatedRecord = doubanSubjectReference(record)
                         }
                     } else {
                         relatedRecord = null

@@ -28,19 +28,18 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import com.google.gson.JsonObject
-import com.google.gson.JsonParser
+import me.melon.record.presentation.RecordMetadata
+import me.melon.record.presentation.commentStatistics
 import me.melon.record.data.model.UniversalRecord
-import me.melon.record.markdown.MarkdownContentFormat
+
 import me.melon.record.markdown.RenderMarkdownText
 import me.melon.record.ui.components.AvatarImage
 import me.melon.record.ui.components.EngagementCount
-import me.melon.record.ui.components.RedditMetadata
-import me.melon.record.ui.components.engagementCount
-import me.melon.record.ui.components.viewEngagementCount
+
 import java.text.SimpleDateFormat
 import java.util.Date
-import org.jsoup.Jsoup
+import me.melon.record.presentation.commentPlainText
+import me.melon.record.presentation.recordBodyPresentation
 import java.util.Locale
 
 internal fun recordDetailCommentCountLabel(platform: String, count: Int): String =
@@ -84,19 +83,13 @@ internal fun RecordDetailCommentItem(
 ) {
     val comment = row.record
     val depth = row.depth
-    val commentMeta = remember(comment.extraMetadata) {
-        try {
-            JsonParser.parseString(comment.extraMetadata).asJsonObject
-        } catch (_: Exception) {
-            JsonObject()
-        }
+    val metadata = remember(comment.platform, comment.extraMetadata) {
+        RecordMetadata(comment.extraMetadata, comment.platform)
     }
-    val redditMetadata = remember(comment.platform, comment.extraMetadata) {
-        if (comment.platform == "reddit") RedditMetadata(comment.extraMetadata) else null
-    }
-    val likeCount = if (redditMetadata != null) redditMetadata.score
-        else commentMeta.engagementCount("like_count", "likeCount").takeIf { it > 0L }
-    val dislikeCount = if (redditMetadata == null && commentMeta.has("dislike_count") && !commentMeta.get("dislike_count").isJsonNull) commentMeta.get("dislike_count").asLong else 0L
+    val redditMetadata = metadata.reddit
+    val statistics = commentStatistics(comment, metadata)
+    val likeCount = statistics.likeCount
+    val dislikeCount = statistics.dislikeCount
 
     Surface(
         onClick = { onOpenRecord(comment) },
@@ -153,11 +146,11 @@ internal fun RecordDetailCommentItem(
                 likeCount?.let {
                     EngagementCount(count = it, icon = Icons.Outlined.ThumbUpOffAlt)
                 }
-                redditMetadata?.commentCount?.let {
+                statistics.replyCount?.let {
                     Spacer(modifier = Modifier.width(8.dp))
                     EngagementCount(count = it, icon = Icons.Outlined.ChatBubbleOutline)
                 }
-                redditMetadata?.shareCount?.let {
+                statistics.shareCount?.let {
                     Spacer(modifier = Modifier.width(8.dp))
                     EngagementCount(count = it, icon = Icons.Outlined.Share)
                 }
@@ -168,7 +161,7 @@ internal fun RecordDetailCommentItem(
             }
 
             if (comment.platform == "threads") {
-                val viewsCount = commentMeta.viewEngagementCount(comment.platform)
+                val viewsCount = statistics.viewCount
                 if (viewsCount > 0L) {
                     Spacer(modifier = Modifier.height(4.dp))
                     Row(verticalAlignment = Alignment.CenterVertically) {
@@ -178,17 +171,18 @@ internal fun RecordDetailCommentItem(
             }
             Spacer(modifier = Modifier.height(4.dp))
             if (comment.platform == "reddit") {
+                val body = recordBodyPresentation(comment)
                 RenderMarkdownText(
-                    markdown = comment.content,
+                    markdown = body.content,
                     modifier = Modifier.fillMaxWidth(),
                     enableScroll = false,
                     selectable = false,
                     onImageClick = onImageClick,
-                    contentFormat = MarkdownContentFormat.MARKDOWN,
-                    enableMath = false
+                    contentFormat = body.contentFormat,
+                    enableMath = body.enableMath
                 )
             } else {
-                val cleanContent = Jsoup.parse(comment.content).text()
+                val cleanContent = commentPlainText(comment)
                 Text(
                     text = cleanContent,
                     style = MaterialTheme.typography.bodyMedium,

@@ -27,7 +27,8 @@ import androidx.compose.ui.unit.dp
 import me.melon.record.data.model.UniversalRecord
 import me.melon.record.ui.components.DetailTopAppBar
 import me.melon.record.ui.components.ImageViewerDialog
-import me.melon.record.ui.components.RedditMetadata
+import me.melon.record.presentation.RedditMetadata
+import me.melon.record.data.PlatformCatalog
 import me.melon.record.ui.components.recordTypeLabel
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -60,16 +61,7 @@ internal fun MetadataBadge(icon: ImageVector, text: String) {
 }
 
 internal fun recordDetailTitle(record: UniversalRecord): String {
-    val platform = when (record.platform) {
-        "zhihu" -> "知乎"
-        "douban" -> "豆瓣"
-        "tieba" -> "贴吧"
-        "twitter" -> "𝕏"
-        "threads" -> "Threads"
-        "reddit" -> "Reddit"
-        "weibo" -> "微博"
-        else -> record.platform.replaceFirstChar { it.uppercase() }
-    }
+    val platform = PlatformCatalog.displayName(record.platform)
     val type = when {
         record.platform == "threads" && record.recordType == "thread" -> "主帖"
         record.platform == "threads" && record.recordType == "comment" -> "回复"

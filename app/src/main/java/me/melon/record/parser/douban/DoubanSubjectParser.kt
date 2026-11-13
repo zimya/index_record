@@ -4,6 +4,7 @@ import com.google.gson.Gson
 import com.google.gson.JsonArray
 import com.google.gson.JsonObject
 import com.google.gson.JsonParser
+import me.melon.record.data.PlatformCatalog
 import me.melon.record.data.model.RawData
 import me.melon.record.data.model.UniversalRecord
 import me.melon.record.parser.douban.DoubanUtils.safeDouble
@@ -73,8 +74,22 @@ object DoubanSubjectParser {
             .ifBlank { urlSubtype }
             .ifBlank { "movie" }
 
-        DoubanRelations.registerSubjectTitle(subjectId, subjectTitle)
+        // The former cache registration was here. Preserve that evidence on later failures,
+        // without letting this stateless parser mutate persistence context.
+        return try {
+            parseSubjectDetails(subjectObj, raw, subjectId, subjectTitle, subtype)
+        } catch (e: Exception) {
+            throw DoubanTitleParseException(subjectId, subtype, subjectTitle, e)
+        }
+    }
 
+    private fun parseSubjectDetails(
+        subjectObj: JsonObject,
+        raw: RawData,
+        subjectId: String,
+        subjectTitle: String,
+        subtype: String
+    ): UniversalRecord {
         val originalTitle = subjectObj.safeString("original_title")
         val year = subjectObj.safeString("year")
         val cardSubtitle = subjectObj.safeString("card_subtitle")
@@ -219,7 +234,7 @@ object DoubanSubjectParser {
         return UniversalRecord(
             platform = "douban",
             recordType = "subject",
-            sourceApp = raw.hostApp.ifBlank { "com.douban.frodo" },
+            sourceApp = raw.hostApp.ifBlank { PlatformCatalog.defaultPackage("douban") },
             platformId = "douban_${subtype}_${subjectId}",
             title = subjectTitle,
             content = intro.ifBlank { cardSubtitle },

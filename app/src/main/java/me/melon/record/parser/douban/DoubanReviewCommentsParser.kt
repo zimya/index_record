@@ -4,6 +4,7 @@ import com.google.gson.Gson
 import com.google.gson.JsonArray
 import com.google.gson.JsonObject
 import com.google.gson.JsonParser
+import me.melon.record.data.PlatformCatalog
 import me.melon.record.data.model.RawData
 import me.melon.record.data.model.UniversalRecord
 import me.melon.record.parser.douban.DoubanUtils.extractUser
@@ -99,7 +100,7 @@ object DoubanReviewCommentsParser {
                 UniversalRecord(
                     platform = "douban",
                     recordType = "comment",
-                    sourceApp = raw.hostApp.ifBlank { "com.douban.frodo" },
+                    sourceApp = raw.hostApp.ifBlank { PlatformCatalog.defaultPackage("douban") },
                     platformId = "douban_comment_$commentId",
                     title = "评论: ${author.name}",
                     content = content,

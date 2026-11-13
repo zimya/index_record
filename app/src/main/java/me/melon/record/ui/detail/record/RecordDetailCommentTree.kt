@@ -2,10 +2,9 @@ package me.melon.record.ui.detail.record
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
-import com.google.gson.JsonParser
+import me.melon.record.presentation.RecordMetadata
 import me.melon.record.data.model.UniversalRecord
-import me.melon.record.ui.components.RedditMetadata
-import me.melon.record.ui.components.engagementCount
+import me.melon.record.presentation.RedditMetadata
 import java.util.ArrayDeque
 
 internal enum class RecordDetailCommentSort { DEFAULT, LATEST }
@@ -85,12 +84,7 @@ internal fun buildRecordDetailCommentRows(
     val roots = (childrenByParent[record.platformId].orEmpty() + (if (altId.isNotBlank()) childrenByParent[altId].orEmpty() else emptyList())).distinctBy { it.platformId }
 
     fun likeCount(r: UniversalRecord): Long {
-        return try {
-            val obj = JsonParser.parseString(r.extraMetadata).asJsonObject
-            obj.engagementCount("like_count", "likeCount")
-        } catch (_: Exception) {
-            0L
-        }
+        return RecordMetadata(r.extraMetadata, r.platform).commentLikeCount
     }
 
     fun sortedSiblings(nodes: List<UniversalRecord>, isRoot: Boolean): List<UniversalRecord> {

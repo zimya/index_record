@@ -275,36 +275,10 @@ private fun formatDateTime(millis: Long?): String {
 }
 
 internal fun filterAppLabel(pkg: String): String {
-    return when (pkg) {
-        "com.zhihu.android" -> "知乎"
-        "com.douban.frodo" -> "豆瓣"
-        "com.baidu.tieba" -> "贴吧"
-        "com.twitter.android" -> "𝕏"
-        "com.instagram.barcelona", "threads" -> "Threads"
-        "com.reddit.frontpage", "reddit" -> "Reddit"
-        "com.sina.weibo" -> "微博"
-        "com.weico.international" -> "微博国际版"
-        else -> pkg
-    }
+    return me.melon.record.data.PlatformCatalog.packageLabel(pkg)
+        ?: if (pkg == "threads" || pkg == "reddit") me.melon.record.data.PlatformCatalog.displayName(pkg) else pkg
 }
 
 internal fun typeLabel(type: String): String {
-    return when (type) {
-        "status" -> "微博"
-        "question" -> "知乎问题"
-        "answer" -> "知乎回答"
-        "article" -> "知乎文章"
-        "pin" -> "知乎想法"
-        "comment" -> "评论"
-        "topic" -> "豆瓣帖子"
-        "post" -> "Reddit 帖子"
-        "lou" -> "贴吧主帖"
-        "thread" -> "Threads 帖子"
-        "tweet" -> "𝕏 推文"
-        "floor" -> "贴吧楼层"
-        "review" -> "豆瓣长评"
-        "interest" -> "豆瓣短评"
-        "subject" -> "豆瓣条目"
-        else -> type
-    }
+    return me.melon.record.data.PlatformCatalog.filterTypeLabel(type)
 }

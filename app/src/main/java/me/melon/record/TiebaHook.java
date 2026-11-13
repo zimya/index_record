@@ -1,50 +1,33 @@
 package me.melon.record;
 
 import android.app.Application;
-import android.content.BroadcastReceiver;
-import android.content.ContentValues;
 import android.content.Context;
-import android.content.Intent;
-import android.content.IntentFilter;
 import android.net.Uri;
-import android.os.Build;
-import android.os.Bundle;
-import android.os.IBinder;
-import android.os.Parcel;
-import android.os.ParcelFileDescriptor;
 import de.robv.android.xposed.IXposedHookLoadPackage;
 import de.robv.android.xposed.XC_MethodHook;
 import de.robv.android.xposed.XposedBridge;
 import de.robv.android.xposed.XposedHelpers;
 import de.robv.android.xposed.callbacks.XC_LoadPackage;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.util.Arrays;
+import java.io.IOException;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import me.melon.record.sync.HookCaptureClient;
 
 /** Capture at Tieba's protobuf response boundary, independent of its HTTP implementation. */
 public class TiebaHook implements IXposedHookLoadPackage {
 
     private static final String TAG = "TiebaRecord: ";
     private static final String HOST = "com.baidu.tieba";
-    private static final String QUEUE_DIR = "index_record_queue";
-    private static final String DESCRIPTOR =
-        "me.melon.record.sync.IRecordSyncBridge";
     private static final int MAX_BYTES = 16 * 1024 * 1024;
     private static final ExecutorService executor =
         Executors.newSingleThreadExecutor();
     private static final Set<Class<?>> hookedClasses =
         Collections.synchronizedSet(new HashSet<>());
     private static volatile Context context;
-    private static volatile IBinder syncBinder;
+    private static volatile HookCaptureClient client;
 
     @Override
     public void handleLoadPackage(XC_LoadPackage.LoadPackageParam param) {
@@ -58,11 +41,18 @@ public class TiebaHook implements IXposedHookLoadPackage {
                 @Override
                 protected void afterHookedMethod(MethodHookParam hook) {
                     if (context != null) return;
-                    context = (Context) hook.args[0];
+                    Context attachedContext = (Context) hook.args[0];
+                    if (attachedContext == null) return;
+                    client = new HookCaptureClient(
+                        attachedContext,
+                        executor,
+                        TAG
+                    );
+                    context = attachedContext;
                     XposedBridge.log(TAG + "Context attached");
-                    installHooks(context.getClassLoader());
-                    registerSyncReceiver();
-                    executor.submit(TiebaHook::syncQueue);
+                    installHooks(attachedContext.getClassLoader());
+                    client.registerReceiver();
+                    executor.submit(client::sync);
                 }
             }
         );
@@ -152,7 +142,7 @@ public class TiebaHook implements IXposedHookLoadPackage {
                         bytes.length +
                         " bytes"
                 );
-                syncQueue();
+                client.sync();
             } catch (Exception e) {
                 XposedBridge.log(TAG + "Capture failed: " + e);
             }
@@ -244,190 +234,8 @@ public class TiebaHook implements IXposedHookLoadPackage {
         );
     }
 
-    private static void registerSyncReceiver() {
-        BroadcastReceiver receiver = new BroadcastReceiver() {
-            @Override
-            public void onReceive(Context ignored, Intent intent) {
-                if (
-                    !"me.melon.record.ACTION_SYNC".equals(intent.getAction())
-                ) return;
-                Bundle extras = intent.getExtras();
-                if (extras != null) {
-                    IBinder binder = extras.getBinder("sync_binder");
-                    if (binder != null) syncBinder = binder;
-                }
-                executor.submit(TiebaHook::syncQueue);
-            }
-        };
-        try {
-            IntentFilter filter = new IntentFilter(
-                "me.melon.record.ACTION_SYNC"
-            );
-            if (Build.VERSION.SDK_INT >= 33) context.registerReceiver(
-                receiver,
-                filter,
-                Context.RECEIVER_EXPORTED
-            );
-            else context.registerReceiver(receiver, filter);
-        } catch (Throwable e) {
-            XposedBridge.log(TAG + "Sync receiver failed: " + e);
-        }
-    }
-
     private static void enqueue(String url, byte[] bytes, long timestamp)
-        throws Exception {
-        File dir = new File(context.getCacheDir(), QUEUE_DIR);
-        if (!dir.isDirectory() && !dir.mkdirs()) throw new java.io.IOException(
-            "Cannot create capture queue"
-        );
-        String token =
-            timestamp +
-            "_" +
-            android.os.Process.myPid() +
-            "_" +
-            System.nanoTime();
-        File payload = new File(dir, token + ".bin");
-        try (FileOutputStream out = new FileOutputStream(payload)) {
-            out.write(bytes);
-        }
-        // The meta rename commits the pair; sync never observes a partly written response.
-        File pending = new File(dir, token + ".meta.tmp");
-        try (FileOutputStream out = new FileOutputStream(pending)) {
-            String meta =
-                url.replace('\n', ' ').replace('\r', ' ') +
-                "\n" +
-                HOST +
-                "\napplication/x-protobuf\n" +
-                timestamp +
-                "\n";
-            out.write(meta.getBytes(StandardCharsets.UTF_8));
-        }
-        if (!pending.renameTo(new File(dir, token + ".meta"))) {
-            throw new java.io.IOException("Cannot commit capture metadata");
-        }
-    }
-
-    private static void syncQueue() {
-        if (context == null) return;
-        File dir = new File(context.getCacheDir(), QUEUE_DIR);
-        File[] metas = dir.listFiles((parent, name) -> name.endsWith(".meta"));
-        if (metas == null) return;
-        Arrays.sort(metas, Comparator.comparing(File::getName));
-        for (File meta : metas) {
-            String token = meta
-                .getName()
-                .substring(0, meta.getName().length() - 5);
-            File payload = new File(dir, token + ".bin");
-            try {
-                if (!payload.isFile()) continue;
-                String[] parts = new String(
-                    Files.readAllBytes(meta.toPath()),
-                    StandardCharsets.UTF_8
-                ).split("\n");
-                if (parts.length < 4) {
-                    XposedBridge.log(
-                        TAG + "Invalid metadata retained: " + meta.getName()
-                    );
-                    continue;
-                }
-                long timestamp = Long.parseLong(parts[3]);
-                if (
-                    !syncViaBinder(payload, parts[0], timestamp) &&
-                    !syncViaProvider(payload, token, parts[0], timestamp)
-                ) return;
-                meta.delete();
-                payload.delete();
-                XposedBridge.log(TAG + "Synced " + token);
-            } catch (Throwable e) {
-                XposedBridge.log(TAG + "Sync deferred, capture retained: " + e);
-                return;
-            }
-        }
-    }
-
-    private static boolean syncViaBinder(
-        File payload,
-        String url,
-        long timestamp
-    ) {
-        IBinder binder = syncBinder;
-        if (binder == null || !binder.isBinderAlive()) return false;
-        Parcel data = Parcel.obtain();
-        Parcel reply = Parcel.obtain();
-        try (
-            ParcelFileDescriptor fd = ParcelFileDescriptor.open(
-                payload,
-                ParcelFileDescriptor.MODE_READ_ONLY
-            )
-        ) {
-            data.writeInterfaceToken(DESCRIPTOR);
-            data.writeString(url);
-            data.writeString(HOST);
-            data.writeLong(timestamp);
-            data.writeInt(1);
-            fd.writeToParcel(data, 0);
-            if (
-                !binder.transact(
-                    IBinder.FIRST_CALL_TRANSACTION + 1,
-                    data,
-                    reply,
-                    0
-                )
-            ) return false;
-            reply.readException();
-            return reply.readInt() == 1;
-        } catch (Throwable e) {
-            if (e instanceof android.os.DeadObjectException) syncBinder = null;
-            return false;
-        } finally {
-            data.recycle();
-            reply.recycle();
-        }
-    }
-
-    private static boolean syncViaProvider(
-        File payload,
-        String token,
-        String url,
-        long timestamp
-    ) {
-        Uri uri = Uri.parse(
-            "content://me.melon.record.provider/raw_payload/" + token
-        );
-        try (
-            ParcelFileDescriptor fd = context
-                .getContentResolver()
-                .openFileDescriptor(uri, "w")
-        ) {
-            if (fd == null) return false;
-            try (
-                FileInputStream input = new FileInputStream(payload);
-                FileOutputStream output = new FileOutputStream(
-                    fd.getFileDescriptor()
-                )
-            ) {
-                byte[] buffer = new byte[16384];
-                int count;
-                while ((count = input.read(buffer)) != -1)
-                    output.write(buffer, 0, count);
-            }
-            ContentValues values = new ContentValues();
-            values.put("url", url);
-            values.put("hostApp", HOST);
-            values.put("payloadToken", token);
-            values.put("timestamp", timestamp);
-            return (
-                context
-                    .getContentResolver()
-                    .insert(
-                        Uri.parse(
-                            "content://me.melon.record.provider/raw_data"
-                        ),
-                        values
-                    ) != null
-            );
-        } catch (Throwable ignored) {
-            return false;
-        }
+        throws IOException {
+        client.enqueue(url, bytes, "application/x-protobuf", HOST, timestamp);
     }
 }

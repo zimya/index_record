@@ -3,6 +3,7 @@ package me.melon.record.parser.douban
 import com.google.gson.Gson
 import com.google.gson.JsonObject
 import com.google.gson.JsonParser
+import me.melon.record.data.PlatformCatalog
 import me.melon.record.data.model.RawData
 import me.melon.record.data.model.UniversalRecord
 import me.melon.record.parser.douban.DoubanUtils.doubanHtmlToMarkdown
@@ -86,7 +87,7 @@ object DoubanForumTopicParser {
         val record = UniversalRecord(
             platform = "douban",
             recordType = "topic",
-            sourceApp = raw.hostApp.ifBlank { "com.douban.frodo" },
+            sourceApp = raw.hostApp.ifBlank { PlatformCatalog.defaultPackage("douban") },
             platformId = "douban_forum_topic_$topicId",
             title = title,
             content = content,

@@ -77,19 +77,6 @@ object XUtils {
     }
 
     /**
-     * 数字紧凑格式化：例如 12057 -> 1.2万, 399205 -> 39.9万, 1160320 -> 116.0万
-     */
-    fun formatCount(count: Long): String {
-        return when {
-            count >= 100_000_000 -> String.format(Locale.getDefault(), "%.1f亿", count / 100_000_000.0)
-            count >= 10_000 -> String.format(Locale.getDefault(), "%.1f万", count / 10_000.0)
-            count >= 1_000 -> String.format(Locale.getDefault(), "%.1fk", count / 1_000.0)
-            count > 0 -> count.toString()
-            else -> "0"
-        }
-    }
-
-    /**
      * 将推文文本与 entities 链接、多媒体（图片、视频）转换为 Markdown
      * 同时支持现代 Android 端 (tweetObj.media_entities / url_entities) 与 Web/旧版 (legacy.extended_entities)
      */

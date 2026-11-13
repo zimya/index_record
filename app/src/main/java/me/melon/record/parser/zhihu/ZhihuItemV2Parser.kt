@@ -2,10 +2,8 @@ package me.melon.record.parser.zhihu
 
 import com.google.gson.Gson
 import com.google.gson.JsonObject
-import me.melon.record.ObjectBox
 import me.melon.record.data.model.RawData
 import me.melon.record.data.model.UniversalRecord
-import me.melon.record.data.model.UniversalRecord_
 import me.melon.record.markdown.zhihuStructuredContentToMarkdown
 import java.text.SimpleDateFormat
 import java.util.Locale
@@ -118,17 +116,6 @@ object ZhihuItemV2Parser {
 
             if (questionId.isNotBlank()) extraJson.addProperty("question_id", questionId)
 
-            val questionPlatformId = if (questionId.isNotBlank()) "zhihu_question_$questionId" else ""
-            val shouldBindToQuestion = if (questionPlatformId.isNotBlank() && ObjectBox.isInitialized) {
-                val recordBox = ObjectBox.store.boxFor(UniversalRecord::class.java)
-                val qQuery = recordBox.query()
-                    .equal(UniversalRecord_.platformId, questionPlatformId, io.objectbox.query.QueryBuilder.StringOrder.CASE_SENSITIVE)
-                    .build()
-                val exists = qQuery.count() > 0
-                qQuery.close()
-                exists
-            } else false
-
             val sourceUrl = if (raw.url.contains("next-render") && questionId.isNotBlank()) {
                 "https://www.zhihu.com/question/$questionId/answer/$id"
             } else {
@@ -146,7 +133,7 @@ object ZhihuItemV2Parser {
                 authorName = authorName,
                 authorAvatar = authorAvatar,
                 sourceUrl = sourceUrl,
-                parentId = if (shouldBindToQuestion) questionPlatformId else "",
+                parentId = "",
                 publishTime = publishTime,
                 captureTime = raw.timestamp,
                 extraMetadata = gson.toJson(extraJson)

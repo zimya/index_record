@@ -10,7 +10,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import me.melon.record.data.model.UniversalRecord
-import me.melon.record.markdown.MarkdownContentFormat
+import me.melon.record.presentation.recordBodyPresentation
 import me.melon.record.markdown.RenderMarkdownText
 import java.text.SimpleDateFormat
 import java.util.Date
@@ -18,14 +18,15 @@ import java.util.Locale
 
 @Composable
 internal fun RecordDetailBody(record: UniversalRecord, onImageClick: (List<String>, Int) -> Unit) {
+    val presentation = recordBodyPresentation(record)
     RenderMarkdownText(
-        markdown = record.content,
+        markdown = presentation.content,
         modifier = Modifier.fillMaxWidth(),
         enableScroll = false,
         selectable = true,
         onImageClick = onImageClick,
-        contentFormat = if (record.platform == "reddit") MarkdownContentFormat.MARKDOWN else MarkdownContentFormat.AUTO,
-        enableMath = record.platform != "reddit"
+        contentFormat = presentation.contentFormat,
+        enableMath = presentation.enableMath
     )
     Spacer(modifier = Modifier.height(8.dp))
     val sdf = remember { SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.getDefault()) }

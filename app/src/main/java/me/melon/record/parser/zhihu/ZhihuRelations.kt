@@ -4,9 +4,6 @@ import com.google.gson.Gson
 import com.google.gson.JsonArray
 import com.google.gson.JsonObject
 import com.google.gson.JsonParser
-import io.objectbox.Box
-import me.melon.record.data.model.UniversalRecord
-import me.melon.record.data.model.UniversalRecord_
 
 /**
  * 知乎关系链接器：处理问题与回答之间的双向绑定、合并元数据。
@@ -52,45 +49,6 @@ object ZhihuRelations {
             if (id.isNotBlank()) ids.add(id)
         }
         return ids
-    }
-
-    fun linkAnswersByIds(recordBox: Box<UniversalRecord>, questionPlatformId: String, answerIds: List<String>) {
-        val targetPlatformIds = answerIds.map { "zhihu_answer_$it" }.distinct()
-        if (targetPlatformIds.isEmpty()) return
-        val arr = targetPlatformIds.toTypedArray()
-        val answers = recordBox.query()
-            .`in`(UniversalRecord_.platformId, arr, io.objectbox.query.QueryBuilder.StringOrder.CASE_SENSITIVE)
-            .build()
-            .find()
-        if (answers.isEmpty()) return
-        for (a in answers) {
-            if (a.parentId.isBlank()) a.parentId = questionPlatformId
-        }
-        recordBox.put(answers)
-    }
-
-    fun linkExistingAnswersToQuestion(recordBox: Box<UniversalRecord>, questionId: String, questionPlatformId: String) {
-        val query = recordBox.query()
-            .equal(UniversalRecord_.platform, "zhihu", io.objectbox.query.QueryBuilder.StringOrder.CASE_SENSITIVE)
-            .equal(UniversalRecord_.recordType, "answer", io.objectbox.query.QueryBuilder.StringOrder.CASE_SENSITIVE)
-            .equal(UniversalRecord_.parentId, "", io.objectbox.query.QueryBuilder.StringOrder.CASE_SENSITIVE)
-            .build()
-        val answers = query.find()
-        query.close()
-        if (answers.isEmpty()) return
-        val changedAnswers = ArrayList<UniversalRecord>()
-        for (a in answers) {
-            val qid = try {
-                JsonParser.parseString(a.extraMetadata).asJsonObject.safeString("question_id")
-            } catch (_: Exception) {
-                ""
-            }
-            if (qid == questionId) {
-                a.parentId = questionPlatformId
-                changedAnswers.add(a)
-            }
-        }
-        if (changedAnswers.isNotEmpty()) recordBox.put(changedAnswers)
     }
 
     internal fun JsonObject.safeString(key: String): String {

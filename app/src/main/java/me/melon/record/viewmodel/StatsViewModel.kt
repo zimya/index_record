@@ -19,11 +19,13 @@ import me.melon.record.data.model.UniversalRecord_
 import me.melon.record.logic.ComputedStats
 import me.melon.record.logic.DistributionRange
 import me.melon.record.logic.StatsCalculator
+import me.melon.record.settings.RecordSettings
 import java.time.ZoneId
 
 data class StatsUiState(
     val selectedRange: DistributionRange = DistributionRange.LAST_30_DAYS,
-    val stats: ComputedStats = ComputedStats()
+    val stats: ComputedStats = ComputedStats(),
+    val includeRepliesAndComments: Boolean = false
 )
 
 class StatsViewModel(application: Application) : AndroidViewModel(application) {
@@ -34,14 +36,14 @@ class StatsViewModel(application: Application) : AndroidViewModel(application) {
 
     private val selectedRangeFlow = MutableStateFlow(DistributionRange.LAST_30_DAYS)
 
-    private val computedStatsFlow: Flow<ComputedStats> = callbackFlow {
+    private val recordsFlow: Flow<List<UniversalRecord>> = callbackFlow {
         val query = recordBox.query().orderDesc(UniversalRecord_.captureTime).build()
         val subscription = query.subscribe()
             .observer { data ->
-                trySend(StatsCalculator.computeState(data, weeks = 52, zone = zone))
+                trySend(data)
             }
 
-        trySend(StatsCalculator.computeState(query.find(), weeks = 52, zone = zone))
+        trySend(query.find())
 
         awaitClose {
             subscription.cancel()
@@ -49,11 +51,23 @@ class StatsViewModel(application: Application) : AndroidViewModel(application) {
         }
     }.flowOn(Dispatchers.IO)
 
+    private val computedStatsFlow = combine(
+        recordsFlow,
+        RecordSettings.includeRepliesAndCommentsInStats
+    ) { records, includeReplies ->
+        StatsUiState(
+            stats = StatsCalculator.computeState(
+                records, weeks = 52, zone = zone, includeRepliesAndComments = includeReplies
+            ),
+            includeRepliesAndComments = includeReplies
+        )
+    }.flowOn(Dispatchers.Default)
+
     val state: StateFlow<StatsUiState> = combine(
         selectedRangeFlow,
         computedStatsFlow
-    ) { range, stats ->
-        StatsUiState(selectedRange = range, stats = stats)
+    ) { range, computed ->
+        computed.copy(selectedRange = range)
     }.stateIn(
         scope = viewModelScope,
         started = SharingStarted.Eagerly,

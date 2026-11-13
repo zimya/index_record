@@ -21,7 +21,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import me.melon.record.data.model.UniversalRecord
+import me.melon.record.viewmodel.DetailNavigationEntry
+import me.melon.record.viewmodel.DetailNavigationViewModel
+import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.runtime.saveable.rememberSaveableStateHolder
 import me.melon.record.ui.components.FilterBottomSheet
 import me.melon.record.viewmodel.HomeViewModel
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -41,15 +44,18 @@ fun HomeScreen(viewModel: HomeViewModel = viewModel()) {
     val rawPendingCount by viewModel.rawPendingCountFlow.collectAsState(initial = 0L)
     val syncProgress by viewModel.syncProgress.collectAsState()
 
-    val currentRecord = viewModel.navStack.lastOrNull()
-    val lastNavAction = viewModel.lastNavAction
+    val navigation: DetailNavigationViewModel = viewModel()
+    val readingStates = rememberSaveableStateHolder()
+    val homeListState = rememberLazyListState()
+    val currentEntry = navigation.entries.lastOrNull()
+    val lastNavAction = navigation.lastAction
     var isSearchActive by rememberSaveable { mutableStateOf(false) }
     var showFilterSheet by remember { mutableStateOf(false) }
 
-    val hasDetail = currentRecord != null
-    var lastNonNullRecord by remember { mutableStateOf<UniversalRecord?>(null) }
-    if (currentRecord != null) {
-        lastNonNullRecord = currentRecord
+    val hasDetail = currentEntry != null
+    var lastNonNullEntry by remember { mutableStateOf<DetailNavigationEntry?>(null) }
+    if (currentEntry != null) {
+        lastNonNullEntry = currentEntry
     }
 
     val homeTransition = updateTransition(targetState = hasDetail, label = "HomeTransition")
@@ -89,10 +95,10 @@ fun HomeScreen(viewModel: HomeViewModel = viewModel()) {
                 },
                 onRefresh = { viewModel.refreshData() },
                 onOpenFilter = { showFilterSheet = true },
-                listState = viewModel.homeListState,
+                listState = homeListState,
                 rawPendingCount = rawPendingCount,
                 syncProgress = syncProgress,
-                onItemClick = { viewModel.pushDetail(it) }
+                onItemClick = { navigation.push(it) }
             )
         }
 
@@ -107,10 +113,10 @@ fun HomeScreen(viewModel: HomeViewModel = viewModel()) {
                 targetOffsetX = { it }
             ) + fadeOut(animationSpec = tween(300))
         ) {
-            val recordToShow = currentRecord ?: lastNonNullRecord
-            if (recordToShow != null) {
+            val entryToShow = currentEntry ?: lastNonNullEntry
+            if (entryToShow != null) {
                 BackHandler(enabled = hasDetail) {
-                    viewModel.popDetail()
+                    navigation.pop()
                 }
 
                 Surface(
@@ -119,9 +125,9 @@ fun HomeScreen(viewModel: HomeViewModel = viewModel()) {
                     shadowElevation = 8.dp
                 ) {
                     AnimatedContent(
-                        targetState = recordToShow,
+                        targetState = entryToShow,
                         transitionSpec = {
-                            if (lastNavAction == HomeViewModel.NavAction.PUSH) {
+                            if (lastNavAction == DetailNavigationViewModel.Action.PUSH) {
                                 (slideInHorizontally(
                                     animationSpec = tween(300, easing = FastOutSlowInEasing),
                                     initialOffsetX = { it }
@@ -146,43 +152,53 @@ fun HomeScreen(viewModel: HomeViewModel = viewModel()) {
                             }.using(SizeTransform(clip = false))
                         },
                         label = "DetailStackTransition"
-                    ) { targetRecord ->
-                        DetailViewModelScope {
-                            if (targetRecord.platform == "tieba" && targetRecord.recordType in setOf("lou", "floor", "comment")) {
-                                TiebaDetailScreen(
-                                    record = targetRecord,
-                                    onBack = { viewModel.popDetail() },
-                                    onOpenRecord = { viewModel.pushDetail(it) },
-                                    listState = viewModel.detailListState(targetRecord.platformId),
-                                    firstFloorListState = viewModel.detailListState("${targetRecord.platformId}:first_floor_replies")
-                                )
-                            } else if (targetRecord.recordType == "comment" && !usesRecordDetailForComment(targetRecord.platform)) {
-                                CommentDetailScreen(
-                                    record = targetRecord,
-                                    onBack = { viewModel.popDetail() },
-                                    onOpenParent = { viewModel.pushDetail(it) }
-                                )
-                            } else if (targetRecord.recordType == "question") {
-                                QuestionDetailScreen(
-                                    record = targetRecord,
-                                    onBack = { viewModel.popDetail() },
-                                    onOpenAnswer = { viewModel.pushDetail(it) },
-                                    listState = viewModel.detailListState(targetRecord.platformId)
-                                )
-                            } else if (targetRecord.recordType == "subject") {
-                                SubjectDetailScreen(
-                                    record = targetRecord,
-                                    onBack = { viewModel.popDetail() },
-                                    onOpenRecord = { viewModel.pushDetail(it) },
-                                    listState = viewModel.detailListState(targetRecord.platformId)
-                                )
-                            } else {
-                                RecordDetailScreen(
-                                    record = targetRecord,
-                                    onBack = { viewModel.popDetail() },
-                                    onOpenRecord = { viewModel.pushDetail(it) },
-                                    listState = viewModel.detailListState(targetRecord.platformId)
-                                )
+                    ) { entry ->
+                        DisposableEffect(entry) {
+                            navigation.attach(entry)
+                            onDispose {
+                                navigation.detach(entry)
+                                if (entry !in navigation.entries) readingStates.removeState(entry.key)
+                            }
+                        }
+                        readingStates.SaveableStateProvider(entry.key) {
+                            DetailViewModelScope(entry) {
+                                val targetRecord = entry.record
+                                if (targetRecord.platform == "tieba" && targetRecord.recordType in setOf("lou", "floor", "comment")) {
+                                    TiebaDetailScreen(
+                                        record = targetRecord,
+                                        onBack = { navigation.pop() },
+                                        onOpenRecord = { navigation.push(it) },
+                                        listState = rememberLazyListState(),
+                                        firstFloorListState = rememberLazyListState()
+                                    )
+                                } else if (targetRecord.recordType == "comment" && !usesRecordDetailForComment(targetRecord.platform)) {
+                                    CommentDetailScreen(
+                                        record = targetRecord,
+                                        onBack = { navigation.pop() },
+                                        onOpenParent = { navigation.push(it) }
+                                    )
+                                } else if (targetRecord.recordType == "question") {
+                                    QuestionDetailScreen(
+                                        record = targetRecord,
+                                        onBack = { navigation.pop() },
+                                        onOpenAnswer = { navigation.push(it) },
+                                        listState = rememberLazyListState()
+                                    )
+                                } else if (targetRecord.recordType == "subject") {
+                                    SubjectDetailScreen(
+                                        record = targetRecord,
+                                        onBack = { navigation.pop() },
+                                        onOpenRecord = { navigation.push(it) },
+                                        listState = rememberLazyListState()
+                                    )
+                                } else {
+                                    RecordDetailScreen(
+                                        record = targetRecord,
+                                        onBack = { navigation.pop() },
+                                        onOpenRecord = { navigation.push(it) },
+                                        listState = rememberLazyListState()
+                                    )
+                                }
                             }
                         }
                     }

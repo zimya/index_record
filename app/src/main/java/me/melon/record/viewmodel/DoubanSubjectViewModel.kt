@@ -30,7 +30,11 @@ internal class DoubanSubjectViewModel(
     repository: DoubanSubjectRepository = DoubanSubjectRepository()
 ) : ViewModel() {
     private val initial = record.toDetailRecord()
-    val state: StateFlow<DoubanSubjectData> = doubanSubjectStates(initial, repository.observe(record)).stateIn(
+    private val reads = DetailRetry { repository.observe(record) }
+    val isRetrying = reads.isRetrying
+    fun retry() = reads.retry()
+
+    val state: StateFlow<DoubanSubjectData> = doubanSubjectStates(initial, reads.snapshots).stateIn(
         scope = viewModelScope,
         started = SharingStarted.WhileSubscribed(5_000),
         initialValue = DoubanSubjectData(DoubanSubjectSnapshot(initial))
@@ -42,7 +46,7 @@ internal fun doubanSubjectStates(
     snapshots: Flow<Result<DoubanSubjectSnapshot>>
 ): Flow<DoubanSubjectData> = flow {
     var latest = DoubanSubjectData(DoubanSubjectSnapshot(record))
-    fun failed() = latest.copy(loadState = DetailLoadState.Failed("无法读取本地记录，请返回后重试"))
+    fun failed() = latest.copy(loadState = DetailLoadState.Failed("无法读取本地记录，请重试"))
     emitAll(
         snapshots.map { result ->
             latest = result.fold(

@@ -15,6 +15,9 @@ internal class RecordMetadata(extraMetadata: String, platform: String) {
     val commentLikeCount: Long get() = values.engagementCount("like_count", "likeCount")
     val repostCount: Long get() = values.engagementCount("retweet_count", "repost_count", "repostCount")
     val replyCount: Long get() = values.engagementCount("reply_count", "comment_count", "commentCount")
+    val commentReplyCount: Long? get() =
+        listOf("child_comment_count", "reply_count", "comment_count", "commentCount")
+            .firstNotNullOfOrNull { values.optionalEngagementCount(it) }
     val bookmarkCount: Long get() = values.engagementCount("bookmark_count", "bookmarkCount")
     val viewCount: Long = values.viewEngagementCount(platform)
     val quoteCount: Long get() = values.engagementCount("quote_count")

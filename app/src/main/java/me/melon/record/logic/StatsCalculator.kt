@@ -1,6 +1,7 @@
 package me.melon.record.logic
 
 import me.melon.record.data.model.UniversalRecord
+import me.melon.record.presentation.RecordContentPolicy
 import java.time.DayOfWeek
 import java.time.Instant
 import java.time.LocalDate
@@ -117,16 +118,11 @@ object StatsCalculator {
     fun computeState(
         records: List<UniversalRecord>,
         weeks: Int = 52,
-        zone: ZoneId = ZoneId.systemDefault()
+        zone: ZoneId = ZoneId.systemDefault(),
+        includeRepliesAndComments: Boolean = false
     ): ComputedStats {
         val statisticalRecords = records.filter { record ->
-            when (record.platform.trim().lowercase()) {
-                "reddit" -> record.recordType == "post"
-                "tieba" -> record.recordType == "lou"
-                "twitter", "x" -> record.recordType == "tweet"
-                "weibo" -> record.recordType == "status"
-                else -> true
-            }
+            includeRepliesAndComments || RecordContentPolicy.isPrimaryContent(record)
         }
         val today = LocalDate.now(zone)
         val currentMonth = YearMonth.now(zone)

@@ -123,7 +123,7 @@ class RecordDetailContractTest {
         val first = RecordDetailSnapshot(seed.toDetailRecord())
         val updated = RecordDetailSnapshot(seed.copy(content = "new", extraMetadata = """{"like_count":8}""").toDetailRecord())
         val states = recordDetailStates(seed, flowOf(Result.success(first), Result.failure(IllegalStateException()), Result.success(updated))).toList()
-        assertEquals(listOf(DetailLoadState.Ready, DetailLoadState.Failed("无法读取本地记录，请返回后重试"), DetailLoadState.Ready), states.map { it.loadState })
+        assertEquals(listOf(DetailLoadState.Ready, DetailLoadState.Failed("无法读取本地记录，请重试"), DetailLoadState.Ready), states.map { it.loadState })
         assertSame(first, states[1].snapshot)
         assertEquals("new", states.last().snapshot.record.content)
         assertTrue(states.last().statistics.any { it.kind == StatisticKind.LIKE && it.text == "8" })

@@ -27,7 +27,11 @@ internal class CommentDetailViewModel(
     repository: CommentDetailRepository = CommentDetailRepository()
 ) : ViewModel() {
     private val seed = record.toDetailRecord()
-    val state: StateFlow<CommentDetailUiState> = commentDetailStates(seed, repository.observe(seed)).stateIn(
+    private val reads = DetailRetry { repository.observe(seed) }
+    val isRetrying = reads.isRetrying
+    fun retry() = reads.retry()
+
+    val state: StateFlow<CommentDetailUiState> = commentDetailStates(seed, reads.snapshots).stateIn(
         viewModelScope, SharingStarted.WhileSubscribed(5_000),
         CommentDetailUiState(assembleCommentDetailSnapshot(seed) { null })
     )
@@ -45,7 +49,7 @@ internal fun commentDetailStates(
         result.exceptionOrNull()?.let { if (it is CancellationException) throw it }
         val state = result.fold(
             onSuccess = { latest = it; DetailLoadState.Ready },
-            onFailure = { DetailLoadState.Failed("无法读取本地记录，请返回后重试") }
+            onFailure = { DetailLoadState.Failed("无法读取本地记录，请重试") }
         )
         emit(CommentDetailUiState(latest, state))
     }

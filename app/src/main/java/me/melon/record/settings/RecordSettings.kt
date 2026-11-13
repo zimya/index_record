@@ -73,6 +73,9 @@ object RecordSettings {
     private const val WEIBO_RECORD_MODE = "weibo_record_mode"
     private const val THREADS_RECORD_MODE = "threads_record_mode"
     private const val REDDIT_RECORD_MODE = "reddit_record_mode"
+    private const val INCLUDE_REPLIES_AND_COMMENTS_IN_STATS = "include_replies_and_comments_in_stats"
+    private val _includeRepliesAndCommentsInStats = MutableStateFlow(false)
+    val includeRepliesAndCommentsInStats = _includeRepliesAndCommentsInStats.asStateFlow()
     private const val COLLAPSE_MULTIPLE_ITEMS = "collapse_multiple_items"
     private val _collapseMultipleItems = MutableStateFlow(true)
     val collapseMultipleItems = _collapseMultipleItems.asStateFlow()
@@ -81,6 +84,12 @@ object RecordSettings {
     fun init(context: Context) {
         prefs = context.applicationContext.getSharedPreferences("settings", Context.MODE_PRIVATE)
         _collapseMultipleItems.value = prefs.getBoolean(COLLAPSE_MULTIPLE_ITEMS, true)
+        _includeRepliesAndCommentsInStats.value = prefs.getBoolean(INCLUDE_REPLIES_AND_COMMENTS_IN_STATS, false)
+    }
+
+    fun setIncludeRepliesAndCommentsInStats(enabled: Boolean) {
+        prefs.edit().putBoolean(INCLUDE_REPLIES_AND_COMMENTS_IN_STATS, enabled).apply()
+        _includeRepliesAndCommentsInStats.value = enabled
     }
 
     fun setCollapseMultipleItems(enabled: Boolean) {

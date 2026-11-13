@@ -1,20 +1,19 @@
 package me.melon.record.ui.detail.tieba
 
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
+
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewmodel.compose.viewModel
 
 
 import me.melon.record.data.model.UniversalRecord
-import me.melon.record.viewmodel.TiebaDetailData
+
 import me.melon.record.data.model.TiebaMetadata
 import me.melon.record.viewmodel.TiebaDetailViewModel
 
 @Composable
-internal fun rememberTiebaDetailData(record: UniversalRecord): TiebaDetailData {
+internal fun rememberTiebaDetailViewModel(record: UniversalRecord): TiebaDetailViewModel {
     val viewModel: TiebaDetailViewModel = viewModel(
         key = "tieba:${record.platformId}",
         factory = object : ViewModelProvider.Factory {
@@ -23,8 +22,7 @@ internal fun rememberTiebaDetailData(record: UniversalRecord): TiebaDetailData {
                 TiebaDetailViewModel(record) as T
         }
     )
-    val data by viewModel.state.collectAsState()
-    return data
+    return viewModel
 }
 
 internal fun tiebaFloorLabel(record: UniversalRecord): String {

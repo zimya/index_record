@@ -63,7 +63,7 @@ internal fun commentStatistics(
     val reddit = metadata.reddit
     return CommentStatistics(
         likeCount = if (reddit != null) reddit.score else metadata.commentLikeCount.takeIf { it > 0 },
-        replyCount = reddit?.commentCount,
+        replyCount = if (reddit != null) reddit.commentCount else metadata.commentReplyCount,
         shareCount = reddit?.shareCount,
         dislikeCount = if (reddit == null) metadata.dislikeCount else 0L,
         viewCount = if (record.platform == "threads") metadata.viewCount else 0L

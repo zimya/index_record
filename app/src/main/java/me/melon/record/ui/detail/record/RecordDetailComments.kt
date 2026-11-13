@@ -28,6 +28,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import me.melon.record.ui.detail.localRecordedCountLabel
 import me.melon.record.presentation.RecordMetadata
 import me.melon.record.presentation.redditMissingParentNotice
 import me.melon.record.presentation.commentStatistics
@@ -43,8 +44,9 @@ import me.melon.record.presentation.commentPlainText
 import me.melon.record.presentation.recordBodyPresentation
 import java.util.Locale
 
+@Suppress("UNUSED_PARAMETER")
 internal fun recordDetailCommentCountLabel(platform: String, count: Int): String =
-    if (platform == "reddit") "已记录回复 ($count)" else "评论 ($count)"
+    localRecordedCountLabel(count)
 
 @Composable
 internal fun RecordDetailCommentsHeader(

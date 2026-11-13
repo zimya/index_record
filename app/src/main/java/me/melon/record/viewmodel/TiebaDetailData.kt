@@ -39,7 +39,11 @@ internal class TiebaDetailViewModel(
     repository: TiebaDetailRepository = TiebaDetailRepository()
 ) : ViewModel() {
     private val initial = record.toDetailRecord()
-    val state: StateFlow<TiebaDetailData> = tiebaDetailStates(initial, repository.observe(initial)).stateIn(
+    private val reads = DetailRetry { repository.observe(initial) }
+    val isRetrying = reads.isRetrying
+    fun retry() = reads.retry()
+
+    val state: StateFlow<TiebaDetailData> = tiebaDetailStates(initial, reads.snapshots).stateIn(
         scope = viewModelScope,
         started = SharingStarted.WhileSubscribed(5_000),
         initialValue = TiebaDetailData(initial)
@@ -58,7 +62,7 @@ internal fun tiebaDetailStates(
         floors = latest.floors,
         repliesByParent = latest.repliesByParent,
         replies = latest.replies,
-        loadState = DetailLoadState.Failed("无法读取本地记录，请返回后重试")
+        loadState = DetailLoadState.Failed("无法读取本地记录，请重试")
     )
     emitAll(snapshots.map { result ->
         result.fold(

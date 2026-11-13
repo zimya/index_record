@@ -29,7 +29,7 @@ class StatsCalculatorTest {
         val zone = ZoneId.of("UTC")
         val today = LocalDate.now(zone)
         val now = today.atTime(12, 0).atZone(zone).toInstant().toEpochMilli()
-        val postTypes = mapOf("reddit" to "post", "tieba" to "lou", "twitter" to "tweet", "weibo" to "status", "x" to "tweet")
+        val postTypes = mapOf("reddit" to "post", "tieba" to "lou", "twitter" to "tweet", "weibo" to "status", "threads" to "thread", "zhihu" to "answer", "douban" to "topic")
         val posts = postTypes.map { (platform, type) ->
             UniversalRecord(platform = platform, recordType = type, captureTime = now, content = "main post")
         }
@@ -38,15 +38,60 @@ class StatsCalculatorTest {
                 UniversalRecord(platform = platform, recordType = "comment", captureTime = now - daysAgo * 86400_000L, content = "reply text")
             }
         } + UniversalRecord(platform = "tieba", recordType = "floor", captureTime = now, content = "floor reply")
-        val otherPlatformReplies = listOf("zhihu", "douban", "threads").map {
-            UniversalRecord(platform = it, recordType = "comment", captureTime = now, content = "other reply")
-        }
-        val expected = StatsCalculator.computeState(posts + otherPlatformReplies, zone = zone)
-        assertEquals(8L, expected.totalRecordCount)
-        assertEquals(8, expected.todayRecordCount)
-        assertEquals(16L, expected.totalWordCount)
-        assertEquals(expected, StatsCalculator.computeState(posts + otherPlatformReplies + replies, zone = zone))
+        val expected = StatsCalculator.computeState(posts, zone = zone)
+        assertEquals(7L, expected.totalRecordCount)
+        assertEquals(7, expected.todayRecordCount)
+        assertEquals(14L, expected.totalWordCount)
+        assertEquals(expected, StatsCalculator.computeState(posts + replies, zone = zone))
         assertEquals(StatsCalculator.computeState(emptyList(), zone = zone), StatsCalculator.computeState(replies, zone = zone))
+    }
+
+    @Test
+    fun optInIncludesRepliesInEveryMetricAndCanBeTurnedOffAgain() {
+        val zone = ZoneId.of("UTC")
+        val today = LocalDate.now(zone)
+        val now = today.atTime(12, 0).atZone(zone).toInstant().toEpochMilli()
+        val post = UniversalRecord(platform = "threads", recordType = "thread", captureTime = now, content = "main post")
+        val replies = listOf("zhihu", "douban", "threads", "reddit", "twitter", "weibo", "tieba").mapIndexed { index, platform ->
+            UniversalRecord(
+                platform = platform, recordType = if (platform == "tieba") "floor" else "comment",
+                captureTime = now - index * 86400_000L, content = "reply text",
+                extraMetadata = """{"reply_count":99999,"like_count":88888}"""
+            )
+        }
+        val all = listOf(post) + replies
+        val primaryOnly = StatsCalculator.computeState(all, zone = zone)
+        val included = StatsCalculator.computeState(all, zone = zone, includeRepliesAndComments = true)
+        assertEquals(1L, primaryOnly.totalRecordCount)
+        assertEquals(8L, included.totalRecordCount)
+        assertEquals(16L, included.totalWordCount)
+        assertEquals(2, included.todayRecordCount)
+        assertEquals(4L, included.todayWordCount)
+        assertEquals(7, included.currentStreakDays)
+        assertEquals(7, included.maxStreakDays)
+        assertEquals(8, included.distribution30Days.bars.sumOf { it.totalCount })
+        assertEquals(8, included.distributionFullYear.bars.sumOf { it.totalCount })
+        assertEquals(8, included.distributionAllTime.bars.sumOf { it.totalCount })
+        assertEquals(8, included.hourlyDistribution.sumOf { it.totalCount })
+        assertEquals(8, included.columns.flatten().sumOf { it.appCounts.values.sum() })
+        assertEquals(8, included.topApps.sumOf { it.second })
+        assertEquals(primaryOnly, StatsCalculator.computeState(all, zone = zone, includeRepliesAndComments = false))
+        assertEquals("""{"reply_count":99999,"like_count":88888}""", replies.first().extraMetadata)
+    }
+
+    @Test
+    fun primaryEligibilityIncludesAllSupportedPrimaryTypesButNotUnknownTypes() {
+        val types = mapOf(
+            "zhihu" to listOf("question", "answer", "article", "pin"),
+            "douban" to listOf("topic", "review", "interest", "subject"),
+            "threads" to listOf("thread"), "reddit" to listOf("post"),
+            "twitter" to listOf("tweet"), "weibo" to listOf("status"), "tieba" to listOf("lou")
+        )
+        val primary = types.flatMap { (platform, recordTypes) ->
+            recordTypes.map { UniversalRecord(platform = platform, recordType = it) }
+        }
+        val unknown = listOf(UniversalRecord(platform = "unknown", recordType = "post"), UniversalRecord(platform = "zhihu", recordType = "unknown"))
+        assertEquals(primary.size.toLong(), StatsCalculator.computeState(primary + unknown).totalRecordCount)
     }
 
     @Test
@@ -75,10 +120,10 @@ class StatsCalculatorTest {
 
         // Day 0 (today), Day -1 (yesterday), Day -2 (2 days ago), Day -4 (4 days ago), Day -5 (5 days ago)
         val records = listOf(
-            UniversalRecord(id = 1, captureTime = todayMilli, title = "T1", content = "C1", platform = "zhihu"),
-            UniversalRecord(id = 2, captureTime = todayMilli - 86400_000L, title = "T2", content = "C2", platform = "zhihu"),
-            UniversalRecord(id = 3, captureTime = todayMilli - 86400_000L * 2, title = "T3", content = "C3", platform = "douban"),
-            UniversalRecord(id = 4, captureTime = todayMilli - 86400_000L * 4, title = "T4", content = "C4", platform = "douban"),
+            UniversalRecord(id = 1, captureTime = todayMilli, title = "T1", content = "C1", platform = "zhihu", recordType = "answer"),
+            UniversalRecord(id = 2, captureTime = todayMilli - 86400_000L, title = "T2", content = "C2", platform = "zhihu", recordType = "answer"),
+            UniversalRecord(id = 3, captureTime = todayMilli - 86400_000L * 2, title = "T3", content = "C3", platform = "douban", recordType = "topic"),
+            UniversalRecord(id = 4, captureTime = todayMilli - 86400_000L * 4, title = "T4", content = "C4", platform = "douban", recordType = "topic"),
             UniversalRecord(id = 5, captureTime = todayMilli - 86400_000L * 5, title = "T5", content = "C5", platform = "tieba", recordType = "lou")
         )
 
@@ -99,9 +144,9 @@ class StatsCalculatorTest {
         val time15_2 = today.atTime(15, 45).atZone(zone).toInstant().toEpochMilli()
 
         val records = listOf(
-            UniversalRecord(id = 1, captureTime = time10, platform = "zhihu"),
-            UniversalRecord(id = 2, captureTime = time15_1, platform = "zhihu"),
-            UniversalRecord(id = 3, captureTime = time15_2, platform = "douban")
+            UniversalRecord(id = 1, captureTime = time10, platform = "zhihu", recordType = "answer"),
+            UniversalRecord(id = 2, captureTime = time15_1, platform = "zhihu", recordType = "answer"),
+            UniversalRecord(id = 3, captureTime = time15_2, platform = "douban", recordType = "topic")
         )
 
         val stats = StatsCalculator.computeState(records, weeks = 52, zone = zone)
@@ -120,8 +165,8 @@ class StatsCalculatorTest {
         val todayMilli = today.atTime(12, 0).atZone(zone).toInstant().toEpochMilli()
 
         val records = listOf(
-            UniversalRecord(id = 1, captureTime = todayMilli, platform = "zhihu"),
-            UniversalRecord(id = 2, captureTime = todayMilli - 86400_000L * 5, platform = "douban")
+            UniversalRecord(id = 1, captureTime = todayMilli, platform = "zhihu", recordType = "answer"),
+            UniversalRecord(id = 2, captureTime = todayMilli - 86400_000L * 5, platform = "douban", recordType = "topic")
         )
 
         val stats = StatsCalculator.computeState(records, weeks = 52, zone = zone)

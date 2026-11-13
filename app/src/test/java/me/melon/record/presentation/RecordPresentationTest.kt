@@ -82,6 +82,29 @@ class RecordPresentationTest {
     }
 
     @Test
+    fun commentReplyCountsUseCapturedPlatformFieldsWithoutChangingRawMetadata() {
+        val cases = listOf(
+            Triple("threads", """{"reply_count":12,"comment_count":99}""", 12L),
+            Triple("threads", """{"comment_count":7}""", 7L),
+            Triple("zhihu", """{"child_comment_count":4,"comment_count":99}""", 4L),
+            Triple("zhihu", """{"child_comment_count":0,"reply_count":99}""", 0L),
+            Triple("tieba", """{"reply_count":3}""", 3L),
+            Triple("weibo", """{"commentCount":"2"}""", 2L),
+            Triple("twitter", """{"reply_count":6}""", 6L),
+            Triple("reddit", """{"comment_count":5,"child_count":99}""", 5L)
+        )
+        cases.forEach { (platform, json, expected) ->
+            val comment = record(platform, json, "comment")
+            assertEquals(platform, expected, commentStatistics(comment).replyCount)
+            assertEquals(json, comment.extraMetadata)
+        }
+        for (json in listOf("{}", "bad json", "[]", """{"reply_count":null}""", """{"reply_count":-1}""", """{"child_comment_count":{},"comment_count":"bad"}""")) {
+            assertNull(commentStatistics(record("zhihu", json, "comment")).replyCount)
+        }
+        assertNull(commentStatistics(record("reddit", """{"child_count":7,"reply_count":9}""", "comment")).replyCount)
+    }
+
+    @Test
     fun legacyDetailBadgesKeepRawTextAndOrderRatherThanCompactFormatting() {
         val r = record("zhihu", """{"voteup_count":-1,"comment_count":0,"ip_info":"北京","favlists_count":12057}""")
         assertTrue(recordStatistics(r, StatisticsSurface.LIST).isEmpty())

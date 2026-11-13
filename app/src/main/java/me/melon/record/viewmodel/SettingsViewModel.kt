@@ -31,6 +31,12 @@ class SettingsViewModel(application: Application) : AndroidViewModel(application
     private val _redditRecordMode = MutableStateFlow(RecordSettings.redditRecordMode)
     val redditRecordMode: StateFlow<RedditRecordMode> = _redditRecordMode.asStateFlow()
 
+    val includeRepliesAndCommentsInStats: StateFlow<Boolean> = RecordSettings.includeRepliesAndCommentsInStats
+
+    fun setIncludeRepliesAndCommentsInStats(enabled: Boolean) {
+        RecordSettings.setIncludeRepliesAndCommentsInStats(enabled)
+    }
+
     val collapseMultipleItems: StateFlow<Boolean> = RecordSettings.collapseMultipleItems
 
     fun setCollapseMultipleItems(enabled: Boolean) {

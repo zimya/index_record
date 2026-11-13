@@ -30,6 +30,22 @@ class RecordFilterTypeTest {
         assertEquals("unknown", typeLabel("unknown"))
     }
     @Test
+    fun qualifiedHomeOptionsShowPlatformSpecificReplyLabels() {
+        val labels = mapOf(
+            "zhihu:comment" to "知乎评论",
+            "tieba:floor" to "贴吧楼层",
+            "tieba:comment" to "贴吧楼中楼",
+            "reddit:comment" to "Reddit回复",
+            "twitter:comment" to "X评论",
+            "weibo:comment" to "微博评论",
+            "douban:comment" to "豆瓣评论",
+            "threads:comment" to "Threads回复"
+        )
+        labels.forEach { (key, label) -> assertEquals(label, typeLabel(key)) }
+        assertEquals(labels.size, labels.keys.map(::typeLabel).toSet().size)
+    }
+
+    @Test
     fun storedTypesAndFilterLabelsAreDistinct() {
         val records = listOf(
             UniversalRecord(platform = "tieba", recordType = "lou"),

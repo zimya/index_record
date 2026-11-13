@@ -36,7 +36,11 @@ internal class RecordDetailViewModel(
     repository: RecordDetailRepository = RecordDetailRepository()
 ) : ViewModel() {
     private val initial = record.copy()
-    val state: StateFlow<RecordDetailUiState> = recordDetailStates(initial, repository.observe(initial)).stateIn(
+    private val reads = DetailRetry { repository.observe(initial) }
+    val isRetrying = reads.isRetrying
+    fun retry() = reads.retry()
+
+    val state: StateFlow<RecordDetailUiState> = recordDetailStates(initial, reads.snapshots).stateIn(
         scope = viewModelScope,
         started = SharingStarted.WhileSubscribed(5_000),
         initialValue = RecordDetailUiState(RecordDetailSnapshot(initial.toDetailRecord()))
@@ -68,4 +72,4 @@ internal fun recordDetailStates(
     }
 }
 
-private const val READ_ERROR = "无法读取本地记录，请返回后重试"
+private const val READ_ERROR = "无法读取本地记录，请重试"

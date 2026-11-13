@@ -280,5 +280,5 @@ internal fun filterAppLabel(pkg: String): String {
 }
 
 internal fun typeLabel(type: String): String {
-    return me.melon.record.data.PlatformCatalog.filterTypeLabel(type)
+    return me.melon.record.presentation.RecordContentPolicy.filterTypeLabel(type)
 }

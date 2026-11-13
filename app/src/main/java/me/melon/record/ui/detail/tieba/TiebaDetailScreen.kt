@@ -22,7 +22,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.OpenInBrowser
-import androidx.compose.material3.CircularProgressIndicator
+
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -52,6 +52,9 @@ import me.melon.record.ui.components.RelatedRecordCard
 import me.melon.record.data.model.TiebaMetadata
 import me.melon.record.data.model.toEntity
 import me.melon.record.viewmodel.DetailLoadState
+import me.melon.record.ui.detail.DetailLoadContent
+import me.melon.record.ui.detail.localRecordedCountLabel
+import androidx.compose.runtime.collectAsState
 import kotlinx.coroutines.delay
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -63,7 +66,9 @@ fun TiebaDetailScreen(
     listState: LazyListState = rememberLazyListState(),
     firstFloorListState: LazyListState = rememberLazyListState()
 ) {
-    val data = rememberTiebaDetailData(record)
+    val viewModel = rememberTiebaDetailViewModel(record)
+    val data by viewModel.state.collectAsState()
+    val isRetrying by viewModel.isRetrying.collectAsState()
     var showFirstFloorReplies by rememberSaveable(record.platformId) { mutableStateOf(false) }
     var viewerUrls by remember { mutableStateOf(emptyList<String>()) }
     var viewerIndex by remember { mutableStateOf(0) }
@@ -128,18 +133,10 @@ fun TiebaDetailScreen(
             )
         }
     ) { padding ->
-        // Do not clamp a retained scroll position while the database query is pending.
-        if (data.loadState == DetailLoadState.Loading) {
-            Column(Modifier.padding(padding).padding(16.dp)) {
-                CircularProgressIndicator()
-                Text("正在读取本地记录…", modifier = Modifier.padding(top = 12.dp))
-            }
-        } else if (data.loadState is DetailLoadState.Failed) {
-            Text(data.loadState.message, modifier = Modifier.padding(padding).padding(16.dp))
-        } else {
+        DetailLoadContent(data.loadState, isRetrying, viewModel::retry, Modifier.padding(padding)) {
             LazyColumn(
                 state = activeListState,
-                modifier = Modifier.padding(padding).fillMaxSize(),
+                modifier = Modifier.fillMaxSize(),
                 verticalArrangement = Arrangement.spacedBy(12.dp)
             ) {
                 item(key = "header") {
@@ -190,7 +187,7 @@ fun TiebaDetailScreen(
                             )
                             Spacer(Modifier.height(16.dp))
                             Text(
-                                "楼层 · 已记录 ${floors.size} 层",
+                                "楼层 · ${localRecordedCountLabel(floors.size)}",
                                 style = MaterialTheme.typography.titleMedium
                             )
 
@@ -203,7 +200,7 @@ fun TiebaDetailScreen(
                             }
                             Spacer(Modifier.height(16.dp))
                             Text(
-                                "本楼楼中楼 · 已记录 ${replies.size} 条",
+                                "本楼楼中楼 · ${localRecordedCountLabel(replies.size)}",
                                 style = MaterialTheme.typography.titleMedium
                             )
 

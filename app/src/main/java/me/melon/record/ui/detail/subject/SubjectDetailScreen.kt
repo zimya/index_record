@@ -18,6 +18,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
@@ -28,7 +29,8 @@ import me.melon.record.ui.components.DetailTopAppBar
 
 import me.melon.record.ui.components.ImageViewerDialog
 import me.melon.record.ui.theme.isAppInDarkTheme
-import me.melon.record.viewmodel.DetailLoadState
+import me.melon.record.ui.detail.DetailLoadContent
+import androidx.compose.runtime.collectAsState
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -38,14 +40,16 @@ fun SubjectDetailScreen(
     onOpenRecord: (UniversalRecord) -> Unit,
     listState: LazyListState = rememberLazyListState()
 ) {
-    val data = rememberSubjectDetailData(record)
+    val viewModel = rememberSubjectDetailViewModel(record)
+    val data by viewModel.state.collectAsState()
+    val isRetrying by viewModel.isRetrying.collectAsState()
     val subject = data.subject
     val relatedRecords = data.snapshot.relatedRecords
 
     var viewerUrls by remember { mutableStateOf<List<String>>(emptyList()) }
     var viewerIndex by remember { mutableStateOf(0) }
-    var isIntroExpanded by remember { mutableStateOf(false) }
-    var relatedFilter by remember { mutableStateOf(SubjectRelatedFilter.ALL) }
+    var isIntroExpanded by rememberSaveable { mutableStateOf(false) }
+    var relatedFilter by rememberSaveable { mutableStateOf(SubjectRelatedFilter.ALL) }
     val interestCount = remember(relatedRecords) { relatedRecords.count { it.recordType == "interest" } }
     val reviewCount = remember(relatedRecords) { relatedRecords.count { it.recordType == "review" } }
     val topicCount = remember(relatedRecords) { relatedRecords.count { it.recordType == "topic" } }
@@ -74,64 +78,55 @@ fun SubjectDetailScreen(
             )
         }
     ) { innerPadding ->
-        if (data.loadState == DetailLoadState.Loading) return@Scaffold
-        val failure = data.loadState as? DetailLoadState.Failed
+        DetailLoadContent(data.loadState, isRetrying, viewModel::retry, Modifier.padding(innerPadding)) {
+            LazyColumn(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(animatedBgColor)
 
-        LazyColumn(
-            modifier = Modifier
-                .fillMaxSize()
-                .background(animatedBgColor)
-                .padding(innerPadding)
-                .padding(horizontal = 16.dp),
-            state = listState
-        ) {
-            if (failure != null) {
+                    .padding(horizontal = 16.dp),
+                state = listState
+            ) {
+
                 item {
-                    Text(
-                        text = failure.message,
-                        modifier = Modifier.padding(vertical = 16.dp),
-                        color = MaterialTheme.colorScheme.error
+                    SubjectHeader(subject, onCoverClick = { url ->
+                        viewerUrls = listOf(url)
+                        viewerIndex = 0
+                    })
+                }
+                item { SubjectRatingCard(subject, isDark) }
+                item { SubjectMetadataCard(subject, isDark) }
+                if (subject.intro.isNotBlank()) {
+                    item {
+                        SubjectIntroduction(
+                            intro = subject.intro,
+                            isExpanded = isIntroExpanded,
+                            onToggle = { isIntroExpanded = !isIntroExpanded },
+                            onImageClick = { urls, idx ->
+                                viewerUrls = urls
+                                viewerIndex = idx
+                            }
+                        )
+                    }
+                }
+                item {
+                    SubjectRelatedFilter(
+                        relatedRecords, relatedFilter, { relatedFilter = it },
+                        interestCount, reviewCount, topicCount
                     )
                 }
-            }
-            item {
-                SubjectHeader(subject, onCoverClick = { url ->
-                    viewerUrls = listOf(url)
-                    viewerIndex = 0
-                })
-            }
-            item { SubjectRatingCard(subject, isDark) }
-            item { SubjectMetadataCard(subject, isDark) }
-            if (subject.intro.isNotBlank()) {
-                item {
-                    SubjectIntroduction(
-                        intro = subject.intro,
-                        isExpanded = isIntroExpanded,
-                        onToggle = { isIntroExpanded = !isIntroExpanded },
-                        onImageClick = { urls, idx ->
-                            viewerUrls = urls
-                            viewerIndex = idx
-                        }
-                    )
+                if (filteredList.isEmpty()) {
+                    item { SubjectRelatedEmptyState() }
+                } else {
+                    items(filteredList, key = { it.id }) { item ->
+                        SubjectRelatedRecordItem(record = item, onClick = { onOpenRecord(item.toEntity()) })
+                        Spacer(modifier = Modifier.height(8.dp))
+                    }
                 }
-            }
-            item {
-                SubjectRelatedFilter(
-                    relatedRecords, relatedFilter, { relatedFilter = it },
-                    interestCount, reviewCount, topicCount
-                )
-            }
-            if (filteredList.isEmpty()) {
-                item { SubjectRelatedEmptyState() }
-            } else {
-                items(filteredList, key = { it.id }) { item ->
-                    SubjectRelatedRecordItem(record = item, onClick = { onOpenRecord(item.toEntity()) })
-                    Spacer(modifier = Modifier.height(8.dp))
-                }
-            }
 
-            item {
-                Spacer(modifier = Modifier.height(32.dp))
+                item {
+                    Spacer(modifier = Modifier.height(32.dp))
+                }
             }
         }
     }

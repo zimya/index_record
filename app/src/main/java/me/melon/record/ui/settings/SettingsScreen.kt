@@ -53,6 +53,7 @@ fun SettingsScreen(viewModel: SettingsViewModel = viewModel()) {
     val threadsRecordMode by viewModel.threadsRecordMode.collectAsState()
     val redditRecordMode by viewModel.redditRecordMode.collectAsState()
     val collapseMultipleItems by viewModel.collapseMultipleItems.collectAsState()
+    val includeRepliesAndCommentsInStats by viewModel.includeRepliesAndCommentsInStats.collectAsState()
 
     Scaffold(
         contentWindowInsets = WindowInsets(0, 0, 0, 0),
@@ -107,6 +108,32 @@ fun SettingsScreen(viewModel: SettingsViewModel = viewModel()) {
                     modifier = Modifier.weight(1f)
                 )
                 Switch(checked = collapseMultipleItems, onCheckedChange = null)
+            }
+
+            Spacer(modifier = Modifier.height(24.dp))
+            SettingsSectionTitle("统计")
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .toggleable(
+                        value = includeRepliesAndCommentsInStats,
+                        role = Role.Switch,
+                        onValueChange = viewModel::setIncludeRepliesAndCommentsInStats
+                    )
+                    .padding(horizontal = 12.dp, vertical = 16.dp),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Column(modifier = Modifier.weight(1f).padding(end = 12.dp)) {
+                    Text("统计回复和评论", style = MaterialTheme.typography.bodyLarge)
+                    Text(
+                        "默认仅统计主内容；开启后将已记录的回复和评论纳入本地条目、字数、分布和连续天数统计。不影响采集及平台点赞、回复等互动计数。",
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        modifier = Modifier.padding(top = 4.dp)
+                    )
+                }
+                Switch(checked = includeRepliesAndCommentsInStats, onCheckedChange = null)
             }
 
             Spacer(modifier = Modifier.height(24.dp))

@@ -38,7 +38,7 @@ class TiebaDetailStateTest {
         assertEquals(3, states.size)
         assertEquals(DetailLoadState.Ready, states[0].loadState)
         assertTrue(states[1].loadState is DetailLoadState.Failed)
-        assertEquals("无法读取本地记录，请返回后重试", (states[1].loadState as DetailLoadState.Failed).message)
+        assertEquals("无法读取本地记录，请重试", (states[1].loadState as DetailLoadState.Failed).message)
         assertEquals(current, states[1].current)
         assertEquals(thread, states[1].thread)
         assertEquals(floor, states[1].floor)

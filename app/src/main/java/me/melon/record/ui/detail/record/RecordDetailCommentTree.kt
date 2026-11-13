@@ -17,7 +17,11 @@ internal data class RecordDetailCommentRow(
     val depth: Int,
     val missingParentId: String? = null,
     val hasInvalidParentChain: Boolean = false
-)
+) {
+    val stableKey: String get() = record.identity.let {
+        "comment:${it.platform.length}:${it.platform}:${it.contentId}"
+    }
+}
 
 
 @Composable

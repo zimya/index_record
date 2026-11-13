@@ -59,7 +59,15 @@
 - **快照与刷新**：`data/repository/RecordObservation.kt` 统一订阅本地记录变更，合并突发通知，在 IO 线程的同一个读事务中重建完整快照。正文、统计、评论和关联内容不分别发布。单次读失败不终止变更监听，下一次变更可恢复。
 - **不可变状态**：快照只暴露全 `val` 的 `DetailRecord` 和防御性复制的不可修改集合。ObjectBox 实体只用于存储；旧渲染组件或导航需要实体时通过 `toEntity()` 创建新值，不能修改快照。
 - **元数据与统计**：平台领域元数据使用 `TiebaMetadata`、`DoubanSubjectMetadata` 等命名字段，隐藏原始 JSON，不依赖 parser。展示统计使用 `RecordStatistic` / `CommentStatistics` 等契约，保留各平台未知值、零值、负分和排序语义，不把所有平台字段继续塞入通用元数据类。
-- **加载与生命周期**：各页使用 `DetailLoadState.Loading / Ready / Failed` 表示整页快照的加载状态。自定义导航通过 `DetailViewModelScope` 管理当前详情的 ViewModel；页面退出组合后清理，不在 Activity 中永久缓存逐条记录的详情状态。
+- **加载与生命周期**：各页使用 `DetailLoadState.Loading / Ready / Failed`，通过 `DetailLoadContent` 统一显示加载、保留快照的错误反馈和重试入口。`DetailNavigationViewModel` 为每次导航创建独立条目；`DetailViewModelScope` 使用该条目的 ViewModelStore，被关联内容覆盖时保留，弹出且退出动画结束后清理。`SaveableStateProvider` 按条目保存滚动位置、排序、筛选及展开状态，不按裸平台 ID 共享位置。此机制支持栈内返回和配置变化，不承诺进程被系统终止后的导航栈恢复。
+
+## 首页与统计策略
+
+- `HomeViewModel` 仅协调首页搜索、筛选及加载状态；`HomeRecordRepository` 负责本地查询与订阅，`HomeQueryPolicy` 负责纯筛选，`HomeSyncCoordinator` 负责宿主唤醒和捕获同步，详情导航独立管理。
+- 首页默认仅显示主内容；非空搜索或任一显式筛选（日期、应用、类型）会允许楼层、回复和评论参与匹配。类型筛选使用 `platform:recordType` 展示身份，例如知乎评论、贴吧楼层、X 评论，不修改数据库中的原始类型。
+- `RecordContentPolicy.isPrimaryContent` 显式声明主内容资格：知乎问题/回答/文章/想法，贴吧主帖，Reddit 帖子，X 推文，微博博文，Threads 主帖，豆瓣小组话题/长评/短评/条目。未声明的平台或类型不自动获得默认资格，新增平台需同步补充策略与测试。
+- 设置中的“统计回复和评论”默认关闭；开启后将本地回复和评论纳入条目数、字数、分布和连续天数。统计页按捕获时间计算，不累加平台点赞、回复等互动数字。此开关不影响采集、存储、搜索或平台计数字段映射。
+- 详情中的“本地已记录 N 条”仅表示本地记录数量，平台返回的回复总数独立保留在统计展示契约中。未知计数不伪造为零；有效零值保留。
 
 新增平台时，先补身份、关系及领域元数据测试，再实现所需的 Repository 查询策略，复用观察与加载契约，最后接入只收集状态的页面。回归验证：
 

@@ -42,7 +42,11 @@ internal class QuestionDetailViewModel(
 ) : ViewModel() {
     private val seed = record.toDetailRecord()
     private val sort = MutableStateFlow(AnswerSort.VOTEUP)
-    val state: StateFlow<QuestionDetailUiState> = questionDetailStates(seed, repository.observe(seed))
+    private val reads = DetailRetry { repository.observe(seed) }
+    val isRetrying = reads.isRetrying
+    fun retry() = reads.retry()
+
+    val state: StateFlow<QuestionDetailUiState> = questionDetailStates(seed, reads.snapshots)
         .combine(sort) { state, order -> state.copy(sort = order) }
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000),
             QuestionDetailUiState(assembleQuestionDetailSnapshot(seed) { null }))
@@ -62,7 +66,7 @@ internal fun questionDetailStates(
         result.exceptionOrNull()?.let { if (it is CancellationException) throw it }
         val state = result.fold(
             onSuccess = { latest = it; DetailLoadState.Ready },
-            onFailure = { DetailLoadState.Failed("无法读取本地记录，请返回后重试") }
+            onFailure = { DetailLoadState.Failed("无法读取本地记录，请重试") }
         )
         emit(QuestionDetailUiState(latest, state))
     }

@@ -84,9 +84,9 @@ class RedditUiIntegrationTest {
         val metadata = RedditMetadata("""{"comment_count":1000,"comments_has_next_page":true}""")
         assertEquals(true, metadata.commentsHasNextPage)
         assertEquals(1000L, requireNotNull(metadata.commentCount))
-        assertEquals("已记录回复 (8)", recordDetailCommentCountLabel("reddit", 8))
-        assertEquals("已记录回复 (0)", recordDetailCommentCountLabel("reddit", 0))
-        assertEquals("评论 (8)", recordDetailCommentCountLabel("douban", 8))
+        assertEquals("本地已记录 8 条", recordDetailCommentCountLabel("reddit", 8))
+        assertEquals("本地已记录 0 条", recordDetailCommentCountLabel("reddit", 0))
+        assertEquals("本地已记录 8 条", recordDetailCommentCountLabel("douban", 8))
     }
 
     @Test

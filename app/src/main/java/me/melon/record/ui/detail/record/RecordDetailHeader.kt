@@ -48,7 +48,7 @@ internal fun RecordDetailHeader(record: UniversalRecord, onImageClick: (List<Str
         }
         Spacer(modifier = Modifier.height(12.dp))
     }
-    if (presentation.title.isNotEmpty()) {
+    if (me.melon.record.presentation.contentStructure(record).hasTitle) {
         Text(
             text = presentation.title,
             style = MaterialTheme.typography.headlineSmall,
@@ -88,5 +88,6 @@ internal fun RecordDetailHeader(record: UniversalRecord, onImageClick: (List<Str
             }
         }
     }
+
     HorizontalDivider(modifier = Modifier.padding(vertical = 16.dp))
 }

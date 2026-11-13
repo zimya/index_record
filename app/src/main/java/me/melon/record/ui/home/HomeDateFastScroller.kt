@@ -19,9 +19,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.launch
-import java.text.SimpleDateFormat
-import java.util.Date
-import java.util.Locale
+import me.melon.record.presentation.displayTime
 import kotlin.math.max
 import kotlin.math.roundToInt
 
@@ -40,7 +38,7 @@ internal fun DateFastScroller(
     modifier: Modifier = Modifier
 ) {
     val scope = rememberCoroutineScope()
-    val sdf = remember { SimpleDateFormat("yyyy年M月d日", Locale.getDefault()) }
+
     val density = LocalDensity.current
 
     var heightPx by remember { mutableStateOf(1) }
@@ -118,7 +116,7 @@ internal fun DateFastScroller(
 
         if (isDragging) {
             val ts = homeItemTimeMillis(items[hoverIndex])
-            val label = if (ts > 0) sdf.format(Date(ts)) else ""
+            val label = displayTime(ts, "yyyy年M月d日")
 
             if (label.isNotBlank()) {
                 val y = (thumbYPx - with(density) { 18.dp.toPx() })

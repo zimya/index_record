@@ -6,6 +6,7 @@ import com.google.gson.JsonObject
 import com.google.gson.JsonParser
 import me.melon.record.data.PlatformCatalog
 import me.melon.record.data.model.RawData
+import me.melon.record.data.model.RecordBodyFormat
 import me.melon.record.data.model.UniversalRecord
 import me.melon.record.parser.RawDataParser
 import java.net.URI
@@ -142,6 +143,7 @@ object TiebaParser : RawDataParser {
             val time = post.number("time").takeIf { it > 0 }
                 ?: if (isThread) thread.number("create_time", "createTime") else 0L
             val record = UniversalRecord(
+                contentFormat = RecordBodyFormat.MARKDOWN.storageValue,
                 platform = platform, recordType = if (isSub) "comment" else if (isThread) "lou" else "floor",
                 sourceApp = raw.hostApp.ifBlank { PlatformCatalog.defaultPackage("tieba") },
                 platformId = if (isThread) threadId else "tieba_post_$pid",
@@ -159,7 +161,9 @@ object TiebaParser : RawDataParser {
             val existing = output[record.platformId]
             if (existing == null) output[record.platformId] = record
             else {
-                existing.content = TiebaRelations.mergeRecordContent(existing, record)
+                val body = TiebaRelations.mergeRecordContent(existing, record)
+                existing.content = body.content
+                existing.contentFormat = body.contentFormat
                 existing.extraMetadata = TiebaRelations.mergeExtra(existing.extraMetadata, record.extraMetadata)
             }
             return output[record.platformId]

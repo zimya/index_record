@@ -10,7 +10,7 @@ class RecordDetailTitleTest {
         val cases = listOf(
             Triple("reddit", "post", "Reddit · 帖子"),
             Triple("reddit", "comment", "Reddit · 回复"),
-            Triple("threads", "thread", "Threads · 主帖"),
+            Triple("threads", "thread", "Threads · 帖子"),
             Triple("threads", "comment", "Threads · 回复"),
             Triple("zhihu", "pin", "知乎 · 想法"),
             Triple("zhihu", "answer", "知乎 · 回答"),
@@ -24,10 +24,10 @@ class RecordDetailTitleTest {
             Triple("tieba", "lou", "贴吧 · 主帖"),
             Triple("tieba", "floor", "贴吧 · 楼层"),
             Triple("tieba", "comment", "贴吧 · 楼中楼"),
-            Triple("twitter", "tweet", "𝕏 · 推文"),
+            Triple("twitter", "tweet", "X · 推文"),
             Triple("weibo", "status", "微博 · 微博"),
             Triple("weibo", "comment", "微博 · 评论"),
-            Triple("custom", "custom_type", "Custom · custom_type")
+            Triple("custom", "custom_type", "custom · custom_type")
         )
         cases.forEach { (platform, type, expected) ->
             assertEquals(expected, recordDetailTitle(UniversalRecord(platform = platform, recordType = type)))

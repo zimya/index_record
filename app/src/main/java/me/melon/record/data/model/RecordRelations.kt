@@ -10,6 +10,13 @@ internal sealed interface RecordRelation {
     data class ReferencesContent(override val target: RecordIdentity) : RecordRelation
 }
 
+/** Whether the relation target is captured locally, only described by a reference, or absent. */
+internal enum class RelatedTargetState {
+    RECORDED,
+    REFERENCE_ONLY,
+    MISSING
+}
+
 /** The storage boundary is the only place that interprets the overloaded parentId column. */
 internal fun UniversalRecord.directRelation(): RecordRelation? = relationOf(platform, recordType, parentId)
 

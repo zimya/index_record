@@ -27,14 +27,14 @@ import me.melon.record.data.repository.ZhihuAnswerRef
 import me.melon.record.ui.components.AvatarImage
 import me.melon.record.ui.components.EngagementCount
 import org.jsoup.Jsoup
-import java.text.SimpleDateFormat
-import java.util.Date
+import me.melon.record.presentation.displayAuthor
+import me.melon.record.presentation.displayPublishTime
 
 @Composable
 internal fun QuestionAnswerCard(
     ref: ZhihuAnswerRef,
     stored: DetailRecord?,
-    sdf: SimpleDateFormat,
+
     onOpenAnswer: (UniversalRecord) -> Unit
 ) {
     val enabled = stored != null
@@ -57,14 +57,14 @@ internal fun QuestionAnswerCard(
                 Spacer(modifier = Modifier.width(10.dp))
                 Column(modifier = Modifier.weight(1f)) {
                     Text(
-                        text = ref.authorName.ifBlank { "知乎用户" },
+                        text = displayAuthor(ref.authorName),
                         style = MaterialTheme.typography.bodyMedium,
                         fontWeight = FontWeight.Bold,
                         color = MaterialTheme.colorScheme.primary
                     )
                 }
                 if (ref.voteupCount > 0) {
-                    EngagementCount(count = ref.voteupCount, icon = Icons.Outlined.ThumbUp)
+                    EngagementCount(count = ref.voteupCount, icon = Icons.Outlined.ThumbUp, label = "赞同数")
                 }
             }
             if (excerpt.isNotBlank()) {
@@ -78,14 +78,12 @@ internal fun QuestionAnswerCard(
                 )
             }
             val ts = (if (ref.updatedTimeSec > 0) ref.updatedTimeSec else ref.createdTimeSec) * 1000
-            if (ts > 0) {
-                Spacer(modifier = Modifier.height(8.dp))
-                Text(
-                    text = sdf.format(Date(ts)),
-                    style = MaterialTheme.typography.labelSmall,
-                    color = MaterialTheme.colorScheme.outline
-                )
-            }
+            Spacer(modifier = Modifier.height(8.dp))
+            Text(
+                text = displayPublishTime(ts),
+                style = MaterialTheme.typography.labelSmall,
+                color = MaterialTheme.colorScheme.outline
+            )
             if (!enabled) {
                 Spacer(modifier = Modifier.height(8.dp))
                 Text(

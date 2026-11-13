@@ -22,7 +22,7 @@ internal fun RecordDetailMetadata(statistics: List<RecordStatistic>, hasMetadata
             horizontalArrangement = Arrangement.spacedBy(8.dp),
             verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
-            statistics.forEach { MetadataBadge(statisticIcon(it.kind), it.text) }
+            statistics.forEach { me.melon.record.ui.components.StatisticCount(it) }
         }
     }
     Spacer(modifier = Modifier.height(32.dp))

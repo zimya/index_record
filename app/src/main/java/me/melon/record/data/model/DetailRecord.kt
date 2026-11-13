@@ -18,20 +18,21 @@ internal data class DetailRecord(
     val parentId: String = "",
     val publishTime: Long = 0,
     val captureTime: Long = 0,
-    val extraMetadata: String = "{}"
+    val extraMetadata: String = "{}",
+    val contentFormat: String = RecordBodyFormat.PLAIN_TEXT.storageValue
 ) {
     val identity: RecordIdentity get() = RecordIdentity.of(platform, platformId)
 }
 
 internal fun UniversalRecord.toDetailRecord(): DetailRecord = DetailRecord(
     id, platform, recordType, sourceApp, platformId, title, content, authorId, authorName,
-    authorAvatar, sourceUrl, parentId, publishTime, captureTime, extraMetadata
+    authorAvatar, sourceUrl, parentId, publishTime, captureTime, extraMetadata, contentFormat
 )
 
 /** Navigation and existing rendering components receive a fresh entity, never the snapshot's storage. */
 internal fun DetailRecord.toEntity(): UniversalRecord = UniversalRecord(
     id, platform, recordType, sourceApp, platformId, title, content, authorId, authorName,
-    authorAvatar, sourceUrl, parentId, publishTime, captureTime, extraMetadata
+    authorAvatar, sourceUrl, parentId, publishTime, captureTime, extraMetadata, contentFormat
 )
 
 internal fun <T> immutableList(values: Iterable<T>): List<T> =

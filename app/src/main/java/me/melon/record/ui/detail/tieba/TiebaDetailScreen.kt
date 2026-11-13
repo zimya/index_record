@@ -46,6 +46,10 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import me.melon.record.data.model.UniversalRecord
+import me.melon.record.data.model.RecordIdentity
+import me.melon.record.data.model.RecordRelation
+import me.melon.record.data.model.RelatedTargetState
+import me.melon.record.data.model.directRelation
 import me.melon.record.ui.components.DetailTopAppBar
 import me.melon.record.ui.components.ImageViewerDialog
 import me.melon.record.ui.components.RelatedRecordCard
@@ -242,14 +246,20 @@ fun TiebaDetailScreen(
                     }
                 }
                 if (!isThread) {
-                    thread?.let { thread ->
+                    val threadRelation = thread?.let {
+                        RecordRelation.FloorInThread(RecordIdentity.of(it.platform, it.platformId))
+                    } ?: (current.directRelation() as? RecordRelation.FloorInThread)
+                        ?: (floor?.directRelation() as? RecordRelation.FloorInThread)
+                    threadRelation?.let { relation ->
                         item(key = "related_thread") {
                             RelatedRecordCard(
                                 record = thread,
+                                relation = relation,
+                                targetState = if (thread != null) RelatedTargetState.RECORDED else RelatedTargetState.MISSING,
                                 fallbackPlatform = "tieba",
                                 onClick = {
                                     if (showFirstFloorReplies) showFirstFloorReplies = false
-                                    else onOpenRecord(thread)
+                                    else thread?.let(onOpenRecord)
                                 },
                                 modifier = Modifier.padding(horizontal = 16.dp)
                             )

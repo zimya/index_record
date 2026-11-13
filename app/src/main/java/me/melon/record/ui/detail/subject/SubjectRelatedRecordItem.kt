@@ -8,14 +8,13 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
+
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.ThumbUp
+
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.Icon
+
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -28,30 +27,30 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 
-import java.text.SimpleDateFormat
-import java.util.Date
-import java.util.Locale
+import me.melon.record.data.PlatformCatalog
+import me.melon.record.data.model.toEntity
+import me.melon.record.presentation.displayAuthor
+import me.melon.record.presentation.displayPublishTime
+import me.melon.record.presentation.recordPreviewText
+import me.melon.record.presentation.recordStatistics
+import me.melon.record.presentation.StatisticsSurface
+import me.melon.record.ui.components.StatisticCount
 import me.melon.record.data.model.DetailRecord
 import me.melon.record.data.model.DoubanSubjectRelatedMetadata
 import me.melon.record.ui.components.AvatarImage
 import me.melon.record.ui.components.RatingStars
 import me.melon.record.ui.theme.getPlatformThemeColor
 import me.melon.record.ui.theme.isAppInDarkTheme
-import org.jsoup.Jsoup
+
 
 @Composable
 internal fun SubjectRelatedRecordItem(record: DetailRecord, onClick: () -> Unit) {
     val meta = remember(record.extraMetadata) { DoubanSubjectRelatedMetadata(record) }
 
-    val typeBadge = when (record.recordType) {
-        "interest" -> "短评"
-        "review" -> "长评"
-        "topic" -> "讨论"
-        else -> record.recordType
-    }
+    val typeBadge = PlatformCatalog.typeLabel(record.platform, record.recordType)
 
     val starCount = meta.starCount
-    val voteCount = meta.voteCount
+
     val isDark = isAppInDarkTheme()
 
     Card(
@@ -76,7 +75,7 @@ internal fun SubjectRelatedRecordItem(record: DetailRecord, onClick: () -> Unit)
                         Spacer(modifier = Modifier.width(8.dp))
                     }
                     Text(
-                        text = record.authorName.ifBlank { "豆瓣用户" },
+                        text = displayAuthor(record.authorName),
                         style = MaterialTheme.typography.bodySmall,
                         fontWeight = FontWeight.Medium,
                         color = MaterialTheme.colorScheme.onSurface
@@ -113,10 +112,7 @@ internal fun SubjectRelatedRecordItem(record: DetailRecord, onClick: () -> Unit)
                 )
             }
 
-            val snippet = remember(record.content) {
-                val t = try { Jsoup.parse(record.content).text() } catch (_: Exception) { record.content }
-                t.replace('\n', ' ').trim()
-            }
+            val snippet = remember(record) { recordPreviewText(record.toEntity()) }
             if (snippet.isNotBlank()) {
                 Spacer(modifier = Modifier.height(4.dp))
                 Text(
@@ -134,28 +130,15 @@ internal fun SubjectRelatedRecordItem(record: DetailRecord, onClick: () -> Unit)
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                val sdf = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
+
                 Text(
-                    text = sdf.format(Date(record.publishTime)),
+                    text = displayPublishTime(record.publishTime),
                     style = MaterialTheme.typography.labelSmall,
                     color = MaterialTheme.colorScheme.outline
                 )
 
-                if (voteCount > 0) {
-                    Row(verticalAlignment = Alignment.CenterVertically) {
-                        Icon(
-                            imageVector = Icons.Outlined.ThumbUp,
-                            contentDescription = null,
-                            tint = MaterialTheme.colorScheme.outline,
-                            modifier = Modifier.size(12.dp)
-                        )
-                        Spacer(modifier = Modifier.width(4.dp))
-                        Text(
-                            text = "$voteCount",
-                            style = MaterialTheme.typography.labelSmall,
-                            color = MaterialTheme.colorScheme.outline
-                        )
-                    }
+                Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                    recordStatistics(record.toEntity(), StatisticsSurface.LIST).forEach { StatisticCount(it) }
                 }
             }
         }

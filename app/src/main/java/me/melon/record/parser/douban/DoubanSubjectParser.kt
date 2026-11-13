@@ -6,6 +6,7 @@ import com.google.gson.JsonObject
 import com.google.gson.JsonParser
 import me.melon.record.data.PlatformCatalog
 import me.melon.record.data.model.RawData
+import me.melon.record.data.model.RecordBodyFormat
 import me.melon.record.data.model.UniversalRecord
 import me.melon.record.parser.douban.DoubanUtils.safeDouble
 import me.melon.record.parser.douban.DoubanUtils.safeLong
@@ -232,6 +233,8 @@ object DoubanSubjectParser {
         addListIfNotEmpty("tags", tags)
 
         return UniversalRecord(
+
+            contentFormat = RecordBodyFormat.PLAIN_TEXT.storageValue,
             platform = "douban",
             recordType = "subject",
             sourceApp = raw.hostApp.ifBlank { PlatformCatalog.defaultPackage("douban") },

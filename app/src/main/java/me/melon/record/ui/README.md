@@ -10,8 +10,7 @@ ui/
 │   ├── record/        # RecordDetail*：记录详情、评论树、元数据
 │   ├── subject/       # Subject*：条目详情及关联记录
 │   ├── question/      # Question*：问题详情与回答
-│   ├── tieba/         # Tieba*：贴吧详情、楼层与回复
-│   └── comment/       # CommentDetailScreen：短评详情
+│   └── tieba/         # Tieba*：贴吧详情、楼层与回复
 ├── settings/          # SettingsScreen：设置页面
 ├── main/              # MainScreen：主界面导航
 ├── components/        # 跨页面共享组件

@@ -50,21 +50,11 @@ private val commonMarkParser = Parser.builder()
  */
 fun markdownToMdAst(
     markdown: String,
-    enableMath: Boolean = true,
-    preserveHtml: Boolean = false,
-    normalizeFootnotes: Boolean = true
+    enableMath: Boolean = false
 ): MdDocument {
     val doc = MdDocument()
-    val options = MdParseOptions(enableMath, preserveHtml)
-
-    // Ensure footnote definitions in single-line flattened documents start on a new block line
-    val normalizedMarkdown = if (normalizeFootnotes && markdown.contains("[^")) {
-        markdown.replace(Regex("""(?<!\n)\s*(\[\^[^\]]+\]:)"""), "\n\n$1")
-    } else {
-        markdown
-    }
-
-    val root = commonMarkParser.parse(normalizedMarkdown)
+    val options = MdParseOptions(enableMath)
+    val root = commonMarkParser.parse(markdown)
     var child = root.firstChild
     while (child != null) {
         val blocks = convertCommonMarkBlock(child, doc, options)
@@ -74,7 +64,7 @@ fun markdownToMdAst(
     return doc
 }
 
-private data class MdParseOptions(val enableMath: Boolean, val preserveHtml: Boolean)
+private data class MdParseOptions(val enableMath: Boolean)
 
 private fun convertCommonMarkBlock(node: org.commonmark.node.Node, doc: MdDocument, options: MdParseOptions): List<MdNode> {
     return when (node) {
@@ -134,9 +124,7 @@ private fun convertCommonMarkBlock(node: org.commonmark.node.Node, doc: MdDocume
         }
         is FencedCodeBlock -> listOf(MdFencedCodeBlock(node.info.orEmpty(), node.literal.orEmpty()))
         is IndentedCodeBlock -> listOf(MdFencedCodeBlock("", node.literal.orEmpty()))
-        is HtmlBlock -> if (options.preserveHtml) {
-            listOf(MdParagraph().apply { appendChild(MdText(node.literal.orEmpty())) })
-        } else emptyList()
+        is HtmlBlock -> listOf(MdParagraph().apply { appendChild(MdText(node.literal.orEmpty())) })
         is BlockQuote -> listOf(MdBlockQuote().apply {
             var c = node.firstChild
             while (c != null) {
@@ -229,7 +217,7 @@ private fun convertCommonMarkInlines(first: org.commonmark.node.Node?, options: 
     while (cur != null) {
         when (cur) {
             is Text -> if (options.enableMath) list.addAll(parseInlineTokensInText(cur.literal)) else list.add(MdText(cur.literal))
-            is HtmlInline -> if (options.preserveHtml) list.add(MdText(cur.literal.orEmpty()))
+            is HtmlInline -> list.add(MdText(cur.literal.orEmpty()))
             is Emphasis -> list.add(MdEmphasis().apply { appendChildren(convertCommonMarkInlines(cur.firstChild, options)) })
             is StrongEmphasis -> list.add(MdStrongEmphasis().apply { appendChildren(convertCommonMarkInlines(cur.firstChild, options)) })
             is Strikethrough -> list.add(MdStrikethrough().apply { appendChildren(convertCommonMarkInlines(cur.firstChild, options)) })

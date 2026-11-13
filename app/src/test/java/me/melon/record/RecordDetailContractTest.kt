@@ -135,15 +135,15 @@ class RecordDetailContractTest {
         val tweet = record().apply { captureTime = 2; content = "updated by tweet" }
         val resolved = resolveRecordIdentity(listOf(reply, tweet))!!
         assertEquals(parent.platformId, resolved.parentId)
-        val snapshot = assembleCommentDetailSnapshot(reply.toDetailRecord()) { identity ->
+        val snapshot = assembleRecordDetailSnapshot(reply, { identity ->
             when (identity) {
-                reply.identity -> resolved.toDetailRecord()
-                parent.identity -> parent.toDetailRecord()
+                reply.identity -> resolved
+                parent.identity -> parent
                 else -> null
             }
-        }
+        }, { emptyList() })
         assertEquals("updated by tweet", snapshot.record.content)
-        assertEquals(parent.platformId, snapshot.related?.platformId)
+        assertEquals(parent.platformId, snapshot.related?.record?.platformId)
     }
 
     @Test fun commentRowsUseNewestValuesButRetainMembershipAndReplyRole() {

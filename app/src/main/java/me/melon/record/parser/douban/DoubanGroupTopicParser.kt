@@ -5,6 +5,7 @@ import com.google.gson.JsonObject
 import com.google.gson.JsonParser
 import me.melon.record.data.PlatformCatalog
 import me.melon.record.data.model.RawData
+import me.melon.record.data.model.RecordBodyFormat
 import me.melon.record.data.model.UniversalRecord
 import me.melon.record.parser.douban.DoubanUtils.doubanHtmlToMarkdown
 import me.melon.record.parser.douban.DoubanUtils.extractUser
@@ -77,6 +78,8 @@ object DoubanGroupTopicParser {
         }
 
         val record = UniversalRecord(
+
+            contentFormat = RecordBodyFormat.MARKDOWN.storageValue,
             platform = "douban",
             recordType = "topic",
             sourceApp = raw.hostApp.ifBlank { PlatformCatalog.defaultPackage("douban") },

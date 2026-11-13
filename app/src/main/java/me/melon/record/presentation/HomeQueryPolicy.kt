@@ -1,6 +1,7 @@
 package me.melon.record.presentation
 
 import me.melon.record.data.model.UniversalRecord
+import me.melon.record.data.model.bodyPlainText
 
 /** Immutable query input, independent of Android and storage. */
 data class HomeQueryFilter(
@@ -28,7 +29,7 @@ object HomeQueryPolicy {
                 (filter.apps.isEmpty() || RecordContentPolicy.sourceApp(record) in filter.apps) &&
                 (filter.types.isEmpty() || RecordContentPolicy.filterTypeKey(record) in filter.types) &&
                 (query.isEmpty() || sequenceOf(
-                    record.title, record.content, record.authorName, record.platform,
+                    record.title, record.bodyPlainText(), record.authorName, record.platform,
                     record.recordType, record.extraMetadata, record.sourceUrl,
                     RecordContentPolicy.sourceApp(record), RecordContentPolicy.filterTypeLabel(record)
                 ).any { it.contains(query, ignoreCase = true) })

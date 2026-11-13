@@ -37,7 +37,7 @@ class RedditMarkdownTest {
     }
 
     @Test
-    fun footnoteLookingCodeIsNotRewrittenByLegacyFlattenedTextNormalization() {
+    fun footnoteLookingCodeIsPreservedLiterally() {
         val document = contentToMdAst(
             "```text\nline [^1]: not a footnote\n```", MarkdownContentFormat.MARKDOWN, enableMath = false
         )
@@ -59,11 +59,34 @@ class RedditMarkdownTest {
     }
 
     @Test
-    fun defaultBehaviorStillDetectsHtmlAndConvertsMarkdownMath() {
-        val html = contentToMdAst("<p>example</p>")
+    fun htmlAndMarkdownMathRequireExplicitSourceDeclarations() {
+        val html = contentToMdAst("<p>example</p>", MarkdownContentFormat.HTML)
         assertEquals("example", nodes(html).filterIsInstance<MdText>().joinToString("") { it.text })
-        val math = contentToMdAst("Inline \$x+1\$.\n\n\$\$x=2\$\$")
+        val math = contentToMdAst("Inline \$x+1\$.\n\n\$\$x=2\$\$", MarkdownContentFormat.MARKDOWN, enableMath = true)
         assertTrue(nodes(math).any { it is MdInlineMath })
         assertTrue(nodes(math).any { it is MdMathBlock })
+    }
+
+    @Test
+    fun plainTextNeverParsesMarkupOrMath() {
+        val source = "<p>example</p> **bold** &amp; \$x\$\n[^1]: literal"
+        val document = contentToMdAst(source, MarkdownContentFormat.PLAIN_TEXT, enableMath = true)
+        assertEquals(source, nodes(document).filterIsInstance<MdText>().joinToString("\n") { it.text })
+        assertFalse(nodes(document).any { it is MdStrongEmphasis || it is MdInlineMath || it is MdMathBlock })
+        assertTrue(document.footnoteDefinitions.isEmpty())
+    }
+
+    @Test
+    fun markdownMathIsDisabledUnlessExplicitlyEnabled() {
+        val document = contentToMdAst("Inline \$x+1\$.\n\n\$\$x=2\$\$", MarkdownContentFormat.MARKDOWN)
+        assertFalse(nodes(document).any { it is MdInlineMath || it is MdMathBlock })
+        assertTrue(document.toPlainText().contains("\$x+1\$"))
+    }
+
+    @Test
+    fun flattenedFootnoteLookingTextIsNotRepairedIntoDefinitions() {
+        val document = contentToMdAst("before [^1]: not a definition", MarkdownContentFormat.MARKDOWN)
+        assertTrue(document.footnoteDefinitions.isEmpty())
+        assertEquals("before [^1]: not a definition", document.toPlainText())
     }
 }

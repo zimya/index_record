@@ -1,19 +1,23 @@
 package me.melon.record
 
 import com.google.gson.JsonParser
+import me.melon.record.data.model.RecordBodyFormat
 import me.melon.record.data.model.UniversalRecord
 import me.melon.record.logic.StatsCalculator
 import me.melon.record.presentation.RedditMetadata
-import me.melon.record.presentation.engagementCount
+import me.melon.record.presentation.PlatformMetadataAdapters
+import me.melon.record.presentation.recordPreviewText
 import me.melon.record.ui.components.filterAppLabel
 import me.melon.record.ui.components.recordTypeLabel
 import me.melon.record.presentation.redditPreviewText
-import me.melon.record.ui.components.relatedRecordLabel
+import me.melon.record.presentation.relatedRecordLabel
+import me.melon.record.data.model.RecordIdentity
+import me.melon.record.data.model.RecordRelation
 import me.melon.record.presentation.signedScore
 import me.melon.record.ui.components.typeLabel
 import me.melon.record.ui.detail.record.recordDetailCommentCountLabel
 import me.melon.record.presentation.redditMissingParentNotice
-import me.melon.record.ui.home.usesRecordDetailForComment
+
 import me.melon.record.ui.stats.appLabel
 import me.melon.record.ui.stats.colorFromPackage
 import me.melon.record.ui.theme.RedditOrange
@@ -121,37 +125,36 @@ class RedditUiIntegrationTest {
     }
 
     @Test
-    fun postAndReplyLabelsAndNavigationUseSharedRecordUi() {
+    fun postAndReplyLabelsUseSharedRecordVocabulary() {
         assertEquals("Reddit 帖子", typeLabel("post"))
         assertEquals("评论", typeLabel("comment"))
         assertEquals("帖子", recordTypeLabel(UniversalRecord(platform = "reddit", recordType = "post")))
         assertEquals("回复", recordTypeLabel(UniversalRecord(platform = "reddit", recordType = "comment")))
-        for (platform in listOf("reddit", "threads", "weibo")) assertTrue(usesRecordDetailForComment(platform))
-        for (platform in listOf("zhihu", "douban", "twitter")) assertFalse(usesRecordDetailForComment(platform))
+
         assertEquals("楼中楼", recordTypeLabel(UniversalRecord(platform = "tieba", recordType = "comment")))
-        assertEquals("所属 Reddit 帖子", relatedRecordLabel("reddit", "post"))
-        assertEquals("回复的 Reddit 评论", relatedRecordLabel("reddit", "comment"))
-        assertEquals("关联 Threads 主帖", relatedRecordLabel("threads", "thread"))
+        assertEquals("回复对象", relatedRecordLabel(RecordRelation.ReplyTo(RecordIdentity.of("reddit", "reddit_post_1"))))
+        assertEquals("回复对象", relatedRecordLabel(RecordRelation.ReplyTo(RecordIdentity.of("reddit", "reddit_comment_1"))))
+        assertEquals("引用内容", relatedRecordLabel(RecordRelation.ReferencesContent(RecordIdentity.of("threads", "threads_1"))))
     }
 
     @Test
     fun missingParentsAreNotPresentedAsFabricatedRecordsOrGuessedTypes() {
-        assertEquals("父回复未捕获：reddit_comment_abc", redditMissingParentNotice("reddit_comment_abc"))
-        assertEquals("父帖子未捕获：reddit_post_def", redditMissingParentNotice("reddit_post_def"))
-        assertEquals("父节点未捕获：unknown", redditMissingParentNotice("unknown"))
-        assertEquals("父节点关系未记录", redditMissingParentNotice(""))
+        assertEquals("本地尚未记录关联内容：reddit_comment_abc", redditMissingParentNotice("reddit_comment_abc"))
+        assertEquals("本地尚未记录关联内容：reddit_post_def", redditMissingParentNotice("reddit_post_def"))
+        assertEquals("本地尚未记录关联内容：unknown", redditMissingParentNotice("unknown"))
+        assertEquals("本地尚未记录关联内容", redditMissingParentNotice(""))
     }
 
     @Test
     fun previewsRemoveMarkdownSyntaxWithoutChangingTheCapturedSource() {
         val source = "**Cost**: \$5 or \$10. [link](https://example.com).\n\n`<p>\$5</p>`"
-        val record = UniversalRecord(platform = "reddit", recordType = "post", content = source)
+        val record = UniversalRecord(
+                    platform = "reddit", recordType = "post", content = source,
+                    contentFormat = RecordBodyFormat.MARKDOWN.storageValue
+                )
         assertEquals("Cost: \$5 or \$10. link. <p>\$5</p>", redditPreviewText(record.content))
         assertEquals(source, record.content)
-        val method = Class.forName("me.melon.record.ui.components.RecordItemKt")
-            .getDeclaredMethod("getPreviewText", UniversalRecord::class.java)
-        method.isAccessible = true
-        assertEquals(redditPreviewText(source), method.invoke(null, record))
+        assertEquals(redditPreviewText(source), recordPreviewText(record))
     }
 
     @Test
@@ -163,8 +166,8 @@ class RedditUiIntegrationTest {
     }
 
     @Test
-    fun legacyLikeCountsStillClampInsteadOfChangingOtherPlatformSemantics() {
-        assertEquals(0L, JsonParser.parseString("""{"like_count":-7}""").asJsonObject.engagementCount("like_count"))
+    fun invalidLikeCountsStayUnknownInsteadOfInventingZero() {
+        assertNull(PlatformMetadataAdapters("""{"like_count":-7}""", "threads").engagement.likeCount)
         assertEquals("Threads", appLabel("threads"))
         assertEquals("Threads 帖子", typeLabel("thread"))
     }

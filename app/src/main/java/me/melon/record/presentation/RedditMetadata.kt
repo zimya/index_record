@@ -1,7 +1,7 @@
 package me.melon.record.presentation
 
 import com.google.gson.JsonObject
-import com.google.gson.JsonParser
+
 import me.melon.record.markdown.MarkdownContentFormat
 import me.melon.record.markdown.MdBlockQuote
 import me.melon.record.markdown.MdDocument
@@ -20,38 +20,36 @@ import me.melon.record.markdown.MdText
 import me.melon.record.markdown.contentToMdAst
 
 /** Read-only presentation of the canonical Reddit metadata; never infer absent engagement counts. */
-internal class RedditMetadata(extraMetadata: String) {
-    private val values = runCatching {
-        JsonParser.parseString(extraMetadata).asJsonObject
-    }.getOrElse { JsonObject() }
+internal class RedditMetadata(values: JsonObject) {
+    constructor(extraMetadata: String) : this(parseMetadataObject(extraMetadata))
 
-    val isScoreHidden: Boolean? = flag("is_score_hidden")
+    val isScoreHidden: Boolean? = values.flag("is_score_hidden")
     val score: Long? = values.signedScore().takeUnless { isScoreHidden == true }
     val commentCount: Long? = values.optionalEngagementCount("comment_count")
     val shareCount: Long? = values.optionalEngagementCount("share_count")
     val crosspostCount: Long? = values.optionalEngagementCount("crosspost_count")
     val childCount: Long? = values.optionalEngagementCount("child_count")
-    val commentsHasNextPage: Boolean? = flag("comments_has_next_page")
-    val postId: String = text("post_id")
-    val parentFullname: String = text("parent_fullname")
-    val subreddit: String = text("subreddit")
-    val subredditId: String = text("subreddit_id")
-    val flair: String = text("flair")
-    val isNsfw: Boolean? = flag("is_nsfw")
-    val isSpoiler: Boolean? = flag("is_spoiler")
+    val commentsHasNextPage: Boolean? = values.flag("comments_has_next_page")
+    val postId: String = values.text("post_id")
+    val parentFullname: String = values.text("parent_fullname")
+    val subreddit: String = values.text("subreddit")
+    val subredditId: String = values.text("subreddit_id")
+    val flair: String = values.text("flair")
+    val isNsfw: Boolean? = values.flag("is_nsfw")
+    val isSpoiler: Boolean? = values.flag("is_spoiler")
     // Canonical parser timestamps are milliseconds since Unix epoch.
-    val editedAt: String = text("edited_at")
+    val editedAt: String = values.text("edited_at")
 
     val additionalFields: List<Pair<String, String>> = values.entrySet().mapNotNull { (key, value) ->
         if (key in KNOWN_KEYS || !value.isJsonPrimitive) return@mapNotNull null
         value.asString.takeIf { it.isNotBlank() }?.let { key to it }
     }
 
-    private fun text(key: String): String =
-        values.get(key)?.takeIf { it.isJsonPrimitive }?.asString.orEmpty()
+    private fun JsonObject.text(key: String): String =
+        get(key)?.takeIf { it.isJsonPrimitive }?.asString.orEmpty()
 
-    private fun flag(key: String): Boolean? =
-        values.get(key)?.takeIf { it.isJsonPrimitive }?.asString?.toBooleanStrictOrNull()
+    private fun JsonObject.flag(key: String): Boolean? =
+        get(key)?.takeIf { it.isJsonPrimitive }?.asString?.toBooleanStrictOrNull()
 
     private companion object {
         val KNOWN_KEYS = setOf(

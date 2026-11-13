@@ -25,7 +25,10 @@ internal fun mergeWeiboRecord(existing: UniversalRecord, incoming: UniversalReco
             (oldFull && !newFull) ||
             (oldFull == newFull && existing.content.length > incoming.content.length)
         )
-    if (keepOld) incoming.content = existing.content
+    if (keepOld) {
+        incoming.content = existing.content
+        incoming.contentFormat = existing.contentFormat
+    }
 
     for ((key, value) in newMeta.entrySet()) {
         val empty = value.isJsonNull ||
@@ -39,4 +42,3 @@ internal fun mergeWeiboRecord(existing: UniversalRecord, incoming: UniversalReco
     if (if (keepOld) oldFull else newFull) oldMeta.addProperty("full_text", true)
     incoming.extraMetadata = oldMeta.toString()
 }
-

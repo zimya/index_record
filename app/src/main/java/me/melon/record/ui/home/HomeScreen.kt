@@ -1,6 +1,6 @@
 package me.melon.record.ui.home
 
-import me.melon.record.ui.detail.comment.CommentDetailScreen
+
 import me.melon.record.ui.detail.DetailViewModelScope
 import me.melon.record.ui.detail.question.QuestionDetailScreen
 import me.melon.record.ui.detail.record.RecordDetailScreen
@@ -29,8 +29,6 @@ import me.melon.record.ui.components.FilterBottomSheet
 import me.melon.record.viewmodel.HomeViewModel
 import androidx.compose.runtime.saveable.rememberSaveable
 
-internal fun usesRecordDetailForComment(platform: String): Boolean =
-    platform in setOf("weibo", "threads", "reddit")
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -171,12 +169,7 @@ fun HomeScreen(viewModel: HomeViewModel = viewModel()) {
                                         listState = rememberLazyListState(),
                                         firstFloorListState = rememberLazyListState()
                                     )
-                                } else if (targetRecord.recordType == "comment" && !usesRecordDetailForComment(targetRecord.platform)) {
-                                    CommentDetailScreen(
-                                        record = targetRecord,
-                                        onBack = { navigation.pop() },
-                                        onOpenParent = { navigation.push(it) }
-                                    )
+
                                 } else if (targetRecord.recordType == "question") {
                                     QuestionDetailScreen(
                                         record = targetRecord,

@@ -4,6 +4,7 @@ import com.google.gson.Gson
 import com.google.gson.JsonObject
 import com.google.gson.JsonParser
 import me.melon.record.data.model.RawData
+import me.melon.record.data.model.RecordBodyFormat
 import me.melon.record.data.model.UniversalRecord
 import me.melon.record.markdown.zhihuHtmlToMarkdown
 import me.melon.record.parser.zhihu.ZhihuItemV2Parser.safeString
@@ -77,6 +78,8 @@ object ZhihuQuestionParser {
         val updatedMs = jsonParams.get("updated_time")?.asLong?.times(1000) ?: createdMs
 
         return UniversalRecord(
+
+            contentFormat = RecordBodyFormat.MARKDOWN_MATH.storageValue,
             platform = "zhihu",
             recordType = "question",
             sourceApp = raw.hostApp,
@@ -142,6 +145,8 @@ object ZhihuQuestionParser {
         extraJson.add("answer_refs", answerRefs)
 
         return UniversalRecord(
+
+            contentFormat = RecordBodyFormat.MARKDOWN_MATH.storageValue,
             platform = "zhihu",
             recordType = "question",
             sourceApp = raw.hostApp,

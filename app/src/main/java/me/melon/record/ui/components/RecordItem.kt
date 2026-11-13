@@ -9,10 +9,9 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 
-import androidx.compose.material3.Icon
+
+
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -20,6 +19,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.SpanStyle
@@ -31,7 +31,7 @@ import androidx.compose.ui.unit.dp
 import me.melon.record.data.PlatformCatalog
 import me.melon.record.data.model.UniversalRecord
 import me.melon.record.presentation.recordListPresentation
-import me.melon.record.presentation.recordPreviewText
+
 import me.melon.record.ui.theme.getPlatformThemeColor
 import me.melon.record.ui.theme.isAppInDarkTheme
 import java.util.Locale
@@ -130,20 +130,11 @@ fun RecordItem(record: UniversalRecord, searchQuery: String, onClick: () -> Unit
 
             if (presentation.statistics.isNotEmpty()) {
                 Spacer(modifier = Modifier.height(8.dp))
-                if (presentation.wrapStatistics) {
-                    FlowRow(
-                        horizontalArrangement = Arrangement.spacedBy(16.dp),
-                        verticalArrangement = Arrangement.spacedBy(4.dp)
-                    ) {
-                        presentation.statistics.forEach { StatItem(statisticIcon(it.kind), it.text) }
-                    }
-                } else {
-                    Row(
-                        horizontalArrangement = Arrangement.spacedBy(16.dp),
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        presentation.statistics.forEach { StatItem(statisticIcon(it.kind), it.text) }
-                    }
+                FlowRow(
+                    horizontalArrangement = Arrangement.spacedBy(16.dp),
+                    verticalArrangement = Arrangement.spacedBy(4.dp)
+                ) {
+                    presentation.statistics.forEach { StatisticCount(it) }
                 }
             }
 
@@ -170,8 +161,6 @@ fun RecordItem(record: UniversalRecord, searchQuery: String, onClick: () -> Unit
 internal fun recordTypeLabel(record: UniversalRecord): String =
     PlatformCatalog.typeLabel(record.platform, record.recordType)
 
-// Retained for existing reflection-based preview tests.
-private fun getPreviewText(record: UniversalRecord): String = recordPreviewText(record)
 
 @Composable
 private fun highlightText(text: String, query: String): AnnotatedString {
@@ -197,23 +186,5 @@ private fun highlightText(text: String, query: String): AnnotatedString {
             }
             start = index + query.length
         }
-    }
-}
-
-@Composable
-private fun StatItem(icon: androidx.compose.ui.graphics.vector.ImageVector, text: String) {
-    Row(verticalAlignment = Alignment.CenterVertically) {
-        Icon(
-            imageVector = icon,
-            contentDescription = null,
-            tint = MaterialTheme.colorScheme.outline,
-            modifier = Modifier.size(13.dp)
-        )
-        Spacer(modifier = Modifier.width(4.dp))
-        Text(
-            text = text,
-            style = MaterialTheme.typography.labelSmall,
-            color = MaterialTheme.colorScheme.outline
-        )
     }
 }

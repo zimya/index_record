@@ -187,8 +187,8 @@ class TiebaBinaryCaptureTest {
         assertEquals(4, overlappingComments.size)
         for (record in overlappingComments) {
             val preview = previews.getValue(record.platformId)
-            assertEquals(record.content, TiebaRelations.mergeRecordContent(preview, record))
-            assertEquals(record.content, TiebaRelations.mergeRecordContent(record, preview))
+            assertEquals(record.content, TiebaRelations.mergeRecordContent(preview, record).content)
+            assertEquals(record.content, TiebaRelations.mergeRecordContent(record, preview).content)
         }
         for (record in listOf(full.first()) + overlappingComments) {
             val previous = previews.getValue(record.platformId)

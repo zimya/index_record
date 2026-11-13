@@ -1,6 +1,7 @@
 package me.melon.record.parser.reddit
 
 import me.melon.record.data.model.RawData
+import me.melon.record.data.model.RecordBodyFormat
 import me.melon.record.data.model.UniversalRecord
 import me.melon.record.markdown.htmlToMdAst
 import me.melon.record.markdown.toMarkdown
@@ -208,6 +209,7 @@ object RedditParser : RawDataParser {
         val author = value.optJSONObject("authorInfo")
         val handle = author?.optJSONObject("attributes")?.optJSONObject("redditHandleInfo")
         return UniversalRecord(
+            contentFormat = RecordBodyFormat.MARKDOWN.storageValue,
             platform = platform, recordType = type, sourceApp = HOST_APP, platformId = id,
             authorId = author?.string("id").orEmpty(),
             authorName = handle?.string("username").orEmpty().ifEmpty { author?.string("name").orEmpty() }
@@ -343,6 +345,7 @@ object RedditParser : RawDataParser {
             }
             if (media.isNotEmpty()) meta.put("media_markdown", JSONArray(media.toList())).put("media_complete", false)
             emit(UniversalRecord(
+                contentFormat = RecordBodyFormat.MARKDOWN.storageValue,
                 platform = platform, recordType = "post", sourceApp = HOST_APP, platformId = id, title = title,
                 content = RedditRelations.combineBody(text, media.toList()), authorName = author,
                 sourceUrl = "https://www.reddit.com/comments/${id.removePrefix("reddit_post_")}/",

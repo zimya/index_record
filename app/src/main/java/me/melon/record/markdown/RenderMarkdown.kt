@@ -89,8 +89,8 @@ fun RenderMarkdownText(
     enableScroll: Boolean = true,
     onImageClick: ((List<String>, Int) -> Unit)? = null,
     onLinkClick: ((String) -> Unit)? = null,
-    contentFormat: MarkdownContentFormat = MarkdownContentFormat.AUTO,
-    enableMath: Boolean = true,
+    contentFormat: MarkdownContentFormat,
+    enableMath: Boolean = false,
     header: (@Composable () -> Unit)? = null,
     footer: (@Composable () -> Unit)? = null,
 ) {

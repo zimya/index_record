@@ -1,6 +1,10 @@
 package me.melon.record.ui.components
 
 import androidx.compose.foundation.layout.RowScope
+import androidx.compose.foundation.layout.Row
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.semantics.clearAndSetSemantics
+import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -22,14 +26,20 @@ fun RowScope.EngagementCount(
     color: Color = MaterialTheme.colorScheme.outline,
     iconSize: Dp = 14.dp,
     spacing: Dp = 4.dp,
-    textStyle: TextStyle = MaterialTheme.typography.labelSmall
+    textStyle: TextStyle = MaterialTheme.typography.labelSmall,
+    label: String
 ) {
-    Icon(
-        imageVector = icon,
-        contentDescription = null,
-        tint = color,
-        modifier = Modifier.size(iconSize)
-    )
-    Spacer(modifier = Modifier.width(spacing))
-    Text(text = count.toString(), style = textStyle, color = color)
+    Row(
+        modifier = Modifier.clearAndSetSemantics { contentDescription = "$label $count" },
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Icon(
+            imageVector = icon,
+            contentDescription = null,
+            tint = color,
+            modifier = Modifier.size(iconSize)
+        )
+        Spacer(modifier = Modifier.width(spacing))
+        Text(text = count.toString(), style = textStyle, color = color)
+    }
 }

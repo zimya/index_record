@@ -18,8 +18,10 @@ class PlatformCatalogTest {
         assertEquals(8, PlatformCatalog.hostPackages.size)
     }
 
-    @Test fun unknownValuesKeepTheirExistingFallbacks() {
-        assertEquals("Example", PlatformCatalog.displayName("example"))
+    @Test fun unknownValuesRemainLiteralAndBlankValuesAreExplicitlyUnknown() {
+        assertEquals("example", PlatformCatalog.displayName("example"))
+                assertEquals("平台未知", PlatformCatalog.displayName(""))
+                assertEquals("类型未知", PlatformCatalog.typeLabel("", ""))
         assertTrue(PlatformCatalog.defaultPackage("example").isEmpty())
         assertEquals("new_type", PlatformCatalog.typeLabel("example", "new_type"))
     }
@@ -30,7 +32,7 @@ class PlatformCatalogTest {
         assertEquals("评论", PlatformCatalog.typeLabel("weibo", "comment"))
         assertEquals("回答", PlatformCatalog.typeLabel("zhihu", "answer"))
         assertEquals("知乎回答", PlatformCatalog.filterTypeLabel("answer"))
-        assertEquals("thread", PlatformCatalog.typeLabel("threads", "thread"))
+        assertEquals("帖子", PlatformCatalog.typeLabel("threads", "thread"))
         assertEquals("Threads 帖子", PlatformCatalog.filterTypeLabel("thread"))
     }
 }

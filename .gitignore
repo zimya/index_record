@@ -25,3 +25,8 @@ wheels/
 
 .kotlin/
 .DS_Store
+
+# Private device backups and one-off maintenance artifacts
+.local/
+
+*.dylib

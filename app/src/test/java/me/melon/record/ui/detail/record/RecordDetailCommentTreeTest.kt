@@ -164,6 +164,28 @@ class RecordDetailCommentTreeTest {
     }
 
     @Test
+    fun missingAndCyclicParentsArePreservedForEveryPlatform() {
+        for (platform in listOf("zhihu", "douban", "twitter", "weibo", "threads", "future")) {
+            val root = UniversalRecord(platform = platform, recordType = "post", platformId = "root")
+            fun reply(id: String, parent: String) = UniversalRecord(
+                platform = platform, recordType = "comment", platformId = id, parentId = parent
+            )
+            val orphan = reply("orphan", "missing")
+            val child = reply("child", "orphan")
+            val cyclic = reply("cycle", "cycle")
+            val before = buildRecordDetailCommentRows(listOf(child, orphan, cyclic, orphan), RecordDetailCommentSort.DEFAULT, root)
+            assertEquals(3, before.size)
+            assertEquals("missing", before.first { it.record == orphan }.missingParentId)
+            assertTrue(before.first { it.record == cyclic }.hasInvalidParentChain)
+            assertEquals(1, before.first { it.record == child }.depth)
+            val parent = reply("missing", "root")
+            val after = buildRecordDetailCommentRows(listOf(child, orphan, parent), RecordDetailCommentSort.DEFAULT, root)
+            assertEquals(listOf(parent, orphan, child), after.map { it.record })
+            assertTrue(after.all { it.missingParentId == null && !it.hasInvalidParentChain })
+        }
+    }
+
+    @Test
     fun deepTreesAreNotLimitedByRecursiveTraversal() {
         val comments = (0 until 1500).map { index ->
             comment("d${index.toString(36)}", if (index == 0) post.platformId else commentId("d${(index - 1).toString(36)}"))
@@ -174,7 +196,7 @@ class RecordDetailCommentTreeTest {
     }
 
     @Test
-    fun legacyXAliasesAndLikeSortingKeepExistingBehavior() {
+    fun xAliasesUseTheSameInteractionSortingAtEveryDepth() {
         val tweet = UniversalRecord(platform = "twitter", recordType = "tweet", platformId = "twitter_tweet_100")
         fun x(id: String, parent: String, likes: Long, time: Long): UniversalRecord = UniversalRecord(
             platform = "twitter", recordType = "comment", platformId = "twitter_comment_$id", parentId = parent,
@@ -185,7 +207,7 @@ class RecordDetailCommentTreeTest {
         val late = x("c", a.platformId, 100, 5)
         val early = x("d", a.platformId, 0, 2)
         val rows = buildRecordDetailCommentRows(listOf(a, late, b, early), RecordDetailCommentSort.DEFAULT, tweet)
-        assertEquals(listOf(b, a, early, late), rows.map { it.record })
+        assertEquals(listOf(b, a, late, early), rows.map { it.record })
         assertFalse(rows.any { it.hasInvalidParentChain || it.missingParentId != null })
     }
 }

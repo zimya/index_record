@@ -2,9 +2,8 @@ package me.melon.record.presentation
 
 import me.melon.record.data.PlatformCatalog
 import me.melon.record.data.model.UniversalRecord
-import java.text.SimpleDateFormat
-import java.util.Date
-import java.util.Locale
+import me.melon.record.data.model.bodyPlainText
+
 
 internal data class RecordListPresentation(
     val badgeText: String,
@@ -15,27 +14,25 @@ internal data class RecordListPresentation(
     val preview: String,
     val capturedAt: String,
     val statistics: List<RecordStatistic>,
-    val wrapStatistics: Boolean,
+
     val snippet: String?
 )
 
 internal fun recordListPresentation(record: UniversalRecord, searchQuery: String): RecordListPresentation {
-    val metadata = RecordMetadata(record.extraMetadata, record.platform)
+    val metadata = PlatformMetadataAdapters(record.extraMetadata, record.platform)
     val preview = recordPreviewText(record, metadata)
-    val snippetContent = if (record.platform == "reddit") preview else record.content
+    val snippetContent = record.bodyPlainText()
     return RecordListPresentation(
-        badgeText = if (record.platform == "twitter" && record.recordType == "tweet") "X · tweet"
-            else "${PlatformCatalog.displayName(record.platform)} · ${PlatformCatalog.typeLabel(record.platform, record.recordType)}",
-        useBlackBadge = record.platform == "twitter" && record.recordType == "tweet",
+        badgeText = PlatformCatalog.recordLabel(record.platform, record.recordType),
+        useBlackBadge = record.platform == "twitter",
         title = recordDisplayTitle(record, metadata),
         context = recordContext(record, metadata),
-        author = record.authorName,
+        author = displayAuthor(record.authorName),
         preview = preview,
-        capturedAt = "浏览于 ${SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.getDefault()).format(Date(record.captureTime))}",
+        capturedAt = displayCaptureTime(record.captureTime),
         statistics = recordStatistics(record, StatisticsSurface.LIST, metadata),
-        wrapStatistics = record.platform == "reddit",
+
         snippet = if (searchQuery.isNotEmpty() && snippetContent.contains(searchQuery, ignoreCase = true))
             contentSnippet(snippetContent, searchQuery) else null
     )
 }
-

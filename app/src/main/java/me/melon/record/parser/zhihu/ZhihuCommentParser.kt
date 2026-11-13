@@ -4,6 +4,7 @@ import com.google.gson.Gson
 import com.google.gson.JsonObject
 import com.google.gson.JsonParser
 import me.melon.record.data.model.RawData
+import me.melon.record.data.model.RecordBodyFormat
 import me.melon.record.data.model.UniversalRecord
 import me.melon.record.markdown.zhihuHtmlToMarkdown
 import me.melon.record.parser.zhihu.ZhihuItemV2Parser.safeString
@@ -57,7 +58,8 @@ object ZhihuCommentParser {
             if (commentId.isEmpty()) return
 
             val rawContent = commentObj.safeString("content")
-            val content = if (rawContent.contains("<") && rawContent.contains(">")) {
+            val isHtml = rawContent.contains("<") && rawContent.contains(">")
+            val content = if (isHtml) {
                 zhihuHtmlToMarkdown(rawContent)
             } else {
                 rawContent
@@ -85,6 +87,7 @@ object ZhihuCommentParser {
 
             records.add(
                 UniversalRecord(
+                    contentFormat = if (isHtml) RecordBodyFormat.MARKDOWN_MATH.storageValue else RecordBodyFormat.PLAIN_TEXT.storageValue,
                     platform = "zhihu",
                     recordType = "comment",
                     sourceApp = raw.hostApp,

@@ -2,9 +2,9 @@ package me.melon.record.ui.detail.record
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
-import me.melon.record.presentation.RecordMetadata
+import me.melon.record.presentation.commentStatistics
 import me.melon.record.data.model.UniversalRecord
-import me.melon.record.presentation.RedditMetadata
+
 import me.melon.record.data.model.identity
 import me.melon.record.data.model.replyTarget
 import me.melon.record.data.repository.selectRedditComments
@@ -44,33 +44,19 @@ internal fun buildRecordDetailCommentRows(
     val comments = if (isReddit) selectRedditComments(record, allComments) else allComments.distinctBy { it.identity }
     val byId = comments.associateBy { it.identity }
     val childrenByParent = comments.groupBy { it.replyTarget() }
-    val scores = if (isReddit) comments.associate { it.platformId to RedditMetadata(it.extraMetadata).score } else emptyMap()
+    val scores = comments.associate { it.identity to commentStatistics(it).likeCount }
 
     val roots = childrenByParent[record.identity].orEmpty()
 
-    fun likeCount(r: UniversalRecord): Long {
-        return RecordMetadata(r.extraMetadata, r.platform).commentLikeCount
-    }
+    fun likeCount(r: UniversalRecord): Long? = scores[r.identity]
 
-    fun sortedSiblings(nodes: List<UniversalRecord>, isRoot: Boolean): List<UniversalRecord> {
-        return if (isReddit) {
-            when (commentSort) {
-                // Nullable scores sort after all real scores, including zero and Long.MIN_VALUE.
-                RecordDetailCommentSort.DEFAULT -> nodes.sortedWith(
-                    compareByDescending<UniversalRecord> { scores[it.platformId] }
-                        .thenByDescending { it.publishTime }
-                        .thenBy { it.platformId }
-                )
-                RecordDetailCommentSort.LATEST -> nodes.sortedByDescending { it.publishTime }
-            }
-        } else if (!isRoot) {
-            nodes.sortedBy { it.publishTime }
-        } else {
-            when (commentSort) {
-                RecordDetailCommentSort.DEFAULT -> nodes.sortedWith(compareByDescending<UniversalRecord> { likeCount(it) }.thenByDescending { it.publishTime })
-                RecordDetailCommentSort.LATEST -> nodes.sortedByDescending { it.publishTime }
-            }
-        }
+    fun sortedSiblings(nodes: List<UniversalRecord>): List<UniversalRecord> = when (commentSort) {
+        // Unknown sorts after every captured value, including negative scores.
+        RecordDetailCommentSort.DEFAULT -> nodes.sortedWith(
+            compareByDescending<UniversalRecord> { likeCount(it) }
+                .thenByDescending { it.publishTime }.thenBy { it.platformId }
+        )
+        RecordDetailCommentSort.LATEST -> nodes.sortedByDescending { it.publishTime }
     }
 
     val result = mutableListOf<RecordDetailCommentRow>()
@@ -82,20 +68,20 @@ internal fun buildRecordDetailCommentRows(
             val row = stack.removeLast()
             if (!visited.add(row.record.identity)) continue
             result.add(row)
-            val children = sortedSiblings(childrenByParent[row.record.identity].orEmpty(), isRoot = false)
+            val children = sortedSiblings(childrenByParent[row.record.identity].orEmpty())
             for (child in children.asReversed()) {
                 stack.addLast(RecordDetailCommentRow(child, row.depth + 1))
             }
         }
     }
 
-    for (root in sortedSiblings(roots, isRoot = true)) visit(root)
+    for (root in sortedSiblings(roots)) visit(root)
 
-    if (isReddit && record.recordType == "post") {
+    run {
         val orphanRoots = comments.filter { it.identity !in visited && it.replyTarget() !in byId }
-        for (root in sortedSiblings(orphanRoots, isRoot = true)) visit(root, missingParentId = root.replyTarget()?.storageIds()?.firstOrNull().orEmpty())
+        for (root in sortedSiblings(orphanRoots)) visit(root, missingParentId = root.replyTarget()?.storageIds()?.firstOrNull().orEmpty())
         // Preserve real records with malformed cyclic ancestry too, without claiming a parent is missing.
-        for (root in sortedSiblings(comments.filter { it.identity !in visited }, isRoot = true)) {
+        for (root in sortedSiblings(comments.filter { it.identity !in visited })) {
             visit(root, invalidParentChain = true)
         }
     }

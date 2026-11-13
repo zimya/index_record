@@ -29,7 +29,7 @@ data class UniversalRecord(
 
     // 3. 核心内容 (Core Content)
     var title: String = "",               // 标题（推文、评论通常为空）
-    var content: String = "",             // 正文（建议统一转为 Markdown 或清洗后的 HTML）
+    var content: String = "",             // 正文；由 contentFormat 明确解释
 
     // 4. 作者信息 (Author)
     @Index var authorId: String = "",     // 作者在平台的ID
@@ -45,5 +45,8 @@ data class UniversalRecord(
     var captureTime: Long = System.currentTimeMillis(), // 我们的抓取时间
 
     // 7. 扩展数据 (Extension) - JSON 格式
-    var extraMetadata: String = "{}"
+    var extraMetadata: String = "{}",
+
+    // Stable wire value, not an enum ordinal. The default body is literal plain text.
+    var contentFormat: String = RecordBodyFormat.PLAIN_TEXT.storageValue
 )

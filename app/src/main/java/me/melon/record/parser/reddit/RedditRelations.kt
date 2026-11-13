@@ -42,6 +42,7 @@ object RedditRelations {
             mediaMeta[key]?.let { old.add(key, it) }
         }
         incoming.content = combineBody(selectedText, selectedMedia)
+        incoming.contentFormat = if (keepText) existing.contentFormat else incoming.contentFormat
         incoming.extraMetadata = old.toString()
         if (incoming.parentId.isBlank() || (olderCapture && existing.parentId.isNotBlank())) incoming.parentId = existing.parentId
         if (incoming.title.isBlank() || (olderCapture && existing.title.isNotBlank())) incoming.title = existing.title

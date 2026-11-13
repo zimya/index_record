@@ -16,8 +16,8 @@ class TiebaRelationsTest {
     @Test fun knownFullBodyWinsInBothDirectionsEvenWhenPreviewIsLonger() {
         val full = contentRecord("完整正文", false)
         val preview = contentRecord("预览附带很多装饰文字，长度反而超过完整正文", true)
-        assertEquals(full.content, TiebaRelations.mergeRecordContent(full, preview))
-        assertEquals(full.content, TiebaRelations.mergeRecordContent(preview, full))
+        assertEquals(full.content, TiebaRelations.mergeRecordContent(full, preview).content)
+        assertEquals(full.content, TiebaRelations.mergeRecordContent(preview, full).content)
     }
 
     @Test fun previewFullPreviewAndFullPreviewFullRoundTripsKeepFullBody() {
@@ -25,7 +25,7 @@ class TiebaRelationsTest {
         val preview = contentRecord("预览内容长于完整正文，但仍然不是完整响应", true)
         fun save(existing: UniversalRecord, incoming: UniversalRecord): UniversalRecord {
             val body = TiebaRelations.mergeRecordContent(existing, incoming)
-            return existing.copy(content = body,
+            return existing.copy(content = body.content, contentFormat = body.contentFormat,
                 extraMetadata = TiebaRelations.mergeExtra(existing.extraMetadata, incoming.extraMetadata))
         }
         val previewFirst = save(save(preview, full), preview)
@@ -40,8 +40,8 @@ class TiebaRelationsTest {
         for (preview in listOf(true, false, null)) {
             val short = contentRecord("截断", preview)
             val long = contentRecord("未截断的正文与 ![图片](https://example.com/image.jpg)", preview)
-            assertEquals(long.content, TiebaRelations.mergeRecordContent(short, long))
-            assertEquals(long.content, TiebaRelations.mergeRecordContent(long, short))
+            assertEquals(long.content, TiebaRelations.mergeRecordContent(short, long).content)
+            assertEquals(long.content, TiebaRelations.mergeRecordContent(long, short).content)
         }
     }
 
@@ -51,8 +51,8 @@ class TiebaRelationsTest {
                 val nonblank = contentRecord("非空正文", oldPreview)
                 for (blank in listOf("", " \n\t")) {
                     val empty = contentRecord(blank, newPreview)
-                    assertEquals(nonblank.content, TiebaRelations.mergeRecordContent(nonblank, empty))
-                    assertEquals(nonblank.content, TiebaRelations.mergeRecordContent(empty, nonblank))
+                    assertEquals(nonblank.content, TiebaRelations.mergeRecordContent(nonblank, empty).content)
+                    assertEquals(nonblank.content, TiebaRelations.mergeRecordContent(empty, nonblank).content)
                 }
             }
         }
@@ -63,10 +63,10 @@ class TiebaRelationsTest {
         val preview = contentRecord("很长的预览", true)
         for (metadata in listOf("", "{", "[]", "{}", "{\"is_preview\":{}}", "{\"is_preview\":\"unexpected\"}")) {
             val unknown = contentRecord("完整度未知的较长正文").copy(extraMetadata = metadata)
-            assertEquals(full.content, TiebaRelations.mergeRecordContent(full, unknown))
-            assertEquals(full.content, TiebaRelations.mergeRecordContent(unknown, full))
-            assertEquals(unknown.content, TiebaRelations.mergeRecordContent(preview, unknown))
-            assertEquals(unknown.content, TiebaRelations.mergeRecordContent(unknown, preview))
+            assertEquals(full.content, TiebaRelations.mergeRecordContent(full, unknown).content)
+            assertEquals(full.content, TiebaRelations.mergeRecordContent(unknown, full).content)
+            assertEquals(unknown.content, TiebaRelations.mergeRecordContent(preview, unknown).content)
+            assertEquals(unknown.content, TiebaRelations.mergeRecordContent(unknown, preview).content)
         }
     }
 
@@ -75,7 +75,7 @@ class TiebaRelationsTest {
         val incoming = contentRecord("新文", false)
         val oldSnapshot = old.copy()
         val incomingSnapshot = incoming.copy()
-        assertEquals(old.content, TiebaRelations.mergeRecordContent(old, incoming))
+        assertEquals(old.content, TiebaRelations.mergeRecordContent(old, incoming).content)
         assertEquals(oldSnapshot, old)
         assertEquals(incomingSnapshot, incoming)
     }

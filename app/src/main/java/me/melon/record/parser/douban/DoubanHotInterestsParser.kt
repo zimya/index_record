@@ -5,6 +5,7 @@ import com.google.gson.JsonObject
 import com.google.gson.JsonParser
 import me.melon.record.data.PlatformCatalog
 import me.melon.record.data.model.RawData
+import me.melon.record.data.model.RecordBodyFormat
 import me.melon.record.data.model.UniversalRecord
 import me.melon.record.parser.douban.DoubanUtils.extractUser
 import me.melon.record.parser.douban.DoubanUtils.parseDoubanDate
@@ -102,6 +103,7 @@ object DoubanHotInterestsParser {
 
                 records.add(
                     UniversalRecord(
+                        contentFormat = RecordBodyFormat.PLAIN_TEXT.storageValue,
                         platform = "douban",
                         recordType = "interest",
                         sourceApp = raw.hostApp.ifBlank { PlatformCatalog.defaultPackage("douban") },

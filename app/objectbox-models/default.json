@@ -44,7 +44,7 @@
     },
     {
       "id": "3:367225781728979501",
-      "lastPropertyId": "15:6977318464854663329",
+      "lastPropertyId": "16:1219773974089279029",
       "name": "UniversalRecord",
       "properties": [
         {
@@ -132,6 +132,11 @@
           "indexId": "6:1262651967169746590",
           "type": 9,
           "flags": 2048
+        },
+        {
+          "id": "16:1219773974089279029",
+          "name": "contentFormat",
+          "type": 9
         }
       ],
       "relations": []

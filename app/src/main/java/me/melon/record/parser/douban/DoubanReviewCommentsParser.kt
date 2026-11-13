@@ -6,6 +6,8 @@ import com.google.gson.JsonObject
 import com.google.gson.JsonParser
 import me.melon.record.data.PlatformCatalog
 import me.melon.record.data.model.RawData
+import me.melon.record.markdown.escapeMarkdownText
+import me.melon.record.data.model.RecordBodyFormat
 import me.melon.record.data.model.UniversalRecord
 import me.melon.record.parser.douban.DoubanUtils.extractUser
 import me.melon.record.parser.douban.DoubanUtils.parseDoubanDate
@@ -64,7 +66,7 @@ object DoubanReviewCommentsParser {
             }
             val content = if (photoUrls.isNotEmpty()) {
                 val imagesMd = photoUrls.joinToString("\n\n") { "![图片]($it)" }
-                if (text.isNotBlank()) "$text\n\n$imagesMd" else imagesMd
+                if (text.isNotBlank()) "${escapeMarkdownText(text)}\n\n$imagesMd" else imagesMd
             } else {
                 text
             }
@@ -98,6 +100,7 @@ object DoubanReviewCommentsParser {
 
             records.add(
                 UniversalRecord(
+                    contentFormat = if (photoUrls.isEmpty()) RecordBodyFormat.PLAIN_TEXT.storageValue else RecordBodyFormat.MARKDOWN.storageValue,
                     platform = "douban",
                     recordType = "comment",
                     sourceApp = raw.hostApp.ifBlank { PlatformCatalog.defaultPackage("douban") },

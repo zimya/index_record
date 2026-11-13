@@ -7,20 +7,27 @@ import me.melon.record.data.model.UniversalRecord
 
 /** Pure record merging; no database access or cross-thread global cache. */
 object TiebaRelations {
+    data class MergedContent(val content: String, val contentFormat: String)
+
     /**
      * Selects a body without mutating either record. Call before merging extraMetadata:
      * known full content outranks unknown completeness, which outranks a known preview.
      * Blank bodies never replace nonblank ones; equal quality prefers the longer body,
      * retaining the existing body on a tie.
      */
-    fun mergeRecordContent(existing: UniversalRecord, incoming: UniversalRecord): String {
-        if (incoming.content.isBlank()) return existing.content
-        if (existing.content.isBlank()) return incoming.content
-        val oldQuality = parse(existing.extraMetadata)?.let(::quality) ?: 1
-        val newQuality = parse(incoming.extraMetadata)?.let(::quality) ?: 1
-        return if (newQuality > oldQuality ||
-            newQuality == oldQuality && incoming.content.length > existing.content.length) incoming.content
-        else existing.content
+    fun mergeRecordContent(existing: UniversalRecord, incoming: UniversalRecord): MergedContent {
+        val selected = when {
+            incoming.content.isBlank() -> existing
+            existing.content.isBlank() -> incoming
+            else -> {
+                val oldQuality = parse(existing.extraMetadata)?.let(::quality) ?: 1
+                val newQuality = parse(incoming.extraMetadata)?.let(::quality) ?: 1
+                if (newQuality > oldQuality ||
+                    newQuality == oldQuality && incoming.content.length > existing.content.length) incoming
+                else existing
+            }
+        }
+        return MergedContent(selected.content, selected.contentFormat)
     }
 
     /**

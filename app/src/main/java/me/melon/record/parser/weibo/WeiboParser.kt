@@ -4,9 +4,11 @@ import com.google.gson.JsonArray
 import com.google.gson.JsonObject
 import com.google.gson.JsonParser
 import me.melon.record.data.model.RawData
+import me.melon.record.data.model.RecordBodyFormat
 import me.melon.record.data.model.UniversalRecord
 import me.melon.record.parser.RawDataParser
 import org.jsoup.Jsoup
+import me.melon.record.markdown.escapeMarkdownText
 import java.net.URI
 import java.net.URLDecoder
 import java.text.SimpleDateFormat
@@ -44,10 +46,13 @@ object WeiboParser : RawDataParser {
             val batchContent = if (type == "status" && path.endsWith("/longtext_show_batch")) o.str("content") else ""
             if (!listOf("text", "text_raw", "longTextContent").any { o.str(it).isNotBlank() } &&
                 longText?.str("longTextContent").isNullOrBlank() && batchContent.isBlank()) return ""
-            val text = longText?.str("longTextContent").orEmpty().ifEmpty { o.str("longTextContent") }
-                .ifEmpty { batchContent }.ifEmpty { o.str("text_raw") }.ifEmpty { o.str("text") }
+            val richText = longText?.str("longTextContent").orEmpty().ifEmpty { o.str("longTextContent") }
+                .ifEmpty { batchContent }
+            val text = if (richText.isNotEmpty()) html(richText)
+                else o.str("text_raw").ifEmpty { html(o.str("text")) }
             val images = images(o)
-            val content = html(text) + images.joinToString("") { "\n\n![]($it)" }
+            val content = if (images.isEmpty()) text
+                else escapeMarkdownText(text) + images.joinToString("") { "\n\n![]($it)" }
             val meta = JsonObject()
             listOf("like_count" to listOf("attitudes_count", "like_counts", "like_count"),
                 "retweet_count" to listOf("reposts_count"), "comment_count" to listOf("comments_count", "total_number"),
@@ -63,7 +68,9 @@ object WeiboParser : RawDataParser {
                             meta.addProperty("full_text", true)
                         }
             if (images.isNotEmpty()) meta.add("images", JsonArray().apply { images.forEach { add(it) } })
-            val record = UniversalRecord(platform = platform, recordType = type, sourceApp = raw.hostApp,
+            val record = UniversalRecord(
+                            contentFormat = if (images.isEmpty()) RecordBodyFormat.PLAIN_TEXT.storageValue else RecordBodyFormat.MARKDOWN.storageValue,
+                            platform = platform, recordType = type, sourceApp = raw.hostApp,
                 platformId = pid, content = content.trim(), authorId = user.id(),
                 authorName = user.str("screen_name").ifEmpty { user.str("name") },
                 authorAvatar = user.str("avatar_hd").ifEmpty { user.str("avatar_large") }.ifEmpty { user.str("profile_image_url") },

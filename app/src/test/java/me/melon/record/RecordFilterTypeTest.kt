@@ -19,7 +19,7 @@ class RecordFilterTypeTest {
             "post" to "Reddit 帖子",
             "lou" to "贴吧主帖",
             "thread" to "Threads 帖子",
-            "tweet" to "𝕏 推文",
+            "tweet" to "X 推文",
             "floor" to "贴吧楼层",
             "review" to "豆瓣长评",
             "interest" to "豆瓣短评",

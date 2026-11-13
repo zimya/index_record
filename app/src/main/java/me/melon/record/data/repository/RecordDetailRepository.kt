@@ -8,6 +8,7 @@ import me.melon.record.ObjectBox
 import me.melon.record.data.model.DetailRecord
 import me.melon.record.data.model.RecordIdentity
 import me.melon.record.data.model.RecordRelation
+import me.melon.record.data.model.RelatedTargetState
 import me.melon.record.data.model.UniversalRecord
 import me.melon.record.data.model.UniversalRecord_
 import me.melon.record.data.model.directRelation
@@ -24,7 +25,14 @@ internal data class RelatedContent(
     val relation: RecordRelation,
     val record: DetailRecord?,
     val isReference: Boolean = false
-)
+) {
+    val targetState: RelatedTargetState
+        get() = when {
+            record == null -> RelatedTargetState.MISSING
+            isReference -> RelatedTargetState.REFERENCE_ONLY
+            else -> RelatedTargetState.RECORDED
+        }
+}
 
 internal class RecordDetailSnapshot(
     val record: DetailRecord,
@@ -55,14 +63,7 @@ internal fun assembleRecordDetailSnapshot(
     val current = if (seed.platform == "twitter") captured.inCaptureRole(seed)
         else captured.copy()
     val relation = current.directRelation()
-    val navigable = when (relation) {
-        is RecordRelation.AnswerToQuestion, is RecordRelation.BelongsToSubject -> relation
-        is RecordRelation.ReplyTo, is RecordRelation.ReferencesContent -> relation.takeIf {
-            current.platform in setOf("reddit", "weibo", "threads")
-        }
-        else -> null
-    }
-    val related = navigable?.let {
+    val related = relation?.let {
         val target = find(it.target)
         val reference = if (target == null && it is RecordRelation.BelongsToSubject) doubanSubjectReference(current) else null
         RelatedContent(it, (target ?: reference)?.toDetailRecord(), isReference = reference != null)

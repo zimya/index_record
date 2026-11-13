@@ -117,6 +117,7 @@ internal class RecordPersistence(
             if (platform.preserveGenericContent && (record.content.isBlank() || (record.recordType == "subject" && record.content == record.title))) {
                 if (existing.content.isNotBlank() && !(existing.recordType == "subject" && existing.content == existing.title)) {
                     record.content = existing.content
+                    record.contentFormat = existing.contentFormat
                 }
             }
             if (record.authorId.isBlank()) record.authorId = existing.authorId
@@ -145,7 +146,9 @@ private object RedditPersistence : PlatformPersistence {
 }
 private object TiebaPersistence : PlatformPersistence {
     override fun mergeExtra(existing: UniversalRecord, incoming: UniversalRecord) {
-        incoming.content = TiebaRelations.mergeRecordContent(existing, incoming)
+        val body = TiebaRelations.mergeRecordContent(existing, incoming)
+        incoming.content = body.content
+        incoming.contentFormat = body.contentFormat
         incoming.extraMetadata = TiebaRelations.mergeExtra(existing.extraMetadata, incoming.extraMetadata)
     }
 }

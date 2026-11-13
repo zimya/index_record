@@ -4,6 +4,7 @@ import com.google.gson.Gson
 import com.google.gson.JsonObject
 import com.google.gson.JsonParser
 import me.melon.record.data.model.RawData
+import me.melon.record.data.model.RecordBodyFormat
 import me.melon.record.data.model.UniversalRecord
 import me.melon.record.markdown.zhihuHtmlToMarkdown
 import me.melon.record.parser.zhihu.ZhihuItemV2Parser.safeString
@@ -58,6 +59,8 @@ object ZhihuArticleParser {
         if (authorHeadline.isNotBlank()) extraJson.addProperty("author_headline", authorHeadline)
 
         return UniversalRecord(
+
+            contentFormat = RecordBodyFormat.MARKDOWN_MATH.storageValue,
             platform = "zhihu",
             recordType = "article",
             sourceApp = raw.hostApp,

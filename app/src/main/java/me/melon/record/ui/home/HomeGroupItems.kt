@@ -25,11 +25,15 @@ import me.melon.record.ui.components.HomeRecordCard
 import me.melon.record.ui.theme.getPlatformThemeColor
 import me.melon.record.ui.theme.isAppInDarkTheme
 import org.jsoup.Jsoup
-import java.text.SimpleDateFormat
-import java.util.Date
-import java.util.Locale
+import me.melon.record.data.PlatformCatalog
+import me.melon.record.presentation.displayAuthor
+import me.melon.record.presentation.displayCaptureTime
+import me.melon.record.presentation.StatisticsSurface
+import me.melon.record.presentation.recordStatistics
+import me.melon.record.ui.components.StatisticCount
 import androidx.compose.runtime.saveable.rememberSaveable
 
+@OptIn(ExperimentalLayoutApi::class)
 @Composable
 internal fun AnswerGroupItem(
     questionTitle: String,
@@ -61,7 +65,7 @@ internal fun AnswerGroupItem(
                     shape = MaterialTheme.shapes.small
                 ) {
                     Text(
-                        text = "知乎 · 回答",
+                        text = PlatformCatalog.recordLabel("zhihu", "answer"),
                         style = MaterialTheme.typography.labelSmall,
                         modifier = Modifier.padding(horizontal = 6.dp, vertical = 2.dp),
                         color = platformColor.text,
@@ -86,7 +90,6 @@ internal fun AnswerGroupItem(
                 exit = shrinkVertically(tween(250)) + fadeOut(tween(250))
             ) {
                 Column {
-                    val sdf = remember { SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.getDefault()) }
                     answers.forEachIndexed { index, answer ->
                         if (index > 0) {
                             HorizontalDivider(
@@ -112,14 +115,14 @@ internal fun AnswerGroupItem(
                                 verticalAlignment = Alignment.CenterVertically
                             ) {
                                 Text(
-                                    text = highlightText(answer.authorName.ifBlank { "未知作者" }, searchQuery),
+                                    text = highlightText(displayAuthor(answer.authorName), searchQuery),
                                     style = MaterialTheme.typography.bodySmall,
                                     color = MaterialTheme.colorScheme.primary,
                                     maxLines = 1,
                                     overflow = TextOverflow.Ellipsis
                                 )
                                 Text(
-                                    text = "浏览于 ${sdf.format(Date(answer.captureTime))}",
+                                    text = displayCaptureTime(answer.captureTime),
                                     style = MaterialTheme.typography.labelSmall,
                                     color = MaterialTheme.colorScheme.outline
                                 )
@@ -136,8 +139,19 @@ internal fun AnswerGroupItem(
                                     overflow = TextOverflow.Ellipsis
                                 )
                             }
+                            val statistics = recordStatistics(answer, StatisticsSurface.LIST)
+                            if (statistics.isNotEmpty()) {
+                                Spacer(modifier = Modifier.height(8.dp))
+                                FlowRow(
+                                    horizontalArrangement = Arrangement.spacedBy(16.dp),
+                                    verticalArrangement = Arrangement.spacedBy(4.dp)
+                                ) {
+                                    statistics.forEach { StatisticCount(it) }
+                                }
+                            }
                         }
-                }            }
+                    }
+                }
             }
         }
     }
@@ -175,7 +189,7 @@ internal fun InterestGroupItem(
                     shape = MaterialTheme.shapes.small
                 ) {
                     Text(
-                        text = "豆瓣 · $typeLabel",
+                        text = "${PlatformCatalog.displayName("douban")} · $typeLabel",
                         style = MaterialTheme.typography.labelSmall,
                         modifier = Modifier.padding(horizontal = 6.dp, vertical = 2.dp),
                         color = platformColor.text,
@@ -200,7 +214,6 @@ internal fun InterestGroupItem(
                 exit = shrinkVertically(tween(250)) + fadeOut(tween(250))
             ) {
                 Column {
-                    val sdf = remember { SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.getDefault()) }
                     interests.forEachIndexed { index, interest ->
                         if (index > 0) {
                             HorizontalDivider(
@@ -226,14 +239,14 @@ internal fun InterestGroupItem(
                                 verticalAlignment = Alignment.CenterVertically
                             ) {
                                 Text(
-                                    text = highlightText(interest.authorName.ifBlank { "豆瓣用户" }, searchQuery),
+                                    text = highlightText(displayAuthor(interest.authorName), searchQuery),
                                     style = MaterialTheme.typography.bodySmall,
                                     color = MaterialTheme.colorScheme.primary,
                                     maxLines = 1,
                                     overflow = TextOverflow.Ellipsis
                                 )
                                 Text(
-                                    text = "浏览于 ${sdf.format(Date(interest.captureTime))}",
+                                    text = displayCaptureTime(interest.captureTime),
                                     style = MaterialTheme.typography.labelSmall,
                                     color = MaterialTheme.colorScheme.outline
                                 )

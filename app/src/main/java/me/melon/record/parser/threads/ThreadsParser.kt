@@ -5,6 +5,7 @@ import com.google.gson.JsonElement
 import com.google.gson.JsonObject
 import com.google.gson.JsonStreamParser
 import me.melon.record.data.model.RawData
+import me.melon.record.data.model.RecordBodyFormat
 import me.melon.record.data.model.UniversalRecord
 import me.melon.record.parser.RawDataParser
 import java.net.URI
@@ -57,6 +58,7 @@ object ThreadsParser : RawDataParser {
                 }
             }
             val record = UniversalRecord(
+                contentFormat = RecordBodyFormat.MARKDOWN.storageValue,
                 platform = platform, recordType = if (parent.isNotEmpty() || info.str("is_reply") == "true") "comment" else "thread",
                 sourceApp = raw.hostApp, platformId = id, parentId = parent,
                 content = body(post), authorId = user?.str("pk").orEmpty().ifEmpty { user?.str("id").orEmpty() },

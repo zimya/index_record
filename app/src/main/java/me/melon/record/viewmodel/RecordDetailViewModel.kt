@@ -15,7 +15,7 @@ import me.melon.record.data.model.toDetailRecord
 import me.melon.record.data.model.toEntity
 import me.melon.record.data.repository.RecordDetailRepository
 import me.melon.record.data.repository.RecordDetailSnapshot
-import me.melon.record.presentation.RecordMetadata
+import me.melon.record.presentation.PlatformMetadataAdapters
 import me.melon.record.presentation.RecordStatistic
 import me.melon.record.presentation.StatisticsSurface
 import me.melon.record.presentation.recordStatistics
@@ -24,7 +24,7 @@ internal class RecordDetailUiState(
     val snapshot: RecordDetailSnapshot,
     val loadState: DetailLoadState = DetailLoadState.Loading
 ) {
-    private val metadata = RecordMetadata(snapshot.record.extraMetadata, snapshot.record.platform)
+    private val metadata = PlatformMetadataAdapters(snapshot.record.extraMetadata, snapshot.record.platform)
     val hasMetadata: Boolean = metadata.hasValues
     val statistics: List<RecordStatistic> = immutableList(
         recordStatistics(snapshot.record.toEntity(), StatisticsSurface.DETAIL, metadata)

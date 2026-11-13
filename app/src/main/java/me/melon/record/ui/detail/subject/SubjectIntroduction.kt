@@ -24,7 +24,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import me.melon.record.markdown.RenderMarkdownText
-import org.jsoup.Jsoup
+import me.melon.record.markdown.MarkdownContentFormat
 
 @Composable
 internal fun SubjectIntroduction(intro: String, isExpanded: Boolean, onToggle: () -> Unit, onImageClick: (List<String>, Int) -> Unit) {
@@ -44,15 +44,16 @@ internal fun SubjectIntroduction(intro: String, isExpanded: Boolean, onToggle: (
         if (isExpanded) {
             RenderMarkdownText(
                 markdown = intro,
+                contentFormat = MarkdownContentFormat.PLAIN_TEXT,
                 modifier = Modifier.fillMaxWidth(),
                 enableScroll = false,
                 selectable = true,
                 onImageClick = onImageClick
             )
         } else {
-            val cleanText = try { Jsoup.parse(intro).text() } catch (_: Exception) { intro }
+
             Text(
-                text = cleanText,
+                text = intro,
                 style = MaterialTheme.typography.bodyMedium,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
                 maxLines = 5,

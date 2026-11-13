@@ -1,10 +1,12 @@
 package me.melon.record
 
 import com.google.gson.JsonParser
+import me.melon.record.data.model.RecordBodyFormat
 import me.melon.record.data.model.UniversalRecord
 import me.melon.record.logic.StatsCalculator
-import me.melon.record.presentation.engagementCount
-import me.melon.record.presentation.viewEngagementCount
+import me.melon.record.presentation.PlatformMetadataAdapters
+import me.melon.record.presentation.recordPreviewText
+import org.junit.Assert.assertNull
 import me.melon.record.ui.stats.appLabel
 import me.melon.record.ui.stats.colorFromPackage
 import me.melon.record.ui.theme.getPlatformThemeColor
@@ -14,11 +16,11 @@ import org.junit.Test
 class ThreadsUiIntegrationTest {
     @Test
     fun threadsPreviewDoesNotExposeMarkdownEscapes() {
-        val method = Class.forName("me.melon.record.ui.components.RecordItemKt")
-            .getDeclaredMethod("getPreviewText", UniversalRecord::class.java)
-        method.isAccessible = true
-        val record = UniversalRecord(platform = "threads", content = "Hello\\! \\~world\\~ ![图片](https://example.com/image.jpg)")
-        assertEquals("Hello! ~world~ [图片]", method.invoke(null, record))
+        val record = UniversalRecord(
+                    platform = "threads", content = "Hello\\! \\~world\\~ ![图片](https://example.com/image.jpg)",
+                    contentFormat = RecordBodyFormat.MARKDOWN.storageValue
+                )
+        assertEquals("Hello! ~world~ [图片]", recordPreviewText(record))
     }
 
     @Test
@@ -43,63 +45,68 @@ class ThreadsUiIntegrationTest {
     }
 
     @Test
-    fun genericCountsAcceptCamelCaseAndExistingSchema() {
+    fun threadsAdapterAcceptsCapturedAliases() {
         val camel = JsonParser.parseString("""{"likeCount":12,"commentCount":34,"repostCount":56}""").asJsonObject
         val snake = JsonParser.parseString("""{"like_count":12,"comment_count":34,"repost_count":56}""").asJsonObject
         for (meta in listOf(camel, snake)) {
-            assertEquals(12L, meta.engagementCount("like_count", "likeCount", "voteup_count"))
-            assertEquals(34L, meta.engagementCount("reply_count", "comment_count", "commentCount"))
-            assertEquals(56L, meta.engagementCount("retweet_count", "repost_count", "repostCount"))
+            val counts = PlatformMetadataAdapters(meta.toString(), "threads").engagement
+            assertEquals(12L, counts.likeCount)
+            assertEquals(34L, counts.replyCount)
+            assertEquals(56L, counts.repostCount)
         }
     }
 
     @Test
     fun threadsParserCountsIncludeViewsQuotesAndShares() {
         val meta = JsonParser.parseString("""{"like_count":11,"reply_count":22,"repost_count":33,"quote_count":44,"reshare_count":55,"view_count":66}""").asJsonObject
-        assertEquals(11L, meta.engagementCount("like_count", "likeCount", "voteup_count"))
-        assertEquals(22L, meta.engagementCount("reply_count", "comment_count", "commentCount"))
-        assertEquals(33L, meta.engagementCount("retweet_count", "repost_count", "repostCount"))
-        assertEquals(44L, meta.engagementCount("quote_count"))
-        assertEquals(55L, meta.engagementCount("reshare_count"))
-        assertEquals(66L, meta.viewEngagementCount("threads"))
+        val counts = PlatformMetadataAdapters(meta.toString(), "threads").engagement
+        assertEquals(11L, counts.likeCount)
+        assertEquals(22L, counts.replyCount)
+        assertEquals(33L, counts.repostCount)
+        assertEquals(44L, counts.quoteCount)
+        assertEquals(55L, counts.shareCount)
+        assertEquals(66L, counts.viewCount)
     }
 
     @Test
     fun viewCountAliasesAreThreadsOnlyAndPreferParserKey() {
         val meta = JsonParser.parseString("""{"view_count":10,"views_count":20,"viewCount":30}""").asJsonObject
-        assertEquals(10L, meta.viewEngagementCount("threads"))
-        for (platform in listOf("twitter", "weibo", "zhihu", "douban")) {
-            assertEquals(20L, meta.viewEngagementCount(platform))
-            val parserOnly = JsonParser.parseString("""{"view_count":10}""").asJsonObject
-            assertEquals(0L, parserOnly.viewEngagementCount(platform))
+        assertEquals(10L, PlatformMetadataAdapters(meta.toString(), "threads").engagement.viewCount)
+        for (platform in listOf("twitter", "weibo")) {
+            assertEquals(20L, PlatformMetadataAdapters(meta.toString(), platform).engagement.viewCount)
+            assertNull(PlatformMetadataAdapters("""{"view_count":10}""", platform).engagement.viewCount)
         }
-        assertEquals(20L, JsonParser.parseString("""{"views_count":20}""").asJsonObject.viewEngagementCount("threads"))
-        assertEquals(30L, JsonParser.parseString("""{"viewCount":30}""").asJsonObject.viewEngagementCount("threads"))
+        for (platform in listOf("zhihu", "douban")) {
+            assertNull(PlatformMetadataAdapters(meta.toString(), platform).engagement.viewCount)
+        }
+        assertEquals(20L, PlatformMetadataAdapters("""{"views_count":20}""", "threads").engagement.viewCount)
+        assertEquals(30L, PlatformMetadataAdapters("""{"viewCount":30}""", "threads").engagement.viewCount)
     }
 
     @Test
     fun threadsOptionalCountsHandleInvalidMissingAndZeroValues() {
         val meta = JsonParser.parseString("""{"view_count":null,"views_count":"bad","viewCount":"42","quote_count":{},"reshare_count":-1}""").asJsonObject
-        assertEquals(42L, meta.viewEngagementCount("threads"))
-        assertEquals(0L, meta.engagementCount("quote_count"))
-        assertEquals(0L, meta.engagementCount("reshare_count"))
-        val empty = JsonParser.parseString("{}").asJsonObject
-        assertEquals(0L, empty.viewEngagementCount("threads"))
-        assertEquals(0L, empty.engagementCount("quote_count"))
-        assertEquals(0L, empty.engagementCount("reshare_count"))
-        val zero = JsonParser.parseString("""{"view_count":0,"views_count":99,"quote_count":0,"reshare_count":0}""").asJsonObject
-        assertEquals(0L, zero.viewEngagementCount("threads"))
-        assertEquals(0L, zero.engagementCount("quote_count"))
-        assertEquals(0L, zero.engagementCount("reshare_count"))
+        val counts = PlatformMetadataAdapters(meta.toString(), "threads").engagement
+        assertEquals(42L, counts.viewCount)
+        assertNull(counts.quoteCount)
+        assertNull(counts.shareCount)
+        val empty = PlatformMetadataAdapters("{}", "threads").engagement
+        assertNull(empty.viewCount)
+        assertNull(empty.quoteCount)
+        assertNull(empty.shareCount)
+        val zero = PlatformMetadataAdapters("""{"view_count":0,"views_count":99,"quote_count":0,"reshare_count":0}""", "threads").engagement
+        assertEquals(0L, zero.viewCount)
+        assertEquals(0L, zero.quoteCount)
+        assertEquals(0L, zero.shareCount)
     }
 
     @Test
     fun invalidAndMissingCountsAreSafeAndLegacyKeysKeepPriority() {
         val meta = JsonParser.parseString("""{"like_count":null,"likeCount":"42","comment_count":{},"commentCount":7,"repostCount":-1,"reply_count":3}""").asJsonObject
-        assertEquals(42L, meta.engagementCount("like_count", "likeCount"))
-        assertEquals(7L, meta.engagementCount("comment_count", "commentCount"))
-        assertEquals(3L, meta.engagementCount("reply_count", "comment_count", "commentCount"))
-        assertEquals(0L, meta.engagementCount("repostCount"))
-        assertEquals(0L, meta.engagementCount("views_count"))
+        val counts = PlatformMetadataAdapters(meta.toString(), "threads").engagement
+        assertEquals(42L, counts.likeCount)
+        assertEquals(3L, counts.replyCount)
+        assertNull(counts.repostCount)
+        assertNull(counts.viewCount)
     }
 }

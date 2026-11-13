@@ -77,97 +77,36 @@ class MdAstTest {
     }
 
     @Test
-    fun testCommonMarkFootnotesExtension() {
-        val parser = org.commonmark.parser.Parser.builder()
-            .extensions(listOf(
-                org.commonmark.ext.gfm.tables.TablesExtension.create(),
-                org.commonmark.ext.autolink.AutolinkExtension.create(),
-                org.commonmark.ext.gfm.strikethrough.StrikethroughExtension.create(),
-                org.commonmark.ext.footnotes.FootnotesExtension.create()
-            ))
-            .build()
+    fun testStandardMarkdownMediaAndFootnotes() {
         val text = """
             正文[^1]和[^2]
 
+            ![第一张](https://example.com/first.png)
+
+            ![第二张](https://example.com/second.png)
+
             [^1]: 参考内容1 [链接1](https://example.com/1)
-            [^2]: 参考内容2 [https://example.com/2](https://example.com/2)
+            [^2]: 参考内容2 [链接2](https://example.com/2)
         """.trimIndent()
-        val root = parser.parse(text)
-        var child = root.firstChild
-        while (child != null) {
-            println("Block: ${child.javaClass.simpleName}")
-            if (child is org.commonmark.ext.footnotes.FootnoteDefinition) {
-                println("  FootnoteDefinition label=${child.label}")
-                var inChild = child.firstChild
-                while (inChild != null) {
-                    println("    Footnote child: ${inChild.javaClass.simpleName}")
-                    var inInChild = inChild.firstChild
-                    while (inInChild != null) {
-                        println("      Inline: ${inInChild.javaClass.simpleName} ${(inInChild as? org.commonmark.node.Text)?.literal} ${(inInChild as? org.commonmark.node.Link)?.destination}")
-                        inInChild = inInChild.next
-                    }
-                    inChild = inChild.next
-                }
-            } else if (child is org.commonmark.node.Paragraph) {
-                var inChild = child.firstChild
-                while (inChild != null) {
-                    println("  Paragraph inline: ${inChild.javaClass.simpleName} ${(inChild as? org.commonmark.ext.footnotes.FootnoteReference)?.label}")
-                    inChild = inChild.next
-                }
-            }
-            child = child.next
-        }
-
-        // Test with example_record.md
-        val file = java.io.File("/Users/hzy/Downloads/example_record.md")
-        if (file.exists()) {
-            val fileText = file.readText().replace(Regex("""(?<!\n)\s*(\[\^[^\]]+\]:)"""), "\n\n$1")
-            val fileRoot = parser.parse(fileText)
-            var c = fileRoot.firstChild
-            val fns = mutableListOf<String>()
-            while (c != null) {
-                if (c is org.commonmark.ext.footnotes.FootnoteDefinition) {
-                    fns.add(c.label)
-                }
-                c = c.next
-            }
-            assertEquals(listOf("1", "2", "3", "4", "5", "6"), fns)
-        }
-    }
-
-    @Test
-    fun testExampleRecord() {
-        val file = java.io.File("/Users/hzy/Downloads/example_record.md")
-        if (!file.exists()) return
-        val text = file.readText()
         val doc = markdownToMdAst(text)
+        assertEquals(listOf("https://example.com/first.png", "https://example.com/second.png"), doc.collectImageUrls())
+        assertEquals(2, doc.allFootnotes().size)
+        assertEquals("https://example.com/1", doc.footnoteDefinitions["1"]?.url)
+        assertEquals("https://example.com/2", doc.footnoteDefinitions["2"]?.url)
 
-        // 1. Verify images
-        val imageUrls = doc.collectImageUrls()
-        println("Collected ${imageUrls.size} images:")
-        imageUrls.forEach { println("  - $it") }
-        assertEquals(18, imageUrls.size)
-
-        // 2. Verify footnote definitions
-        val footnotes = doc.allFootnotes()
-        println("Parsed ${footnotes.size} footnotes:")
-        footnotes.forEach { println("  [${it.label}]: content=${it.content} url=${it.url}") }
-        assertEquals(6, footnotes.size)
-        assertEquals("https://www.cnblogs.com/8hao/p/5383143.html", doc.footnoteDefinitions["1"]?.url)
-        assertEquals("https://timyang.net/architecture/wechat-red-packet/", doc.footnoteDefinitions["2"]?.url)
-        assertEquals("https://www.zhihu.com/question/22625187/answer/85530416", doc.footnoteDefinitions["3"]?.url)
-        assertEquals("https://www.phppan.com/2015/04/weixin-hongbao/", doc.footnoteDefinitions["4"]?.url)
-        assertEquals("https://www.zybuluo.com/yulin718/note/93148", doc.footnoteDefinitions["5"]?.url)
-        assertEquals("https://mp.weixin.qq.com/s/5YV4QsK6zXzx-_CdaeLutA", doc.footnoteDefinitions["6"]?.url)
-
-        // 3. Verify footnote references in text
         val refs = mutableListOf<String>()
         fun findRefs(node: MdNode) {
             if (node is MdFootnoteReference) refs.add(node.label)
-            for (c in node.children) findRefs(c)
+            for (child in node.children) findRefs(child)
         }
         findRefs(doc)
-        println("Found references in AST: $refs")
-        assertEquals(listOf("1", "2", "3", "4", "5", "6"), refs)
+        assertEquals(listOf("1", "2"), refs)
+
+        val reparsed = markdownToMdAst(doc.toMarkdown())
+        assertEquals(doc.collectImageUrls(), reparsed.collectImageUrls())
+        assertEquals(
+                    doc.footnoteDefinitions.mapValues { (_, note) -> Triple(note.index, note.content, note.url) },
+                    reparsed.footnoteDefinitions.mapValues { (_, note) -> Triple(note.index, note.content, note.url) }
+                )
     }
 }

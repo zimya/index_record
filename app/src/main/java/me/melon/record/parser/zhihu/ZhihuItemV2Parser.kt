@@ -3,6 +3,7 @@ package me.melon.record.parser.zhihu
 import com.google.gson.Gson
 import com.google.gson.JsonObject
 import me.melon.record.data.model.RawData
+import me.melon.record.data.model.RecordBodyFormat
 import me.melon.record.data.model.UniversalRecord
 import me.melon.record.markdown.zhihuStructuredContentToMarkdown
 import java.text.SimpleDateFormat
@@ -71,6 +72,7 @@ object ZhihuItemV2Parser {
             val title = headerObj?.safeString("text").orEmpty()
                 .ifBlank { itemObj.safeString("title") }
             return UniversalRecord(
+                contentFormat = RecordBodyFormat.MARKDOWN_MATH.storageValue,
                 platform = "zhihu",
                 recordType = "pin",
                 sourceApp = raw.hostApp,
@@ -92,6 +94,8 @@ object ZhihuItemV2Parser {
             val sourceUrl = if (raw.url.contains("next-render")) "https://zhuanlan.zhihu.com/p/$id" else raw.url
 
             return UniversalRecord(
+
+                contentFormat = RecordBodyFormat.MARKDOWN_MATH.storageValue,
                 platform = "zhihu",
                 recordType = "article",
                 sourceApp = raw.hostApp,
@@ -123,6 +127,8 @@ object ZhihuItemV2Parser {
             }
 
             return UniversalRecord(
+
+                contentFormat = RecordBodyFormat.MARKDOWN_MATH.storageValue,
                 platform = "zhihu",
                 recordType = "answer",
                 sourceApp = raw.hostApp,

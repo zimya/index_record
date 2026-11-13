@@ -35,13 +35,13 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewmodel.compose.viewModel
 import me.melon.record.data.model.UniversalRecord
+import me.melon.record.data.model.toEntity
 import me.melon.record.data.repository.AnswerSort
 import me.melon.record.viewmodel.QuestionDetailViewModel
 import me.melon.record.ui.detail.DetailLoadContent
 import me.melon.record.ui.components.DetailTopAppBar
 import me.melon.record.markdown.RenderMarkdownText
-import java.text.SimpleDateFormat
-import java.util.Locale
+
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalLayoutApi::class)
 @Composable
@@ -68,7 +68,7 @@ fun QuestionDetailScreen(
     val existingAnswers = state.snapshot.existingAnswers
     val sort = state.sort
 
-    val sdf = remember { SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.getDefault()) }
+
 
 
     Scaffold(
@@ -107,8 +107,11 @@ fun QuestionDetailScreen(
 
                 item {
                     if (current.content.isNotBlank()) {
+                        val body = me.melon.record.presentation.recordBodyPresentation(current.toEntity())
                         RenderMarkdownText(
-                            markdown = current.content,
+                            markdown = body.content,
+                            contentFormat = body.contentFormat,
+                            enableMath = body.enableMath,
                             modifier = Modifier.fillMaxWidth(),
                             enableScroll = false,
                             selectable = true,
@@ -177,7 +180,7 @@ fun QuestionDetailScreen(
                     }
                 } else {
                     items(sortedAnswerRefs, key = { it.id }) { ref ->
-                        QuestionAnswerCard(ref, existingAnswers[ref.id], sdf, onOpenAnswer)
+                        QuestionAnswerCard(ref, existingAnswers[ref.id], onOpenAnswer)
                     }
                 }
 

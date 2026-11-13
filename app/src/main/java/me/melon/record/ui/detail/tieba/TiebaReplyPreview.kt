@@ -23,6 +23,8 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import me.melon.record.data.model.UniversalRecord
 import me.melon.record.data.model.TiebaMetadata
+import me.melon.record.presentation.displayAuthor
+import me.melon.record.presentation.recordPreviewText
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -45,15 +47,13 @@ internal fun TiebaReplyPreview(
                 style = MaterialTheme.typography.labelMedium
             )
             replies.take(3).forEach { reply ->
-                val preview = remember(reply.content) {
-                    reply.content.replace(Regex("!\\[[^]]*]\\([^)]*\\)"), "[图片]")
-                        .replace(Regex("\\[([^]]+)]\\([^)]*\\)"), "$1")
-                        .replace('\n', ' ').trim().ifBlank { "正文尚未记录" }
+                val preview = remember(reply.content, reply.contentFormat, reply.extraMetadata) {
+                    recordPreviewText(reply).ifBlank { "正文尚未记录" }
                 }
                 val meta = remember(reply.extraMetadata) { TiebaMetadata(reply.extraMetadata) }
                 val target = meta.replyToName.ifBlank { meta.replyToId }
                 Text(
-                    "${reply.authorName.ifBlank { "昵称未记录" }}${if (target.isBlank() || preview.startsWith("回复")) "" else " 回复 $target"}：$preview",
+                    "${displayAuthor(reply.authorName)}${if (target.isBlank() || preview.startsWith("回复")) "" else " 回复 $target"}：$preview",
                     modifier = Modifier
                         .fillMaxWidth()
                         .clickable { onOpenRecord(reply) }

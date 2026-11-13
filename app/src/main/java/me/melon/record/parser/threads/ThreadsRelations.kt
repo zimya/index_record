@@ -10,7 +10,10 @@ object ThreadsRelations {
         if (existing.platform != "threads" || incoming.platform != "threads" || existing.platformId != incoming.platformId) return
         if (incoming.parentId.isBlank()) incoming.parentId = existing.parentId
         if (incoming.parentId.isNotBlank() || existing.recordType == "comment") incoming.recordType = "comment"
-        if (incoming.content.isBlank() || existing.content.length > incoming.content.length) incoming.content = existing.content
+        if (incoming.content.isBlank() || existing.content.length > incoming.content.length) {
+            incoming.content = existing.content
+            incoming.contentFormat = existing.contentFormat
+        }
         if (incoming.authorId.isBlank()) incoming.authorId = existing.authorId
         if (incoming.authorName.isBlank()) incoming.authorName = existing.authorName
         if (incoming.authorAvatar.isBlank()) incoming.authorAvatar = existing.authorAvatar

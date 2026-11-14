@@ -20,13 +20,22 @@ android {
         targetSdk = 34
         versionCode = 1
         versionName = "0.2.0"
+        resourceConfigurations += listOf("zh", "zh-rCN", "en")
+    }
+
+    splits {
+        abi {
+            isEnable = true
+            reset()
+            include("arm64-v8a", "armeabi-v7a")
+            isUniversalApk = true
+        }
     }
 
     buildFeatures {
         compose = true
         buildConfig = true
     }
-
 
     packaging {
         resources {
@@ -35,12 +44,18 @@ android {
         // 【修复1】使用新版 API 解决 pickFirst 弃用警告
         jniLibs {
             pickFirsts.add("lib/**/libobjectbox-jni.so")
+            useLegacyPackaging = true
         }
     }
 
     buildTypes {
         getByName("release") {
-            isMinifyEnabled = false
+            isMinifyEnabled = true
+            isShrinkResources = true
+            proguardFiles(
+                getDefaultProguardFile("proguard-android-optimize.txt"),
+                "proguard-rules.pro"
+            )
             signingConfig = signingConfigs.getByName("debug")
         }
     }
@@ -92,9 +107,6 @@ dependencies {
 
     implementation("io.coil-kt:coil-compose:2.6.0")
     implementation("androidx.palette:palette-ktx:1.0.0")
-
-    // Material Icons Extended
-    implementation("androidx.compose.material:material-icons-extended:1.6.0")
 
     // ObjectBox Browser
     debugImplementation("io.objectbox:objectbox-android-objectbrowser:3.7.1")

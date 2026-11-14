@@ -65,16 +65,16 @@ fun StatsScreen(viewModel: StatsViewModel = viewModel()) {
         ) {
             Spacer(modifier = Modifier.height(8.dp))
 
-            Text(
-                text = if (uiState.includeRepliesAndComments) {
-                    "统计口径：主内容及已记录的回复、评论。"
-                } else {
-                    "统计口径：仅主内容，不含回复和评论；可在设置中开启。"
-                } + "按本地捕获时间统计条目、字数、分布和连续天数，不累加平台互动计数。",
-                style = MaterialTheme.typography.bodySmall,
-                color = MaterialTheme.colorScheme.onSurfaceVariant
-            )
-            Spacer(modifier = Modifier.height(12.dp))
+            // Text(
+            //     text = if (uiState.includeRepliesAndComments) {
+            //         "统计口径：主内容及已记录的回复、评论。"
+            //     } else {
+            //         "统计口径：仅主内容，不含回复和评论；可在设置中开启。"
+            //     } + "按本地捕获时间统计条目、字数、分布和连续天数，不累加平台互动计数。",
+            //     style = MaterialTheme.typography.bodySmall,
+            //     color = MaterialTheme.colorScheme.onSurfaceVariant
+            // )
+            // Spacer(modifier = Modifier.height(12.dp))
 
             // 1. 今日阅读字数 & 统计小组件卡片
             TodayReadingCard(

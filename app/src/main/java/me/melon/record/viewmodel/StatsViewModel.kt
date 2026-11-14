@@ -3,19 +3,18 @@ package me.melon.record.viewmodel
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.stateIn
-import me.melon.record.ObjectBox
 import me.melon.record.data.model.UniversalRecord
-import me.melon.record.data.model.UniversalRecord_
+import me.melon.record.data.repository.RecordHistoryRepository
 import me.melon.record.logic.ComputedStats
 import me.melon.record.logic.DistributionRange
 import me.melon.record.logic.StatsCalculator
@@ -25,43 +24,29 @@ import java.time.ZoneId
 data class StatsUiState(
     val selectedRange: DistributionRange = DistributionRange.LAST_30_DAYS,
     val stats: ComputedStats = ComputedStats(),
-    val includeRepliesAndComments: Boolean = false
+    val includeRepliesAndComments: Boolean = false,
+    val isLoading: Boolean = true,
+    val errorMessage: String? = null,
+    val hasStats: Boolean = false
 )
 
 class StatsViewModel(application: Application) : AndroidViewModel(application) {
     var hasAnimatedNumbers: Boolean = false
 
-    private val recordBox = ObjectBox.store.boxFor(UniversalRecord::class.java)
+    private val historyRepository = RecordHistoryRepository()
     private val zone = ZoneId.systemDefault()
 
     private val selectedRangeFlow = MutableStateFlow(DistributionRange.LAST_30_DAYS)
 
-    private val recordsFlow: Flow<List<UniversalRecord>> = callbackFlow {
-        val query = recordBox.query().orderDesc(UniversalRecord_.captureTime).build()
-        val subscription = query.subscribe()
-            .observer { data ->
-                trySend(data)
-            }
+    private val reads = DetailRetry { historyRepository.observeAllResult() }
+    val isRetrying = reads.isRetrying
+    fun retry() = reads.retry()
 
-        trySend(query.find())
-
-        awaitClose {
-            subscription.cancel()
-            query.close()
-        }
-    }.flowOn(Dispatchers.IO)
-
-    private val computedStatsFlow = combine(
-        recordsFlow,
-        RecordSettings.includeRepliesAndCommentsInStats
-    ) { records, includeReplies ->
-        StatsUiState(
-            stats = StatsCalculator.computeState(
-                records, weeks = 52, zone = zone, includeRepliesAndComments = includeReplies
-            ),
-            includeRepliesAndComments = includeReplies
-        )
-    }.flowOn(Dispatchers.Default)
+    private val computedStatsFlow = statsStates(
+        reads.snapshots,
+        RecordSettings.includeRepliesAndCommentsInStats,
+        zone
+    ).flowOn(Dispatchers.Default)
 
     val state: StateFlow<StatsUiState> = combine(
         selectedRangeFlow,
@@ -76,5 +61,35 @@ class StatsViewModel(application: Application) : AndroidViewModel(application) {
 
     fun selectRange(range: DistributionRange) {
         selectedRangeFlow.value = range
+    }
+}
+
+/** Keep the last successful value and its filter together across failed reads and retries. */
+internal fun statsStates(
+    snapshots: Flow<Result<List<UniversalRecord>>>,
+    includeRepliesAndComments: Flow<Boolean>,
+    zone: ZoneId
+): Flow<StatsUiState> = flow {
+    var latest = StatsUiState()
+    emit(latest)
+    combine(snapshots, includeRepliesAndComments) { result, includeReplies ->
+        result to includeReplies
+    }.collect { (result, includeReplies) ->
+        latest = try {
+            val records = result.getOrThrow()
+            StatsUiState(
+                stats = StatsCalculator.computeState(
+                    records, weeks = 52, zone = zone, includeRepliesAndComments = includeReplies
+                ),
+                includeRepliesAndComments = includeReplies,
+                isLoading = false,
+                hasStats = true
+            )
+        } catch (cancelled: CancellationException) {
+            throw cancelled
+        } catch (_: Exception) {
+            latest.copy(isLoading = false, errorMessage = "无法读取或计算本地统计，请重试")
+        }
+        emit(latest)
     }
 }

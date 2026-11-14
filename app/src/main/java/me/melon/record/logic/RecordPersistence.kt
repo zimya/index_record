@@ -5,6 +5,17 @@ import com.google.gson.JsonParser
 import io.objectbox.Box
 import io.objectbox.query.QueryBuilder.StringOrder.CASE_SENSITIVE
 import me.melon.record.data.model.UniversalRecord
+import me.melon.record.data.model.RecordIdentity
+import me.melon.record.data.model.RecordSnapshot
+import me.melon.record.data.model.RecordSnapshot_
+import me.melon.record.data.model.PendingRecordSnapshot
+import me.melon.record.data.model.PendingRecordSnapshot_
+import me.melon.record.data.model.encodeSnapshotRecord
+import me.melon.record.data.model.toSnapshot
+import me.melon.record.data.model.identity
+import me.melon.record.data.model.legacySnapshotKey
+import me.melon.record.data.model.recordSnapshot
+import java.util.UUID
 import me.melon.record.data.model.UniversalRecord_
 import me.melon.record.parser.reddit.RedditRelations
 import me.melon.record.parser.threads.ThreadsRelations
@@ -19,9 +30,71 @@ internal interface RecordRepository {
     fun unboundZhihuAnswers(): List<UniversalRecord>
     fun findIds(platformIds: List<String>): List<UniversalRecord>
     fun put(record: UniversalRecord)
+    val history: RecordSnapshotStorage? get() = null
+}
+
+internal interface RecordSnapshotStorage {
+    fun contains(key: String): Boolean
+    fun hasIdentity(identity: RecordIdentity): Boolean
+    fun append(snapshot: RecordSnapshot)
+    fun findPending(key: String): PendingRecordSnapshot? = null
+    fun putPending(snapshot: PendingRecordSnapshot) {}
+    fun pending(): List<PendingRecordSnapshot> = emptyList()
+    fun pendingFor(identity: RecordIdentity): List<PendingRecordSnapshot> =
+        if (identity.platform == "reddit") pending().filter { it.platformId in identity.storageIds() } else emptyList()
+    fun removePending(snapshot: PendingRecordSnapshot) {}
+}
+
+private class ObjectBoxSnapshotStorage(private val box: Box<RecordSnapshot>) : RecordSnapshotStorage {
+    private val pendingBox = box.store.boxFor(PendingRecordSnapshot::class.java)
+    override fun findPending(key: String): PendingRecordSnapshot? {
+        val query = pendingBox.query().equal(PendingRecordSnapshot_.key, key, CASE_SENSITIVE).build()
+        return try { query.findFirst() } finally { query.close() }
+    }
+    override fun putPending(snapshot: PendingRecordSnapshot) { pendingBox.put(snapshot) }
+    override fun pending(): List<PendingRecordSnapshot> = pendingBox.all
+    override fun pendingFor(identity: RecordIdentity): List<PendingRecordSnapshot> {
+        if (identity.platform != "reddit") return emptyList()
+        val query = pendingBox.query().`in`(PendingRecordSnapshot_.platformId,
+            identity.storageIds().toTypedArray(), CASE_SENSITIVE).build()
+        return try { query.find() } finally { query.close() }
+    }
+    override fun removePending(snapshot: PendingRecordSnapshot) { pendingBox.remove(snapshot.id) }
+    override fun contains(key: String): Boolean {
+        val query = box.query().equal(RecordSnapshot_.key, key, CASE_SENSITIVE).build()
+        return try { query.count() > 0 } finally { query.close() }
+    }
+    override fun hasIdentity(identity: RecordIdentity): Boolean {
+        val query = box.query().equal(RecordSnapshot_.platform, identity.platform, CASE_SENSITIVE)
+            .equal(RecordSnapshot_.identityId, identity.contentId, CASE_SENSITIVE).build()
+        return try { query.count() > 0 } finally { query.close() }
+    }
+    override fun append(snapshot: RecordSnapshot) { box.put(snapshot) }
+}
+
+internal const val PENDING_HISTORY_TTL_MILLIS = 7L * 24 * 60 * 60 * 1000
+internal const val MAX_PENDING_HISTORY = 5000
+
+/** Retrying a partial raw must not refresh the pending capture's original retention deadline. */
+internal fun prunePendingHistory(history: RecordSnapshotStorage, now: Long) {
+    val (expired, retained) = history.pending().partition { it.createdAt < now - PENDING_HISTORY_TTL_MILLIS }
+    expired.forEach(history::removePending)
+    retained.sortedWith(compareBy<PendingRecordSnapshot> { it.createdAt }.thenBy { it.key })
+        .take((retained.size - MAX_PENDING_HISTORY).coerceAtLeast(0))
+        .forEach(history::removePending)
+}
+
+/** Back up every old X storage role before the first event makes identity-level fallback disappear. */
+internal fun archiveLegacyIndex(record: UniversalRecord, repository: RecordRepository, history: RecordSnapshotStorage) {
+    if (history.hasIdentity(record.identity)) return
+    for (old in repository.findIds(record.identity.storageIds().toList()).filter { it.identity == record.identity }) {
+        val key = legacySnapshotKey(old)
+        if (!history.contains(key)) history.append(recordSnapshot(key, old, legacy = true))
+    }
 }
 
 internal class ObjectBoxRecordRepository(private val box: Box<UniversalRecord>) : RecordRepository {
+    override val history: RecordSnapshotStorage = ObjectBoxSnapshotStorage(box.store.boxFor(RecordSnapshot::class.java))
     override fun find(platformId: String): UniversalRecord? {
         val query = box.query().equal(UniversalRecord_.platformId, platformId, CASE_SENSITIVE).build()
         return try { query.findFirst() } finally { query.close() }
@@ -45,7 +118,11 @@ internal class ObjectBoxRecordRepository(private val box: Box<UniversalRecord>) 
         val query = box.query().`in`(UniversalRecord_.platformId, platformIds.distinct().toTypedArray(), CASE_SENSITIVE).build()
         return try { query.find() } finally { query.close() }
     }
-    override fun put(record: UniversalRecord) { box.put(record) }
+    override fun put(record: UniversalRecord) {
+        // afterPut can update an uncaptured legacy row too; freeze its old value before that write.
+        archiveLegacyIndex(record, this, history)
+        box.put(record)
+    }
 }
 
 /** Hooks deliberately straddle generic merging: body policy first, metadata policy last, links after put. */
@@ -94,11 +171,72 @@ internal class RecordPersistence(
     }
 
     fun persist(record: UniversalRecord) {
+        val captured = record.copy()
         (platforms[record.platform] ?: DefaultPersistence).complete(record, repository)
-        persistCompleted(record)
+        persistCompleted(record, captured)
     }
 
-    fun persistCompleted(record: UniversalRecord) {
+    /** Before READ admission, persist originals, not the read buffer's merged entities. */
+    fun stageRedditHistory(
+        rawId: Long, records: List<UniversalRecord>, now: Long = System.currentTimeMillis()
+    ): Set<RecordIdentity> {
+        val history = repository.history ?: return emptySet()
+        val replayed = mutableSetOf<RecordIdentity>()
+        val occurrences = mutableMapOf<Pair<String, String>, Int>()
+        for (record in records) {
+            if (record.platform != "reddit" || record.platformId.isBlank()) continue
+            val role = record.platform to record.platformId
+            val occurrence = occurrences.getOrDefault(role, 0)
+            occurrences[role] = occurrence + 1
+            val key = rawSnapshotKey(rawId, record, occurrence)
+            if (history.contains(key)) {
+                replayed.add(record.identity)
+                continue
+            }
+            if (history.findPending(key) != null) continue
+            history.putPending(PendingRecordSnapshot(
+                key = key, platformId = record.platformId, captureTime = record.captureTime,
+                recordJson = encodeSnapshotRecord(record), createdAt = now
+            ))
+        }
+        prunePendingHistory(history, now)
+        return replayed
+    }
+
+    /** Release all admitted identities' original captures; the synthetic value updates only the index. */
+    fun persistRedditAdmitted(record: UniversalRecord, knownCapture: Boolean = false) {
+        repository.history?.let { history ->
+            val pending = history.pendingFor(record.identity)
+            archiveLegacyIndex(record, repository, history)
+            for (snapshot in pending) {
+                if (!history.contains(snapshot.key)) history.append(snapshot.toSnapshot())
+                history.removePending(snapshot)
+            }
+            if (pending.isEmpty() && !knownCapture) {
+                // Pre-upgrade RedditPendingRecord contains only a synthetic value, not a real capture.
+                val key = "legacy:reddit-buffer:${record.platformId}"
+                if (!history.contains(key)) history.append(recordSnapshot(key, record, legacy = true))
+            }
+        }
+        updateIndex(record)
+    }
+
+    /** Must run in the caller's raw-delete transaction. Completion/merge/afterPut never own the payload. */
+    fun persistCompleted(
+        record: UniversalRecord,
+        captured: UniversalRecord = record.copy(),
+        captureKey: String = "capture:${UUID.randomUUID()}"
+    ) {
+        repository.history?.let { history ->
+            if (!history.contains(captureKey)) {
+                archiveLegacyIndex(captured, repository, history)
+                history.append(recordSnapshot(captureKey, captured))
+            }
+        }
+        updateIndex(record)
+    }
+
+    private fun updateIndex(record: UniversalRecord) {
         val platform = platforms[record.platform] ?: DefaultPersistence
         val existing = repository.find(record.platformId)
         if (existing != null) {

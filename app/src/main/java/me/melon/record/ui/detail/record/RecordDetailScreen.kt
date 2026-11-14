@@ -28,6 +28,7 @@ import androidx.compose.ui.unit.dp
 import me.melon.record.data.model.UniversalRecord
 import me.melon.record.data.model.RecordContent
 import me.melon.record.ui.components.DetailTopAppBar
+import me.melon.record.ui.detail.history.RecordHistoryAction
 import me.melon.record.ui.components.ImageViewerDialog
 import me.melon.record.presentation.replySectionPresentation
 import me.melon.record.ui.detail.DetailLoadContent
@@ -74,7 +75,8 @@ fun RecordDetailScreen(
         topBar = {
             DetailTopAppBar(
                 title = recordDetailTitle(detailRecord),
-                onBack = onBack
+                onBack = onBack,
+                actions = { RecordHistoryAction(record) }
             )
         }
     ) { padding ->

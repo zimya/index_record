@@ -40,6 +40,7 @@ import me.melon.record.data.repository.AnswerSort
 import me.melon.record.viewmodel.QuestionDetailViewModel
 import me.melon.record.ui.detail.DetailLoadContent
 import me.melon.record.ui.components.DetailTopAppBar
+import me.melon.record.ui.detail.history.RecordHistoryAction
 import me.melon.record.markdown.RenderMarkdownText
 
 
@@ -74,7 +75,7 @@ fun QuestionDetailScreen(
     Scaffold(
         contentWindowInsets = WindowInsets(0, 0, 0, 0),
         topBar = {
-            DetailTopAppBar(title = "问题详情", onBack = onBack)
+            DetailTopAppBar(title = "问题详情", onBack = onBack, actions = { RecordHistoryAction(record) })
         }
     ) { padding ->
         DetailLoadContent(state.loadState, isRetrying, viewModel::retry, Modifier.padding(padding)) {

@@ -13,6 +13,37 @@ import java.time.ZoneId
 class StatsCalculatorTest {
 
     @Test
+    fun repeatedCapturesKeepYesterdayBucketAndCountEverySnapshot() {
+        val zone = ZoneId.of("UTC")
+        val today = LocalDate.now(zone)
+        fun noon(day: LocalDate) = day.atTime(12, 0).atZone(zone).toInstant().toEpochMilli()
+        val yesterday = UniversalRecord(
+            id = 7, platform = "zhihu", recordType = "article", platformId = "zhihu_article_1",
+            captureTime = noon(today.minusDays(1)), content = "昨天正文"
+        )
+        val updated = yesterday.copy(captureTime = noon(today), content = "今天的新正文")
+        val snapshots = listOf(
+            me.melon.record.data.model.recordSnapshot("legacy:7", yesterday, legacy = true),
+            me.melon.record.data.model.recordSnapshot("raw:1", updated),
+            me.melon.record.data.model.recordSnapshot("raw:2", updated)
+        )
+        val records = me.melon.record.data.repository.assembleAllHistoricalRecords(snapshots, listOf(updated))
+        val stats = StatsCalculator.computeState(records, zone = zone)
+        val before = StatsCalculator.computeState(listOf(yesterday), zone = zone)
+        assertEquals(3L, stats.totalRecordCount)
+        assertEquals(2, stats.todayRecordCount)
+        assertEquals(2, stats.currentStreakDays)
+        assertEquals(2 * WordCountUtils.countText(updated.content), stats.todayWordCount)
+        assertEquals(before.totalWordCount + stats.todayWordCount, stats.totalWordCount)
+        val dayKey = today.minusDays(1).toString()
+        assertEquals(
+            before.distribution30Days.bars.single { it.key == dayKey },
+            stats.distribution30Days.bars.single { it.key == dayKey }
+        )
+        assertEquals(2, stats.distribution30Days.bars.single { it.key == today.toString() }.totalCount)
+    }
+
+    @Test
     fun testWeiboSourceApps() {
         val fallback = UniversalRecord(platform = "weibo", recordType = "status")
         val official = UniversalRecord(platform = "weibo", recordType = "status", sourceApp = "com.sina.weibo")

@@ -37,7 +37,7 @@ fun displayTime(timestamp: Long, pattern: String = "yyyy-MM-dd HH:mm"): String =
     else SimpleDateFormat(pattern, Locale.getDefault()).format(Date(timestamp))
 
 fun displayCaptureTime(timestamp: Long): String =
-    if (timestamp <= 0) "浏览时间未知" else "浏览于 ${displayTime(timestamp)}"
+    if (timestamp <= 0) "阅读时间未知" else "阅读于 ${displayTime(timestamp)}"
 
 fun displayPublishTime(timestamp: Long): String =
     if (timestamp <= 0) "发布时间未知" else "发布于 ${displayTime(timestamp)}"

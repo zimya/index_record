@@ -6,6 +6,7 @@ import me.melon.record.data.model.RawData
 import me.melon.record.data.model.RawData_
 import me.melon.record.data.model.RedditPendingRecord
 import me.melon.record.data.model.UniversalRecord
+import me.melon.record.data.model.identity
 import me.melon.record.parser.ParserRegistry
 import me.melon.record.parser.ParseResult
 import me.melon.record.parser.douban.DoubanHotInterestsParser
@@ -35,8 +36,13 @@ internal data class ParsedCapture(
     val readPosts: Set<String> = emptySet(),
     val isCompleted: Boolean = false,
     val completion: ((RecordPersistence) -> Unit)? = null,
-    val result: ParseResult = ParseResult.Success(records)
+    val result: ParseResult = ParseResult.Success(records),
+    // Snapshot at construction, before platform completion mutates the parser's entities.
+    val parsedRecords: List<UniversalRecord> = records.map { it.copy() }
 )
+
+internal fun rawSnapshotKey(rawId: Long, record: UniversalRecord, occurrence: Int): String =
+    "raw:$rawId:${record.platform.length}:${record.platform}:${record.platformId}:$occurrence"
 
 internal class CaptureProcessing(
     private val policies: List<CapturePolicy>,
@@ -82,7 +88,24 @@ internal class CaptureProcessing(
         val processedRawIds = ArrayList<Long>(captures.size)
         for (capture in captures) {
             if (capture.result !is ParseResult.Failure && capture.result !is ParseResult.Ignored) {
-                for (record in capture.policy.admit(capture)) persistence.persistCompleted(record)
+                val redditRead = (capture.policy as? RedditCapturePolicy)?.isReadMode == true
+                val replayed = if (redditRead) persistence.stageRedditHistory(capture.rawId, capture.parsedRecords)
+                    else emptySet()
+                val admitted = capture.policy.admit(capture)
+                if (redditRead) {
+                    admitted.forEach { persistence.persistRedditAdmitted(it, it.identity in replayed) }
+                } else {
+                    val originals = capture.parsedRecords.groupBy { it.platform to it.platformId }
+                    val occurrences = mutableMapOf<Pair<String, String>, Int>()
+                    for (record in admitted) {
+                        val role = record.platform to record.platformId
+                        val occurrence = occurrences.getOrDefault(role, 0)
+                        occurrences[role] = occurrence + 1
+                        val original = originals[role]?.getOrNull(occurrence) ?: record.copy()
+                        val key = rawSnapshotKey(capture.rawId, record, occurrence)
+                        persistence.persistCompleted(record, original, key)
+                    }
+                }
             }
             if (capture.result.consumeRaw) processedRawIds.add(capture.rawId)
         }
@@ -111,6 +134,7 @@ internal class RedditCapturePolicy(
     private val readBuffer: RedditReadBuffer?,
     private val now: () -> Long = System::currentTimeMillis
 ) : CapturePolicy {
+    internal val isReadMode: Boolean get() = readBuffer != null
     private val advertisingIds = linkedSetOf<String>()
 
     override fun canHandle(raw: RawData, cleanUrl: String) = RedditParser.canHandle(cleanUrl, raw)

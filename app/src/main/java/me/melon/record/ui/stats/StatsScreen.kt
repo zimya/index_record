@@ -8,6 +8,8 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.Button
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
@@ -18,9 +20,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.semantics.LiveRegionMode
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.liveRegion
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -31,6 +36,7 @@ import me.melon.record.viewmodel.StatsViewModel
 @Composable
 fun StatsScreen(viewModel: StatsViewModel = viewModel()) {
     val uiState by viewModel.state.collectAsState()
+    val isRetrying by viewModel.isRetrying.collectAsState()
     val stats = uiState.stats
     val scrollState = rememberScrollState()
     val hasAnimated = viewModel.hasAnimatedNumbers
@@ -65,16 +71,45 @@ fun StatsScreen(viewModel: StatsViewModel = viewModel()) {
         ) {
             Spacer(modifier = Modifier.height(8.dp))
 
-            // Text(
-            //     text = if (uiState.includeRepliesAndComments) {
-            //         "统计口径：主内容及已记录的回复、评论。"
-            //     } else {
-            //         "统计口径：仅主内容，不含回复和评论；可在设置中开启。"
-            //     } + "按本地捕获时间统计条目、字数、分布和连续天数，不累加平台互动计数。",
-            //     style = MaterialTheme.typography.bodySmall,
-            //     color = MaterialTheme.colorScheme.onSurfaceVariant
-            // )
-            // Spacer(modifier = Modifier.height(12.dp))
+            if (uiState.isLoading || isRetrying) {
+                Column(
+                    modifier = Modifier.semantics { liveRegion = LiveRegionMode.Polite }
+                ) {
+                    CircularProgressIndicator(
+                        modifier = Modifier.semantics { contentDescription = "正在加载统计" }
+                    )
+                    Text(
+                        if (uiState.hasStats) "正在重新读取统计，暂时显示上次成功结果…" else "正在加载统计…",
+                        modifier = Modifier.padding(vertical = 12.dp)
+                    )
+                }
+            }
+            uiState.errorMessage?.let { message ->
+                Column(modifier = Modifier.semantics { liveRegion = LiveRegionMode.Polite }) {
+                    Text(message, color = MaterialTheme.colorScheme.error)
+                    Text(
+                        if (uiState.hasStats) "当前显示上次成功的统计及其统计范围，可能不是最新结果。" else "尚未成功读取统计，暂不展示数字和图表。",
+                        style = MaterialTheme.typography.bodySmall
+                    )
+                    Text("可手动重试；本地数据更新后也会自动尝试恢复。", style = MaterialTheme.typography.bodySmall)
+                    Button(enabled = !isRetrying, onClick = viewModel::retry) {
+                        Text(if (isRetrying) "正在重试…" else "重试读取统计")
+                    }
+                    Spacer(modifier = Modifier.height(12.dp))
+                }
+            }
+            if (!uiState.hasStats) return@Column
+
+            Text(
+                text = if (uiState.includeRepliesAndComments) {
+                    "统计范围：主内容及已阅读的回复、评论。"
+                } else {
+                    "统计范围：仅主内容，不含回复和评论。"
+                } + "按每次阅读的时间与快照统计，重复阅读也计数。",
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant
+            )
+            Spacer(modifier = Modifier.height(12.dp))
 
             // 1. 今日阅读字数 & 统计小组件卡片
             TodayReadingCard(

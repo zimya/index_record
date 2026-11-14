@@ -183,10 +183,105 @@
         }
       ],
       "relations": []
+    },
+    {
+      "id": "6:3942923737190999035",
+      "lastPropertyId": "7:2939720332752112256",
+      "name": "RecordSnapshot",
+      "properties": [
+        {
+          "id": "1:7188728029955084189",
+          "name": "id",
+          "type": 6,
+          "flags": 1
+        },
+        {
+          "id": "2:1688435277443654344",
+          "name": "key",
+          "indexId": "9:320372822416368713",
+          "type": 9,
+          "flags": 2080
+        },
+        {
+          "id": "3:6621982556902335922",
+          "name": "platform",
+          "indexId": "10:5223358749695138725",
+          "type": 9,
+          "flags": 2048
+        },
+        {
+          "id": "4:7541488611492630376",
+          "name": "identityId",
+          "indexId": "11:8157274602572975010",
+          "type": 9,
+          "flags": 2048
+        },
+        {
+          "id": "5:4302175656944736168",
+          "name": "captureTime",
+          "type": 6
+        },
+        {
+          "id": "6:894674288412497844",
+          "name": "legacy",
+          "type": 1
+        },
+        {
+          "id": "7:2939720332752112256",
+          "name": "recordJson",
+          "type": 9
+        }
+      ],
+      "relations": []
+    },
+    {
+      "id": "7:1374177952352717867",
+      "lastPropertyId": "6:1641784673897446539",
+      "name": "PendingRecordSnapshot",
+      "properties": [
+        {
+          "id": "1:2935291005762794663",
+          "name": "id",
+          "type": 6,
+          "flags": 1
+        },
+        {
+          "id": "2:3580210357444071088",
+          "name": "key",
+          "indexId": "12:1736239226242243082",
+          "type": 9,
+          "flags": 2080
+        },
+        {
+          "id": "3:5933596105252625248",
+          "name": "platformId",
+          "indexId": "13:8996816021269237916",
+          "type": 9,
+          "flags": 2048
+        },
+        {
+          "id": "4:5766518822800330492",
+          "name": "captureTime",
+          "type": 6
+        },
+        {
+          "id": "5:3687487058211075265",
+          "name": "recordJson",
+          "type": 9
+        },
+        {
+          "id": "6:1641784673897446539",
+          "name": "createdAt",
+          "indexId": "14:1866698565825021740",
+          "type": 6,
+          "flags": 8
+        }
+      ],
+      "relations": []
     }
   ],
-  "lastEntityId": "5:5444947321499550715",
-  "lastIndexId": "8:7498183938758355444",
+  "lastEntityId": "7:1374177952352717867",
+  "lastIndexId": "14:1866698565825021740",
   "lastRelationId": "0:0",
   "lastSequenceId": "0:0",
   "modelVersion": 5,

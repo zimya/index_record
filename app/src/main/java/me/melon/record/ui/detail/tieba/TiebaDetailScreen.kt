@@ -51,6 +51,7 @@ import me.melon.record.data.model.RecordRelation
 import me.melon.record.data.model.RelatedTargetState
 import me.melon.record.data.model.directRelation
 import me.melon.record.ui.components.DetailTopAppBar
+import me.melon.record.ui.detail.history.RecordHistoryAction
 import me.melon.record.ui.components.ImageViewerDialog
 import me.melon.record.ui.components.RelatedRecordCard
 import me.melon.record.data.model.TiebaMetadata
@@ -129,6 +130,7 @@ fun TiebaDetailScreen(
                 titleContentColor = TopAppBarDefaults.topAppBarColors().titleContentColor,
                 backContentDescription = "返回",
                 actions = {
+                    RecordHistoryAction(record)
                     TiebaSourceLink(
                         floor?.sourceUrl?.takeIf { showFirstFloorReplies && it.isNotBlank() }
                             ?: current.sourceUrl.ifBlank { thread?.sourceUrl.orEmpty() }

@@ -22,7 +22,7 @@ fun DetailTopAppBar(
     containerColor: Color = Color.Transparent,
     fontWeight: FontWeight? = null,
     titleContentColor: Color = MaterialTheme.colorScheme.primary,
-    backContentDescription: String = "Back",
+    backContentDescription: String = "返回",
     actions: @Composable RowScope.() -> Unit = {}
 ) {
     TopAppBar(

@@ -26,6 +26,7 @@ import androidx.compose.ui.unit.dp
 import me.melon.record.data.model.UniversalRecord
 import me.melon.record.data.model.toEntity
 import me.melon.record.ui.components.DetailTopAppBar
+import me.melon.record.ui.detail.history.RecordHistoryAction
 
 import me.melon.record.ui.components.ImageViewerDialog
 import me.melon.record.ui.theme.isAppInDarkTheme
@@ -74,7 +75,8 @@ fun SubjectDetailScreen(
                 title = "豆瓣 · ${subject.subtypeLabel}",
                 onBack = onBack,
                 containerColor = animatedBgColor,
-                fontWeight = FontWeight.SemiBold
+                fontWeight = FontWeight.SemiBold,
+                                actions = { RecordHistoryAction(record) }
             )
         }
     ) { innerPadding ->

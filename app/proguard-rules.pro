@@ -6,17 +6,17 @@
 -keep class de.robv.android.xposed.** { *; }
 
 # assets/xposed_init 声明的 Hook 入口类（被 LSPosed 框架直接反射加载，严禁混淆或重命名）
--keep public class me.melon.record.ZhihuHook { public *; }
--keep public class me.melon.record.DoubanHook { public *; }
--keep public class me.melon.record.XHook { public *; }
--keep public class me.melon.record.TiebaHook { public *; }
--keep public class me.melon.record.WeiboHook { public *; }
--keep public class me.melon.record.ThreadsHook { public *; }
--keep public class me.melon.record.RedditHook { public *; }
+-keep public class com.melonhu.indexrecord.ZhihuHook { public *; }
+-keep public class com.melonhu.indexrecord.DoubanHook { public *; }
+-keep public class com.melonhu.indexrecord.XHook { public *; }
+-keep public class com.melonhu.indexrecord.TiebaHook { public *; }
+-keep public class com.melonhu.indexrecord.WeiboHook { public *; }
+-keep public class com.melonhu.indexrecord.ThreadsHook { public *; }
+-keep public class com.melonhu.indexrecord.RedditHook { public *; }
 
 # 宿主进程与主进程跨进程通信、队列与捕获客户端
--keep class me.melon.record.sync.** { *; }
--keepclassmembers class me.melon.record.sync.** { *; }
+-keep class com.melonhu.indexrecord.sync.** { *; }
+-keepclassmembers class com.melonhu.indexrecord.sync.** { *; }
 
 # ==============================================================================
 # 2. ObjectBox 数据库核心规则
@@ -40,8 +40,8 @@
     @io.objectbox.annotation.Index <fields>;
     @io.objectbox.annotation.Unique <fields>;
 }
--keep class me.melon.record.data.model.** { *; }
--keepclassmembers class me.melon.record.data.model.** { *; }
+-keep class com.melonhu.indexrecord.data.model.** { *; }
+-keepclassmembers class com.melonhu.indexrecord.data.model.** { *; }
 
 # ==============================================================================
 # 3. 数据解析与序列化 (Gson & Parser DTOs)
@@ -57,8 +57,8 @@
 -keepclassmembers class * extends com.google.gson.TypeAdapter { *; }
 
 # 解析器内部用于 JSON 反序列化的结构模型
--keep class me.melon.record.parser.** { *; }
--keepclassmembers class me.melon.record.parser.** { *; }
+-keep class com.melonhu.indexrecord.parser.** { *; }
+-keepclassmembers class com.melonhu.indexrecord.parser.** { *; }
 
 # ==============================================================================
 # 4. Native / JNI 接口

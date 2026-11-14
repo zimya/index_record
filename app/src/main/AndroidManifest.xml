@@ -78,7 +78,7 @@
         <!-- exported=true 允许外部进程（Zhihu）访问 -->
         <provider
             android:name=".provider.HookDataProvider"
-            android:authorities="me.melon.record.provider"
+            android:authorities="com.melonhu.indexrecord.provider"
             android:exported="true"
             android:enabled="true"
         />

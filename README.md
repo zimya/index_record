@@ -48,7 +48,7 @@
 公共队列的 JVM 回归测试：
 
 ```sh
-./gradlew :app:testDebugUnitTest --tests 'me.melon.record.sync.CaptureQueueTest'
+./gradlew :app:testDebugUnitTest --tests 'com.melonhu.indexrecord.sync.CaptureQueueTest'
 ```
 
 ## 解析与持久化边界

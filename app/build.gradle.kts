@@ -11,11 +11,11 @@ kapt {
 }
 
 android {
-    namespace = "me.melon.record"
+    namespace = "com.melonhu.indexrecord"
     compileSdk = 34
 
     defaultConfig {
-        applicationId = "me.melon.record"
+        applicationId = "com.melonhu.indexrecord"
         minSdk = 26
         targetSdk = 34
         versionCode = 1

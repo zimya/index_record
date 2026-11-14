@@ -5,8 +5,8 @@
 # 目录结构
 
 ./research 下面是抓包得到的响应数据，用于分析
-./app/src/test/java/me/melon/record 是App测试
-./app/src/main/java/me/melon/record 是App源码
+./app/src/test/java/com/melonhu/indexrecord 是App测试
+./app/src/main/java/com/melonhu/indexrecord 是App源码
 
 # 如何自动化验证
 

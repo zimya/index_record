@@ -19,4 +19,12 @@ interface RawDataParser {
      * 将原始数据解析为一个或多个 UniversalRecord
      */
     fun parse(raw: RawData, cleanUrl: String): List<UniversalRecord>
+
+    /** JSON-object boundary. HTML, stream, batch and binary-envelope routes must override it. */
+    fun parseResult(raw: RawData, cleanUrl: String): ParseResult = ParseResult.attempt(platform) {
+        // Legacy object parsers may deliberately skip unsupported content, but malformed JSON
+        // must never be indistinguishable from an empty page.
+        require(com.google.gson.JsonParser.parseString(raw.json).isJsonObject) { "Expected JSON object" }
+        ParseResult.Success(parse(raw, cleanUrl))
+    }
 }

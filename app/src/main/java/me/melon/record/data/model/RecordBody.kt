@@ -19,10 +19,10 @@ enum class RecordBodyFormat(val storageValue: String, val renderingFormat: Markd
 }
 
 /** The declared storage format is authoritative; invalid values are rejected, never inferred. */
-fun UniversalRecord.bodyFormat(): RecordBodyFormat = RecordBodyFormat.fromStorage(contentFormat)
+fun RecordContent.bodyFormat(): RecordBodyFormat = RecordBodyFormat.fromStorage(contentFormat)
 
 /** Visible body text for summaries, comment text and search; excludes hidden link/media URLs. */
-fun UniversalRecord.bodyPlainText(): String = bodyPlainText(content, bodyFormat())
+fun RecordContent.bodyPlainText(): String = bodyPlainText(content, bodyFormat())
 
 /** API excerpts use their own declared format, independently of any captured body. */
 fun bodyPlainText(content: String, format: RecordBodyFormat): String =

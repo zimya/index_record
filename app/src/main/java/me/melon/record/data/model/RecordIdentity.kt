@@ -26,7 +26,7 @@ internal data class RecordIdentity(val platform: String, val contentId: String) 
     }
 }
 
-internal val UniversalRecord.identity: RecordIdentity get() = RecordIdentity.of(platform, platformId)
+internal val RecordContent.identity: RecordIdentity get() = RecordIdentity.of(platform, platformId)
 
 private val captureOrder = compareBy<UniversalRecord> { it.captureTime }
     .thenBy { it.publishTime }.thenBy { it.platformId }

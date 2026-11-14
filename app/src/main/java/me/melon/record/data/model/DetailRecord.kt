@@ -4,23 +4,23 @@ import java.util.Collections
 
 /** Read-only content value. ObjectBox entities never escape into detail snapshots. */
 internal data class DetailRecord(
-    val id: Long = 0,
-    val platform: String = "",
-    val recordType: String = "",
-    val sourceApp: String? = null,
-    val platformId: String = "",
-    val title: String = "",
-    val content: String = "",
-    val authorId: String = "",
-    val authorName: String = "",
-    val authorAvatar: String = "",
-    val sourceUrl: String = "",
-    val parentId: String = "",
-    val publishTime: Long = 0,
-    val captureTime: Long = 0,
-    val extraMetadata: String = "{}",
-    val contentFormat: String = RecordBodyFormat.PLAIN_TEXT.storageValue
-) {
+    override val id: Long = 0,
+    override val platform: String = "",
+    override val recordType: String = "",
+    override val sourceApp: String? = null,
+    override val platformId: String = "",
+    override val title: String = "",
+    override val content: String = "",
+    override val authorId: String = "",
+    override val authorName: String = "",
+    override val authorAvatar: String = "",
+    override val sourceUrl: String = "",
+    override val parentId: String = "",
+    override val publishTime: Long = 0,
+    override val captureTime: Long = 0,
+    override val extraMetadata: String = "{}",
+    override val contentFormat: String = RecordBodyFormat.PLAIN_TEXT.storageValue
+) : RecordContent {
     val identity: RecordIdentity get() = RecordIdentity.of(platform, platformId)
 }
 
@@ -29,8 +29,8 @@ internal fun UniversalRecord.toDetailRecord(): DetailRecord = DetailRecord(
     authorAvatar, sourceUrl, parentId, publishTime, captureTime, extraMetadata, contentFormat
 )
 
-/** Navigation and existing rendering components receive a fresh entity, never the snapshot's storage. */
-internal fun DetailRecord.toEntity(): UniversalRecord = UniversalRecord(
+/** Convert only at navigation or storage boundaries, never to render content. */
+internal fun RecordContent.toEntity(): UniversalRecord = UniversalRecord(
     id, platform, recordType, sourceApp, platformId, title, content, authorId, authorName,
     authorAvatar, sourceUrl, parentId, publishTime, captureTime, extraMetadata, contentFormat
 )

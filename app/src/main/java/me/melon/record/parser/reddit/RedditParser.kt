@@ -6,6 +6,8 @@ import me.melon.record.data.model.UniversalRecord
 import me.melon.record.markdown.htmlToMdAst
 import me.melon.record.markdown.toMarkdown
 import me.melon.record.parser.RawDataParser
+import me.melon.record.parser.ParseResult
+import me.melon.record.parser.ParseDiagnostic
 import org.json.JSONArray
 import org.json.JSONObject
 import org.json.JSONTokener
@@ -24,7 +26,7 @@ object RedditParser : RawDataParser {
     }.getOrDefault(false)
 
     override fun parse(raw: RawData, cleanUrl: String): List<UniversalRecord> =
-        parseWithAdvertisingIds(raw, cleanUrl, emptySet())
+        parseResult(raw, cleanUrl).records
 
     /** Used for legacy unfiltered raw captures, including sparse-ad-before-full-ad ordering. */
     fun advertisingPostIds(raw: RawData): Set<String> = runCatching {
@@ -74,19 +76,46 @@ object RedditParser : RawDataParser {
         ids
     }.getOrDefault(emptySet())
 
+    override fun parseResult(raw: RawData, cleanUrl: String): ParseResult =
+        parseResultWithAdvertisingIds(raw, cleanUrl, emptySet())
+
+    fun parseResultWithAdvertisingIds(raw: RawData, cleanUrl: String, excluded: Set<String>): ParseResult =
+        ParseResult.attempt("reddit.decode") {
+            val diagnostics = mutableListOf<ParseDiagnostic>()
+            val records = parseWithAdvertisingIds(raw, cleanUrl, excluded, diagnostics = diagnostics)
+            ParseResult.decoded(records, diagnostics)
+        }
+
     fun parseWithAdvertisingIds(
         raw: RawData,
         cleanUrl: String,
         excluded: Set<String>,
-        readPostIds: Set<String>? = null
+        readPostIds: Set<String>? = null,
+        diagnostics: MutableList<ParseDiagnostic> = mutableListOf()
     ): List<UniversalRecord> {
         if (!canHandle(cleanUrl, raw)) return emptyList()
-        val input = runCatching { JSONTokener(raw.json).nextValue() }.getOrNull() ?: return emptyList()
+        val tokener = JSONTokener(raw.json)
+        val input = tokener.nextValue()
+        require(tokener.nextClean() == '\u0000') { "Trailing data after Reddit response" }
+        require(input is JSONObject || input is JSONArray) { "Expected Reddit object or batch" }
         val wrapped = (input as? JSONObject)?.takeIf { it.has("response") }
         val response = wrapped?.opt("response") ?: input
         val request = wrapped?.opt("request")
+        require(response is JSONObject || response is JSONArray) { "Expected Reddit response object or batch" }
+        fun reportErrors(value: JSONObject, location: String) {
+            val errors = value.optJSONArray("errors")
+            if (errors != null && errors.length() > 0) {
+                diagnostics.add(ParseDiagnostic(location, "Reddit GraphQL returned ${errors.length()} errors"))
+            }
+        }
+        when (response) {
+            is JSONObject -> reportErrors(response, "reddit.response.errors")
+            is JSONArray -> for (index in 0 until response.length()) {
+                response.optJSONObject(index)?.let { reportErrors(it, "reddit.response[$index].errors") }
+            }
+        }
         val ads = excluded.toMutableSet()
-        val filtered = runCatching { RedditCaptureFilter.envelope(response, request, ads) }.getOrNull() ?: return emptyList()
+        val filtered = RedditCaptureFilter.envelope(response, request, ads) ?: return emptyList()
         val records = linkedMapOf<String, UniversalRecord>()
 
         fun emit(record: UniversalRecord) {
@@ -121,8 +150,14 @@ object RedditParser : RawDataParser {
                     }
                 }
                 when (val valueAtRoot = data.opt(key)) {
-                    is JSONObject -> runCatching { parseValue(valueAtRoot) }
-                    is JSONArray -> valueAtRoot.objects().forEach { runCatching { parseValue(it) } }
+                    is JSONObject -> try { parseValue(valueAtRoot) } catch (e: Exception) {
+                                            diagnostics.add(ParseDiagnostic("reddit.data.$key", e.message.orEmpty(), e))
+                                        }
+                    is JSONArray -> valueAtRoot.objects().forEachIndexed { index, item ->
+                                            try { parseValue(item) } catch (e: Exception) {
+                                                diagnostics.add(ParseDiagnostic("reddit.data.$key[$index]", e.message.orEmpty(), e))
+                                            }
+                                        }
                 }
             }
         }

@@ -10,23 +10,38 @@ import me.melon.record.parser.zhihu.ZhihuItemV2Parser
 import org.junit.Assert.*
 import org.junit.Test
 
+/** Observe completion through its public behavior, not the collaborator's private title cache. */
+internal fun RecordPersistenceContext.doubanTitle(subjectId: String): String {
+    val record = UniversalRecord(
+        platform = "douban", recordType = "interest",
+        extraMetadata = """{"subject_id":"$subjectId","subject_type":"movie"}"""
+    )
+    RecordPersistence(MemoryRecordRepository(), this).completeChunk(listOf(record))
+    return JsonParser.parseString(record.extraMetadata).asJsonObject.get("subject_title")?.asString.orEmpty()
+}
+
 internal class MemoryRecordRepository : RecordRepository {
     val rows = linkedMapOf<String, UniversalRecord>()
     val writes = mutableListOf<String>()
     var failOnPut = false
-    override fun find(platformId: String) = rows[platformId]?.copy()
+    var failOnWrite: Int? = null
+    val reads = mutableListOf<String>()
+    override fun find(platformId: String): UniversalRecord? {
+        reads.add(platformId)
+        return rows[platformId]?.copy()
+    }
     override fun children(parentId: String) = rows.values.filter { it.parentId == parentId }.map { it.copy() }
     override fun unboundZhihuAnswers() = rows.values.filter {
         it.platform == "zhihu" && it.recordType == "answer" && it.parentId.isBlank()
     }.map { it.copy() }
     override fun findIds(platformIds: List<String>) = rows.values.filter { it.platformId in platformIds }.map { it.copy() }
     override fun put(record: UniversalRecord) {
-        check(!failOnPut) { "injected write failure" }
+        check(!failOnPut && writes.size + 1 != failOnWrite) { "injected write failure" }
         if (record.id == 0L) record.id = (rows.size + 1).toLong()
         rows[record.platformId] = record.copy()
         writes.add(record.platformId)
     }
-    override fun linkTweet(record: UniversalRecord) {}
+
 }
 
 class RecordPersistenceTest {
@@ -50,6 +65,123 @@ class RecordPersistenceTest {
         extraMetadata = """{"subject_id":"987654321","subject_type":"$type","subject_title":"$title"}"""
     )
     private fun meta(record: UniversalRecord) = JsonParser.parseString(record.extraMetadata).asJsonObject
+
+    private fun tweet(id: String, type: String = "tweet", parent: String = "") = UniversalRecord(
+        platform = "twitter", recordType = type, platformId = "twitter_${type}_$id", parentId = parent
+    )
+
+    @Test fun twitterReplyLinksToEitherExistingParentRoleWithoutOverridingExactMatch() {
+        persistence.persist(tweet("p"))
+        persistence.persist(tweet("a", "comment", "twitter_comment_p"))
+        assertEquals("twitter_tweet_p", repository.find("twitter_comment_a")!!.parentId)
+        persistence.persist(tweet("c", "comment"))
+        persistence.persist(tweet("b", "comment", "twitter_tweet_c"))
+        assertEquals("twitter_comment_c", repository.find("twitter_comment_b")!!.parentId)
+        persistence.persist(tweet("p", "comment"))
+        persistence.persist(tweet("exact", "comment", "twitter_comment_p"))
+        assertEquals("twitter_comment_p", repository.find("twitter_comment_exact")!!.parentId)
+    }
+
+    @Test fun twitterLateTweetRewritesOnlyMatchingTwitterCommentsAndDoesNotCreateParents() {
+        persistence.persist(tweet("a", "comment", "twitter_comment_p"))
+        persistence.persist(tweet("b", "comment", "twitter_tweet_p"))
+        assertNull(repository.find("twitter_tweet_p"))
+        repository.put(tweet("foreign", "comment", "twitter_comment_p").copy(platform = "other"))
+        repository.put(tweet("noncomment", parent = "twitter_comment_p"))
+        persistence.persist(tweet("p"))
+        assertEquals("twitter_tweet_p", repository.find("twitter_comment_a")!!.parentId)
+        assertEquals("twitter_tweet_p", repository.find("twitter_comment_b")!!.parentId)
+        assertEquals("twitter_comment_p", repository.find("twitter_comment_foreign")!!.parentId)
+        assertEquals("twitter_comment_p", repository.find("twitter_tweet_noncomment")!!.parentId)
+        // A late comment parent historically does not repair the opposite-role orphan.
+        persistence.persist(tweet("orphan", "comment", "twitter_tweet_late"))
+        persistence.persist(tweet("late", "comment"))
+        assertEquals("twitter_tweet_late", repository.find("twitter_comment_orphan")!!.parentId)
+    }
+
+    @Test fun twitterRelationWriteFailuresPropagateForBothArrivalOrders() {
+        for (parentFirst in listOf(true, false)) {
+            val repo = MemoryRecordRepository()
+            val writer = RecordPersistence(repo)
+            writer.persist(if (parentFirst) tweet("p") else tweet("a", "comment", "twitter_comment_p"))
+            repo.failOnWrite = repo.writes.size + 2 // primary write succeeds; relation write fails
+            val error = assertThrows(IllegalStateException::class.java) {
+                writer.persist(if (parentFirst) tweet("a", "comment", "twitter_comment_p") else tweet("p"))
+            }
+            assertEquals("injected write failure", error.message)
+            assertEquals("twitter_comment_p", repo.find("twitter_comment_a")!!.parentId)
+        }
+    }
+
+    @Test fun twitterRelationReadFailureAlsoPropagates() {
+        val failure = IllegalStateException("injected relation query failure")
+        val failingRepository = object : RecordRepository by repository {
+            override fun children(parentId: String): List<UniversalRecord> = throw failure
+        }
+        val error = assertThrows(IllegalStateException::class.java) {
+            RecordPersistence(failingRepository).persist(tweet("p"))
+        }
+        assertSame(failure, error)
+    }
+
+    @Test fun doubanLegacyBackfillFailureStillWarmsTitleWithoutRepairingEarlierMetadata() {
+        val context = RecordPersistenceContext()
+        val writer = RecordPersistence(repository, context)
+        writer.persist(interest())
+        repository.failOnWrite = repository.writes.size + 2
+        // Unlike X, this task deliberately preserves Douban's historical best-effort backfill.
+        writer.persist(subject("失败回填标题"))
+        val early = repository.find("douban_interest_i")!!
+        assertEquals("电影短评：987654321", early.title)
+        assertFalse(meta(early).has("subject_title"))
+        repository.failOnWrite = null
+        repository.rows.clear() // Simulate caller rollback; completion state remains process-owned.
+        val next = interest("retry", type = "tv")
+        RecordPersistence(repository, context).persist(next)
+        assertEquals("剧集短评：失败回填标题", next.title)
+        assertEquals("失败回填标题", meta(next)["subject_title"].asString)
+    }
+
+    @Test fun completionEvidenceRoutesThroughInterfaceWithoutConcretePlatformCast() {
+        var completed = false
+        val evidence = object : CompletionEvidence { override val platform = "custom" }
+        val collaborator = object : PlatformPersistence {
+            override fun completeEvidence(evidence: CompletionEvidence, repository: RecordRepository) {
+                completed = true
+            }
+        }
+        RecordPersistence(repository, platforms = mapOf("custom" to collaborator)).complete(evidence)
+        assertTrue(completed)
+    }
+
+    @Test fun doubanEmptyCaptureEvidenceWarmsCacheWithoutWritesOrRepeatedItemLookups() {
+        repository.put(subject("捕获前数据库标题"))
+        val context = RecordPersistenceContext()
+        val writer = RecordPersistence(repository, context)
+        val evidence = me.melon.record.parser.douban.DoubanInterestsResult(
+            emptyList(), me.melon.record.parser.douban.DoubanTitleLookup("987654321", "movie")
+        )
+        writer.complete(evidence.completionEvidence())
+        assertEquals(listOf("douban_movie_987654321"), repository.reads)
+        repository.rows.clear() // The warmed title must survive loss/rollback of database rows.
+        val next = interest("next", type = "tv")
+        RecordPersistence(repository, context).completeChunk(listOf(next))
+        assertEquals("剧集短评：捕获前数据库标题", next.title)
+        assertEquals(1, repository.reads.size)
+        assertEquals(1, repository.writes.size)
+    }
+
+    @Test fun doubanSubjectCompletionRetainsCaptureOrderBeforeAnyWrites() {
+        val before = interest("before")
+        val after = interest("after")
+        persistence.completeChunk(listOf(before, subject("中间标题"), after))
+        assertFalse(meta(before).has("subject_title"))
+        assertEquals("中间标题", meta(after)["subject_title"].asString)
+        assertTrue(repository.rows.isEmpty())
+        listOf(before, subject("中间标题"), after).forEach(persistence::persistCompleted)
+        assertEquals("电影短评：中间标题", repository.find(before.platformId)!!.title)
+        assertFalse(meta(repository.find(before.platformId)!!).has("subject_title"))
+    }
 
     @Test fun answerIdIsNotProofOfAnExistingQuestion() {
         persistence.persist(answer())

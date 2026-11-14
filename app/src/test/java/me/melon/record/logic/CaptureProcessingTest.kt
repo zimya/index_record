@@ -4,6 +4,7 @@ import com.google.gson.JsonParser
 import me.melon.record.data.model.RawData
 import me.melon.record.data.model.RedditPendingRecord
 import me.melon.record.data.model.UniversalRecord
+import me.melon.record.parser.ParseResult
 import me.melon.record.parser.douban.DoubanSubjectParser
 import me.melon.record.parser.douban.DoubanTitleParseException
 import me.melon.record.parser.reddit.RedditParser
@@ -38,6 +39,79 @@ class CaptureProcessingTest {
     private object PassThroughPolicy : CapturePolicy {
         override fun canHandle(raw: RawData, cleanUrl: String) = true
         override fun parse(raw: RawData, cleanUrl: String) = ParsedCapture(raw.id, emptyList(), this)
+    }
+
+    @Test fun realMalformedPayloadsAreRetainedAndLaterValidRawIsConsumed() {
+        val endpoints = listOf(
+            "https://api.zhihu.com/pins/v2/123",
+            "https://frodo.douban.com/api/v2/movie/42",
+            "https://frodo.douban.com/api/v2/movie/42/interests",
+            "https://api.x.com/graphql/hash/HomeTimeline",
+            "https://api.weibo.cn/2/statuses/show",
+            "https://threads.net/api/v1/feed/",
+            "https://tiebac.baidu.com/c/f/pb/page",
+            "https://gql-fed.reddit.com/"
+        )
+        val processing = CaptureProcessing(listOf(RedditCapturePolicy(null), DoubanCapturePolicy, RegistryCapturePolicy))
+        val repository = MemoryRecordRepository()
+        val persistence = RecordPersistence(repository)
+        val bad = endpoints.mapIndexed { index, url ->
+            RawData(id = index + 1L, url = url, json = "{\"data\":")
+        } + RawData(id = 9, url = "https://tiebac.baidu.com/c/f/pb/page",
+            json = """{"encoding":"base64","body":"not base64!"}""")
+        var errors = 0
+        val captures = bad.map { raw -> processing.parse(raw, persistence) { errors++ } }
+        assertTrue("Each failed raw must report diagnostics", errors >= bad.size)
+        captures.forEach { assertTrue(it.result.toString(), it.result is ParseResult.Failure) }
+        val valid = processing.parse(rootDetail("later").copy(id = 10), persistence) { throw it }
+        val pendingIds = (bad.map { it.id } + 10L).toMutableSet()
+        pendingIds.removeAll(processing.persist(captures + valid, persistence).toSet())
+        assertEquals(bad.map { it.id }.toSet(), pendingIds)
+        assertNotNull(repository.find("reddit_post_later"))
+    }
+
+    @Test fun realRedditPartialBatchPersistsGoodRecordsButRetainsRaw() {
+        val raw = reddit("""[
+            {"errors":[{"message":"unavailable"}]},
+            {"data":{"postInfoById":{"id":"t3_good","title":"valid"}}}
+        ]""")
+        val processing = CaptureProcessing(listOf(RedditCapturePolicy(null)))
+        val repository = MemoryRecordRepository()
+        val persistence = RecordPersistence(repository)
+        val capture = processing.parse(raw, persistence) {}
+        assertTrue(capture.result is ParseResult.Partial)
+        assertFalse(capture.result.diagnostics.isEmpty())
+        assertArrayEquals(longArrayOf(), processing.persist(listOf(capture), persistence))
+        assertNotNull(repository.find("reddit_post_good"))
+    }
+
+    @Test fun explicitIgnoreAndRealEmptyPagesConsumeRawButPartialStreamRetainsSource() {
+        val processing = CaptureProcessing(listOf(
+            FilteredCapturePolicy({ _, raw -> raw.id == 1L }) { false },
+            DoubanCapturePolicy, RegistryCapturePolicy
+        ))
+        val repository = MemoryRecordRepository()
+        val persistence = RecordPersistence(repository)
+        val raws = listOf(
+            // Deliberate mode filtering is decided before decoding even a malformed body.
+            RawData(id = 1, url = "https://api.x.com/graphql/hash/HomeTimeline", json = "{"),
+            RawData(id = 2, url = "https://unknown.test/", json = "{"),
+            RawData(id = 3, url = "https://frodo.douban.com/api/v2/movie/42/interests", json = """{"interests":[]}"""),
+            RawData(id = 4, url = "https://threads.net/api/v1/feed/", json = """{"data":{"threads":[]}}"""),
+            RawData(id = 5, url = "https://threads.net/api/v1/feed/", json =
+                """{"post":{"pk":"42","caption":{"text":"valid"},"text_post_app_info":{}}}""" + "\n{\"data\":")
+        )
+        val captures = raws.map { processing.parse(it, persistence) {} }
+        assertTrue(captures[0].result is ParseResult.Ignored)
+        assertTrue(captures[1].result is ParseResult.Ignored)
+        assertTrue(captures[2].result is ParseResult.Success)
+        assertTrue(captures[3].result is ParseResult.Success)
+        val partial = captures[4].result
+        assertTrue(partial.toString(), partial is ParseResult.Partial)
+        assertTrue(partial.diagnostics.isNotEmpty())
+        assertEquals("threads_post_42", partial.records.single().platformId)
+        assertArrayEquals(longArrayOf(1, 2, 3, 4), processing.persist(captures, persistence))
+        assertNotNull(repository.find("threads_post_42"))
     }
 
     @Test fun advertisingPreflightSeesLaterCapturesBeforeSparseDetailParsing() {
@@ -84,26 +158,25 @@ class CaptureProcessingTest {
         assertEquals("", storage.rows.getValue("reddit_post_1xr0ctd").recordJson)
     }
 
-    @Test fun redditParseFailurePropagatesWhileOtherParseFailureConsumesRaw() {
+    @Test fun everyParseFailureRetainsRawWithoutAbortingLaterCaptures() {
         val error = IllegalArgumentException("injected parser failure")
-        fun failing(retain: Boolean) = object : CapturePolicy {
-            override val retainOnParseFailure = retain
+        fun failing() = object : CapturePolicy {
             override fun canHandle(raw: RawData, cleanUrl: String) = true
             override fun parse(raw: RawData, cleanUrl: String): ParsedCapture = throw error
         }
         var logged: Exception? = null
-        val consumed = CaptureProcessing(listOf(failing(false))).parse(RawData(id = 7)) { logged = it }
+        val consumed = CaptureProcessing(listOf(failing())).parse(RawData(id = 7)) { logged = it }
         assertSame(error, logged)
         assertTrue(consumed.records!!.isEmpty())
         assertEquals(7L, consumed.rawId)
-        assertTrue(RedditCapturePolicy(null).retainOnParseFailure)
-        try {
-            CaptureProcessing(listOf(failing(true))).parse(RawData(id = 8)) { logged = it }
-            fail("retryable parse failure must abort the chunk")
-        } catch (e: IllegalArgumentException) { assertSame(error, e) }
+        assertTrue(consumed.result is ParseResult.Failure)
+        val persistence = RecordPersistence(MemoryRecordRepository())
+        val processing = CaptureProcessing(listOf(failing()))
+        assertArrayEquals(longArrayOf(), processing.persist(listOf(processing.complete(consumed, persistence)), persistence))
+        assertTrue(processing.parse(RawData(id = 8)) { logged = it }.result is ParseResult.Failure)
     }
 
-    @Test fun completedDoubanCaptureKeepsTitleWhenLaterRedditParseAbortsChunkAndNextRunReusesIt() {
+    @Test fun completedDoubanCaptureKeepsTitleWhenLaterRedditParseFailsAndNextRunReusesIt() {
         val context = RecordPersistenceContext()
         val repository = MemoryRecordRepository()
         val persistence = RecordPersistence(repository, context)
@@ -116,17 +189,14 @@ class CaptureProcessingTest {
             json = """{"id":"42","title":"已解析标题","subtype":"movie"}""")
         val rawIds = mutableListOf(1L, 2L)
         var logged: Exception? = null
-        try {
-            val captures = listOf(subject, rootDetail().copy(id = 2)).map {
-                processing.parse(it, persistence) { e -> logged = e }
-            }
-            rawIds.removeAll(processing.persist(captures, persistence).toSet())
-            fail("Reddit parse failure must abort before chunk writes/deletion")
-        } catch (e: IllegalStateException) { assertSame(error, e) }
+        val captures = listOf(subject, rootDetail().copy(id = 2)).map {
+            processing.parse(it, persistence) { e -> logged = e }
+        }
+        rawIds.removeAll(processing.persist(captures, persistence).toSet())
         assertSame(error, logged)
         assertEquals("已解析标题", context.doubanTitle("42"))
-        assertTrue(repository.rows.isEmpty())
-        assertEquals(listOf(1L, 2L), rawIds)
+        assertNotNull(repository.find("douban_movie_42"))
+        assertEquals(listOf(2L), rawIds)
 
         val nextRun = RecordPersistence(repository, context)
         val interest = RawData(id = 3, url = "https://frodo.douban.com/api/v2/movie/42/interests",
@@ -231,7 +301,7 @@ class CaptureProcessingTest {
                 assertSame(failure, logged)
                 assertEquals("", context.doubanTitle("42"))
             }
-            assertArrayEquals(longArrayOf(1), processing.persist(listOf(parsed), persistence))
+            assertArrayEquals(longArrayOf(), processing.persist(listOf(parsed), persistence))
             assertTrue(repository.rows.isEmpty())
         }
     }
@@ -252,10 +322,9 @@ class CaptureProcessingTest {
                 json = """{"interests":$array}""")
             val empty = processing.parse(raw, persistence) {}
             assertTrue(empty.records!!.isEmpty())
-            try {
-                processing.parse(rootDetail().copy(id = 2), persistence) {}
-                fail("Reddit parse failure must abort")
-            } catch (e: IllegalStateException) { assertSame(failure, e) }
+            val failed = processing.parse(rootDetail().copy(id = 2), persistence) {}
+            assertTrue(failed.result is ParseResult.Failure)
+            assertFalse(failed.result.consumeRaw)
             assertEquals(if (lookupReached) "数据库标题" else "", context.doubanTitle("42"))
             assertEquals(listOf("douban_movie_42"), repository.writes)
         }

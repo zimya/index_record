@@ -22,9 +22,10 @@ object ZhihuAnswerParser {
 
     private val gson = Gson()
 
+    internal fun isHtmlAnswerUrl(cleanUrl: String): Boolean = PATTERN_HTML_ANSWER.matcher(cleanUrl).matches()
+
     fun canHandle(cleanUrl: String): Boolean {
-        return PATTERN_ZHIHU_ANSWER_V2.matcher(cleanUrl).matches() ||
-                PATTERN_HTML_ANSWER.matcher(cleanUrl).matches()
+        return PATTERN_ZHIHU_ANSWER_V2.matcher(cleanUrl).matches() || isHtmlAnswerUrl(cleanUrl)
     }
 
     fun parse(raw: RawData, cleanUrl: String): List<UniversalRecord> {

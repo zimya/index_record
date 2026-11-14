@@ -3,12 +3,15 @@ package me.melon.record.presentation
 import com.google.gson.JsonObject
 import com.google.gson.JsonParser
 import me.melon.record.data.model.TiebaMetadata
+import me.melon.record.data.model.RecordIdentity
 
 /** Decode once at the boundary; platform adapters only receive the captured object. */
 internal fun parseMetadataObject(extraMetadata: String): JsonObject =
     runCatching { JsonParser.parseString(extraMetadata).asJsonObject }.getOrElse { JsonObject() }
 
 internal class ZhihuRecordMetadata(values: JsonObject) {
+    val questionTarget: RecordIdentity? = values.metadataText("question_id").trim()
+        .takeIf { it.isNotBlank() }?.let { RecordIdentity.of("zhihu", "zhihu_question_$it") }
     val excerpt: String = values.metadataText("excerpt")
     val titleImage: String = values.metadataText("title_image")
     val authorHeadline: String = values.metadataText("author_headline")
@@ -21,6 +24,10 @@ internal class DoubanRecordMetadata(values: JsonObject) {
     val cardSubtitle: String = values.metadataText("card_subtitle")
     val titleImage: String = values.metadataText("title_image")
     val subjectId: String = values.metadataText("subject_id")
+    val subjectType: String = values.metadataText("subject_type").trim()
+    val subjectTarget: RecordIdentity? = subjectId.trim().takeIf { it.isNotBlank() }?.let {
+        RecordIdentity.of("douban", if (subjectType.isBlank()) "douban_$it" else "douban_${subjectType}_$it")
+    }
     val subjectTitle: String = values.metadataText("subject_title")
     val ipInfo: String? = values.metadataText("ip_info").takeIf { it.isNotBlank() }
     val starCount: Double = values.metadataDecimal("star_count")?.takeIf { it > 0 && it <= 5 }

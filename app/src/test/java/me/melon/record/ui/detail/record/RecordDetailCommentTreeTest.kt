@@ -75,42 +75,20 @@ class RecordDetailCommentTreeTest {
         assertEquals(listOf(b, a, low, high), latestRows.map { it.record })
     }
 
-    @Test
-    fun missingParentBranchesContainOnlyRealRepliesForTheCurrentPost() {
-        val connected = comment("a", score = 0)
-        val orphan = comment("x", commentId("missing"), score = 10)
-        val child = comment("y", orphan.platformId, score = 7)
-        val foreign = comment("z", "reddit_post_other", postId = "reddit_post_other")
-        val rows = buildRecordDetailCommentRows(listOf(child, foreign, orphan, connected), RecordDetailCommentSort.DEFAULT, post)
-        assertEquals(listOf(connected, orphan, child), rows.map { it.record })
-        assertEquals(listOf(0, 0, 1), rows.map { it.depth })
-        assertEquals(commentId("missing"), rows[1].missingParentId)
-        assertNull(rows[2].missingParentId)
-        assertEquals(commentId("missing"), orphan.parentId)
-        assertEquals(orphan.platformId, child.parentId)
-    }
+
+
 
     @Test
-    fun capturedAncestorsWithoutPostMetadataAreNotFalselyMarkedMissing() {
-        val parent = comment("b", commentId("missing"), postId = null)
-        val child = comment("c", parent.platformId)
-        val rows = buildRecordDetailCommentRows(listOf(child, parent), RecordDetailCommentSort.DEFAULT, post)
-        assertEquals(listOf(parent, child), rows.map { it.record })
+    fun selectedOrphansDoNotNeedPostMetadataToSurviveTreeRendering() {
+        val orphan = comment("orphan", commentId("missing"), postId = null).apply {
+            extraMetadata = "broken json"
+        }
+        val child = comment("child", orphan.platformId, postId = "reddit_post_other")
+        val rows = buildRecordDetailCommentRows(listOf(child, orphan, orphan), RecordDetailCommentSort.DEFAULT, post)
+        assertEquals(listOf(orphan, child), rows.map { it.record })
+        assertEquals(listOf(0, 1), rows.map { it.depth })
         assertEquals(commentId("missing"), rows[0].missingParentId)
         assertNull(rows[1].missingParentId)
-    }
-
-    @Test
-    fun directParentLinksWorkWithoutRootMetadataAndUnidentifiedOrphansAreNotGuessed() {
-        val parent = comment("a", postId = null)
-        val child = comment("b", parent.platformId, postId = null)
-        val unidentified = comment("c", commentId("missing"), postId = null).apply {
-            extraMetadata = """{"child_count":100,"comment_count":200}"""
-        }
-        val rows = buildRecordDetailCommentRows(listOf(child, unidentified, parent), RecordDetailCommentSort.DEFAULT, post)
-        assertEquals(listOf(parent, child), rows.map { it.record })
-        assertEquals(listOf(0, 1), rows.map { it.depth })
-        assertTrue(rows.all { it.missingParentId == null })
     }
 
     @Test
@@ -126,20 +104,6 @@ class RecordDetailCommentTreeTest {
         assertEquals(parent.platformId, child.parentId)
     }
 
-    @Test
-    fun replyDetailsShowOnlyTheirOwnDescendants() {
-        val current = comment("a")
-        val child = comment("b", current.platformId)
-        val grandchild = comment("c", child.platformId)
-        val sibling = comment("d")
-        val unrelatedOrphan = comment("x", commentId("missing"))
-        val rows = buildRecordDetailCommentRows(
-            listOf(current, child, grandchild, sibling, unrelatedOrphan), RecordDetailCommentSort.DEFAULT, current
-        )
-        assertEquals(listOf(child, grandchild), rows.map { it.record })
-        assertEquals(listOf(0, 1), rows.map { it.depth })
-        assertTrue(rows.all { it.missingParentId == null })
-    }
 
     @Test
     fun duplicateAndCyclicRecordsCannotLoopOrProduceFakeParents() {

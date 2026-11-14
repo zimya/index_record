@@ -2,7 +2,7 @@ package me.melon.record.presentation
 
 import me.melon.record.data.model.DetailRecord
 import me.melon.record.data.model.bodyPlainText
-import me.melon.record.data.model.toEntity
+
 import me.melon.record.data.repository.ZhihuAnswerRef
 
 internal data class QuestionAnswerPresentation(
@@ -18,7 +18,7 @@ internal fun questionAnswerPresentation(
     stored: DetailRecord?
 ): QuestionAnswerPresentation {
     if (stored != null) {
-        val record = stored.toEntity()
+        val record = stored
         return QuestionAnswerPresentation(
             author = displayAuthor(record.authorName),
             authorAvatar = record.authorAvatar,

@@ -18,9 +18,8 @@ internal enum class RelatedTargetState {
 }
 
 /** The storage boundary is the only place that interprets the overloaded parentId column. */
-internal fun UniversalRecord.directRelation(): RecordRelation? = relationOf(platform, recordType, parentId)
+internal fun RecordContent.directRelation(): RecordRelation? = relationOf(platform, recordType, parentId)
 
-internal fun DetailRecord.directRelation(): RecordRelation? = relationOf(platform, recordType, parentId)
 
 private fun relationOf(platform: String, recordType: String, parentId: String): RecordRelation? {
     if (parentId.isBlank()) return null
@@ -37,5 +36,5 @@ private fun relationOf(platform: String, recordType: String, parentId: String): 
     }
 }
 
-internal fun UniversalRecord.replyTarget(): RecordIdentity? =
+internal fun RecordContent.replyTarget(): RecordIdentity? =
     (directRelation() as? RecordRelation.ReplyTo)?.target

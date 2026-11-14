@@ -21,7 +21,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import me.melon.record.presentation.recordHeaderPresentation
-import me.melon.record.data.model.UniversalRecord
+import me.melon.record.data.model.RecordContent
 import androidx.compose.ui.text.style.TextOverflow
 import me.melon.record.ui.components.AvatarImage
 import me.melon.record.ui.components.CoverImage
@@ -29,7 +29,7 @@ import me.melon.record.ui.components.RatingStars
 
 
 @Composable
-internal fun RecordDetailHeader(record: UniversalRecord, onImageClick: (List<String>, Int) -> Unit) {
+internal fun RecordDetailHeader(record: RecordContent, onImageClick: (List<String>, Int) -> Unit) {
     Spacer(modifier = Modifier.height(16.dp))
     val presentation = recordHeaderPresentation(record)
     val titleImage = presentation.titleImage

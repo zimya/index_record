@@ -6,14 +6,9 @@ import io.objectbox.Box
 import io.objectbox.query.QueryBuilder.StringOrder.CASE_SENSITIVE
 import me.melon.record.data.model.UniversalRecord
 import me.melon.record.data.model.UniversalRecord_
-import me.melon.record.parser.douban.DoubanRelations
-import me.melon.record.parser.douban.DoubanInterestsResult
-import me.melon.record.parser.douban.DoubanTitleLookup
-import me.melon.record.parser.douban.DoubanTitleParseException
 import me.melon.record.parser.reddit.RedditRelations
 import me.melon.record.parser.threads.ThreadsRelations
 import me.melon.record.parser.tieba.TiebaRelations
-import me.melon.record.parser.x.XRelations
 import me.melon.record.parser.zhihu.ZhihuRelations
 
 /** Merge/link reads observe preceding writes; only parse-field completion uses the pre-write chunk view. */
@@ -24,7 +19,6 @@ internal interface RecordRepository {
     fun unboundZhihuAnswers(): List<UniversalRecord>
     fun findIds(platformIds: List<String>): List<UniversalRecord>
     fun put(record: UniversalRecord)
-    fun linkTweet(record: UniversalRecord)
 }
 
 internal class ObjectBoxRecordRepository(private val box: Box<UniversalRecord>) : RecordRepository {
@@ -52,7 +46,6 @@ internal class ObjectBoxRecordRepository(private val box: Box<UniversalRecord>) 
         return try { query.find() } finally { query.close() }
     }
     override fun put(record: UniversalRecord) { box.put(record) }
-    override fun linkTweet(record: UniversalRecord) { XRelations.linkTweetRelations(box, record) }
 }
 
 /** Hooks deliberately straddle generic merging: body policy first, metadata policy last, links after put. */
@@ -63,27 +56,26 @@ internal interface PlatformPersistence {
         records.forEach { complete(it, repository) }
     }
     fun completeFailure(error: Exception, repository: RecordRepository) {}
+    fun completeEvidence(evidence: CompletionEvidence, repository: RecordRepository) {}
     fun mergeBody(existing: UniversalRecord, incoming: UniversalRecord) {}
     fun mergeExtra(existing: UniversalRecord, incoming: UniversalRecord) {}
     fun afterPut(record: UniversalRecord, repository: RecordRepository) {}
 }
 
-/** Explicit process-lifetime completion state, used by the serialized processor, never by parsers. */
+/** Platform-owned capture evidence; the coordinator only routes it. */
+internal interface CompletionEvidence {
+    val platform: String
+}
+
+/** Process-lifetime collaborators own their completion state, independently of database rollback. */
 internal class RecordPersistenceContext {
-    private val doubanTitles = mutableMapOf<String, String>()
-
-    internal fun doubanTitle(subjectId: String): String =
-        doubanTitles[subjectId] ?: DoubanRelations.sampleSubjectTitle(subjectId)
-
-    internal fun rememberDoubanTitle(subjectId: String, title: String) {
-        if (subjectId.isNotBlank() && title.isNotBlank()) doubanTitles[subjectId] = title
-    }
+    internal val platforms: Map<String, PlatformPersistence> = defaultPersistencePlatforms()
 }
 
 internal class RecordPersistence(
     private val repository: RecordRepository,
-    private val context: RecordPersistenceContext = RecordPersistenceContext(),
-    private val platforms: Map<String, PlatformPersistence> = defaultPersistencePlatforms(context)
+    context: RecordPersistenceContext = RecordPersistenceContext(),
+    private val platforms: Map<String, PlatformPersistence> = context.platforms
 ) {
     /** Preserve parse-before-write visibility: no completion sees a newly written row in this chunk. */
     fun completeChunk(records: List<UniversalRecord>) {
@@ -97,8 +89,8 @@ internal class RecordPersistence(
         platforms.values.forEach { it.completeFailure(error, repository) }
     }
 
-    fun completeDoubanInterests(result: DoubanInterestsResult) {
-        (platforms["douban"] as? DoubanPersistence)?.completeInterests(result, repository)
+    fun complete(evidence: CompletionEvidence) {
+        (platforms[evidence.platform] ?: DefaultPersistence).completeEvidence(evidence, repository)
     }
 
     fun persist(record: UniversalRecord) {
@@ -152,15 +144,6 @@ private object TiebaPersistence : PlatformPersistence {
         incoming.extraMetadata = TiebaRelations.mergeExtra(existing.extraMetadata, incoming.extraMetadata)
     }
 }
-private object TwitterPersistence : PlatformPersistence {
-    override fun mergeExtra(existing: UniversalRecord, incoming: UniversalRecord) {
-        incoming.extraMetadata = XRelations.mergeTweetExtra(existing.extraMetadata, incoming.extraMetadata)
-    }
-    override fun afterPut(record: UniversalRecord, repository: RecordRepository) {
-        try { repository.linkTweet(record) } catch (_: Exception) {}
-    }
-}
-
 private fun metadata(record: UniversalRecord): JsonObject = JsonParser.parseString(record.extraMetadata).asJsonObject
 private fun JsonObject.text(key: String): String = get(key)?.asString ?: ""
 
@@ -198,117 +181,8 @@ private object ZhihuPersistence : PlatformPersistence {
     }
 }
 
-private class DoubanPersistence(private val context: RecordPersistenceContext) : PlatformPersistence {
-    // The policy is per-run, but its injected context MUST survive runs like the former cache:
-    // a review can teach later runs a title even when the first stored child predates that title.
-    // Keys intentionally remain subjectId-only (not type+ID), and context updates intentionally
-    // survive transaction rollback. Both are legacy behaviors, not new persistence guarantees.
-
-    override fun completeChunk(records: List<UniversalRecord>, repository: RecordRepository) {
-        // Former subject parsing registered a title immediately, before any chunk writes.
-        // Apply capture-order title evidence to the injected persistence context before writes;
-        // no parser object owns or consults implicit mutable title state.
-        for (record in records) {
-            if (record.recordType == "subject") {
-                runCatching {
-                    val id = metadata(record).text("subject_id")
-                    context.rememberDoubanTitle(id, record.title)
-                }
-            }
-            complete(record, repository)
-        }
-    }
-
-    override fun completeFailure(error: Exception, repository: RecordRepository) {
-        if (error !is DoubanTitleParseException) return
-        if (error.subjectTitle != null) {
-            context.rememberDoubanTitle(error.subjectId, error.subjectTitle)
-        } else {
-            completeTitleLookup(DoubanTitleLookup(error.subjectId, error.subjectType), repository)
-        }
-    }
-
-    private fun completeTitleLookup(lookup: DoubanTitleLookup, repository: RecordRepository): String {
-        val cached = context.doubanTitle(lookup.subjectId)
-        if (cached.isNotBlank()) return cached
-        return try {
-            val parentId = "douban_${lookup.subjectType}_${lookup.subjectId}"
-            // 从该条目下的长评或讨论帖元数据中查找 subject_title
-            // Keep the original lookup order (subject, first child), not a search over all children.
-            val title = repository.find(parentId)?.title.orEmpty().ifBlank {
-                repository.firstChild(parentId)?.let { metadata(it).text("subject_title") }.orEmpty()
-            }
-            // Database hits used to warm the cache during parsing, before subsequent items
-            // in this same chunk. Preserve that precedence over later database lookups.
-            context.rememberDoubanTitle(lookup.subjectId, title)
-            title
-        } catch (_: Exception) { "" }
-    }
-
-    fun completeInterests(result: DoubanInterestsResult, repository: RecordRepository) {
-        val lookup = result.titleLookup ?: return
-        // One lookup per capture, including empty lists. Never repeat it for every item or write.
-        val title = completeTitleLookup(lookup, repository)
-        for (record in result.records) applyTitle(record, title)
-    }
-
-    private fun applyTitle(record: UniversalRecord, title: String) {
-        if (title.isBlank()) return
-        val meta = metadata(record)
-        record.title = "${interestLabel(meta.text("subject_type"))}：$title"
-        meta.addProperty("subject_title", title)
-        record.extraMetadata = meta.toString()
-    }
-
-    override fun complete(record: UniversalRecord, repository: RecordRepository) {
-        if (record.recordType != "interest") return
-        try {
-            val meta = metadata(record)
-            val id = meta.text("subject_id")
-            val title = completeTitleLookup(DoubanTitleLookup(id, meta.text("subject_type")), repository)
-                .ifBlank { meta.text("subject_title") }
-            context.rememberDoubanTitle(id, title)
-            applyTitle(record, title)
-        } catch (_: Exception) {}
-    }
-    override fun mergeExtra(existing: UniversalRecord, incoming: UniversalRecord) {
-        if (incoming.recordType == "subject") {
-            incoming.extraMetadata = DoubanRelations.mergeSubjectExtra(existing.extraMetadata, incoming.extraMetadata)
-        }
-    }
-    override fun afterPut(record: UniversalRecord, repository: RecordRepository) {
-        try {
-            val meta = metadata(record)
-            val id = meta.text("subject_id")
-            val title = meta.text("subject_title")
-            val type = meta.text("subject_type").ifBlank { "movie" }
-            if (id.isBlank() || title.isBlank()) return
-            context.rememberDoubanTitle(id, title)
-            val expectedTitle = "${interestLabel(type)}：$title"
-            // Backfill only titles, after the source record is written. Do not synthesize metadata
-            // on earlier interests: their original capture/merge order must remain observable.
-            for (interest in repository.children("douban_${type}_${id}")) {
-                if (interest.platform == "douban" && interest.recordType == "interest" && interest.title != expectedTitle) {
-                    interest.title = expectedTitle
-                    repository.put(interest)
-                }
-            }
-        } catch (_: Exception) {}
-    }
-}
-
-private fun interestLabel(type: String): String = when (type) {
-    "movie" -> "电影短评"
-    "book" -> "图书短评"
-    "music" -> "音乐短评"
-    "game" -> "游戏短评"
-    "tv" -> "剧集短评"
-    "drama" -> "舞台剧短评"
-    else -> "豆瓣短评"
-}
-
-private fun defaultPersistencePlatforms(context: RecordPersistenceContext): Map<String, PlatformPersistence> = mapOf(
+private fun defaultPersistencePlatforms(): Map<String, PlatformPersistence> = mapOf(
     "weibo" to WeiboPersistence, "threads" to ThreadsPersistence, "reddit" to RedditPersistence,
-    "zhihu" to ZhihuPersistence, "douban" to DoubanPersistence(context),
+    "zhihu" to ZhihuPersistence, "douban" to DoubanPersistence(),
     "tieba" to TiebaPersistence, "twitter" to TwitterPersistence
 )

@@ -1,6 +1,6 @@
 package me.melon.record.presentation
 
-import me.melon.record.data.model.UniversalRecord
+import me.melon.record.data.model.RecordContent
 import me.melon.record.data.model.directRelation
 
 /** Layout capabilities describe content structure, not a navigation entry's platform. */
@@ -10,7 +10,7 @@ internal data class ContentStructure(
     val hasRelatedContent: Boolean
 )
 
-internal fun contentStructure(record: UniversalRecord): ContentStructure = ContentStructure(
+internal fun contentStructure(record: RecordContent): ContentStructure = ContentStructure(
     hasTitle = record.title.isNotBlank(),
     supportsLocalReplies = record.recordType in setOf(
         "answer", "article", "pin", "comment", "tweet", "status", "thread", "post",
@@ -27,7 +27,7 @@ internal data class ReplySectionPresentation(
     val hasMore: Boolean?
 )
 
-internal fun replySectionPresentation(record: UniversalRecord, localCount: Int): ReplySectionPresentation {
+internal fun replySectionPresentation(record: RecordContent, localCount: Int): ReplySectionPresentation {
     val metadata = PlatformMetadataAdapters(record.extraMetadata, record.platform)
     val platformCount = recordStatistics(record, StatisticsSurface.DETAIL, metadata)
         .firstOrNull { it.kind == StatisticKind.REPLY }?.value

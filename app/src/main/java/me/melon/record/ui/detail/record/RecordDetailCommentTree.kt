@@ -3,17 +3,15 @@ package me.melon.record.ui.detail.record
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import me.melon.record.presentation.commentStatistics
-import me.melon.record.data.model.UniversalRecord
-
+import me.melon.record.data.model.RecordContent
 import me.melon.record.data.model.identity
 import me.melon.record.data.model.replyTarget
-import me.melon.record.data.repository.selectRedditComments
 import java.util.ArrayDeque
 
 internal enum class RecordDetailCommentSort { DEFAULT, LATEST }
 
 internal data class RecordDetailCommentRow(
-    val record: UniversalRecord,
+    val record: RecordContent,
     val depth: Int,
     val missingParentId: String? = null,
     val hasInvalidParentChain: Boolean = false
@@ -26,9 +24,9 @@ internal data class RecordDetailCommentRow(
 
 @Composable
 internal fun rememberRecordDetailCommentRows(
-    allComments: List<UniversalRecord>,
+    allComments: List<RecordContent>,
     commentSort: RecordDetailCommentSort,
-    record: UniversalRecord
+    record: RecordContent
 ): List<RecordDetailCommentRow> {
     return remember(allComments, commentSort, record.platformId, record.platform, record.recordType) {
         buildRecordDetailCommentRows(allComments, commentSort, record)
@@ -36,24 +34,23 @@ internal fun rememberRecordDetailCommentRows(
 }
 
 internal fun buildRecordDetailCommentRows(
-    allComments: List<UniversalRecord>,
+    allComments: List<RecordContent>,
     commentSort: RecordDetailCommentSort,
-    record: UniversalRecord
+    record: RecordContent
 ): List<RecordDetailCommentRow> {
-    val isReddit = record.platform == "reddit"
-    val comments = if (isReddit) selectRedditComments(record, allComments) else allComments.distinctBy { it.identity }
+    val comments = allComments.distinctBy { it.identity }
     val byId = comments.associateBy { it.identity }
     val childrenByParent = comments.groupBy { it.replyTarget() }
     val scores = comments.associate { it.identity to commentStatistics(it).likeCount }
 
     val roots = childrenByParent[record.identity].orEmpty()
 
-    fun likeCount(r: UniversalRecord): Long? = scores[r.identity]
+    fun likeCount(r: RecordContent): Long? = scores[r.identity]
 
-    fun sortedSiblings(nodes: List<UniversalRecord>): List<UniversalRecord> = when (commentSort) {
+    fun sortedSiblings(nodes: List<RecordContent>): List<RecordContent> = when (commentSort) {
         // Unknown sorts after every captured value, including negative scores.
         RecordDetailCommentSort.DEFAULT -> nodes.sortedWith(
-            compareByDescending<UniversalRecord> { likeCount(it) }
+            compareByDescending<RecordContent> { likeCount(it) }
                 .thenByDescending { it.publishTime }.thenBy { it.platformId }
         )
         RecordDetailCommentSort.LATEST -> nodes.sortedByDescending { it.publishTime }
@@ -61,7 +58,7 @@ internal fun buildRecordDetailCommentRows(
 
     val result = mutableListOf<RecordDetailCommentRow>()
     val visited = mutableSetOf(record.identity)
-    fun visit(root: UniversalRecord, missingParentId: String? = null, invalidParentChain: Boolean = false) {
+    fun visit(root: RecordContent, missingParentId: String? = null, invalidParentChain: Boolean = false) {
         val stack = ArrayDeque<RecordDetailCommentRow>()
         stack.addLast(RecordDetailCommentRow(root, 0, missingParentId, invalidParentChain))
         while (stack.isNotEmpty()) {

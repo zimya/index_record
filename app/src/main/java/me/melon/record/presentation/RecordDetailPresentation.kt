@@ -1,6 +1,7 @@
 package me.melon.record.presentation
 
 import me.melon.record.data.model.UniversalRecord
+import me.melon.record.data.model.RecordContent
 import me.melon.record.markdown.MarkdownContentFormat
 import me.melon.record.data.model.bodyFormat
 import me.melon.record.data.model.bodyPlainText
@@ -13,7 +14,7 @@ internal data class RecordHeaderPresentation(
     val starCount: Double
 )
 
-internal fun recordHeaderPresentation(record: UniversalRecord): RecordHeaderPresentation {
+internal fun recordHeaderPresentation(record: RecordContent): RecordHeaderPresentation {
     val metadata = PlatformMetadataAdapters(record.extraMetadata, record.platform)
     return RecordHeaderPresentation(
         title = record.title,
@@ -30,15 +31,15 @@ internal data class RecordBodyPresentation(
     val enableMath: Boolean
 )
 
-internal fun recordBodyPresentation(record: UniversalRecord): RecordBodyPresentation {
+internal fun recordBodyPresentation(record: RecordContent): RecordBodyPresentation {
     val format = record.bodyFormat()
     return RecordBodyPresentation(record.content, format.renderingFormat, format.enableMath)
 }
 
-internal fun commentPlainText(record: UniversalRecord): String = record.bodyPlainText()
+internal fun commentPlainText(record: RecordContent): String = record.bodyPlainText()
 
 /** A reference, not an invented captured subject; retained for the related-record navigation fallback. */
-internal fun doubanSubjectReference(record: UniversalRecord): UniversalRecord? {
+internal fun doubanSubjectReference(record: RecordContent): UniversalRecord? {
     val metadata = PlatformMetadataAdapters(record.extraMetadata, record.platform).douban ?: return null
     if (metadata.subjectId.isBlank() || metadata.subjectTitle.isBlank()) return null
     return UniversalRecord(

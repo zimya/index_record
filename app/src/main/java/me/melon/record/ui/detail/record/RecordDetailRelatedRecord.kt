@@ -20,7 +20,7 @@ internal fun RecordDetailRelatedRecord(
     if (related == null) return
     val target = related.record
     RelatedRecordCard(
-        record = target?.toEntity(),
+        record = target,
         relation = related.relation,
         targetState = related.targetState,
         fallbackPlatform = record.platform,

@@ -18,6 +18,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import me.melon.record.data.model.UniversalRecord
+import me.melon.record.data.model.RecordContent
+import me.melon.record.data.model.toEntity
 import me.melon.record.markdown.RenderMarkdownText
 import me.melon.record.presentation.StatisticsSurface
 import me.melon.record.presentation.displayAuthor
@@ -74,7 +76,7 @@ internal fun RecordDetailCommentItem(
 ) {
     val comment = row.record
     Surface(
-        onClick = { onOpenRecord(comment) },
+        onClick = { onOpenRecord(comment.toEntity()) },
         modifier = Modifier.fillMaxWidth().padding(start = (row.depth.coerceAtMost(4) * 24).dp, bottom = 12.dp),
         color = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = if (row.depth > 0) 0.2f else 0.4f),
         shape = MaterialTheme.shapes.medium
@@ -122,7 +124,7 @@ internal fun RecordDetailCommentItem(
 
 @OptIn(androidx.compose.foundation.layout.ExperimentalLayoutApi::class)
 @Composable
-internal fun RecordCommentStatistics(record: UniversalRecord) {
+internal fun RecordCommentStatistics(record: RecordContent) {
     androidx.compose.foundation.layout.FlowRow(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
         recordStatistics(record, StatisticsSurface.DETAIL).forEach { StatisticCount(it) }
     }

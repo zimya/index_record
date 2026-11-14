@@ -9,13 +9,13 @@ import androidx.compose.runtime.Composable
 
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import me.melon.record.data.model.UniversalRecord
+import me.melon.record.data.model.RecordContent
 import me.melon.record.presentation.recordBodyPresentation
 import me.melon.record.markdown.RenderMarkdownText
 import me.melon.record.presentation.displayPublishTime
 
 @Composable
-internal fun RecordDetailBody(record: UniversalRecord, onImageClick: (List<String>, Int) -> Unit) {
+internal fun RecordDetailBody(record: RecordContent, onImageClick: (List<String>, Int) -> Unit) {
     val presentation = recordBodyPresentation(record)
     RenderMarkdownText(
         markdown = presentation.content,

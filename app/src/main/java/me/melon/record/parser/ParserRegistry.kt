@@ -30,8 +30,13 @@ object ParserRegistry {
         return parsers.firstOrNull { it.canHandle(cleanUrl, raw) }
     }
 
-    fun parse(raw: RawData, cleanUrl: String): List<UniversalRecord>? {
-        val parser = findParser(cleanUrl, raw) ?: return null
-        return parser.parse(raw, cleanUrl)
+    /** List-only facade for existing consumers; raw consumption must use parseResult. */
+    fun parse(raw: RawData, cleanUrl: String): List<UniversalRecord> =
+        parseResult(raw, cleanUrl).records
+
+    fun parseResult(raw: RawData, cleanUrl: String): ParseResult = ParseResult.attempt("registry") {
+        val parser = findParser(cleanUrl, raw)
+            ?: return@attempt ParseResult.Ignored("No parser supports this capture")
+        parser.parseResult(raw, cleanUrl)
     }
 }

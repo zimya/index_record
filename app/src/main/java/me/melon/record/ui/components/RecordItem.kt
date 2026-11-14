@@ -30,6 +30,7 @@ import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import me.melon.record.data.PlatformCatalog
 import me.melon.record.data.model.UniversalRecord
+import me.melon.record.data.model.RecordContent
 import me.melon.record.presentation.recordListPresentation
 
 import me.melon.record.ui.theme.getPlatformThemeColor
@@ -158,7 +159,7 @@ fun RecordItem(record: UniversalRecord, searchQuery: String, onClick: () -> Unit
     }
 }
 
-internal fun recordTypeLabel(record: UniversalRecord): String =
+internal fun recordTypeLabel(record: RecordContent): String =
     PlatformCatalog.typeLabel(record.platform, record.recordType)
 
 

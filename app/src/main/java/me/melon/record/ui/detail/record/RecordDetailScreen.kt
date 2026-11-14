@@ -26,7 +26,7 @@ import androidx.compose.ui.Modifier
 
 import androidx.compose.ui.unit.dp
 import me.melon.record.data.model.UniversalRecord
-import me.melon.record.data.model.toEntity
+import me.melon.record.data.model.RecordContent
 import me.melon.record.ui.components.DetailTopAppBar
 import me.melon.record.ui.components.ImageViewerDialog
 import me.melon.record.presentation.replySectionPresentation
@@ -39,7 +39,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.runtime.getValue
 
 
-internal fun recordDetailTitle(record: UniversalRecord): String {
+internal fun recordDetailTitle(record: RecordContent): String {
     val platform = PlatformCatalog.displayName(record.platform)
     val type = recordTypeLabel(record)
     return "$platform · $type"
@@ -59,8 +59,8 @@ fun RecordDetailScreen(
     val viewModel = rememberRecordDetailViewModel(record)
     val data by viewModel.state.collectAsState()
     val isRetrying by viewModel.isRetrying.collectAsState()
-    val detailRecord = remember(data.snapshot) { data.snapshot.record.toEntity() }
-    val comments = remember(data.snapshot) { data.snapshot.comments.map { it.toEntity() } }
+    val detailRecord = data.snapshot.record
+    val comments = data.snapshot.comments
 
     val commentRows = rememberRecordDetailCommentRows(comments, commentSort, detailRecord)
     val replySection = replySectionPresentation(detailRecord, commentRows.size)
@@ -101,9 +101,6 @@ fun RecordDetailScreen(
                 item {
                     replySection.message?.let {
                         Text(it, style = MaterialTheme.typography.bodySmall)
-                    }
-                    replySection.platformCount?.let {
-                        Text("平台回复数：$it", style = MaterialTheme.typography.labelSmall)
                     }
                 }
                 items(

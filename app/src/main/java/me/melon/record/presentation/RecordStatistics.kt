@@ -1,6 +1,6 @@
 package me.melon.record.presentation
 
-import me.melon.record.data.model.UniversalRecord
+import me.melon.record.data.model.RecordContent
 
 internal enum class StatisticKind(val label: String) {
     LIKE("点赞"), DISLIKE("点踩"), REPLY("回复"), REPOST("转发"), VIEW("浏览"), SHARE("分享"),
@@ -33,7 +33,7 @@ internal fun redditStatistics(metadata: RedditMetadata): List<RecordStatistic> =
 
 /** Every surface shares one order; detail adds secondary metrics without reordering shared ones. */
 internal fun recordStatistics(
-    record: UniversalRecord,
+    record: RecordContent,
     surface: StatisticsSurface,
     metadata: PlatformMetadataAdapters = PlatformMetadataAdapters(record.extraMetadata, record.platform)
 ): List<RecordStatistic> {
@@ -83,7 +83,7 @@ internal data class CommentStatistics(
 )
 
 internal fun commentStatistics(
-    record: UniversalRecord,
+    record: RecordContent,
     metadata: PlatformMetadataAdapters = PlatformMetadataAdapters(record.extraMetadata, record.platform)
 ): CommentStatistics {
     val reddit = metadata.reddit

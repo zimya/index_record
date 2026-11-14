@@ -9,6 +9,7 @@ import me.melon.record.data.model.RawData
 import me.melon.record.data.model.RecordBodyFormat
 import me.melon.record.data.model.UniversalRecord
 import me.melon.record.parser.RawDataParser
+import me.melon.record.parser.ParseResult
 import java.net.URI
 import java.net.URLDecoder
 import java.util.Base64
@@ -20,22 +21,23 @@ object TiebaParser : RawDataParser {
 
     override fun canHandle(cleanUrl: String, raw: RawData): Boolean = endpoint(cleanUrl) != null
 
-    override fun parse(raw: RawData, cleanUrl: String): List<UniversalRecord> {
+    override fun parse(raw: RawData, cleanUrl: String): List<UniversalRecord> = parseResult(raw, cleanUrl).records
+
+    private fun parseDecoded(raw: RawData, cleanUrl: String): List<UniversalRecord> {
         val path = endpoint(cleanUrl) ?: return emptyList()
-        return try {
-            val floorResponse = path.endsWith("/floor")
-            val root = decode(raw.json, path)
-            val response = root.obj("response").takeIf { it.size() > 0 } ?: root
-            val error = response.obj("error")
-            if (error.number("errorno", "error_code", "errorCode") != 0L ||
-                response.number("error_code", "errorCode") != 0L) return emptyList()
-            val data = response.obj("data")
-            if (data.size() == 0) return emptyList()
-            records(raw, cleanUrl, data, floorResponse)
-        } catch (_: Exception) {
-            // A malformed capture is not a partially valid record or a guessed thread.
-            emptyList()
-        }
+        val floorResponse = path.endsWith("/floor")
+        val root = decode(raw.json, path)
+        val response = root.obj("response").takeIf { it.size() > 0 } ?: root
+        val error = response.obj("error")
+        require(error.number("errorno", "error_code", "errorCode") == 0L &&
+            response.number("error_code", "errorCode") == 0L) { "Tieba API returned an error" }
+        val data = response.obj("data")
+        if (data.size() == 0) return emptyList()
+        return records(raw, cleanUrl, data, floorResponse)
+    }
+
+    override fun parseResult(raw: RawData, cleanUrl: String): ParseResult = ParseResult.attempt("tieba.decode") {
+        ParseResult.Success(parseDecoded(raw, cleanUrl))
     }
 
     private fun endpoint(url: String): String? = try {

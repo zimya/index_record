@@ -1,7 +1,7 @@
 package me.melon.record.presentation
 
 import me.melon.record.data.PlatformCatalog
-import me.melon.record.data.model.UniversalRecord
+import me.melon.record.data.model.RecordContent
 import me.melon.record.data.model.bodyPlainText
 
 
@@ -18,7 +18,7 @@ internal data class RecordListPresentation(
     val snippet: String?
 )
 
-internal fun recordListPresentation(record: UniversalRecord, searchQuery: String): RecordListPresentation {
+internal fun recordListPresentation(record: RecordContent, searchQuery: String): RecordListPresentation {
     val metadata = PlatformMetadataAdapters(record.extraMetadata, record.platform)
     val preview = recordPreviewText(record, metadata)
     val snippetContent = record.bodyPlainText()

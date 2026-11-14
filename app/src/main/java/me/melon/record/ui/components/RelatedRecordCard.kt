@@ -25,7 +25,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import me.melon.record.data.model.RecordRelation
 import me.melon.record.data.model.RelatedTargetState
-import me.melon.record.data.model.UniversalRecord
+import me.melon.record.data.model.RecordContent
 import me.melon.record.presentation.relatedRecordLabel
 import me.melon.record.presentation.relatedTargetNotice
 import me.melon.record.presentation.relatedTargetStateLabel
@@ -36,7 +36,7 @@ import me.melon.record.ui.theme.isAppInDarkTheme
 
 @Composable
 internal fun RelatedRecordCard(
-    record: UniversalRecord?,
+    record: RecordContent?,
     relation: RecordRelation,
     targetState: RelatedTargetState,
     fallbackPlatform: String,

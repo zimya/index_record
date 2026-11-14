@@ -50,6 +50,13 @@
 ./gradlew :app:testDebugUnitTest --tests 'me.melon.record.sync.CaptureQueueTest'
 ```
 
+## 解析与持久化边界
+
+- 生产处理使用 `RawDataParser.parseResult()` / `ParserRegistry.parseResult()`，不根据列表型 `parse()` 的空结果决定原始数据删除。`Success`（包括合法空响应）与带原因的 `Ignored` 可消费原文；`Failure` 保留原文；`Partial` 写入有效记录但保留完整原文及诊断。诊断不复制原始 payload。此契约不等于完整的字段级 schema 校验，既有安全读取和主动跳过规则仍由各平台定义。
+- 保留的原文下次处理时可重试；一次处理按 ID 顺序扫描，跳过本轮已尝试的保留项，不因坏数据阻塞后续捕获。暂不提供持久化隔离、重试上限或诊断管理界面；部分成功的重试可能再次进入合并流程。
+- 默认结果入口校验 JSON 对象；知乎 appview HTML、Threads 流式响应、Reddit 批响应和贴吧二进制信封由平台入口处理，不能一律要求 JSON 对象。
+- `logic/TwitterPersistence.kt` 通过通用仓库能力补全 X 关系，查询和回写失败交由调用方事务回滚；`parser/x/XRelations.kt` 仅保留纯元数据合并。`logic/DoubanPersistence.kt` 封装标题补全证据和进程级状态，公共协调器只路由 `CompletionEvidence`。豆瓣既有缓存键、补全顺序及状态不随事务回滚的行为保持不变。
+
 ## 详情数据契约
 
 详情页统一采用 `Repository → 完整快照 → ViewModel StateFlow → Compose`，普通记录、贴吧、豆瓣条目、评论和知乎问题保留各自的查询策略，不在 Composable 中查询或订阅 ObjectBox。
@@ -57,13 +64,14 @@
 - **身份**：`data/model/RecordIdentity.kt` 集中解释存储 ID。Twitter 的 tweet/comment 捕获角色属于同一个内容身份；读取同身份的多个实体时，按捕获时间、发布时间、存储 ID 确定最新值，当前入口的导航角色保持不变。
 - **关系**：`RecordRelations.kt` 是 `parentId` 的语义边界，区分回答所属问题、回复对象、内容所属条目、楼层所属主帖和内容引用。关联卡片接收显式关系及 `RECORDED / REFERENCE_ONLY / MISSING` 目标状态，不再用目标平台或类型推断关系。豆瓣未捕获条目可提供显式引用；所有平台缺失目标只显示提示，不构造捕获记录。
 - **快照与刷新**：`data/repository/RecordObservation.kt` 统一订阅本地记录变更，合并突发通知，在 IO 线程的同一个读事务中重建完整快照。正文、统计、评论和关联内容不分别发布。单次读失败不终止变更监听，下一次变更可恢复。
-- **不可变状态**：快照只暴露全 `val` 的 `DetailRecord` 和防御性复制的不可修改集合。ObjectBox 实体只用于存储；旧渲染组件或导航需要实体时通过 `toEntity()` 创建新值，不能修改快照。
+- **不可变状态**：快照只暴露全 `val` 的 `DetailRecord` 和防御性复制的不可修改集合。`RecordContent` 为实体与快照提供共享的只读消费契约，它本身不承诺实现对象不可变。普通详情直接渲染快照，公共展示函数不依赖 ObjectBox 实体；导航需要实体时才通过 `toEntity()` 创建新值，不能修改快照。贴吧特殊页仍保留现有实体适配路径。
 - **元数据与统计**：平台领域元数据使用 `TiebaMetadata`、`DoubanSubjectMetadata` 等命名字段，隐藏原始 JSON，不依赖 parser。展示统计使用 `RecordStatistic` / `CommentStatistics` 等契约，保留各平台未知值、零值、负分和排序语义，不把所有平台字段继续塞入通用元数据类。
 - **加载与生命周期**：各页使用 `DetailLoadState.Loading / Ready / Failed`，通过 `DetailLoadContent` 统一显示加载、保留快照的错误反馈和重试入口。`DetailNavigationViewModel` 为每次导航创建独立条目；`DetailViewModelScope` 使用该条目的 ViewModelStore，被关联内容覆盖时保留，弹出且退出动画结束后清理。`SaveableStateProvider` 按条目保存滚动位置、排序、筛选及展开状态，不按裸平台 ID 共享位置。此机制支持栈内返回和配置变化，不承诺进程被系统终止后的导航栈恢复。
 
 ## 首页与统计策略
 
 - `HomeViewModel` 仅协调首页搜索、筛选及加载状态；`HomeRecordRepository` 负责本地查询与订阅，`HomeQueryPolicy` 负责纯筛选，`HomeSyncCoordinator` 负责宿主唤醒和捕获同步，详情导航独立管理。
+- 首页分组身份及标签由 `HomeRecordGroupPresentation` 复用关系与平台元数据契约解释，UI 仅聚合连续同组记录；缺少目标身份时不以标题充当身份。评论归属由 Repository 选择，UI 评论树只处理结构、去重与排序，不再重复执行 Reddit 归属筛选。
 - 首页默认仅显示主内容；非空搜索或任一显式筛选（日期、应用、类型）会允许楼层、回复和评论参与匹配。类型筛选使用 `platform:recordType` 展示身份，例如知乎评论、贴吧楼层、X 评论，不修改数据库中的原始类型。
 - `RecordContentPolicy.isPrimaryContent` 显式声明主内容资格：知乎问题/回答/文章/想法，贴吧主帖，Reddit 帖子，X 推文，微博博文，Threads 主帖，豆瓣小组话题/长评/短评/条目。未声明的平台或类型不自动获得默认资格，新增平台需同步补充策略与测试。
 - 设置中的“统计回复和评论”默认关闭；开启后将本地回复和评论纳入条目数、字数、分布和连续天数。统计页按捕获时间计算，不累加平台点赞、回复等互动数字。此开关不影响采集、存储、搜索或平台计数字段映射。

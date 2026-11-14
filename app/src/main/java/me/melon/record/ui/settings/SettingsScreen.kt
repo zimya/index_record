@@ -127,7 +127,7 @@ fun SettingsScreen(viewModel: SettingsViewModel = viewModel()) {
                 Column(modifier = Modifier.weight(1f).padding(end = 12.dp)) {
                     Text("统计回复和评论", style = MaterialTheme.typography.bodyLarge)
                     Text(
-                        "默认仅统计主内容；开启后将已记录的回复和评论纳入本地条目、字数、分布和连续天数统计。不影响采集及平台点赞、回复等互动计数。",
+                        "开启后将回复和评论纳入本地条目、字数、分布和连续天数统计。",
                         style = MaterialTheme.typography.bodyMedium,
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
                         modifier = Modifier.padding(top = 4.dp)

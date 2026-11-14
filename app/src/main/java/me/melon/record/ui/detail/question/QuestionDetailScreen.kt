@@ -35,7 +35,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewmodel.compose.viewModel
 import me.melon.record.data.model.UniversalRecord
-import me.melon.record.data.model.toEntity
+
 import me.melon.record.data.repository.AnswerSort
 import me.melon.record.viewmodel.QuestionDetailViewModel
 import me.melon.record.ui.detail.DetailLoadContent
@@ -107,7 +107,7 @@ fun QuestionDetailScreen(
 
                 item {
                     if (current.content.isNotBlank()) {
-                        val body = me.melon.record.presentation.recordBodyPresentation(current.toEntity())
+                        val body = me.melon.record.presentation.recordBodyPresentation(current)
                         RenderMarkdownText(
                             markdown = body.content,
                             contentFormat = body.contentFormat,

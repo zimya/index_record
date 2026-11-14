@@ -8,6 +8,8 @@ import me.melon.record.data.model.RawData
 import me.melon.record.data.model.RecordBodyFormat
 import me.melon.record.data.model.UniversalRecord
 import me.melon.record.parser.RawDataParser
+import me.melon.record.parser.ParseResult
+import me.melon.record.parser.ParseDiagnostic
 import java.net.URI
 
 /** Only explicit displayed media containers are traversed; captions and prefetches are not posts. */
@@ -24,7 +26,14 @@ object ThreadsParser : RawDataParser {
             uri.path.orEmpty().contains("/text_feed/") || uri.path.orEmpty().contains("/graphql"))
     }.getOrDefault(false)
 
-    override fun parse(raw: RawData, cleanUrl: String): List<UniversalRecord> {
+    override fun parse(raw: RawData, cleanUrl: String): List<UniversalRecord> = parseResult(raw, cleanUrl).records
+
+    override fun parseResult(raw: RawData, cleanUrl: String): ParseResult = ParseResult.attempt("threads") {
+        val diagnostics = mutableListOf<ParseDiagnostic>()
+        ParseResult.decoded(parseChunks(raw, cleanUrl, diagnostics), diagnostics)
+    }
+
+    private fun parseChunks(raw: RawData, cleanUrl: String, diagnostics: MutableList<ParseDiagnostic>): List<UniversalRecord> {
         if (!canHandle(cleanUrl, raw)) return emptyList()
 
         val records = linkedMapOf<String, UniversalRecord>()
@@ -100,19 +109,27 @@ object ThreadsParser : RawDataParser {
             // medias may contain post objects directly rather than media wrappers.
             if (obj.has("text_post_app_info")) emit(obj)
         }
-        readChunks(raw.json) { chunk -> walk(chunk) }
+        readChunks(raw.json, diagnostics) { chunk -> walk(chunk) }
         return records.values.toList()
     }
 
-    private fun readChunks(json: String, consume: (JsonElement) -> Unit) {
-        fun read(stream: JsonStreamParser): Boolean = runCatching {
+    private fun readChunks(json: String, diagnostics: MutableList<ParseDiagnostic>, consume: (JsonElement) -> Unit) {
+        fun read(stream: JsonStreamParser): Boolean = try {
             while (stream.hasNext()) {
                 val chunk = stream.next()
-                // A malformed payload must not discard other successfully decoded chunks.
-                runCatching { consume(chunk) }
+                try {
+                    require(chunk.isJsonObject || chunk.isJsonArray) { "Expected Threads object or array" }
+                    consume(chunk)
+                } catch (e: Exception) {
+                    diagnostics.add(ParseDiagnostic("threads.chunk", e.message.orEmpty(), e))
+                }
             }
             true
-        }.getOrDefault(false)
+        } catch (e: Exception) {
+            diagnostics.add(ParseDiagnostic("threads.stream", e.message.orEmpty(), e))
+            false
+        }
+        if (json.isBlank()) diagnostics.add(ParseDiagnostic("threads.stream", "Empty response body"))
         if (!read(JsonStreamParser(json))) {
             // NDJSON has a recoverable line boundary after syntax errors. Replay is safe:
             // records are deduplicated/merged by stable ID in their original order.

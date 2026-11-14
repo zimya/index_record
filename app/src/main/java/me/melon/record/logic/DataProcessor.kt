@@ -11,6 +11,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import me.melon.record.ObjectBox
 import me.melon.record.data.model.RawData
+import me.melon.record.data.model.RawData_
 import me.melon.record.data.model.UniversalRecord
 import me.melon.record.parser.zhihu.ZhihuFeedParser
 import me.melon.record.parser.zhihu.ZhihuItemV2Parser
@@ -71,26 +72,33 @@ object DataProcessor {
         val processing = objectBoxCaptureProcessing(CHUNK_SIZE)
         val persistence = RecordPersistence(ObjectBoxRecordRepository(recordBox), persistenceContext)
 
-        val query = rawBox.query().build()
+        val query = rawBox.query().order(RawData_.id).build()
+        var retainedOffset = 0L
         try {
             processing.prepare()
             while (true) {
                 // 每次仅提取最多 CHUNK_SIZE 条，避免一次性加载所有巨型 JSON/HTML 导致 OOM
-                val chunk = query.find(0, CHUNK_SIZE)
+                // Failed/partial raws stay in ObjectBox. Skip them for this run, rather than
+                // repeatedly selecting the first bad chunk and starving later captures.
+                val chunk = query.find(retainedOffset, CHUNK_SIZE)
                 if (chunk.isEmpty()) break
 
                 val parsedItems = chunk.map { raw ->
                     processing.parse(raw, persistence) { e -> Log.e(TAG, "Failed to process raw ID: ${raw.id}", e) }
                 }
 
-                // 批处理事务：写入 UniversalRecord 并删除该批次 RawData
+                // 同一事务中写入有效记录，仅删除成功或主动忽略的 RawData。
                 ObjectBox.store.runInTx {
                     val processedRawIds = processing.persist(parsedItems, persistence)
                     if (processedRawIds.isNotEmpty()) rawBox.remove(*processedRawIds)
                 }
+                retainedOffset += parsedItems.count { !it.result.consumeRaw }
+                parsedItems.filter { !it.result.consumeRaw }.forEach {
+                    Log.w(TAG, "Retained raw ID ${it.rawId}: ${it.result.javaClass.simpleName}; diagnostics=${it.result.diagnostics.map { d -> d.stage }}")
+                }
 
                 processed += chunk.size
-                total = maxOf(total, processed + rawBox.count().toInt())
+                total = maxOf(total, processed + rawBox.count().toInt() - retainedOffset.toInt())
                 _syncProgress.value = SyncProgress(isRunning = true, total = total, processed = processed.coerceAtMost(total))
             }
         } finally {

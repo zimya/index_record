@@ -28,7 +28,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 
 import me.melon.record.data.PlatformCatalog
-import me.melon.record.data.model.toEntity
+
 import me.melon.record.presentation.displayAuthor
 import me.melon.record.presentation.displayPublishTime
 import me.melon.record.presentation.recordPreviewText
@@ -112,7 +112,7 @@ internal fun SubjectRelatedRecordItem(record: DetailRecord, onClick: () -> Unit)
                 )
             }
 
-            val snippet = remember(record) { recordPreviewText(record.toEntity()) }
+            val snippet = remember(record) { recordPreviewText(record) }
             if (snippet.isNotBlank()) {
                 Spacer(modifier = Modifier.height(4.dp))
                 Text(
@@ -138,7 +138,7 @@ internal fun SubjectRelatedRecordItem(record: DetailRecord, onClick: () -> Unit)
                 )
 
                 Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                    recordStatistics(record.toEntity(), StatisticsSurface.LIST).forEach { StatisticCount(it) }
+                    recordStatistics(record, StatisticsSurface.LIST).forEach { StatisticCount(it) }
                 }
             }
         }

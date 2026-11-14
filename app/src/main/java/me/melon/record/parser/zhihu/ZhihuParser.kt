@@ -3,6 +3,7 @@ package me.melon.record.parser.zhihu
 import me.melon.record.data.model.RawData
 import me.melon.record.data.model.UniversalRecord
 import me.melon.record.parser.RawDataParser
+import me.melon.record.parser.ParseResult
 
 /**
  * 知乎平台总解析器。
@@ -25,6 +26,15 @@ object ZhihuParser : RawDataParser {
                 ZhihuFeedParser.canHandle(cleanUrl) ||
                 ZhihuCommentParser.canHandle(cleanUrl)
     }
+
+    override fun parseResult(raw: RawData, cleanUrl: String): ParseResult =
+        if (ZhihuAnswerParser.isHtmlAnswerUrl(cleanUrl)) {
+            // Only appview answers are HTML. The HTML parser validates the embedded state;
+            // JSON endpoints must still reject HTML error/login pages and malformed JSON.
+            ParseResult.attempt("zhihu.htmlAnswer") { ParseResult.Success(parse(raw, cleanUrl)) }
+        } else {
+            super<RawDataParser>.parseResult(raw, cleanUrl)
+        }
 
     override fun parse(raw: RawData, cleanUrl: String): List<UniversalRecord> {
         return when {

@@ -1,11 +1,11 @@
 package me.melon.record.presentation
 
-import me.melon.record.data.model.UniversalRecord
+import me.melon.record.data.model.RecordContent
 import me.melon.record.data.model.RecordBodyFormat
 import me.melon.record.data.model.bodyPlainText
 
 internal fun recordDisplayTitle(
-    record: UniversalRecord,
+    record: RecordContent,
     metadata: PlatformMetadataAdapters = PlatformMetadataAdapters(record.extraMetadata, record.platform)
 ): String = record.title.ifBlank {
     val threadTitle = if (record.platform == "tieba") metadata.tieba?.threadTitle.orEmpty() else ""
@@ -20,7 +20,7 @@ internal fun recordDisplayTitle(
 }
 
 internal fun recordContext(
-    record: UniversalRecord,
+    record: RecordContent,
     metadata: PlatformMetadataAdapters = PlatformMetadataAdapters(record.extraMetadata, record.platform)
 ): String = when (record.platform) {
     "tieba" -> listOfNotNull(
@@ -35,7 +35,7 @@ internal fun recordContext(
 }
 
 internal fun recordPreviewText(
-    record: UniversalRecord,
+    record: RecordContent,
     metadata: PlatformMetadataAdapters = PlatformMetadataAdapters(record.extraMetadata, record.platform)
 ): String {
     val raw = when (record.recordType) {

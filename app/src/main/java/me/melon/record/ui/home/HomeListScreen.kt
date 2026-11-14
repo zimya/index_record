@@ -84,7 +84,9 @@ fun PullToRefreshListScreen(
     }
 
     var syncSessionActive by remember { mutableStateOf(false) }
-    val showSync = (syncSessionActive || rawPendingCount > 0L || syncProgress.isRunning) && !isSearching
+    val syncInProgress = syncProgress.isRunning || pullState.isRefreshing
+    val showSync = (syncSessionActive || syncInProgress) && !isSearching
+    val showSyncStatus = (showSync || rawPendingCount > 0L) && !isSearching
     var sessionLoadedCount by remember { mutableStateOf(0) }
     var acknowledgedLoadedCount by remember { mutableStateOf(0) }
     var previousRecordIds by remember { mutableStateOf<Set<Long>?>(null) }
@@ -113,9 +115,10 @@ fun PullToRefreshListScreen(
         }
     }
 
-    // 宿主逐条转存时，队列可能在批次间归零；持续空闲后才结束本轮展示。
-    LaunchedEffect(rawPendingCount, syncProgress.isRunning, pullState.isRefreshing) {
-        if (rawPendingCount > 0L || syncProgress.isRunning || pullState.isRefreshing) {
+    // 只由真实处理/刷新维持会话；失败保留的 RawData 不代表仍在加载。
+    // 持续空闲 2.5 秒后结束展示，衔接宿主逐条转存的批次间隙。
+    LaunchedEffect(syncInProgress) {
+        if (syncInProgress) {
             if (!syncSessionActive) {
                 sessionLoadedCount = 0
                 acknowledgedLoadedCount = 0
@@ -200,7 +203,7 @@ fun PullToRefreshListScreen(
         ) {
             Column(modifier = Modifier.fillMaxSize()) {
                 AnimatedVisibility(
-                    visible = showSync,
+                    visible = showSyncStatus,
                     enter = expandVertically(
                         expandFrom = Alignment.Top,
                         animationSpec = tween(300)
@@ -213,7 +216,8 @@ fun PullToRefreshListScreen(
                     HomeSyncProgress(
                         syncProgress = syncProgress,
                         rawPendingCount = rawPendingCount,
-                        sessionLoadedCount = sessionLoadedCount
+                        sessionLoadedCount = sessionLoadedCount,
+                        syncSessionActive = showSync
                     )
                 }
 

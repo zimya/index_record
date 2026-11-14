@@ -91,6 +91,7 @@ dependencies {
     // Gson
     implementation("com.google.code.gson:gson:2.10.1")
     implementation("org.jsoup:jsoup:1.17.2")
+        implementation("org.brotli:dec:0.1.2")
 
     // Markdown & Syntax & Math
     implementation("dev.snipme:highlights:1.1.0")

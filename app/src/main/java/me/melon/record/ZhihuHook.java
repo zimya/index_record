@@ -11,8 +11,10 @@ import java.io.IOException;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
+import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import me.melon.record.parser.zhihu.ZhihuCaptureDecoder;
 import me.melon.record.sync.HookCaptureClient;
 
 public class ZhihuHook implements IXposedHookLoadPackage {
@@ -102,6 +104,21 @@ public class ZhihuHook implements IXposedHookLoadPackage {
                 classLoader
             );
             if (interceptorClass == null) return;
+
+            // newBuilder() copies interceptors; build() must not append another capture layer.
+            Object installed = XposedHelpers.callMethod(
+                builder,
+                "interceptors"
+            );
+            if (installed instanceof List<?>) {
+                for (Object candidate : (List<?>) installed) {
+                    if (
+                        candidate != null &&
+                        Proxy.isProxyClass(candidate.getClass()) &&
+                        "ZhihuRecordInterceptor".equals(candidate.toString())
+                    ) return;
+                }
+            }
 
             Object interceptor = Proxy.newProxyInstance(
                 classLoader,
@@ -222,11 +239,16 @@ public class ZhihuHook implements IXposedHookLoadPackage {
             String ct = contentType.toLowerCase();
             if (!ct.contains("json") && !ct.contains("text")) return;
 
-            // 限制截取大小，恢复到 5MB 以应对大型知乎数据包
+            final String contentEncoding = (String) XposedHelpers.callMethod(
+                response,
+                "header",
+                "Content-Encoding"
+            );
+            // Read one extra byte to distinguish oversized bodies from a complete 5 MB response.
             Object peekedBody = XposedHelpers.callMethod(
                 response,
                 "peekBody",
-                (long) (1024 * 1024 * 5)
+                (long) ZhihuCaptureDecoder.MAX_BYTES + 1
             );
             if (peekedBody == null) return;
             final byte[] bytes = (byte[]) XposedHelpers.callMethod(
@@ -235,12 +257,34 @@ public class ZhihuHook implements IXposedHookLoadPackage {
             );
 
             if (bytes != null && bytes.length > 0) {
-                XposedBridge.log(TAG + "[Capture OK] Size: " + bytes.length);
                 executor.submit(() -> {
                     try {
-                        enqueueCapture(url, bytes, contentType);
+                        byte[] decoded = ZhihuCaptureDecoder.decode(
+                            bytes,
+                            contentEncoding
+                        );
+                        XposedBridge.log(
+                            TAG +
+                                "[Capture OK] Content-Encoding=" +
+                                contentEncoding +
+                                ", bytes=" +
+                                bytes.length +
+                                " -> " +
+                                decoded.length
+                        );
+                        enqueueCapture(url, decoded, contentType);
                         trySyncToApp();
-                    } catch (Exception ignored) {}
+                    } catch (Exception e) {
+                        XposedBridge.log(
+                            TAG +
+                                "Capture rejected for " +
+                                url.split("\\?", 2)[0] +
+                                " (Content-Encoding=" +
+                                contentEncoding +
+                                "): " +
+                                e
+                        );
+                    }
                 });
             }
         } catch (Throwable ignored) {}

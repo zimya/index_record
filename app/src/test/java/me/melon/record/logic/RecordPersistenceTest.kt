@@ -3,6 +3,8 @@ package me.melon.record.logic
 import com.google.gson.JsonParser
 import me.melon.record.data.model.RawData
 import me.melon.record.data.model.UniversalRecord
+import me.melon.record.parser.douban.DoubanGroupTopicParser
+import me.melon.record.parser.douban.DoubanGroupTopicCommentsParser
 import me.melon.record.parser.douban.DoubanHotInterestsParser
 import me.melon.record.parser.douban.DoubanSubjectParser
 import me.melon.record.parser.zhihu.ZhihuAnswerParser
@@ -122,6 +124,47 @@ class RecordPersistenceTest {
             RecordPersistence(failingRepository).persist(tweet("p"))
         }
         assertSame(failure, error)
+    }
+
+    @Test fun doubanGroupTopicRexxarAndCommentsDoNotEraseNativeStatistics() {
+        val url = "https://frodo.douban.com/api/v2/group/topic/505438840"
+        val id = "douban_group_topic_505438840"
+        fun capture(query: String, json: String) = DoubanGroupTopicParser.parse(
+            RawData(url = "$url?$query", json = json, hostApp = "com.douban.frodo"), url
+        ).single()
+        persistence.persist(capture("source=feed", """{
+            "id":"505438840","title":"帖子","content":"正文",
+            "group":{"id":"720659","name":"小组"},
+            "like_count":6,"collections_count":8,"comments_count":254
+        }"""))
+        val rexxar = capture("s=rexxar_new", """{
+            "id":"505438840","title":"帖子","content":"正文",
+            "like_count":0,"comments_count":255
+        }""")
+        persistence.persist(rexxar)
+        val commentUrl = "$url/comments"
+        DoubanGroupTopicCommentsParser.parse(
+            RawData(url = commentUrl, json = """{"comments":[{"id":"c","text":"回复","vote_count":2}]}"""),
+            commentUrl
+        ).forEach { persistence.persist(it) }
+        val stored = meta(repository.find(id)!!)
+        assertEquals(6L, stored.get("like_count").asLong)
+        assertEquals(6L, stored.get("voteup_count").asLong)
+        assertEquals(8L, stored.get("favlists_count").asLong)
+        assertEquals(255L, stored.get("comment_count").asLong)
+        assertEquals("小组", stored.get("group_name").asString)
+        assertNotNull(repository.find("douban_comment_c"))
+
+        // Real native decreases and zeroes are updates, not missing values.
+        for (count in listOf(3L, 0L)) {
+            persistence.persist(capture("source=feed", """{
+                "id":"505438840","like_count":$count,"collections_count":$count,"comments_count":$count
+            }"""))
+            val updated = meta(repository.find(id)!!)
+            for (key in listOf("like_count", "voteup_count", "favlists_count", "comment_count")) {
+                assertEquals(key, count, updated.get(key).asLong)
+            }
+        }
     }
 
     @Test fun doubanLegacyBackfillFailureStillWarmsTitleWithoutRepairingEarlierMetadata() {

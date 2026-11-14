@@ -10,8 +10,8 @@ import me.melon.record.data.model.UniversalRecord
 import me.melon.record.parser.douban.DoubanUtils.doubanHtmlToMarkdown
 import me.melon.record.parser.douban.DoubanUtils.extractUser
 import me.melon.record.parser.douban.DoubanUtils.parseDoubanDate
-import me.melon.record.parser.douban.DoubanUtils.safeLong
 import me.melon.record.parser.douban.DoubanUtils.safeString
+import java.net.URI
 import java.util.regex.Pattern
 
 /**
@@ -57,20 +57,24 @@ object DoubanGroupTopicParser {
             extra.addProperty("group_id", groupObj.safeString("id"))
         }
 
-        val likeCount = when {
-            json.has("like_count") -> json.safeLong("like_count")
-            json.has("likers_count") -> json.safeLong("likers_count")
-            json.has("reactions_count") -> json.safeLong("reactions_count")
-            else -> 0L
-        }
-        val commentCount = json.safeLong("comments_count")
-        val collectCount = json.safeLong("collections_count")
+        // The Rexxar detail response uses like_count=0 as a placeholder and omits
+        // collections_count. It must not erase statistics from the native detail response.
+        val isRexxar = runCatching {
+            URI(raw.url).query?.split('&')?.contains("s=rexxar_new") == true
+        }.getOrDefault(false)
+        val likeKeys = if (isRexxar) listOf("likers_count", "reactions_count")
+            else listOf("like_count", "likers_count", "reactions_count")
+        val likeCount = likeKeys.firstNotNullOfOrNull { json.statCount(it) }
+        val commentCount = json.statCount("comments_count")
+        val collectCount = json.statCount("collections_count")
         val ipLocation = json.safeString("ip_location")
 
-        extra.addProperty("voteup_count", likeCount)
-        extra.addProperty("like_count", likeCount)
-        extra.addProperty("comment_count", commentCount)
-        extra.addProperty("favlists_count", collectCount)
+        if (likeCount != null) {
+            extra.addProperty("voteup_count", likeCount)
+            extra.addProperty("like_count", likeCount)
+        }
+        if (commentCount != null) extra.addProperty("comment_count", commentCount)
+        if (collectCount != null) extra.addProperty("favlists_count", collectCount)
         if (ipLocation.isNotBlank()) extra.addProperty("ip_info", ipLocation)
         if (coverUrl.isNotBlank()) {
             extra.addProperty("cover_url", coverUrl)
@@ -97,5 +101,10 @@ object DoubanGroupTopicParser {
         )
 
         return listOf(record)
+    }
+
+    private fun JsonObject.statCount(key: String): Long? {
+        val value = get(key)?.takeIf { it.isJsonPrimitive } ?: return null
+        return value.asString.toLongOrNull()?.takeIf { it >= 0 }
     }
 }

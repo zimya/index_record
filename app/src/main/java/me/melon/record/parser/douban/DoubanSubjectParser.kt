@@ -12,24 +12,21 @@ import me.melon.record.parser.douban.DoubanUtils.safeDouble
 import me.melon.record.parser.douban.DoubanUtils.safeLong
 import me.melon.record.parser.douban.DoubanUtils.safeString
 import me.melon.record.parser.douban.DoubanUtils.safeStringList
-import java.util.regex.Pattern
+
 
 /**
  * 豆瓣书影音游剧条目（Subject）解析器。
  * 支持从电影(movie)、图书(book)、音乐(music)、游戏(game)、电视剧(tv)、舞台剧(drama)
- * 以及 /subject/{id}/forum_topic/forum 等接口中全量提取条目信息（名称、原名、评分、海报、简介、演职员/作者、标签等），
+ * 以及 /subject/{id}/forum_topic/forum 接口中全量提取条目信息（名称、原名、评分、海报、简介、演职员/作者、标签等），
  * 并建立条目主体记录，用于聚合短评、长评与讨论。
  */
 object DoubanSubjectParser {
 
-    private val PATTERN_SUBJECT_FORUM = Pattern.compile("^https?://[^/]*douban\\.com/api/v2/subject/(\\d+)/forum_topic/forum/?.*$")
-    // 放宽匹配规则：支持后接参数、子路径（如 /modules、/credits、/rating、/interests 等）
-    private val PATTERN_SUBJECT_DETAIL = Pattern.compile("^https?://[^/]*douban\\.com/api/v2/(movie|book|music|game|tv|drama|subject)/(\\d+)(?:/.*)?$")
+
     private val gson = Gson()
 
     fun canHandle(cleanUrl: String): Boolean {
-        return PATTERN_SUBJECT_FORUM.matcher(cleanUrl).matches() ||
-                PATTERN_SUBJECT_DETAIL.matcher(cleanUrl).matches()
+        return DoubanSubjectUrls.isForum(cleanUrl) || DoubanSubjectUrls.isDetail(cleanUrl)
     }
 
     fun parse(raw: RawData, cleanUrl: String): List<UniversalRecord> {
@@ -65,10 +62,7 @@ object DoubanSubjectParser {
         if (subjectId.isBlank() || subjectTitle.isBlank()) return null
 
         // 提取 subtype
-        val urlSubtype = if (cleanUrl.isNotBlank()) {
-            val matcher = PATTERN_SUBJECT_DETAIL.matcher(cleanUrl)
-            if (matcher.find()) matcher.group(1) else ""
-        } else ""
+        val urlSubtype = DoubanSubjectUrls.subjectType(cleanUrl)
 
         val subtype = subjectObj.safeString("subtype")
             .ifBlank { subjectObj.safeString("type") }

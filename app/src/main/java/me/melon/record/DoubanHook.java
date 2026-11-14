@@ -20,6 +20,7 @@ import java.util.Set;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import me.melon.record.sync.HookCaptureClient;
+import me.melon.record.parser.douban.DoubanSubjectUrls;
 
 public class DoubanHook implements IXposedHookLoadPackage {
 
@@ -157,13 +158,7 @@ public class DoubanHook implements IXposedHookLoadPackage {
             || url.contains("/hot_interests")
             || url.contains("/review/")
             || url.contains("/forum_topic/")
-            || url.contains("/subject/")
-            || url.contains("/movie/")
-            || url.contains("/book/")
-            || url.contains("/tv/")
-            || url.contains("/game/")
-            || url.contains("/music/")
-            || url.contains("/drama/");
+            || DoubanSubjectUrls.shouldCapture(url);
     }
 
     private void saveResponseAsync(Object response, final String url) {

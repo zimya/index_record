@@ -3,6 +3,7 @@ package me.melon.record.parser.douban
 import com.google.gson.JsonParser
 import me.melon.record.data.model.RawData
 import me.melon.record.parser.ParserRegistry
+import me.melon.record.parser.ParseResult
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertNotNull
@@ -50,6 +51,46 @@ class DoubanParserTest {
         assertTrue(record.content.contains("已获得原po主授权"))
         assertTrue(record.content.contains("https://img3.doubanio.com/view/group_topic/l/public/p753077423.webp"))
         assertTrue(record.publishTime > 0)
+    }
+
+    @Test
+    fun testGroupTopicRexxarStatisticsAreNotFabricated() {
+        val url = "https://frodo.douban.com/api/v2/group/topic/505438840"
+        val json = """{"id":"505438840","title":"帖子","like_count":0,"comments_count":254}"""
+        val raw = RawData(url = "$url?s=rexxar_new&channel=test", json = json, hostApp = "com.douban.frodo")
+        val record = DoubanParser.parse(raw, url).single()
+        val extra = JsonParser.parseString(record.extraMetadata).asJsonObject
+        assertEquals(254L, extra.get("comment_count").asLong)
+        assertFalse(extra.has("like_count"))
+        assertFalse(extra.has("voteup_count"))
+        assertFalse(extra.has("favlists_count"))
+
+        val nativeRecord = DoubanParser.parse(raw.copy(url = "$url?source=feed"), url).single()
+        val nativeExtra = JsonParser.parseString(nativeRecord.extraMetadata).asJsonObject
+        assertEquals(0L, nativeExtra.get("like_count").asLong)
+        assertEquals(0L, nativeExtra.get("voteup_count").asLong)
+    }
+
+    @Test
+    fun testGroupTopicUnknownStatisticsAndAliasFallback() {
+        val url = "https://frodo.douban.com/api/v2/group/topic/505438840"
+        for (invalid in listOf("null", "\"bad\"", "{}", "-1")) {
+            val raw = RawData(
+                url = url, hostApp = "com.douban.frodo",
+                json = """{"like_count":$invalid,"reactions_count":6,"collections_count":$invalid,"comments_count":$invalid}"""
+            )
+            val record = DoubanParser.parse(raw, url).single()
+            val extra = JsonParser.parseString(record.extraMetadata).asJsonObject
+            assertEquals(6L, extra.get("like_count").asLong)
+            assertFalse(extra.has("favlists_count"))
+            assertFalse(extra.has("comment_count"))
+        }
+        val empty = DoubanParser.parse(RawData(url = url, json = "{}", hostApp = "com.douban.frodo"), url).single()
+        val extra = JsonParser.parseString(empty.extraMetadata).asJsonObject
+        assertFalse(extra.has("like_count"))
+        assertFalse(extra.has("voteup_count"))
+        assertFalse(extra.has("favlists_count"))
+        assertFalse(extra.has("comment_count"))
     }
 
     @Test
@@ -381,6 +422,58 @@ class DoubanParserTest {
         val refComment = records.firstOrNull { it.platformId == "douban_comment_26034553" }
         assertNotNull(refComment)
         assertEquals("douban_comment_25663425", refComment!!.parentId)
+    }
+
+    @Test
+    fun testSubjectAuxiliaryEndpointsAreNotCapturedOrParsedAsDetails() {
+        for (type in listOf("movie", "book", "music", "game", "tv", "drama", "subject")) {
+            for (suffix in listOf("seasons", "modules", "credits", "rating", "recommendations", "forum_topic/forum/extra")) {
+                val cleanUrl = "https://frodo.douban.com/api/v2/$type/36343491/$suffix"
+                val raw = RawData(
+                    url = "$cleanUrl?count=10",
+                    json = """[{"id":"35926862","title":"另一季","type":"tv"}]""",
+                    hostApp = "com.douban.frodo"
+                )
+                assertFalse(cleanUrl, DoubanSubjectUrls.shouldCapture(raw.url))
+                assertFalse(cleanUrl, DoubanSubjectParser.canHandle(cleanUrl))
+                assertFalse(cleanUrl, DoubanParser.canHandle(cleanUrl, raw))
+                val result = ParserRegistry.parseResult(raw, cleanUrl)
+                assertTrue(cleanUrl, result is ParseResult.Ignored)
+                assertTrue(cleanUrl, result.consumeRaw)
+                assertTrue(result.records.isEmpty())
+            }
+        }
+    }
+
+    @Test
+    fun testSubjectCaptureRoutesKeepDetailsInterestsAndForum() {
+        for (type in listOf("movie", "book", "music", "game", "tv", "drama", "subject")) {
+            for (slash in listOf("", "/")) {
+                val cleanUrl = "https://frodo.douban.com/api/v2/$type/36343491$slash"
+                assertTrue(DoubanSubjectUrls.shouldCapture("$cleanUrl?source=timeline"))
+                assertTrue(DoubanSubjectParser.canHandle(cleanUrl))
+                for (suffix in listOf("hot_interests", "interests")) {
+                    assertTrue(DoubanSubjectUrls.shouldCapture(
+                        "https://frodo.douban.com/api/v2/$type/36343491/$suffix$slash?count=20"
+                    ))
+                }
+            }
+        }
+        val forum = "https://frodo.douban.com/api/v2/subject/36343491/forum_topic/forum"
+        assertTrue(DoubanSubjectUrls.shouldCapture("$forum?count=20"))
+        assertTrue(DoubanSubjectParser.canHandle(forum))
+        assertFalse(DoubanSubjectUrls.shouldCapture("https://notdouban.com/api/v2/tv/36343491"))
+    }
+
+    @Test
+    fun testInvalidSubjectDetailsStillRetainRawData() {
+        val url = "https://frodo.douban.com/api/v2/tv/36343491"
+        for (json in listOf("[]", "{broken")) {
+            val raw = RawData(url = url, json = json, hostApp = "com.douban.frodo")
+            val result = ParserRegistry.parseResult(raw, url)
+            assertTrue(result is ParseResult.Failure)
+            assertFalse(result.consumeRaw)
+        }
     }
 
     @Test

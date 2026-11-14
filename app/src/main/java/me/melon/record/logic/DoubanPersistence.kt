@@ -106,6 +106,10 @@ internal class DoubanPersistence : PlatformPersistence {
     override fun mergeExtra(existing: UniversalRecord, incoming: UniversalRecord) {
         if (incoming.recordType == "subject") {
             incoming.extraMetadata = DoubanRelations.mergeSubjectExtra(existing.extraMetadata, incoming.extraMetadata)
+        } else if (incoming.recordType == "topic" && incoming.platformId.startsWith("douban_group_topic_")) {
+            val merged = runCatching { metadata(existing) }.getOrElse { JsonObject() }
+            metadata(incoming).entrySet().forEach { (key, value) -> merged.add(key, value) }
+            incoming.extraMetadata = merged.toString()
         }
     }
     override fun afterPut(record: UniversalRecord, repository: RecordRepository) {
@@ -138,4 +142,3 @@ private fun interestLabel(type: String): String = when (type) {
     "drama" -> "舞台剧短评"
     else -> "豆瓣短评"
 }
-

@@ -18,6 +18,7 @@ import me.melon.record.data.model.recordSnapshot
 import java.util.UUID
 import me.melon.record.data.model.UniversalRecord_
 import me.melon.record.parser.reddit.RedditRelations
+import me.melon.record.parser.reddit.RedditReadVisit
 import me.melon.record.parser.threads.ThreadsRelations
 import me.melon.record.parser.tieba.TiebaRelations
 import me.melon.record.parser.zhihu.ZhihuRelations
@@ -37,6 +38,9 @@ internal interface RecordSnapshotStorage {
     fun contains(key: String): Boolean
     fun hasIdentity(identity: RecordIdentity): Boolean
     fun append(snapshot: RecordSnapshot)
+    fun findRedditVisit(key: String): RecordSnapshot? = null
+    fun hasRedditPostSource(identity: RecordIdentity, sourceKey: String): Boolean = false
+    fun redditVisitsNear(identity: RecordIdentity, time: Long): List<RecordSnapshot> = emptyList()
     fun findPending(key: String): PendingRecordSnapshot? = null
     fun putPending(snapshot: PendingRecordSnapshot) {}
     fun pending(): List<PendingRecordSnapshot> = emptyList()
@@ -68,6 +72,23 @@ private class ObjectBoxSnapshotStorage(private val box: Box<RecordSnapshot>) : R
         val query = box.query().equal(RecordSnapshot_.platform, identity.platform, CASE_SENSITIVE)
             .equal(RecordSnapshot_.identityId, identity.contentId, CASE_SENSITIVE).build()
         return try { query.count() > 0 } finally { query.close() }
+    }
+    override fun findRedditVisit(key: String): RecordSnapshot? {
+        val query = box.query().startsWith(RecordSnapshot_.key, "$key:source:", CASE_SENSITIVE).build()
+        return try { query.findFirst() } finally { query.close() }
+    }
+    override fun hasRedditPostSource(identity: RecordIdentity, sourceKey: String): Boolean {
+        val query = box.query().equal(RecordSnapshot_.platform, "reddit", CASE_SENSITIVE)
+            .equal(RecordSnapshot_.identityId, identity.contentId, CASE_SENSITIVE)
+            .endsWith(RecordSnapshot_.key, ":source:$sourceKey", CASE_SENSITIVE).build()
+        return try { query.count() > 0 } finally { query.close() }
+    }
+    override fun redditVisitsNear(identity: RecordIdentity, time: Long): List<RecordSnapshot> {
+        val query = box.query().equal(RecordSnapshot_.platform, "reddit", CASE_SENSITIVE)
+            .equal(RecordSnapshot_.identityId, identity.contentId, CASE_SENSITIVE)
+            .startsWith(RecordSnapshot_.key, REDDIT_VISIT_KEY_PREFIX, CASE_SENSITIVE)
+            .between(RecordSnapshot_.captureTime, time - REDDIT_LEGACY_VISIT_WINDOW, time + REDDIT_LEGACY_VISIT_WINDOW).build()
+        return try { query.find() } finally { query.close() }
     }
     override fun append(snapshot: RecordSnapshot) { box.put(snapshot) }
 }
@@ -176,7 +197,13 @@ internal class RecordPersistence(
         persistCompleted(record, captured)
     }
 
-    /** Before READ admission, persist originals, not the read buffer's merged entities. */
+    fun captureRedditPostVisits(rawId: Long, records: List<UniversalRecord>, visits: List<RedditReadVisit>, now: Long) {
+        repository.history?.let { history ->
+            RedditPostHistory(history) { archiveLegacyIndex(it, repository, history) }.accept(rawId, records, visits, now)
+        }
+    }
+
+    /** Comments retain per-capture history; main posts use one snapshot per detail visit. */
     fun stageRedditHistory(
         rawId: Long, records: List<UniversalRecord>, now: Long = System.currentTimeMillis()
     ): Set<RecordIdentity> {
@@ -184,7 +211,7 @@ internal class RecordPersistence(
         val replayed = mutableSetOf<RecordIdentity>()
         val occurrences = mutableMapOf<Pair<String, String>, Int>()
         for (record in records) {
-            if (record.platform != "reddit" || record.platformId.isBlank()) continue
+            if (record.platform != "reddit" || record.platformId.isBlank() || record.recordType == "post") continue
             val role = record.platform to record.platformId
             val occurrence = occurrences.getOrDefault(role, 0)
             occurrences[role] = occurrence + 1
@@ -205,6 +232,12 @@ internal class RecordPersistence(
 
     /** Release all admitted identities' original captures; the synthetic value updates only the index. */
     fun persistRedditAdmitted(record: UniversalRecord, knownCapture: Boolean = false) {
+        if (record.recordType == "post") {
+            // Auxiliary shells still update an existing index, but cannot create an empty
+            // first record which would later be archived as a spurious legacy snapshot.
+            if (hasRedditPostBody(record) || repository.find(record.platformId) != null) updateIndex(record)
+            return
+        }
         repository.history?.let { history ->
             val pending = history.pendingFor(record.identity)
             archiveLegacyIndex(record, repository, history)

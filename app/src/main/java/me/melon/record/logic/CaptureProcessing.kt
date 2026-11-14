@@ -14,6 +14,7 @@ import me.melon.record.parser.douban.DoubanParser
 import me.melon.record.parser.reddit.ObjectBoxRedditReadStorage
 import me.melon.record.parser.reddit.RedditParser
 import me.melon.record.parser.reddit.RedditReadBuffer
+import me.melon.record.parser.reddit.RedditReadVisit
 import me.melon.record.parser.threads.ThreadsParser
 import me.melon.record.parser.weibo.WeiboParser
 import me.melon.record.parser.x.XParser
@@ -38,7 +39,8 @@ internal data class ParsedCapture(
     val completion: ((RecordPersistence) -> Unit)? = null,
     val result: ParseResult = ParseResult.Success(records),
     // Snapshot at construction, before platform completion mutates the parser's entities.
-    val parsedRecords: List<UniversalRecord> = records.map { it.copy() }
+    val parsedRecords: List<UniversalRecord> = records.map { it.copy() },
+    val readVisits: List<RedditReadVisit> = emptyList()
 )
 
 internal fun rawSnapshotKey(rawId: Long, record: UniversalRecord, occurrence: Int): String =
@@ -89,6 +91,9 @@ internal class CaptureProcessing(
         for (capture in captures) {
             if (capture.result !is ParseResult.Failure && capture.result !is ParseResult.Ignored) {
                 val redditRead = (capture.policy as? RedditCapturePolicy)?.isReadMode == true
+                if (redditRead) persistence.captureRedditPostVisits(
+                    capture.rawId, capture.parsedRecords, capture.readVisits, System.currentTimeMillis()
+                )
                 val replayed = if (redditRead) persistence.stageRedditHistory(capture.rawId, capture.parsedRecords)
                     else emptySet()
                 val admitted = capture.policy.admit(capture)
@@ -148,9 +153,10 @@ internal class RedditCapturePolicy(
         // Parse every fragment; READ admission happens transactionally in the persistent buffer.
         val result = RedditParser.parseResultWithAdvertisingIds(raw, cleanUrl, advertisingIds)
         val records = result.records
-        val readPosts = if (readBuffer != null) RedditParser.readPostIds(raw)
-            .filterNot { it in advertisingIds.map(RedditParser::postId) }.toSet() else emptySet()
-        return ParsedCapture(raw.id, records, this, readPosts, result = result)
+        val visits = if (readBuffer != null) RedditParser.readVisits(raw)
+            .filterNot { it.postId in advertisingIds.map(RedditParser::postId) } else emptyList()
+        val readPosts = visits.mapTo(linkedSetOf()) { it.postId }
+        return ParsedCapture(raw.id, records, this, readPosts, result = result, readVisits = visits)
     }
     override fun admit(capture: ParsedCapture): List<UniversalRecord> =
         readBuffer?.accept(capture.records, capture.readPosts, now()) ?: capture.records

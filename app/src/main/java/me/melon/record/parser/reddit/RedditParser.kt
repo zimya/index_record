@@ -36,17 +36,24 @@ object RedditParser : RawDataParser {
         linkedSetOf<String>().also { RedditCaptureFilter.collectAdvertisingIds(response, it) }
     }.getOrDefault(emptySet())
 
-    /** Only a comment-tree response establishes a detail visit; bulk post hydration does not. */
-    fun readPostIds(raw: RawData): Set<String> = runCatching {
-        if (!canHandle(raw.url, raw)) return emptySet()
+    fun readPostIds(raw: RawData): Set<String> = readVisits(raw).mapTo(linkedSetOf()) { it.postId }
+
+    /** Unknown/legacy operations retain forest evidence; known auxiliary operations do not. */
+    fun readVisits(raw: RawData): List<RedditReadVisit> = runCatching {
+        if (!canHandle(raw.url, raw)) return emptyList()
         val input = JSONTokener(raw.json).nextValue()
         val wrapped = (input as? JSONObject)?.takeIf { it.has("response") }
         val projected = RedditCaptureFilter.envelope(wrapped?.opt("response") ?: input, wrapped?.opt("request"), linkedSetOf())
-            ?: return emptySet()
+            ?: return emptyList()
         val response = projected.opt("response")
         val request = projected.opt("request")
-        val ids = linkedSetOf<String>()
+        val visits = linkedSetOf<RedditReadVisit>()
         fun collect(value: JSONObject?, query: JSONObject?) {
+            if (query?.string("operationName") in setOf("HomeFeedSdui", "HomeFeedPostsByIds", "PostsByIds", "AdaptivePDP")) return
+            val variables = query?.optJSONObject("variables")
+            val targets = sequenceOf("postId", "id").mapNotNull { variables?.nullableString(it) }
+                .filter { it.startsWith("t3_") }.map(::postId).filter { it.isNotEmpty() }.toSet()
+            val token = variables?.nullableString("pdpConsistencyToken")?.takeIf { it.isNotBlank() }
             val data = value?.optJSONObject("data") ?: return
             val keys = data.keys()
             while (keys.hasNext()) {
@@ -59,7 +66,10 @@ object RedditParser : RawDataParser {
                         type == "CommentForest" -> item.string("postId").ifEmpty { requestPostId(query) }
                         else -> ""
                     }
-                    postId(id).takeIf { it.isNotEmpty() }?.let(ids::add)
+                    val normalizedId = postId(id)
+                    if (normalizedId.isNotEmpty() && targets.all { it == normalizedId }) {
+                        visits.add(RedditReadVisit(normalizedId, token, raw.timestamp))
+                    }
                 }
                 when (val item = data.opt(key)) {
                     is JSONObject -> collectItem(item)
@@ -73,8 +83,8 @@ object RedditParser : RawDataParser {
                 collect(response.optJSONObject(i), (request as? JSONArray)?.optJSONObject(i))
             }
         }
-        ids
-    }.getOrDefault(emptySet())
+        visits.toList()
+    }.getOrDefault(emptyList())
 
     override fun parseResult(raw: RawData, cleanUrl: String): ParseResult =
         parseResultWithAdvertisingIds(raw, cleanUrl, emptySet())

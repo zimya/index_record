@@ -47,8 +47,18 @@ jobs:
                     TAG="${GITHUB_REF_NAME}"
                   fi
                   mkdir -p release-assets
-                  cp app/build/outputs/apk/release/*.apk release-assets/index-record-${TAG}-release.apk
-                  cp app/build/outputs/apk/debug/*.apk release-assets/index-record-${TAG}-debug.apk
+                  for apk in app/build/outputs/apk/release/*.apk; do
+                    [ -f "$apk" ] || continue
+                    base=$(basename "$apk" .apk)
+                    name="${base#app-}"
+                    cp "$apk" "release-assets/index-record-${TAG}-${name}.apk"
+                  done
+                  for apk in app/build/outputs/apk/debug/*.apk; do
+                    [ -f "$apk" ] || continue
+                    base=$(basename "$apk" .apk)
+                    name="${base#app-}"
+                    cp "$apk" "release-assets/index-record-${TAG}-${name}.apk"
+                  done
                   echo "tag=$TAG" >> $GITHUB_OUTPUT
 
             - name: Create GitHub Release and Upload APKs

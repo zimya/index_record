@@ -36,8 +36,8 @@ jobs:
             - name: Grant execute permission for gradlew
               run: chmod +x ./gradlew
 
-            - name: Build Debug and Release
-              run: ./gradlew :app:assembleRelease :app:assembleDebug --stacktrace
+            - name: Build Release APK
+              run: ./gradlew :app:assembleRelease --stacktrace
 
             - name: Prepare Release Assets
               id: prepare
@@ -46,6 +46,12 @@ jobs:
                   if [ -z "$TAG" ]; then
                     TAG="${GITHUB_REF_NAME}"
                   fi
+
+                  # 提取 versionCode 与 versionName 供 Xposed-Modules-Repo 使用 (格式要求: [version_code]-[version_name])
+                  VERSION_CODE=$(sed -n -E 's/.*versionCode[[:space:]]*=[[:space:]]*([0-9]+).*/\1/p' app/build.gradle.kts | head -n 1)
+                  VERSION_NAME=$(sed -n -E 's/.*versionName[[:space:]]*=[[:space:]]*"([^"]+)".*/\1/p' app/build.gradle.kts | head -n 1)
+                  XPOSED_TAG="${VERSION_CODE}-${VERSION_NAME}"
+
                   mkdir -p release-assets
                   for apk in app/build/outputs/apk/release/*.apk; do
                     [ -f "$apk" ] || continue
@@ -53,18 +59,27 @@ jobs:
                     name="${base#app-}"
                     cp "$apk" "release-assets/index-record-${TAG}-${name}.apk"
                   done
-                  for apk in app/build/outputs/apk/debug/*.apk; do
-                    [ -f "$apk" ] || continue
-                    base=$(basename "$apk" .apk)
-                    name="${base#app-}"
-                    cp "$apk" "release-assets/index-record-${TAG}-${name}.apk"
-                  done
+
                   echo "tag=$TAG" >> $GITHUB_OUTPUT
+                  echo "xposed_tag=$XPOSED_TAG" >> $GITHUB_OUTPUT
 
             - name: Create GitHub Release and Upload APKs
               uses: softprops/action-gh-release@v2
               with:
                   tag_name: ${{ steps.prepare.outputs.tag }}
                   name: "Release ${{ steps.prepare.outputs.tag }}"
+                  generate_release_notes: true
+                  files: release-assets/*.apk
+
+            - name: Push Release to Xposed-Modules-Repo
+              if: ${{ env.HAVE_TOKEN == 'true' }}
+              env:
+                  HAVE_TOKEN: ${{ secrets.XPOSED_REPO_TOKEN != '' }}
+              uses: softprops/action-gh-release@v2
+              with:
+                  token: ${{ secrets.XPOSED_REPO_TOKEN }}
+                  repository: Xposed-Modules-Repo/com.melonhu.indexrecord
+                  tag_name: ${{ steps.prepare.outputs.xposed_tag }}
+                  name: "Release ${{ steps.prepare.outputs.xposed_tag }}"
                   generate_release_notes: true
                   files: release-assets/*.apk

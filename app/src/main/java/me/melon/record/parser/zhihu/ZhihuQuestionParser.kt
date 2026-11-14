@@ -28,6 +28,19 @@ object ZhihuQuestionParser {
                 PATTERN_ZHIHU_QUESTION_FEEDS.matcher(cleanUrl).matches()
     }
 
+    fun isQuestionFeeds(cleanUrl: String): Boolean {
+        return PATTERN_ZHIHU_QUESTION_FEEDS.matcher(cleanUrl).matches()
+    }
+
+    fun isAuxiliaryQuestion(record: UniversalRecord): Boolean {
+        if (record.platform != "zhihu" || record.recordType != "question") return false
+        val cleanUrl = record.sourceUrl.substringBefore("?")
+        if (isQuestionFeeds(cleanUrl)) return true
+        val meta = runCatching { JsonParser.parseString(record.extraMetadata).asJsonObject }.getOrNull()
+        if (meta?.has("is_auxiliary") == true || meta?.has("is_feed_response") == true) return true
+        return record.content.isBlank() && record.authorId.isBlank() && record.authorName.isBlank() && meta?.has("answer_refs") == true
+    }
+
     fun parse(raw: RawData, cleanUrl: String): List<UniversalRecord> {
         if (PATTERN_ZHIHU_QUESTION_DETAIL.matcher(cleanUrl).matches()) {
             return listOf(parseZhihuQuestionDetail(raw, cleanUrl))
@@ -143,6 +156,8 @@ object ZhihuQuestionParser {
         val extraJson = JsonObject()
         extraJson.addProperty("question_id", questionId)
         extraJson.add("answer_refs", answerRefs)
+        extraJson.addProperty("is_auxiliary", true)
+        extraJson.addProperty("is_feed_response", true)
 
         return UniversalRecord(
 

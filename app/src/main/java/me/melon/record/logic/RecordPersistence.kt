@@ -21,6 +21,7 @@ import me.melon.record.parser.reddit.RedditRelations
 import me.melon.record.parser.reddit.RedditReadVisit
 import me.melon.record.parser.threads.ThreadsRelations
 import me.melon.record.parser.tieba.TiebaRelations
+import me.melon.record.parser.zhihu.ZhihuQuestionParser
 import me.melon.record.parser.zhihu.ZhihuRelations
 
 /** Merge/link reads observe preceding writes; only parse-field completion uses the pre-write chunk view. */
@@ -109,6 +110,7 @@ internal fun prunePendingHistory(history: RecordSnapshotStorage, now: Long) {
 internal fun archiveLegacyIndex(record: UniversalRecord, repository: RecordRepository, history: RecordSnapshotStorage) {
     if (history.hasIdentity(record.identity)) return
     for (old in repository.findIds(record.identity.storageIds().toList()).filter { it.identity == record.identity }) {
+        if (ZhihuQuestionParser.isAuxiliaryQuestion(old)) continue
         val key = legacySnapshotKey(old)
         if (!history.contains(key)) history.append(recordSnapshot(key, old, legacy = true))
     }
@@ -149,6 +151,7 @@ internal class ObjectBoxRecordRepository(private val box: Box<UniversalRecord>) 
 /** Hooks deliberately straddle generic merging: body policy first, metadata policy last, links after put. */
 internal interface PlatformPersistence {
     val preserveGenericContent: Boolean get() = true
+    fun shouldSnapshot(record: UniversalRecord, captured: UniversalRecord): Boolean = true
     fun complete(record: UniversalRecord, repository: RecordRepository) {}
     fun completeChunk(records: List<UniversalRecord>, repository: RecordRepository) {
         records.forEach { complete(it, repository) }
@@ -260,10 +263,13 @@ internal class RecordPersistence(
         captured: UniversalRecord = record.copy(),
         captureKey: String = "capture:${UUID.randomUUID()}"
     ) {
-        repository.history?.let { history ->
-            if (!history.contains(captureKey)) {
-                archiveLegacyIndex(captured, repository, history)
-                history.append(recordSnapshot(captureKey, captured))
+        val platform = platforms[record.platform] ?: DefaultPersistence
+        if (platform.shouldSnapshot(record, captured)) {
+            repository.history?.let { history ->
+                if (!history.contains(captureKey)) {
+                    archiveLegacyIndex(captured, repository, history)
+                    history.append(recordSnapshot(captureKey, captured))
+                }
             }
         }
         updateIndex(record)
@@ -319,6 +325,12 @@ private fun metadata(record: UniversalRecord): JsonObject = JsonParser.parseStri
 private fun JsonObject.text(key: String): String = get(key)?.asString ?: ""
 
 private object ZhihuPersistence : PlatformPersistence {
+    override fun shouldSnapshot(record: UniversalRecord, captured: UniversalRecord): Boolean {
+        if (ZhihuQuestionParser.isAuxiliaryQuestion(record) || ZhihuQuestionParser.isAuxiliaryQuestion(captured)) {
+            return false
+        }
+        return true
+    }
     override fun complete(record: UniversalRecord, repository: RecordRepository) {
         if (record.recordType != "answer" || record.parentId.isNotBlank()) return
         val questionId = runCatching { metadata(record).text("question_id") }.getOrDefault("")

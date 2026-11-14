@@ -30,3 +30,4 @@ wheels/
 .local/
 
 *.dylib
+/research/rednote/static_security

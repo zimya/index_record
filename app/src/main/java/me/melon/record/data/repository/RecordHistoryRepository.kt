@@ -24,6 +24,7 @@ import me.melon.record.data.model.legacySnapshotKey
 import me.melon.record.data.model.toDetailRecord
 import me.melon.record.data.model.toEntity
 import me.melon.record.data.model.toRecord
+import me.melon.record.parser.zhihu.ZhihuQuestionParser
 import java.util.concurrent.Callable
 
 internal data class HistoricalRecord(val key: String, val record: DetailRecord, val legacy: Boolean)
@@ -98,8 +99,12 @@ internal fun assembleAllHistoricalRecords(
     .map { it.record.toEntity() })
 
 private fun historyEntries(snapshots: List<RecordSnapshot>, indexes: List<UniversalRecord>): List<HistoricalRecord> {
-    val covered = snapshots.map { RecordIdentity(it.platform, it.identityId) }.toSet()
-    return snapshots.map { HistoricalRecord(it.key, it.toRecord().toDetailRecord(), it.legacy) } +
-        indexes.filter { it.identity !in covered }
+    val validSnapshots = snapshots.filterNot {
+        val record = it.toRecord()
+        ZhihuQuestionParser.isAuxiliaryQuestion(record)
+    }
+    val covered = validSnapshots.map { RecordIdentity(it.platform, it.identityId) }.toSet()
+    return validSnapshots.map { HistoricalRecord(it.key, it.toRecord().toDetailRecord(), it.legacy) } +
+        indexes.filter { it.identity !in covered && !ZhihuQuestionParser.isAuxiliaryQuestion(it) }
             .map { HistoricalRecord(legacySnapshotKey(it), it.toDetailRecord(), true) }
 }

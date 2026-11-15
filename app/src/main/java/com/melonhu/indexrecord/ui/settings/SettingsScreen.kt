@@ -42,6 +42,7 @@ import com.melonhu.indexrecord.settings.TweetRecordMode
 import com.melonhu.indexrecord.settings.WeiboRecordMode
 import com.melonhu.indexrecord.settings.ThreadsRecordMode
 import com.melonhu.indexrecord.ui.theme.ThemeMode
+import com.melonhu.indexrecord.ui.util.rememberAppHapticFeedback
 import com.melonhu.indexrecord.viewmodel.SettingsViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -93,51 +94,20 @@ fun SettingsScreen(viewModel: SettingsViewModel = viewModel()) {
                 onSelect = viewModel::setThemeMode
             )
 
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .toggleable(
-                        value = collapseMultipleItems,
-                        role = Role.Switch,
-                        onValueChange = viewModel::setCollapseMultipleItems
-                    )
-                    .padding(horizontal = 12.dp, vertical = 16.dp),
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Text(
-                    text = "多条目默认收起",
-                    style = MaterialTheme.typography.bodyLarge,
-                    modifier = Modifier.weight(1f)
-                )
-                Switch(checked = collapseMultipleItems, onCheckedChange = null)
-            }
+            SettingsSwitchRow(
+                title = "多条目默认收起",
+                checked = collapseMultipleItems,
+                onCheckedChange = viewModel::setCollapseMultipleItems
+            )
 
             Spacer(modifier = Modifier.height(24.dp))
             SettingsSectionTitle("统计")
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .toggleable(
-                        value = includeRepliesAndCommentsInStats,
-                        role = Role.Switch,
-                        onValueChange = viewModel::setIncludeRepliesAndCommentsInStats
-                    )
-                    .padding(horizontal = 12.dp, vertical = 16.dp),
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Column(modifier = Modifier.weight(1f).padding(end = 12.dp)) {
-                    Text("统计回复和评论", style = MaterialTheme.typography.bodyLarge)
-                    Text(
-                        "开启后将回复和评论纳入本地条目、字数、分布和连续天数统计。",
-                        style = MaterialTheme.typography.bodyMedium,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant,
-                        modifier = Modifier.padding(top = 4.dp)
-                    )
-                }
-                Switch(checked = includeRepliesAndCommentsInStats, onCheckedChange = null)
-            }
+            SettingsSwitchRow(
+                title = "统计回复和评论",
+                description = "开启后将回复和评论纳入本地条目、字数、分布和连续天数统计。",
+                checked = includeRepliesAndCommentsInStats,
+                onCheckedChange = viewModel::setIncludeRepliesAndCommentsInStats
+            )
 
             Spacer(modifier = Modifier.height(24.dp))
             SettingsSectionTitle("记录")
@@ -170,6 +140,49 @@ fun SettingsScreen(viewModel: SettingsViewModel = viewModel()) {
                 onSelect = viewModel::setRedditRecordMode
             )
         }
+    }
+}
+
+@Composable
+private fun SettingsSwitchRow(
+    title: String,
+    checked: Boolean,
+    onCheckedChange: (Boolean) -> Unit,
+    modifier: Modifier = Modifier,
+    description: String? = null
+) {
+    val appHaptics = rememberAppHapticFeedback()
+    Row(
+        modifier = modifier
+            .fillMaxWidth()
+            .toggleable(
+                value = checked,
+                role = Role.Switch,
+                onValueChange = { newValue ->
+                    appHaptics.toggle(newValue)
+                    onCheckedChange(newValue)
+                }
+            )
+            .padding(horizontal = 12.dp, vertical = 16.dp),
+        horizontalArrangement = Arrangement.SpaceBetween,
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Column(
+            modifier = Modifier
+                .weight(1f)
+                .then(if (description != null) Modifier.padding(end = 12.dp) else Modifier)
+        ) {
+            Text(text = title, style = MaterialTheme.typography.bodyLarge)
+            if (description != null) {
+                Text(
+                    text = description,
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    modifier = Modifier.padding(top = 4.dp)
+                )
+            }
+        }
+        Switch(checked = checked, onCheckedChange = null)
     }
 }
 

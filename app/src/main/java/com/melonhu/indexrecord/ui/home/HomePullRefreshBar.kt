@@ -28,8 +28,7 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.drawscope.DrawScope
-import androidx.compose.ui.hapticfeedback.HapticFeedbackType
-import androidx.compose.ui.platform.LocalHapticFeedback
+import com.melonhu.indexrecord.ui.util.rememberAppHapticFeedback
 import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.flow.distinctUntilChanged
 
@@ -83,12 +82,12 @@ internal fun HomePullRefreshBar(
         label = "homeTopBarAlpha"
     )
 
-    val haptic = LocalHapticFeedback.current
+    val appHaptics = rememberAppHapticFeedback()
     LaunchedEffect(state) {
         snapshotFlow { state.progress >= 1f && !state.isRefreshing }
             .distinctUntilChanged()
             .collect { reachedThreshold ->
-                if (reachedThreshold) haptic.performHapticFeedback(HapticFeedbackType.TextHandleMove)
+                if (reachedThreshold) appHaptics.refreshThreshold()
             }
     }
 

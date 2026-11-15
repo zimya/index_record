@@ -3,6 +3,7 @@ package com.melonhu.indexrecord.ui.main
 import com.melonhu.indexrecord.ui.home.HomeScreen
 import com.melonhu.indexrecord.ui.settings.SettingsScreen
 import com.melonhu.indexrecord.ui.stats.StatsScreen
+import com.melonhu.indexrecord.ui.util.rememberAppHapticFeedback
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.WindowInsets
@@ -29,6 +30,7 @@ import androidx.compose.ui.Modifier
 fun MainScreen() {
     var selectedTab by rememberSaveable { mutableIntStateOf(0) }
     val saveableStateHolder = rememberSaveableStateHolder()
+    val appHaptics = rememberAppHapticFeedback()
 
     Scaffold(
         contentWindowInsets = WindowInsets(0, 0, 0, 0),
@@ -36,19 +38,34 @@ fun MainScreen() {
             NavigationBar {
                 NavigationBarItem(
                     selected = selectedTab == 0,
-                    onClick = { selectedTab = 0 },
+                    onClick = {
+                        if (selectedTab != 0) {
+                            appHaptics.tabSwitch()
+                            selectedTab = 0
+                        }
+                    },
                     icon = { androidx.compose.material3.Icon(Icons.Default.Home, contentDescription = "Home") },
                     label = { androidx.compose.material3.Text("首页") }
                 )
                 NavigationBarItem(
                     selected = selectedTab == 1,
-                    onClick = { selectedTab = 1 },
+                    onClick = {
+                        if (selectedTab != 1) {
+                            appHaptics.tabSwitch()
+                            selectedTab = 1
+                        }
+                    },
                     icon = { androidx.compose.material3.Icon(Icons.Default.BarChart, contentDescription = "Stats") },
                     label = { androidx.compose.material3.Text("统计") }
                 )
                 NavigationBarItem(
                     selected = selectedTab == 2,
-                    onClick = { selectedTab = 2 },
+                    onClick = {
+                        if (selectedTab != 2) {
+                            appHaptics.tabSwitch()
+                            selectedTab = 2
+                        }
+                    },
                     icon = { androidx.compose.material3.Icon(Icons.Default.Settings, contentDescription = "Settings") },
                     label = { androidx.compose.material3.Text("设置") }
                 )

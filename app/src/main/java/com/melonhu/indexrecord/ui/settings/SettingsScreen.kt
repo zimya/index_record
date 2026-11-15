@@ -54,6 +54,7 @@ fun SettingsScreen(viewModel: SettingsViewModel = viewModel()) {
     val redditRecordMode by viewModel.redditRecordMode.collectAsState()
     val collapseMultipleItems by viewModel.collapseMultipleItems.collectAsState()
     val includeRepliesAndCommentsInStats by viewModel.includeRepliesAndCommentsInStats.collectAsState()
+    val lsposedStatus by viewModel.lsposedStatus.collectAsState()
 
     Scaffold(
         contentWindowInsets = WindowInsets(0, 0, 0, 0),
@@ -74,6 +75,8 @@ fun SettingsScreen(viewModel: SettingsViewModel = viewModel()) {
                 .verticalScroll(rememberScrollState())
                 .padding(horizontal = 16.dp)
         ) {
+            Spacer(modifier = Modifier.height(12.dp))
+            LsposedStatusCard(status = lsposedStatus)
             Spacer(modifier = Modifier.height(12.dp))
             SettingsSectionTitle("外观")
             SettingsDropdownRow(

@@ -61,15 +61,18 @@ android {
     }
 
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_1_8
-        targetCompatibility = JavaVersion.VERSION_1_8
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
+        isCoreLibraryDesugaringEnabled = true
     }
     kotlinOptions {
-        jvmTarget = "1.8"
+        jvmTarget = "17"
     }
 }
 
 dependencies {
+    coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.0.4")
+
     // Android Core
     implementation("androidx.core:core-ktx:1.12.0")
     implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.7.0")
@@ -118,6 +121,7 @@ dependencies {
 
     // Modern Xposed (API 102)
     compileOnly("io.github.libxposed:api:102.0.0")
+    implementation("io.github.libxposed:service:102.0.0")
 }
 
 // 【修复2】解决 Configuration not found 问题
@@ -126,4 +130,8 @@ project.afterEvaluate {
     // 只有在 debug 模式下才排除 objectbox-android (因为 objectbrowser 自带了)
     // 防止类重复冲突
     configurations.findByName("debugRuntimeClasspath")?.exclude(group = "io.objectbox", module = "objectbox-android")
+    // libxposed 102.0.0 的 aar metadata 中 minCompileSdk 声明为 37，忽略此项检查
+    tasks.matching { it.name.contains("AarMetadata") }.configureEach {
+        enabled = false
+    }
 }

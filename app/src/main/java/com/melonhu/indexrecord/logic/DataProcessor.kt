@@ -93,8 +93,9 @@ object DataProcessor {
                     if (processedRawIds.isNotEmpty()) rawBox.remove(*processedRawIds)
                 }
                 retainedOffset += parsedItems.count { !it.result.consumeRaw }
-                parsedItems.filter { !it.result.consumeRaw }.forEach {
-                    Log.w(TAG, "Retained raw ID ${it.rawId}: ${it.result.javaClass.simpleName}; diagnostics=${it.result.diagnostics.map { d -> d.stage }}")
+                parsedItems.filter { !it.result.consumeRaw }.forEach { item ->
+                    val raw = chunk.firstOrNull { it.id == item.rawId }
+                    Log.w(TAG, "Retained raw ID ${item.rawId}: ${item.result.javaClass.simpleName}; diagnostics=${item.result.diagnostics.map { "${it.stage}: ${it.message}" }}; url=${raw?.url}")
                 }
 
                 processed += chunk.size

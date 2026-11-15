@@ -1,6 +1,7 @@
 package com.melonhu.indexrecord.parser.zhihu
 
 import com.google.gson.Gson
+import com.google.gson.JsonArray
 import com.google.gson.JsonObject
 import com.melonhu.indexrecord.data.model.RawData
 import com.melonhu.indexrecord.data.model.RecordBodyFormat
@@ -28,23 +29,41 @@ object ZhihuItemV2Parser {
         val id = itemObj.safeString("id")
         if (id.isBlank()) return null
 
-        val structuredContent = itemObj.getAsJsonObject("structured_content")
-        val content = zhihuStructuredContentToMarkdown(structuredContent)
+        val structuredContent = itemObj.safeObject("structured_content")
+        var content = zhihuStructuredContentToMarkdown(structuredContent)
             .ifBlank { itemObj.safeString("excerpt") }
 
-        val headerObj = itemObj.getAsJsonObject("header")
-        val authorObj = itemObj.getAsJsonObject("author")
+        val imageListObj = itemObj.safeObject("image_list")
+        val images = imageListObj?.safeArray("images")
+        if (images != null && images.size() > 0) {
+            val imageMarkdown = images.mapNotNull { imgElem ->
+                val imgObj = if (imgElem.isJsonObject) imgElem.asJsonObject else null
+                val imgUrl = imgObj?.safeString("original_url")?.ifBlank { imgObj.safeString("url") }
+                if (!imgUrl.isNullOrBlank()) "![]($imgUrl)" else null
+            }.joinToString("\n\n")
+
+            if (imageMarkdown.isNotBlank()) {
+                content = if (content.isBlank() || content == "[图片]") {
+                    imageMarkdown
+                } else {
+                    "$content\n\n$imageMarkdown"
+                }
+            }
+        }
+
+        val headerObj = itemObj.safeObject("header")
+        val authorObj = itemObj.safeObject("author")
         val authorName = authorObj?.safeString("fullname")?.ifBlank { authorObj.safeString("name") } ?: "知乎用户"
         val authorId = authorObj?.safeString("id") ?: ""
         val authorAvatar = authorObj?.safeString("avatar_url")
             ?.ifBlank { authorObj.safeString("avatarUrl") }
-            ?.ifBlank { authorObj.getAsJsonObject("avatar")?.getAsJsonObject("avatar_image")?.safeString("day") }
+            ?.ifBlank { authorObj.safeObject("avatar")?.safeObject("avatar_image")?.safeString("day") }
             ?: ""
         val authorHeadline = authorObj?.safeString("headline")
             ?.ifBlank { authorObj.safeString("description") }
             ?: ""
 
-        val contentEndInfo = itemObj.getAsJsonObject("content_end_info")
+        val contentEndInfo = itemObj.safeObject("content_end_info")
         val createTimeText = contentEndInfo?.safeString("create_time_text") ?: ""
         val updateTimeText = contentEndInfo?.safeString("update_time_text") ?: ""
         val ipInfo = contentEndInfo?.safeString("ip_info") ?: ""
@@ -58,14 +77,14 @@ object ZhihuItemV2Parser {
         if (createTimeText.isNotBlank()) extraJson.addProperty("create_time_text", createTimeText)
         if (updateTimeText.isNotBlank()) extraJson.addProperty("update_time_text", updateTimeText)
         if (authorHeadline.isNotBlank()) extraJson.addProperty("author_headline", authorHeadline)
-        if (itemObj.has("topics")) extraJson.add("topics", itemObj.get("topics"))
+        if (itemObj.has("topics") && !itemObj.get("topics").isJsonNull) extraJson.add("topics", itemObj.get("topics"))
 
-        val reactionObj = itemObj.getAsJsonObject("reaction")
-        val statsObj = reactionObj?.getAsJsonObject("statistics")
+        val reactionObj = itemObj.safeObject("reaction")
+        val statsObj = reactionObj?.safeObject("statistics")
         if (statsObj != null) {
-            if (statsObj.has("up_vote_count")) extraJson.add("voteup_count", statsObj.get("up_vote_count"))
-            if (statsObj.has("comment_count")) extraJson.add("comment_count", statsObj.get("comment_count"))
-            if (statsObj.has("favorites")) extraJson.add("favlists_count", statsObj.get("favorites"))
+            if (statsObj.has("up_vote_count") && !statsObj.get("up_vote_count").isJsonNull) extraJson.add("voteup_count", statsObj.get("up_vote_count"))
+            if (statsObj.has("comment_count") && !statsObj.get("comment_count").isJsonNull) extraJson.add("comment_count", statsObj.get("comment_count"))
+            if (statsObj.has("favorites") && !statsObj.get("favorites").isJsonNull) extraJson.add("favlists_count", statsObj.get("favorites"))
         }
 
         if (effectiveType == "pin") {
@@ -112,7 +131,7 @@ object ZhihuItemV2Parser {
                 extraMetadata = gson.toJson(extraJson)
             )
         } else {
-            val questionObj = itemObj.getAsJsonObject("question")
+            val questionObj = itemObj.safeObject("question")
             val questionId = questionObj?.safeString("id") ?: ""
             val questionTitle = questionObj?.safeString("title")
                 ?.ifBlank { headerObj?.safeString("text") }
@@ -162,5 +181,15 @@ object ZhihuItemV2Parser {
 
     internal fun JsonObject.safeString(key: String): String {
         return if (this.has(key) && !this.get(key).isJsonNull) this.get(key).asString else ""
+    }
+
+    internal fun JsonObject.safeObject(key: String): JsonObject? {
+        val element = this.get(key)
+        return if (element != null && element.isJsonObject) element.asJsonObject else null
+    }
+
+    internal fun JsonObject.safeArray(key: String): JsonArray? {
+        val element = this.get(key)
+        return if (element != null && element.isJsonArray) element.asJsonArray else null
     }
 }

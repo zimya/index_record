@@ -99,6 +99,42 @@ class ZhihuCardModeTest {
     }
 
     @Test
+    fun testPinWithNullStructuredContentAndImages() {
+        val json = """
+            {
+                "id": "2103591345151534926",
+                "type": "pin",
+                "structured_content": null,
+                "excerpt": "[图片]",
+                "header": { "text": "不要怀疑自己的眼睛" },
+                "author": { "fullname": "彬帝", "id": "123" },
+                "image_list": {
+                    "count": 1,
+                    "images": [
+                        { "original_url": "https://pic1.zhimg.com/v2-img.jpg" }
+                    ]
+                }
+            }
+        """.trimIndent()
+        val raw = RawData(
+            id = 29,
+            url = "https://api.zhihu.com/pins/v2/2103591345151534926?scene=recommend&single_content=1",
+            json = json,
+            hostApp = "com.zhihu.android",
+            timestamp = 1732554840000L
+        )
+        val cleanUrl = raw.url.substringBefore('?')
+        val records = com.melonhu.indexrecord.parser.zhihu.ZhihuParser.parse(raw, cleanUrl)
+        assertEquals(1, records.size)
+        val record = records.first()
+        assertEquals("pin", record.recordType)
+        assertEquals("zhihu_pin_2103591345151534926", record.platformId)
+        assertEquals("不要怀疑自己的眼睛", record.title)
+        assertEquals("彬帝", record.authorName)
+        assertTrue(record.content.contains("https://pic1.zhimg.com/v2-img.jpg"))
+    }
+
+    @Test
     fun testAnswerV2Conversion() {
         val jsonStr = loadExample("answer_v2_example.json")
         val json = JsonParser.parseString(jsonStr).asJsonObject

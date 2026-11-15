@@ -116,8 +116,8 @@ dependencies {
     // Exercise the exact Java projection used inside Reddit's hooked process (Android supplies org.json).
     testImplementation("org.json:json:20240303")
 
-    // Xposed
-    compileOnly(files("libs/api-82.jar"))
+    // Modern Xposed (API 102)
+    compileOnly("io.github.libxposed:api:102.0.0")
 }
 
 // 【修复2】解决 Configuration not found 问题

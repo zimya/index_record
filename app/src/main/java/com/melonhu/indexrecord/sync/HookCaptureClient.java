@@ -13,7 +13,7 @@ import android.os.DeadObjectException;
 import android.os.IBinder;
 import android.os.Parcel;
 import android.os.ParcelFileDescriptor;
-import de.robv.android.xposed.XposedBridge;
+import android.util.Log;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -43,9 +43,14 @@ public final class HookCaptureClient {
         boolean keep(File payload) throws Exception;
     }
 
+    public interface Logger {
+        void log(String message, Throwable error);
+    }
+
     private final Context context;
     private final ExecutorService executor;
     private final String tag;
+    private final Logger logger;
     private final CaptureQueue queue;
     private volatile IBinder syncBinder;
     private volatile Preparation beforeSync;
@@ -58,9 +63,19 @@ public final class HookCaptureClient {
         ExecutorService executor,
         String tag
     ) {
+        this(context, executor, tag, null);
+    }
+
+    public HookCaptureClient(
+        Context context,
+        ExecutorService executor,
+        String tag,
+        Logger logger
+    ) {
         this.context = context;
         this.executor = executor;
         this.tag = tag;
+        this.logger = logger;
         this.queue = new CaptureQueue(
             new File(context.getCacheDir(), QUEUE_DIR),
             this::log
@@ -260,9 +275,15 @@ public final class HookCaptureClient {
         return context.getContentResolver().insert(RAW_DATA, values) != null;
     }
 
-    private void log(String message, Exception error) {
-        XposedBridge.log(
-            tag + " " + message + (error == null ? "" : ": " + error)
-        );
+    private void log(String message, Throwable error) {
+        if (logger != null) {
+            logger.log(tag + " " + message, error);
+        } else {
+            if (error != null) {
+                Log.e(tag, message, error);
+            } else {
+                Log.i(tag, message);
+            }
+        }
     }
 }

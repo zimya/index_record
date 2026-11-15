@@ -1,18 +1,15 @@
 # ==============================================================================
-# 1. Xposed 框架与 Hook 入口
+# 1. LibXposed (API 102) 框架与 Hook 入口
 # ==============================================================================
-# Xposed Bridge API
--dontwarn de.robv.android.xposed.**
--keep class de.robv.android.xposed.** { *; }
+-dontwarn io.github.libxposed.annotation.**
+-adaptresourcefilecontents META-INF/xposed/java_init.list
+-keep,allowoptimization,allowobfuscation public class * extends io.github.libxposed.api.XposedModule {
+    public <init>();
+}
 
-# assets/xposed_init 声明的 Hook 入口类（被 LSPosed 框架直接反射加载，严禁混淆或重命名）
--keep public class com.melonhu.indexrecord.ZhihuHook { public *; }
--keep public class com.melonhu.indexrecord.DoubanHook { public *; }
--keep public class com.melonhu.indexrecord.XHook { public *; }
--keep public class com.melonhu.indexrecord.TiebaHook { public *; }
--keep public class com.melonhu.indexrecord.WeiboHook { public *; }
--keep public class com.melonhu.indexrecord.ThreadsHook { public *; }
--keep public class com.melonhu.indexrecord.RedditHook { public *; }
+# Hook 模块与组件保留
+-keep class com.melonhu.indexrecord.hook.** { *; }
+-keepclassmembers class com.melonhu.indexrecord.hook.** { *; }
 
 # 宿主进程与主进程跨进程通信、队列与捕获客户端
 -keep class com.melonhu.indexrecord.sync.** { *; }

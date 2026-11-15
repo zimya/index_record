@@ -1,9 +1,29 @@
+import java.util.concurrent.TimeUnit
+
 plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
     id("org.jetbrains.kotlin.plugin.compose")
     id("io.objectbox")
     kotlin("kapt")
+}
+
+fun getGitCommitCount(): Int {
+    return try {
+        val process = ProcessBuilder("git", "rev-list", "--count", "HEAD")
+            .directory(project.rootDir)
+            .redirectOutput(ProcessBuilder.Redirect.PIPE)
+            .redirectError(ProcessBuilder.Redirect.PIPE)
+            .start()
+        val completed = process.waitFor(5, TimeUnit.SECONDS)
+        if (completed && process.exitValue() == 0) {
+            process.inputStream.bufferedReader().readText().trim().toIntOrNull() ?: 1
+        } else {
+            1
+        }
+    } catch (_: Exception) {
+        1
+    }
 }
 
 kapt {
@@ -18,7 +38,7 @@ android {
         applicationId = "com.melonhu.indexrecord"
         minSdk = 26
         targetSdk = 34
-        versionCode = 1
+        versionCode = getGitCommitCount()
         versionName = "0.4.0"
         resourceConfigurations += listOf("zh", "zh-rCN", "en")
     }

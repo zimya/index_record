@@ -18,6 +18,10 @@
 
 # 开发约定
 
+## 核心代码原则
+
+- **简洁直接，拒绝过度防御**：尽量少用防御性编程，能用一个判断解决的就不要用多个判断，代码要简洁。准确定位问题的根本原因，直击核心逻辑，不堆砌没有实际场景依据的猜测性容错或多层冗余兜底。
+
 ## Hook 开发约定
 
 基于现代 LibXposed 标准（API 102，适配 LSPosed Next 及 JingMatrix Vector 等现代框架）。模块主入口为 `hook/IndexRecordModule.java`，配置位于 `META-INF/xposed/`（`java_init.list`、`scope.list`、`module.prop`）。
@@ -45,7 +49,7 @@
 - 生产处理使用 `RawDataParser.parseResult()` / `ParserRegistry.parseResult()`，不根据列表型 `parse()` 的空结果决定原始数据删除。`Success`（包括合法空响应）与带原因的 `Ignored` 可消费原文；`Failure` 保留原文；`Partial` 写入有效记录但保留完整原文及诊断。诊断不复制原始 payload。此契约不等于完整的字段级 schema 校验，既有安全读取和主动跳过规则仍由各平台定义。
 - 保留的原文下次处理时可重试；一次处理按 ID 顺序扫描，跳过本轮已尝试的保留项，不因坏数据阻塞后续捕获。暂不提供持久化隔离、重试上限或诊断管理界面；部分成功的重试可能再次进入合并流程。
 - 默认结果入口校验 JSON 对象；知乎 appview HTML、Threads 流式响应、Reddit 批响应和贴吧二进制信封由平台入口处理，不能一律要求 JSON 对象。
-- `logic/TwitterPersistence.kt` 通过通用仓库能力补全 X 关系，查询和回写失败交由调用方事务回滚；`parser/x/XRelations.kt` 仅保留纯元数据合并。`logic/DoubanPersistence.kt` 封装标题补全证据和进程级状态，公共协调器只路由 `CompletionEvidence`。豆瓣既有缓存键、补全顺序及状态不随事务回滚的行为保持不变。
+- `logic/TwitterPersistence.kt` 通过通用仓库能力补全 X 关系，查询和回写失败交由调用方事务回滚；`parser/x/XRelations.kt` 仅保留纯元数据合并。X 详情解析（`ConversationTimeline`）仅保留当前主推文及回帖线程，通过模块 `entry_id`/`entryId` 与 `client_event_info` 过滤 `related_tweet`/`RelatedTweet` 附加推荐，保持单点准确判断，不增加多余防御层。`logic/DoubanPersistence.kt` 封装标题补全证据和进程级状态，公共协调器只路由 `CompletionEvidence`。豆瓣既有缓存键、补全顺序及状态不随事务回滚的行为保持不变。
 
 ## 详情数据契约
 

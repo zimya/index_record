@@ -46,6 +46,22 @@ class XConversationTimelineTest {
     }
 
     @Test
+    fun skipsSnakeCaseRelatedTweetsAndDiscoverMore() {
+        val records = parse("""
+            {"entry_id":"tweet-100","content":{"content":{"tweet_results":{"result":${tweet("100")}}}}},
+            {"entry_id":"conversationthread-101","content":{"items":[
+              {"entry_id":"conversationthread-101-tweet-101","item":{"content":{"tweet_results":{"result":${tweet("101", "100")}}}}}
+            ]}},
+            {"entry_id":"tweetdetailrelatedtweets-200","content":{"items":[
+              {"item":{"content":{"tweet_results":{"result":${tweet("200")}}}}}
+            ]}},
+            {"entry_id":"tweet-300","content":{"client_event_info":{"details":{"conversation_details":{"conversation_section":"RelatedTweet"}}},"tweet_results":{"result":${tweet("300")}}}},
+            {"entry_id":"tweet-400","content":{"client_event_info":{"component":"related_tweet"},"tweet_results":{"result":${tweet("400")}}}}
+        """)
+        assertEquals(listOf("twitter_tweet_100", "twitter_comment_101"), records.map { it.platformId })
+    }
+
+    @Test
     fun skipsRelatedSectionAndPromotedEntriesEvenWithTweetEntryIds() {
         val records = parse("""
             {"entryId":"tweet-100","content":{"tweet_results":{"result":${tweet("100")}}}},

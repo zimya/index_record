@@ -5,7 +5,6 @@ import com.google.gson.JsonObject
 import com.google.gson.JsonParser
 import com.melonhu.indexrecord.data.model.RawData
 import com.melonhu.indexrecord.data.model.UniversalRecord
-import com.melonhu.indexrecord.parser.x.XUtils.safeJsonArray
 import com.melonhu.indexrecord.parser.x.XUtils.safeJsonObject
 import com.melonhu.indexrecord.parser.x.XUtils.safeString
 
@@ -47,16 +46,16 @@ object XTimelineParser {
 
             if (conversationOnly) {
                 // 详情只读取推文条目和回帖线程，不进入附加推荐、广告等模块。
-                val entryId = obj.safeString("entryId")
+                val entryId = obj.safeString("entry_id").ifBlank { obj.safeString("entryId") }
                 if (entryId.isNotBlank() &&
                     !entryId.startsWith("tweet-") &&
                     !entryId.startsWith("conversationthread-")
                 ) return
-                val eventInfo = obj.safeJsonObject("clientEventInfo")
+                val eventInfo = obj.safeJsonObject("client_event_info") ?: obj.safeJsonObject("clientEventInfo")
                 val section = eventInfo?.safeJsonObject("details")
-                    ?.safeJsonObject("conversationDetails")?.safeString("conversationSection")
+                    ?.let { it.safeJsonObject("conversation_details") ?: it.safeJsonObject("conversationDetails") }
+                    ?.let { it.safeString("conversation_section").ifBlank { it.safeString("conversationSection") } }
                 if (eventInfo?.safeString("component") == "related_tweet" || section == "RelatedTweet") return
-
             }
 
             // 遇到 tweet_results 节点直接交由 XTweetParser 解析

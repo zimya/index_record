@@ -13,10 +13,16 @@ internal object XAdFilter {
         val entryId = obj.safeString("entryId").ifBlank { obj.safeString("entry_id") }
         if (entryId.startsWith("promoted-")) return true
 
-        val eventInfo = obj.safeJsonObject("clientEventInfo") ?: return false
+        val eventInfo = obj.safeJsonObject("client_event_info")
+            ?: obj.safeJsonObject("clientEventInfo")
+            ?: return false
         val component = eventInfo.safeString("component")
-        val injectionType = eventInfo.safeJsonObject("details")
-            ?.safeJsonObject("timelinesDetails")?.safeString("injectionType").orEmpty()
+        val details = eventInfo.safeJsonObject("details")
+        val timelinesDetails = details?.safeJsonObject("timelines_details")
+            ?: details?.safeJsonObject("timelinesDetails")
+        val injectionType = timelinesDetails?.safeString("injection_type")?.ifBlank {
+            timelinesDetails.safeString("injectionType")
+        }.orEmpty()
         return component.contains("promoted", ignoreCase = true) ||
             injectionType.contains("promoted", ignoreCase = true)
     }

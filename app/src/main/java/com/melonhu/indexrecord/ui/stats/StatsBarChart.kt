@@ -28,6 +28,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.CornerRadius
 import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.res.stringResource
+import com.melonhu.indexrecord.R
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.drawscope.clipPath
@@ -242,7 +244,7 @@ internal fun BarDetailCard(
                     color = MaterialTheme.colorScheme.onSurface
                 )
                 Text(
-                    text = "关闭",
+                    text = stringResource(R.string.common_close),
                     style = MaterialTheme.typography.labelSmall,
                     color = MaterialTheme.colorScheme.primary,
                     modifier = Modifier.clickable { onClose() }
@@ -252,7 +254,7 @@ internal fun BarDetailCard(
             if (bar.totalCount == 0) {
                 Spacer(modifier = Modifier.height(4.dp))
                 Text(
-                    text = "此时段无阅读记录",
+                    text = stringResource(R.string.stats_chart_no_record_period),
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.outline
                 )
@@ -274,7 +276,7 @@ internal fun BarDetailCard(
                                 drawCircle(color = colorFromPackage(pkg))
                             }
                             Text(
-                                text = "${appLabel(pkg)}: $count 条 ($pct%)",
+                                text = stringResource(R.string.stats_chart_count_format, appLabel(pkg), count, pct),
                                 style = MaterialTheme.typography.bodySmall,
                                 color = MaterialTheme.colorScheme.onSurfaceVariant
                             )

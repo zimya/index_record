@@ -15,12 +15,15 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.nestedscroll.nestedScroll
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import com.melonhu.indexrecord.R
 import com.melonhu.indexrecord.data.model.UniversalRecord
 import com.melonhu.indexrecord.ui.components.RecordItem
 import com.melonhu.indexrecord.ui.components.RefreshResultHint
@@ -60,6 +63,7 @@ fun PullToRefreshListScreen(
     }
 
     val keyboardController = LocalSoftwareKeyboardController.current
+    val context = LocalContext.current
     val isSearching = isSearchActive || searchQuery.isNotBlank()
 
     var textFieldValue by rememberSaveable(stateSaver = TextFieldValue.Saver) {
@@ -145,7 +149,7 @@ fun PullToRefreshListScreen(
             hintShowArrow = false
             return@LaunchedEffect
         }
-        hintMessage = "已加载 ${sessionLoadedCount} 条内容"
+        hintMessage = context.getString(R.string.sync_hint_loaded, sessionLoadedCount)
         hintShowArrow = !isAtTop
         hintVisible = true
         if (isAtTop) {
@@ -168,7 +172,7 @@ fun PullToRefreshListScreen(
             val loadedCount = onRefresh()
             // 新增数量统一由列表变化累计，刷新返回值不覆盖批次累计值。
             if (loadedCount == 0 && sessionLoadedCount == 0 && !showSync) {
-                hintMessage = "暂未收到新内容"
+                hintMessage = context.getString(R.string.sync_hint_empty)
                 hintShowArrow = false
                 hintVisible = true
                 hintNoNewToken = System.currentTimeMillis()
@@ -223,8 +227,15 @@ fun PullToRefreshListScreen(
 
                 if (records.isEmpty()) {
                     Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                        val emptyText = if (searchQuery.isNotEmpty()) {
+                            stringResource(R.string.home_empty_search)
+                        } else if (!recordsLoaded) {
+                            ""
+                        } else {
+                            stringResource(R.string.home_empty_prompt)
+                        }
                         Text(
-                            if (searchQuery.isNotEmpty()) "没有找到匹配的记录" else if (!recordsLoaded) "" else "暂无记录，去刷刷社交网络吧！",
+                            text = emptyText,
                             color = Color.Gray
                         )
                     }

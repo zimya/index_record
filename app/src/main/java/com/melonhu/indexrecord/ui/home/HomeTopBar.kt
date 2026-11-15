@@ -14,6 +14,8 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
+import androidx.compose.ui.res.stringResource
+import com.melonhu.indexrecord.R
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.foundation.text.KeyboardActions
@@ -68,7 +70,7 @@ internal fun HomeTopBar(
                         modifier = Modifier
                             .fillMaxWidth()
                             .focusRequester(focusRequester),
-                        placeholder = { Text("搜索内容、作者、平台...") },
+                        placeholder = { Text(stringResource(R.string.search_placeholder)) },
                         singleLine = true,
                         keyboardOptions = KeyboardOptions(imeAction = ImeAction.Search),
                         keyboardActions = KeyboardActions(onSearch = {
@@ -86,7 +88,7 @@ internal fun HomeTopBar(
                                     onTextFieldValueChange(TextFieldValue("", TextRange.Zero))
                                     onSearchQueryChange("")
                                 }) {
-                                    Icon(Icons.Default.Close, contentDescription = "Clear")
+                                    Icon(Icons.Default.Close, contentDescription = stringResource(R.string.common_clear))
                                 }
                             }
                         }
@@ -97,23 +99,23 @@ internal fun HomeTopBar(
                         keyboardController?.hide()
                         onSearchActiveChange(false)
                     }) {
-                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back")
+                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = stringResource(R.string.common_back))
                     }
                 },
                 colors = TopAppBarDefaults.topAppBarColors(containerColor = MaterialTheme.colorScheme.surface)
             )
         } else {
             TopAppBar(
-                title = { Text("小茵记录") },
+                title = { Text(stringResource(R.string.app_name)) },
                 actions = {
                     IconButton(onClick = { onSearchActiveChange(true) }) {
-                        Icon(Icons.Default.Search, contentDescription = "Search")
+                        Icon(Icons.Default.Search, contentDescription = stringResource(R.string.search_placeholder))
                     }
                     IconButton(onClick = onOpenFilter) {
                         val hasFilter = filter.isActive
                         Icon(
                             imageVector = if (hasFilter) Icons.Filled.FilterList else Icons.Outlined.FilterList,
-                            contentDescription = "Filter",
+                            contentDescription = stringResource(R.string.filter_title),
                             tint = if (hasFilter) MaterialTheme.colorScheme.primary else LocalContentColor.current
                         )
                     }

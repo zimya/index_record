@@ -36,7 +36,9 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.rotate
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import com.melonhu.indexrecord.R
 import com.melonhu.indexrecord.data.PlatformCatalog
 import com.melonhu.indexrecord.viewmodel.LsposedStatus
 
@@ -95,9 +97,9 @@ fun LsposedStatusCard(
                     Spacer(modifier = Modifier.width(12.dp))
                     Column {
                         val title = when (status) {
-                            is LsposedStatus.Active -> "${status.frameworkName} 已激活"
-                            is LsposedStatus.Inactive -> "LSPosed 模块未激活"
-                            is LsposedStatus.Checking -> "正在检测模块状态..."
+                            is LsposedStatus.Active -> stringResource(R.string.lsposed_active, status.frameworkName)
+                            is LsposedStatus.Inactive -> stringResource(R.string.lsposed_inactive)
+                            is LsposedStatus.Checking -> stringResource(R.string.lsposed_checking)
                         }
                         Text(
                             text = title,
@@ -106,10 +108,10 @@ fun LsposedStatusCard(
                         val subtitle = when (status) {
                             is LsposedStatus.Active -> {
                                 val versionStr = status.frameworkVersion?.let { " ($it)" } ?: ""
-                                "已激活 ${status.activeScopes.size} 个作用域$versionStr"
+                                stringResource(R.string.lsposed_active_scopes, status.activeScopes.size, versionStr)
                             }
-                            is LsposedStatus.Inactive -> "请在 LSPosed 管理器中启用模块并勾选目标应用"
-                            is LsposedStatus.Checking -> "正在连接框架服务..."
+                            is LsposedStatus.Inactive -> stringResource(R.string.lsposed_inactive_tip)
+                            is LsposedStatus.Checking -> stringResource(R.string.lsposed_connecting)
                         }
                         Text(
                             text = subtitle,
@@ -123,7 +125,7 @@ fun LsposedStatusCard(
                 if (isActive) {
                     Icon(
                         imageVector = Icons.Default.ExpandMore,
-                        contentDescription = if (expanded) "收起作用域" else "展开作用域",
+                        contentDescription = if (expanded) stringResource(R.string.lsposed_collapse_scopes) else stringResource(R.string.lsposed_expand_scopes),
                         tint = MaterialTheme.colorScheme.onSurfaceVariant,
                         modifier = Modifier.rotate(arrowRotation)
                     )
@@ -175,7 +177,7 @@ fun LsposedStatusCard(
                                     }
                                 ) {
                                     Text(
-                                        text = if (isChecked) "已激活" else "未激活",
+                                        text = if (isChecked) stringResource(R.string.lsposed_status_activated) else stringResource(R.string.lsposed_status_unactivated),
                                         style = MaterialTheme.typography.labelSmall,
                                         color = if (isChecked) {
                                             MaterialTheme.colorScheme.primary

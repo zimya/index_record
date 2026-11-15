@@ -5,7 +5,9 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.RectangleShape
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import com.melonhu.indexrecord.R
 import com.melonhu.indexrecord.logic.DataProcessor
 
 /**
@@ -26,15 +28,15 @@ internal fun HomeSyncProgress(
     ) {
         val syncLabel = when {
             !syncSessionActive && rawPendingCount > 0L ->
-                "待重试：剩余 ${rawPendingCount} 条原始数据已保留"
+                stringResource(R.string.sync_retry_pending, rawPendingCount)
             !syncSessionActive ->
-                "同步完成：本轮已加载 ${sessionLoadedCount} 条"
+                stringResource(R.string.sync_completed, sessionLoadedCount)
             syncProgress.isRunning ->
-                "同步中：剩余 ${rawPendingCount} 条 · 本轮已加载 ${sessionLoadedCount} 条"
+                stringResource(R.string.sync_in_progress_with_pending, rawPendingCount, sessionLoadedCount)
             rawPendingCount > 0L ->
-                "等待处理：剩余 ${rawPendingCount} 条 · 本轮已加载 ${sessionLoadedCount} 条"
+                stringResource(R.string.sync_waiting_process, rawPendingCount, sessionLoadedCount)
             else ->
-                "同步中：本轮已加载 ${sessionLoadedCount} 条 · 等待后续数据…"
+                stringResource(R.string.sync_in_progress_waiting_more, sessionLoadedCount)
         }
         Text(
             text = syncLabel,

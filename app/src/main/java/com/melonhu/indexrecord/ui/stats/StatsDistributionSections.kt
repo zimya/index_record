@@ -33,8 +33,10 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import com.melonhu.indexrecord.R
 import com.melonhu.indexrecord.logic.BarData
 import com.melonhu.indexrecord.logic.DistributionRange
 
@@ -74,19 +76,19 @@ internal fun DistributionChartSection(
                 ) {
                     Icon(
                         imageVector = Icons.Default.Timeline,
-                        contentDescription = "条目分布",
+                        contentDescription = stringResource(R.string.stats_distribution_records_content_desc),
                         tint = MaterialTheme.colorScheme.primary,
                         modifier = Modifier.size(20.dp)
                     )
                     Text(
-                        text = "条目统计分布",
+                        text = stringResource(R.string.stats_distribution_records),
                         style = MaterialTheme.typography.titleMedium,
                         fontWeight = FontWeight.Bold
                     )
                 }
 
                 Text(
-                    text = "总量 ${bars.sumOf { it.totalCount }} 条",
+                    text = stringResource(R.string.stats_distribution_total, bars.sumOf { it.totalCount }),
                     style = MaterialTheme.typography.labelMedium,
                     color = MaterialTheme.colorScheme.outline
                 )
@@ -100,6 +102,11 @@ internal fun DistributionChartSection(
                 horizontalArrangement = Arrangement.spacedBy(8.dp)
             ) {
                 DistributionRange.values().forEach { range ->
+                    val rangeLabel = when (range) {
+                        DistributionRange.LAST_30_DAYS -> stringResource(R.string.stats_range_month)
+                        DistributionRange.FULL_YEAR -> stringResource(R.string.stats_range_year)
+                        DistributionRange.ALL_TIME -> stringResource(R.string.stats_range_all)
+                    }
                     FilterChip(
                         selected = selectedRange == range,
                         onClick = {
@@ -107,7 +114,7 @@ internal fun DistributionChartSection(
                                 onRangeSelected(range)
                             }
                         },
-                        label = { Text(range.label, style = MaterialTheme.typography.labelSmall) },
+                        label = { Text(rangeLabel, style = MaterialTheme.typography.labelSmall) },
                         colors = FilterChipDefaults.filterChipColors(
                             selectedContainerColor = MaterialTheme.colorScheme.primaryContainer,
                             selectedLabelColor = MaterialTheme.colorScheme.onPrimaryContainer
@@ -120,7 +127,7 @@ internal fun DistributionChartSection(
 
             if (bars.isEmpty()) {
                 Text(
-                    "暂无数据",
+                    stringResource(R.string.common_no_data),
                     color = MaterialTheme.colorScheme.outline,
                     modifier = Modifier.padding(vertical = 24.dp)
                 )
@@ -196,12 +203,12 @@ internal fun HourlyDistributionSection(
                 ) {
                     Icon(
                         imageVector = Icons.Default.Schedule,
-                        contentDescription = "时段分布",
+                        contentDescription = stringResource(R.string.stats_distribution_time_content_desc),
                         tint = MaterialTheme.colorScheme.primary,
                         modifier = Modifier.size(20.dp)
                     )
                     Text(
-                        text = "时段分布 (0-24点)",
+                        text = stringResource(R.string.stats_distribution_time),
                         style = MaterialTheme.typography.titleMedium,
                         fontWeight = FontWeight.Bold
                     )
@@ -225,7 +232,7 @@ internal fun HourlyDistributionSection(
             Spacer(modifier = Modifier.height(16.dp))
 
             if (bars.isEmpty()) {
-                Text("暂无数据", color = MaterialTheme.colorScheme.outline)
+                Text(stringResource(R.string.common_no_data), color = MaterialTheme.colorScheme.outline)
             } else {
                 StackedBarChart(
                     bars = bars,

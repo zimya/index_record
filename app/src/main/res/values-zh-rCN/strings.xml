@@ -1,0 +1,199 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">小茵记录</string>
+    <string name="app_description">记录知乎、豆瓣、X、Threads、Reddit 和百度贴吧的浏览内容</string>
+
+    <!-- Navigation -->
+    <string name="nav_home">首页</string>
+    <string name="nav_stats">统计</string>
+    <string name="nav_settings">设置</string>
+
+    <!-- Common -->
+    <string name="common_back">返回</string>
+    <string name="common_close">关闭</string>
+    <string name="common_cancel">取消</string>
+    <string name="common_next">下一步</string>
+    <string name="common_clear">清除</string>
+    <string name="common_retry">重试</string>
+    <string name="common_retrying">正在重试…</string>
+    <string name="common_loading">正在加载…</string>
+    <string name="common_no_data">暂无数据</string>
+    <string name="common_unknown_author">作者未知</string>
+    <string name="common_unknown_time">发布时间未知</string>
+    <string name="common_unknown_platform">平台未知</string>
+    <string name="common_unknown_type">类型未知</string>
+    <string name="common_author_prefix">作者: </string>
+    <string name="common_expand">展开</string>
+    <string name="common_collapse">收起</string>
+    <string name="untitled">无标题</string>
+    <string name="untitled_record">未记录标题</string>
+
+    <!-- Home & Search & Filter -->
+    <string name="search_placeholder">搜索内容、作者、平台...</string>
+    <string name="home_empty_prompt">暂无记录，去刷刷社交网络吧！</string>
+    <string name="home_empty_search">没有找到匹配的记录</string>
+    <string name="filter_title">过滤器</string>
+    <string name="filter_time">时间</string>
+    <string name="filter_time_start">开始：%1$s</string>
+    <string name="filter_time_end">结束：%1$s</string>
+    <string name="filter_time_unlimited">不限</string>
+    <string name="filter_type">类型</string>
+    <string name="filter_app">应用</string>
+    <string name="filter_clear">清除</string>
+    <string name="filter_apply">确定</string>
+    <string name="filter_select_all">全选</string>
+    <string name="filter_select_invert">反选</string>
+    <string name="filter_select_reset">重置</string>
+    <string name="filter_open">打开过滤器</string>
+    <string name="filter_close">关闭过滤器</string>
+    <string name="sync_hint_loaded">已加载 %1$d 条内容</string>
+    <string name="sync_hint_empty">暂未收到新内容</string>
+    <string name="sync_retry_pending">待重试：剩余 %1$d 条原始数据已保留</string>
+    <string name="sync_completed">同步完成：本轮已加载 %1$d 条</string>
+    <string name="sync_in_progress_with_pending">同步中：剩余 %1$d 条 · 本轮已加载 %2$d 条</string>
+    <string name="sync_waiting_process">等待处理：剩余 %1$d 条 · 本轮已加载 %2$d 条</string>
+    <string name="sync_in_progress_waiting_more">同步中：本轮已加载 %1$d 条 · 等待后续数据…</string>
+
+    <!-- Settings -->
+    <string name="settings_title">设置</string>
+    <string name="settings_section_appearance">外观</string>
+    <string name="settings_theme">主题</string>
+    <string name="settings_theme_system">跟随系统</string>
+    <string name="settings_theme_light">明亮</string>
+    <string name="settings_theme_dark">暗黑</string>
+    <string name="settings_language">语言</string>
+    <string name="settings_language_system">跟随系统</string>
+    <string name="settings_language_zh_cn">简体中文</string>
+    <string name="settings_language_zh_tw">繁體中文</string>
+    <string name="settings_language_en">English</string>
+    <string name="settings_collapse_multiple">多条目默认收起</string>
+    <string name="settings_section_stats">统计</string>
+    <string name="settings_include_replies_stats">统计回复和评论</string>
+    <string name="settings_include_replies_stats_desc">开启后将回复和评论纳入本地条目、字数、分布和连续天数统计。</string>
+    <string name="settings_section_record">记录</string>
+    <string name="settings_tweet_record_mode">记录推文的形式</string>
+    <string name="settings_weibo_record_mode">记录微博的形式</string>
+    <string name="settings_threads_record_mode">记录 Threads 的形式</string>
+    <string name="settings_reddit_record_mode">记录 Reddit 的形式</string>
+    <string name="settings_mode_push">推送</string>
+    <string name="settings_mode_read">阅读</string>
+
+    <!-- LSPosed Card -->
+    <string name="lsposed_active">%1$s 已激活</string>
+    <string name="lsposed_inactive">LSPosed 模块未激活</string>
+    <string name="lsposed_checking">正在检测模块状态...</string>
+    <string name="lsposed_active_scopes">已激活 %1$d 个作用域%2$s</string>
+    <string name="lsposed_inactive_tip">请在 LSPosed 管理器中启用模块并勾选目标应用</string>
+    <string name="lsposed_connecting">正在连接框架服务...</string>
+    <string name="lsposed_expand_scopes">展开作用域</string>
+    <string name="lsposed_collapse_scopes">收起作用域</string>
+    <string name="lsposed_status_activated">已激活</string>
+    <string name="lsposed_status_unactivated">未激活</string>
+
+    <!-- Stats -->
+    <string name="stats_title">统计</string>
+    <string name="stats_loading">正在加载统计…</string>
+    <string name="stats_loading_content_desc">正在加载统计</string>
+    <string name="stats_reloading_with_previous">正在重新读取统计，暂时显示上次成功结果…</string>
+    <string name="stats_error_previous_hint">当前显示上次成功的统计及其统计范围，可能不是最新结果。</string>
+    <string name="stats_error_no_stats_hint">尚未成功读取统计，暂不展示数字和图表。</string>
+    <string name="stats_auto_recover_hint">可手动重试；本地数据更新后也会自动尝试恢复。</string>
+    <string name="stats_retry_button">重试读取统计</string>
+    <string name="stats_scope_with_replies">统计范围：主内容及已阅读的回复、评论。按每次阅读的时间与快照统计，重复阅读也计数。</string>
+    <string name="stats_scope_main_only">统计范围：仅主内容，不含回复和评论。按每次阅读的时间与快照统计，重复阅读也计数。</string>
+    <string name="stats_today_reading">今日阅读</string>
+    <string name="stats_checked_in">已打卡</string>
+    <string name="stats_pending_read">待阅读</string>
+    <string name="stats_word_count">阅读字数</string>
+    <string name="stats_unit_words">" 字"</string>
+    <string name="stats_record_count">阅读条目</string>
+    <string name="stats_unit_records">" 条"</string>
+    <string name="stats_total_records">总阅读</string>
+    <string name="stats_total_words">总字数</string>
+    <string name="stats_current_streak">连续打卡</string>
+    <string name="stats_longest_streak">最长连续</string>
+    <string name="stats_unit_days">" 天"</string>
+    <string name="stats_heatmap_title">最近 %1$d 周阅读热力图</string>
+    <string name="stats_heatmap_content_desc">热力图</string>
+    <string name="stats_distribution_records">条目统计分布</string>
+    <string name="stats_distribution_records_content_desc">条目分布</string>
+    <string name="stats_distribution_total">总量 %1$d 条</string>
+    <string name="stats_distribution_time">时段分布</string>
+    <string name="stats_distribution_time_content_desc">时段分布</string>
+    <string name="stats_chart_no_record_period">此时段无阅读记录</string>
+    <string name="stats_range_all">全部</string>
+    <string name="stats_range_year">近一年</string>
+    <string name="stats_range_month">近一月</string>
+    <string name="stats_range_week">近一周</string>
+    <string name="stats_other_app">其他</string>
+    <string name="stats_chart_count_format">%1$s: %2$d 条 (%3$s%%)</string>
+
+    <!-- Details -->
+    <string name="detail_reading_local">正在读取本地记录…</string>
+    <string name="detail_local_recorded_count">本地已记录 %1$d 条</string>
+    <string name="detail_history_btn">历史</string>
+    <string name="detail_history_desc">查看此记录的历史快照</string>
+    <string name="detail_history_title">历史快照</string>
+    <string name="detail_history_diff_title">快照差异 · 旧 → 新</string>
+    <string name="detail_history_only_diff">只看差异</string>
+    <string name="detail_history_show_all">显示全部</string>
+    <string name="detail_history_no_content">此快照未缓存正文</string>
+    <string name="detail_history_content_same">正文与当前内容一致</string>
+    <string name="detail_history_snapshot_time">快照时间：%1$s</string>
+    <string name="detail_history_restore">还原此快照</string>
+    <string name="detail_comments_more_uncollected">平台仍有更多回复未采集</string>
+    <string name="detail_comments_sort_engagement">按互动排序</string>
+    <string name="detail_comments_sort_latest">最新</string>
+    <string name="detail_comments_sort_agree">按赞同</string>
+    <string name="detail_comments_orphan_no_parent">孤立分支 · 父节点关系未记录</string>
+    <string name="detail_comments_orphan_missing_parent">孤立分支 · 回复对象本地缺失：%1$s</string>
+    <string name="detail_comments_orphan_invalid">孤立分支 · 父回复关系异常</string>
+    <string name="detail_question_title">问题详情</string>
+    <string name="detail_question_no_title">（未缓存题目）</string>
+    <string name="detail_question_no_excerpt">（问题详情未缓存）</string>
+    <string name="detail_question_answers">回答 (%1$d)</string>
+    <string name="detail_question_answer_not_cached">未缓存该回答，无法展开</string>
+    <string name="detail_tieba_first_floor">1 楼 · 首楼</string>
+    <string name="detail_tieba_floor_num">%1$d 楼</string>
+    <string name="detail_tieba_floor_unrecorded">楼号未记录</string>
+    <string name="detail_tieba_subfloor_owner">楼中楼 · 层主</string>
+    <string name="detail_tieba_subfloor_reply">楼中楼回复</string>
+    <string name="detail_tieba_main_post">贴吧 · 主帖</string>
+    <string name="detail_tieba_subfloor_detail">贴吧 · 楼中楼回复</string>
+    <string name="detail_tieba_floor_detail">贴吧 · 楼层详情</string>
+    <string name="detail_tieba_body_unrecorded">正文尚未记录</string>
+    <string name="detail_tieba_reply_to">回复 %1$s</string>
+    <string name="detail_tieba_view_all_replies">查看全部已记录回复</string>
+    <string name="detail_subject_empty_title">暂无相关短评或讨论</string>
+    <string name="detail_subject_empty_desc">在豆瓣 App 中浏览该条目的短评、长评或讨论帖子即可自动收录归档</string>
+    <string name="detail_subject_rating">豆瓣评分</string>
+    <string name="detail_subject_rating_count">%1$.1f万人评价</string>
+
+    <!-- Platform and Type UI labels -->
+    <string name="platform_zhihu">知乎</string>
+    <string name="platform_douban">豆瓣</string>
+    <string name="platform_tieba">贴吧</string>
+    <string name="platform_twitter">X</string>
+    <string name="platform_threads">Threads</string>
+    <string name="platform_reddit">Reddit</string>
+    <string name="platform_weibo">微博</string>
+    <string name="platform_weibo_intl">微博国际版</string>
+
+    <string name="type_question">问题</string>
+    <string name="type_answer">回答</string>
+    <string name="type_article">文章</string>
+    <string name="type_pin">想法</string>
+    <string name="type_comment">评论</string>
+    <string name="type_lou">主帖</string>
+    <string name="type_thread">帖子</string>
+    <string name="type_floor">楼层</string>
+    <string name="type_topic">帖子</string>
+    <string name="type_post">帖子</string>
+    <string name="type_review">长评</string>
+    <string name="type_interest">短评</string>
+    <string name="type_subject">条目</string>
+    <string name="type_tweet">推文</string>
+    <string name="type_status">微博</string>
+    <string name="type_subfloor">楼中楼</string>
+    <string name="type_reply">回复</string>
+</resources>

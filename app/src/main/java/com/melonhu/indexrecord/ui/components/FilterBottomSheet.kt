@@ -32,7 +32,9 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import com.melonhu.indexrecord.R
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.layout.fillMaxHeight
@@ -94,22 +96,23 @@ fun FilterBottomSheet(
                     .weight(1f)
                     .verticalScroll(scrollState)
             ) {
-                Text("过滤器", style = MaterialTheme.typography.titleMedium)
+                Text(stringResource(R.string.filter_title), style = MaterialTheme.typography.titleMedium)
                 Spacer(modifier = Modifier.height(12.dp))
 
-                Text("时间", style = MaterialTheme.typography.labelLarge, color = MaterialTheme.colorScheme.onSurface)
+                Text(stringResource(R.string.filter_time), style = MaterialTheme.typography.labelLarge, color = MaterialTheme.colorScheme.onSurface)
                 Spacer(modifier = Modifier.height(8.dp))
                 Row(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.spacedBy(12.dp)
                 ) {
+                    val unlimitedText = stringResource(R.string.filter_time_unlimited)
                     OutlinedButton(
                         onClick = {
                             pickingStart = true
                             showDatePicker = true
                         },
                         modifier = Modifier.weight(1f)
-                    ) { Text("开始：$startText") }
+                    ) { Text(stringResource(R.string.filter_time_start, startText ?: unlimitedText)) }
 
                     OutlinedButton(
                         onClick = {
@@ -117,15 +120,15 @@ fun FilterBottomSheet(
                             showDatePicker = true
                         },
                         modifier = Modifier.weight(1f)
-                    ) { Text("结束：$endText") }
+                    ) { Text(stringResource(R.string.filter_time_end, endText ?: unlimitedText)) }
                 }
 
                 Spacer(modifier = Modifier.height(12.dp))
 
-                Text("类型", style = MaterialTheme.typography.labelLarge, color = MaterialTheme.colorScheme.onSurface)
+                Text(stringResource(R.string.filter_type), style = MaterialTheme.typography.labelLarge, color = MaterialTheme.colorScheme.onSurface)
                 Spacer(modifier = Modifier.height(8.dp))
                 if (availableTypes.isEmpty()) {
-                    Text("暂无可筛选的类型", color = MaterialTheme.colorScheme.outline)
+                    Text(stringResource(R.string.common_no_data), color = MaterialTheme.colorScheme.outline)
                 } else {
                     FlowRow(
                         modifier = Modifier.fillMaxWidth(),
@@ -147,10 +150,10 @@ fun FilterBottomSheet(
 
                 Spacer(modifier = Modifier.height(12.dp))
 
-                Text("宿主 App", style = MaterialTheme.typography.labelLarge, color = MaterialTheme.colorScheme.onSurface)
+                Text(stringResource(R.string.filter_app), style = MaterialTheme.typography.labelLarge, color = MaterialTheme.colorScheme.onSurface)
                 Spacer(modifier = Modifier.height(8.dp))
                 if (availableApps.isEmpty()) {
-                    Text("暂无可筛选的 App（需要新记录写入后才会出现）", color = MaterialTheme.colorScheme.outline)
+                    Text(stringResource(R.string.common_no_data), color = MaterialTheme.colorScheme.outline)
                 } else {
                     FlowRow(
                         modifier = Modifier.fillMaxWidth(),
@@ -181,12 +184,12 @@ fun FilterBottomSheet(
                 OutlinedButton(
                     onClick = onClear,
                     modifier = Modifier.weight(1f)
-                ) { Text("清空") }
+                ) { Text(stringResource(R.string.filter_clear)) }
 
                 Button(
                     onClick = { onApply(startMillis, endMillis, selectedApps, selectedTypes) },
                     modifier = Modifier.weight(1f)
-                ) { Text("应用") }
+                ) { Text(stringResource(R.string.filter_apply)) }
             }
 
             Spacer(modifier = Modifier.height(16.dp))
@@ -222,10 +225,10 @@ fun FilterBottomSheet(
                             true
                         ).show()
                     }
-                ) { Text("下一步") }
+                ) { Text(stringResource(R.string.common_next)) }
             },
             dismissButton = {
-                TextButton(onClick = { showDatePicker = false }) { Text("取消") }
+                TextButton(onClick = { showDatePicker = false }) { Text(stringResource(R.string.common_cancel)) }
             }
         ) {
             DatePicker(state = dateState)
@@ -268,8 +271,8 @@ private fun FilterChipWithCheck(
     )
 }
 
-private fun formatDateTime(millis: Long?): String {
-    if (millis == null) return "不限"
+private fun formatDateTime(millis: Long?): String? {
+    if (millis == null) return null
     val sdf = SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.getDefault())
     return sdf.format(Date(millis))
 }

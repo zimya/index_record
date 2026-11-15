@@ -12,6 +12,8 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import com.melonhu.indexrecord.ui.theme.ThemeMode
+import com.melonhu.indexrecord.settings.AppLanguage
+import com.melonhu.indexrecord.settings.LocaleHelper
 import com.melonhu.indexrecord.settings.RecordSettings
 import com.melonhu.indexrecord.settings.RedditRecordMode
 import com.melonhu.indexrecord.settings.TweetRecordMode
@@ -105,6 +107,13 @@ class SettingsViewModel(application: Application) : AndroidViewModel(application
 
     fun setCollapseMultipleItems(enabled: Boolean) {
         RecordSettings.setCollapseMultipleItems(enabled)
+    }
+
+    val appLanguage: StateFlow<AppLanguage> = RecordSettings.appLanguage
+
+    fun setAppLanguage(language: AppLanguage) {
+        val app = getApplication<Application>()
+        LocaleHelper.setApplicationLanguage(app, language)
     }
 
     fun setRedditRecordMode(mode: RedditRecordMode) {

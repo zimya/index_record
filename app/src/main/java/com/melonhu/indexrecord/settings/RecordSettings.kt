@@ -79,12 +79,29 @@ object RecordSettings {
     private const val COLLAPSE_MULTIPLE_ITEMS = "collapse_multiple_items"
     private val _collapseMultipleItems = MutableStateFlow(true)
     val collapseMultipleItems = _collapseMultipleItems.asStateFlow()
+    private const val APP_LANGUAGE = "app_language"
+    private val _appLanguage = MutableStateFlow(AppLanguage.SYSTEM)
+    val appLanguage = _appLanguage.asStateFlow()
     private lateinit var prefs: SharedPreferences
 
     fun init(context: Context) {
-        prefs = context.applicationContext.getSharedPreferences("settings", Context.MODE_PRIVATE)
+        val appContext = context.applicationContext ?: context
+        prefs = appContext.getSharedPreferences("settings", Context.MODE_PRIVATE)
         _collapseMultipleItems.value = prefs.getBoolean(COLLAPSE_MULTIPLE_ITEMS, true)
         _includeRepliesAndCommentsInStats.value = prefs.getBoolean(INCLUDE_REPLIES_AND_COMMENTS_IN_STATS, false)
+        _appLanguage.value = AppLanguage.fromCode(prefs.getString(APP_LANGUAGE, ""))
+    }
+
+    fun getLanguage(context: Context): AppLanguage {
+        if (!::prefs.isInitialized) {
+            init(context)
+        }
+        return _appLanguage.value
+    }
+
+    fun setAppLanguage(language: AppLanguage) {
+        prefs.edit().putString(APP_LANGUAGE, language.code).apply()
+        _appLanguage.value = language
     }
 
     fun setIncludeRepliesAndCommentsInStats(enabled: Boolean) {

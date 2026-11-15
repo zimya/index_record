@@ -24,6 +24,8 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.saveable.rememberSaveableStateHolder
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
+import com.melonhu.indexrecord.R
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -44,8 +46,8 @@ fun MainScreen() {
                             selectedTab = 0
                         }
                     },
-                    icon = { androidx.compose.material3.Icon(Icons.Default.Home, contentDescription = "Home") },
-                    label = { androidx.compose.material3.Text("首页") }
+                    icon = { androidx.compose.material3.Icon(Icons.Default.Home, contentDescription = stringResource(R.string.nav_home)) },
+                    label = { androidx.compose.material3.Text(stringResource(R.string.nav_home)) }
                 )
                 NavigationBarItem(
                     selected = selectedTab == 1,
@@ -55,8 +57,8 @@ fun MainScreen() {
                             selectedTab = 1
                         }
                     },
-                    icon = { androidx.compose.material3.Icon(Icons.Default.BarChart, contentDescription = "Stats") },
-                    label = { androidx.compose.material3.Text("统计") }
+                    icon = { androidx.compose.material3.Icon(Icons.Default.BarChart, contentDescription = stringResource(R.string.nav_stats)) },
+                    label = { androidx.compose.material3.Text(stringResource(R.string.nav_stats)) }
                 )
                 NavigationBarItem(
                     selected = selectedTab == 2,
@@ -66,8 +68,8 @@ fun MainScreen() {
                             selectedTab = 2
                         }
                     },
-                    icon = { androidx.compose.material3.Icon(Icons.Default.Settings, contentDescription = "Settings") },
-                    label = { androidx.compose.material3.Text("设置") }
+                    icon = { androidx.compose.material3.Icon(Icons.Default.Settings, contentDescription = stringResource(R.string.nav_settings)) },
+                    label = { androidx.compose.material3.Text(stringResource(R.string.nav_settings)) }
                 )
             }
         }

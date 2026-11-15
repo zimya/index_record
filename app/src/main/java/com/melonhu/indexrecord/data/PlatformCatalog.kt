@@ -1,5 +1,7 @@
 package com.melonhu.indexrecord.data
 
+import com.melonhu.indexrecord.R
+
 /** Shared platform vocabulary. Capture protocols and UI colors deliberately stay outside this catalog. */
 object PlatformCatalog {
     data class Platform(val id: String, val name: String, val defaultPackage: String)
@@ -51,5 +53,37 @@ object PlatformCatalog {
         "thread" -> "Threads 帖子"
         "tweet" -> "X 推文"
         else -> typeLabel("", type)
+    }
+
+    fun platformNameRes(platform: String): Int? = when (platform.lowercase()) {
+        "zhihu" -> R.string.platform_zhihu
+        "douban" -> R.string.platform_douban
+        "tieba" -> R.string.platform_tieba
+        "twitter" -> R.string.platform_twitter
+        "threads" -> R.string.platform_threads
+        "reddit" -> R.string.platform_reddit
+        "weibo" -> R.string.platform_weibo
+        else -> null
+    }
+
+    fun typeNameRes(platform: String, type: String): Int? = when {
+        type == "comment" && platform == "tieba" -> R.string.type_subfloor
+        type == "comment" && platform in setOf("reddit", "threads") -> R.string.type_reply
+        type == "question" -> R.string.type_question
+        type == "answer" -> R.string.type_answer
+        type == "article" -> R.string.type_article
+        type == "pin" -> R.string.type_pin
+        type == "comment" -> R.string.type_comment
+        type == "lou" -> R.string.type_lou
+        type == "thread" -> R.string.type_thread
+        type == "floor" -> R.string.type_floor
+        type == "topic" -> R.string.type_topic
+        type == "post" -> R.string.type_post
+        type == "review" -> R.string.type_review
+        type == "interest" -> R.string.type_interest
+        type == "subject" -> R.string.type_subject
+        type == "tweet" -> R.string.type_tweet
+        type == "status" -> R.string.type_status
+        else -> null
     }
 }

@@ -1,0 +1,199 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Index Record</string>
+    <string name="app_description">Record browsing content from Zhihu, Douban, X, Threads, Reddit, and Baidu Tieba</string>
+
+    <!-- Navigation -->
+    <string name="nav_home">Home</string>
+    <string name="nav_stats">Stats</string>
+    <string name="nav_settings">Settings</string>
+
+    <!-- Common -->
+    <string name="common_back">Back</string>
+    <string name="common_close">Close</string>
+    <string name="common_cancel">Cancel</string>
+    <string name="common_next">Next</string>
+    <string name="common_clear">Clear</string>
+    <string name="common_retry">Retry</string>
+    <string name="common_retrying">Retrying…</string>
+    <string name="common_loading">Loading…</string>
+    <string name="common_no_data">No data</string>
+    <string name="common_unknown_author">Unknown Author</string>
+    <string name="common_unknown_time">Unknown Time</string>
+    <string name="common_unknown_platform">Unknown Platform</string>
+    <string name="common_unknown_type">Unknown Type</string>
+    <string name="common_author_prefix">Author: </string>
+    <string name="common_expand">Expand</string>
+    <string name="common_collapse">Collapse</string>
+    <string name="untitled">Untitled</string>
+    <string name="untitled_record">Untitled Record</string>
+
+    <!-- Home & Search & Filter -->
+    <string name="search_placeholder">Search content, author, platform...</string>
+    <string name="home_empty_prompt">No records yet, browse your social feeds!</string>
+    <string name="home_empty_search">No matching records found</string>
+    <string name="filter_title">Filters</string>
+    <string name="filter_time">Time</string>
+    <string name="filter_time_start">Start: %1$s</string>
+    <string name="filter_time_end">End: %1$s</string>
+    <string name="filter_time_unlimited">Any</string>
+    <string name="filter_type">Type</string>
+    <string name="filter_app">App</string>
+    <string name="filter_clear">Clear</string>
+    <string name="filter_apply">Apply</string>
+    <string name="filter_select_all">Select All</string>
+    <string name="filter_select_invert">Invert</string>
+    <string name="filter_select_reset">Reset</string>
+    <string name="filter_open">Open Filters</string>
+    <string name="filter_close">Close Filters</string>
+    <string name="sync_hint_loaded">Loaded %1$d items</string>
+    <string name="sync_hint_empty">No new content received</string>
+    <string name="sync_retry_pending">Pending retry: %1$d raw items retained</string>
+    <string name="sync_completed">Sync complete: %1$d items loaded in this round</string>
+    <string name="sync_in_progress_with_pending">Syncing: %1$d remaining · %2$d items loaded</string>
+    <string name="sync_waiting_process">Processing: %1$d remaining · %2$d items loaded</string>
+    <string name="sync_in_progress_waiting_more">Syncing: %1$d items loaded · waiting for more…</string>
+
+    <!-- Settings -->
+    <string name="settings_title">Settings</string>
+    <string name="settings_section_appearance">Appearance</string>
+    <string name="settings_theme">Theme</string>
+    <string name="settings_theme_system">System</string>
+    <string name="settings_theme_light">Light</string>
+    <string name="settings_theme_dark">Dark</string>
+    <string name="settings_language">Language</string>
+    <string name="settings_language_system">System Default</string>
+    <string name="settings_language_zh_cn">简体中文</string>
+    <string name="settings_language_zh_tw">繁體中文</string>
+    <string name="settings_language_en">English</string>
+    <string name="settings_collapse_multiple">Collapse multiple items by default</string>
+    <string name="settings_section_stats">Statistics</string>
+    <string name="settings_include_replies_stats">Include replies and comments</string>
+    <string name="settings_include_replies_stats_desc">Count replies and comments in local records, word counts, distribution, and streaks.</string>
+    <string name="settings_section_record">Recording</string>
+    <string name="settings_tweet_record_mode">Tweet recording mode</string>
+    <string name="settings_weibo_record_mode">Weibo recording mode</string>
+    <string name="settings_threads_record_mode">Threads recording mode</string>
+    <string name="settings_reddit_record_mode">Reddit recording mode</string>
+    <string name="settings_mode_push">Push</string>
+    <string name="settings_mode_read">Read</string>
+
+    <!-- LSPosed Card -->
+    <string name="lsposed_active">%1$s Active</string>
+    <string name="lsposed_inactive">LSPosed module inactive</string>
+    <string name="lsposed_checking">Checking module status...</string>
+    <string name="lsposed_active_scopes">%1$d active scopes%2$s</string>
+    <string name="lsposed_inactive_tip">Please enable module and select target apps in LSPosed Manager</string>
+    <string name="lsposed_connecting">Connecting to framework service...</string>
+    <string name="lsposed_expand_scopes">Expand scopes</string>
+    <string name="lsposed_collapse_scopes">Collapse scopes</string>
+    <string name="lsposed_status_activated">Active</string>
+    <string name="lsposed_status_unactivated">Inactive</string>
+
+    <!-- Stats -->
+    <string name="stats_title">Statistics</string>
+    <string name="stats_loading">Loading statistics…</string>
+    <string name="stats_loading_content_desc">Loading statistics</string>
+    <string name="stats_reloading_with_previous">Reloading statistics, displaying previous result…</string>
+    <string name="stats_error_previous_hint">Displaying previous successful statistics; may not be up to date.</string>
+    <string name="stats_error_no_stats_hint">Statistics not yet loaded; numbers and charts are hidden.</string>
+    <string name="stats_auto_recover_hint">You can retry manually; it will auto-recover on local data update.</string>
+    <string name="stats_retry_button">Retry Loading Statistics</string>
+    <string name="stats_scope_with_replies">Scope: Primary content and read replies/comments. Counted per reading time and snapshot; repeated readings are counted.</string>
+    <string name="stats_scope_main_only">Scope: Primary content only, excluding replies and comments. Counted per reading time and snapshot; repeated readings are counted.</string>
+    <string name="stats_today_reading">Today\'s Reading</string>
+    <string name="stats_checked_in">Checked in</string>
+    <string name="stats_pending_read">Pending</string>
+    <string name="stats_word_count">Words Read</string>
+    <string name="stats_unit_words">" words"</string>
+    <string name="stats_record_count">Records Read</string>
+    <string name="stats_unit_records">" items"</string>
+    <string name="stats_total_records">Total Records</string>
+    <string name="stats_total_words">Total Words</string>
+    <string name="stats_current_streak">Current Streak</string>
+    <string name="stats_longest_streak">Longest Streak</string>
+    <string name="stats_unit_days">" days"</string>
+    <string name="stats_heatmap_title">Reading Heatmap (Last %1$d Weeks)</string>
+    <string name="stats_heatmap_content_desc">Heatmap</string>
+    <string name="stats_distribution_records">Record Distribution</string>
+    <string name="stats_distribution_records_content_desc">Record distribution</string>
+    <string name="stats_distribution_total">Total %1$d items</string>
+    <string name="stats_distribution_time">Hourly Distribution</string>
+    <string name="stats_distribution_time_content_desc">Hourly distribution</string>
+    <string name="stats_chart_no_record_period">No reading records during this period</string>
+    <string name="stats_range_all">All</string>
+    <string name="stats_range_year">Past Year</string>
+    <string name="stats_range_month">Past Month</string>
+    <string name="stats_range_week">Past Week</string>
+    <string name="stats_other_app">Other</string>
+    <string name="stats_chart_count_format">%1$s: %2$d items (%3$s%%)</string>
+
+    <!-- Details -->
+    <string name="detail_reading_local">Reading local records…</string>
+    <string name="detail_local_recorded_count">Recorded %1$d items locally</string>
+    <string name="detail_history_btn">History</string>
+    <string name="detail_history_desc">View historical snapshots of this record</string>
+    <string name="detail_history_title">Historical Snapshots</string>
+    <string name="detail_history_diff_title">Snapshot Diff · Old → New</string>
+    <string name="detail_history_only_diff">Diff only</string>
+    <string name="detail_history_show_all">Show all</string>
+    <string name="detail_history_no_content">No body cached in this snapshot</string>
+    <string name="detail_history_content_same">Body identical to current version</string>
+    <string name="detail_history_snapshot_time">Snapshot time: %1$s</string>
+    <string name="detail_history_restore">Restore this snapshot</string>
+    <string name="detail_comments_more_uncollected">More replies exist on platform but not collected</string>
+    <string name="detail_comments_sort_engagement">By Engagement</string>
+    <string name="detail_comments_sort_latest">Latest</string>
+    <string name="detail_comments_sort_agree">By Upvotes</string>
+    <string name="detail_comments_orphan_no_parent">Orphaned branch · Parent not recorded</string>
+    <string name="detail_comments_orphan_missing_parent">Orphaned branch · Missing parent: %1$s</string>
+    <string name="detail_comments_orphan_invalid">Orphaned branch · Invalid parent relation</string>
+    <string name="detail_question_title">Question Details</string>
+    <string name="detail_question_no_title">(Title not cached)</string>
+    <string name="detail_question_no_excerpt">(Question details not cached)</string>
+    <string name="detail_question_answers">Answers (%1$d)</string>
+    <string name="detail_question_answer_not_cached">Answer not cached, unable to expand</string>
+    <string name="detail_tieba_first_floor">Floor 1 · OP</string>
+    <string name="detail_tieba_floor_num">Floor %1$d</string>
+    <string name="detail_tieba_floor_unrecorded">Floor unrecorded</string>
+    <string name="detail_tieba_subfloor_owner">Sub-floor · Floor Host</string>
+    <string name="detail_tieba_subfloor_reply">Sub-floor reply</string>
+    <string name="detail_tieba_main_post">Tieba · Main Post</string>
+    <string name="detail_tieba_subfloor_detail">Tieba · Sub-floor Reply</string>
+    <string name="detail_tieba_floor_detail">Tieba · Floor Details</string>
+    <string name="detail_tieba_body_unrecorded">Body not recorded</string>
+    <string name="detail_tieba_reply_to">Reply to %1$s</string>
+    <string name="detail_tieba_view_all_replies">View all recorded replies</string>
+    <string name="detail_subject_empty_title">No reviews or discussions yet</string>
+    <string name="detail_subject_empty_desc">Browse reviews or discussions for this subject in the Douban app to archive them</string>
+    <string name="detail_subject_rating">Douban Rating</string>
+    <string name="detail_subject_rating_count">%1$.1f ratings</string>
+
+    <!-- Platform and Type UI labels -->
+    <string name="platform_zhihu">Zhihu</string>
+    <string name="platform_douban">Douban</string>
+    <string name="platform_tieba">Tieba</string>
+    <string name="platform_twitter">X</string>
+    <string name="platform_threads">Threads</string>
+    <string name="platform_reddit">Reddit</string>
+    <string name="platform_weibo">Weibo</string>
+    <string name="platform_weibo_intl">Weibo International</string>
+
+    <string name="type_question">Question</string>
+    <string name="type_answer">Answer</string>
+    <string name="type_article">Article</string>
+    <string name="type_pin">Thought</string>
+    <string name="type_comment">Comment</string>
+    <string name="type_lou">Main Post</string>
+    <string name="type_thread">Thread</string>
+    <string name="type_floor">Floor</string>
+    <string name="type_topic">Topic</string>
+    <string name="type_post">Post</string>
+    <string name="type_review">Review</string>
+    <string name="type_interest">Short Review</string>
+    <string name="type_subject">Subject</string>
+    <string name="type_tweet">Tweet</string>
+    <string name="type_status">Weibo</string>
+    <string name="type_subfloor">Sub-floor</string>
+    <string name="type_reply">Reply</string>
+</resources>

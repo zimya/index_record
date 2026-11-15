@@ -28,8 +28,10 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import com.melonhu.indexrecord.R
 
 @Composable
 private fun animateCount(
@@ -106,14 +108,14 @@ internal fun TodayReadingCard(
                         Box(contentAlignment = Alignment.Center) {
                             Icon(
                                 imageVector = Icons.AutoMirrored.Filled.MenuBook,
-                                contentDescription = "今日阅读",
+                                contentDescription = stringResource(R.string.stats_today_reading),
                                 tint = MaterialTheme.colorScheme.primary,
                                 modifier = Modifier.size(18.dp)
                             )
                         }
                     }
                     Text(
-                        text = "今日阅读",
+                        text = stringResource(R.string.stats_today_reading),
                         style = MaterialTheme.typography.titleMedium,
                         fontWeight = FontWeight.Bold,
                         color = MaterialTheme.colorScheme.onPrimaryContainer
@@ -125,7 +127,7 @@ internal fun TodayReadingCard(
                     color = MaterialTheme.colorScheme.surface.copy(alpha = 0.7f)
                 ) {
                     Text(
-                        text = if (todayRecords > 0) "已打卡" else "待阅读",
+                        text = if (todayRecords > 0) stringResource(R.string.stats_checked_in) else stringResource(R.string.stats_pending_read),
                         style = MaterialTheme.typography.labelSmall,
                         fontWeight = FontWeight.SemiBold,
                         color = if (todayRecords > 0) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.outline,
@@ -143,7 +145,7 @@ internal fun TodayReadingCard(
             ) {
                 Column {
                     Text(
-                        text = "阅读字数",
+                        text = stringResource(R.string.stats_word_count),
                         style = MaterialTheme.typography.labelMedium,
                         color = MaterialTheme.colorScheme.onPrimaryContainer.copy(alpha = 0.75f)
                     )
@@ -156,7 +158,7 @@ internal fun TodayReadingCard(
                             color = MaterialTheme.colorScheme.onPrimaryContainer
                         )
                         Text(
-                            text = " 字",
+                            text = stringResource(R.string.stats_unit_words),
                             style = MaterialTheme.typography.bodyMedium,
                             fontWeight = FontWeight.SemiBold,
                             color = MaterialTheme.colorScheme.onPrimaryContainer.copy(alpha = 0.8f),
@@ -167,7 +169,7 @@ internal fun TodayReadingCard(
 
                 Column(horizontalAlignment = Alignment.End) {
                     Text(
-                        text = "阅读条目",
+                        text = stringResource(R.string.stats_record_count),
                         style = MaterialTheme.typography.labelMedium,
                         color = MaterialTheme.colorScheme.onPrimaryContainer.copy(alpha = 0.75f)
                     )
@@ -180,7 +182,7 @@ internal fun TodayReadingCard(
                             color = MaterialTheme.colorScheme.onPrimaryContainer
                         )
                         Text(
-                            text = " 条",
+                            text = stringResource(R.string.stats_unit_records),
                             style = MaterialTheme.typography.bodyMedium,
                             fontWeight = FontWeight.SemiBold,
                             color = MaterialTheme.colorScheme.onPrimaryContainer.copy(alpha = 0.8f),
@@ -223,33 +225,37 @@ internal fun MetricsRow(
         onAnimationEnd = onAnimationEnd
     ).toInt()
 
+    val itemUnit = stringResource(R.string.stats_unit_records).trim()
+    val wordUnit = stringResource(R.string.stats_unit_words).trim()
+    val dayUnit = stringResource(R.string.stats_unit_days).trim()
+
     Row(
         modifier = Modifier.fillMaxWidth(),
         horizontalArrangement = Arrangement.spacedBy(6.dp)
     ) {
         CompactMetricCard(
             modifier = Modifier.weight(1f),
-            title = "累计条目",
+            title = stringResource(R.string.stats_total_records),
             value = formatNumber(animRecords),
-            unit = "条"
+            unit = itemUnit
         )
         CompactMetricCard(
             modifier = Modifier.weight(1f),
-            title = "累计字数",
+            title = stringResource(R.string.stats_total_words),
             value = formatCompactNumber(animWords),
-            unit = "字"
+            unit = wordUnit
         )
         CompactMetricCard(
             modifier = Modifier.weight(1f),
-            title = "连续天数",
+            title = stringResource(R.string.stats_current_streak),
             value = "$animCurrentStreak",
-            unit = "天"
+            unit = dayUnit
         )
         CompactMetricCard(
             modifier = Modifier.weight(1f),
-            title = "最高连续",
+            title = stringResource(R.string.stats_longest_streak),
             value = "$animMaxStreak",
-            unit = "天"
+            unit = dayUnit
         )
     }
 }

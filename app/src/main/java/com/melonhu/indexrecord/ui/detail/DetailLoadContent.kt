@@ -16,7 +16,9 @@ import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import com.melonhu.indexrecord.R
 import com.melonhu.indexrecord.viewmodel.DetailLoadState
 
 /** Keep feedback outside scrolling content, so errors stay actionable without shifting item keys. */
@@ -37,7 +39,7 @@ internal fun DetailLoadContent(
                     verticalArrangement = Arrangement.spacedBy(12.dp)
                 ) {
                     CircularProgressIndicator()
-                    Text("正在读取本地记录…")
+                    Text(stringResource(R.string.detail_reading_local))
                 }
             }
         } else {
@@ -55,7 +57,7 @@ internal fun DetailLoadContent(
                         )
                         if (isRetrying) CircularProgressIndicator(Modifier.size(20.dp))
                         TextButton(onClick = onRetry, enabled = !isRetrying) {
-                            Text(if (isRetrying) "正在重试…" else "重试")
+                            Text(if (isRetrying) stringResource(R.string.common_retrying) else stringResource(R.string.common_retry))
                         }
                     }
                 }

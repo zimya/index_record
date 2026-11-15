@@ -40,7 +40,7 @@ android {
         targetSdk = 34
         versionCode = getGitCommitCount()
         versionName = "0.4.0"
-        resourceConfigurations += listOf("zh", "zh-rCN", "en")
+        resourceConfigurations += listOf("zh", "zh-rCN", "zh-rTW", "zh-rHK", "en")
     }
 
     splits {

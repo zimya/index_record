@@ -22,6 +22,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.LiveRegionMode
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.liveRegion
@@ -29,6 +30,7 @@ import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.melonhu.indexrecord.R
 import com.melonhu.indexrecord.logic.DistributionRange
 import com.melonhu.indexrecord.viewmodel.StatsViewModel
 
@@ -50,7 +52,7 @@ fun StatsScreen(viewModel: StatsViewModel = viewModel()) {
             TopAppBar(
                 title = {
                     Text(
-                        "统计",
+                        stringResource(R.string.stats_title),
                         style = MaterialTheme.typography.titleLarge,
                         fontWeight = FontWeight.Bold
                     )
@@ -72,14 +74,15 @@ fun StatsScreen(viewModel: StatsViewModel = viewModel()) {
             Spacer(modifier = Modifier.height(8.dp))
 
             if (uiState.isLoading || isRetrying) {
+                val loadingDesc = stringResource(R.string.stats_loading_content_desc)
                 Column(
                     modifier = Modifier.semantics { liveRegion = LiveRegionMode.Polite }
                 ) {
                     CircularProgressIndicator(
-                        modifier = Modifier.semantics { contentDescription = "正在加载统计" }
+                        modifier = Modifier.semantics { contentDescription = loadingDesc }
                     )
                     Text(
-                        if (uiState.hasStats) "正在重新读取统计，暂时显示上次成功结果…" else "正在加载统计…",
+                        if (uiState.hasStats) stringResource(R.string.stats_reloading_with_previous) else stringResource(R.string.stats_loading),
                         modifier = Modifier.padding(vertical = 12.dp)
                     )
                 }
@@ -88,12 +91,12 @@ fun StatsScreen(viewModel: StatsViewModel = viewModel()) {
                 Column(modifier = Modifier.semantics { liveRegion = LiveRegionMode.Polite }) {
                     Text(message, color = MaterialTheme.colorScheme.error)
                     Text(
-                        if (uiState.hasStats) "当前显示上次成功的统计及其统计范围，可能不是最新结果。" else "尚未成功读取统计，暂不展示数字和图表。",
+                        if (uiState.hasStats) stringResource(R.string.stats_error_previous_hint) else stringResource(R.string.stats_error_no_stats_hint),
                         style = MaterialTheme.typography.bodySmall
                     )
-                    Text("可手动重试；本地数据更新后也会自动尝试恢复。", style = MaterialTheme.typography.bodySmall)
+                    Text(stringResource(R.string.stats_auto_recover_hint), style = MaterialTheme.typography.bodySmall)
                     Button(enabled = !isRetrying, onClick = viewModel::retry) {
-                        Text(if (isRetrying) "正在重试…" else "重试读取统计")
+                        Text(if (isRetrying) stringResource(R.string.common_retrying) else stringResource(R.string.stats_retry_button))
                     }
                     Spacer(modifier = Modifier.height(12.dp))
                 }
@@ -102,10 +105,10 @@ fun StatsScreen(viewModel: StatsViewModel = viewModel()) {
 
             Text(
                 text = if (uiState.includeRepliesAndComments) {
-                    "统计范围：主内容及已阅读的回复、评论。"
+                    stringResource(R.string.stats_scope_with_replies)
                 } else {
-                    "统计范围：仅主内容，不含回复和评论。"
-                } + "按每次阅读的时间与快照统计，重复阅读也计数。",
+                    stringResource(R.string.stats_scope_main_only)
+                },
                 style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant
             )

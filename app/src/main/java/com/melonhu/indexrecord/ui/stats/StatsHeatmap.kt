@@ -26,8 +26,10 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import com.melonhu.indexrecord.R
 import java.time.LocalDate
 
 @OptIn(ExperimentalLayoutApi::class)
@@ -56,12 +58,12 @@ internal fun HeatmapSection(
             ) {
                 Icon(
                     imageVector = Icons.Default.CalendarMonth,
-                    contentDescription = "热力图",
+                    contentDescription = stringResource(R.string.stats_heatmap_content_desc),
                     tint = MaterialTheme.colorScheme.primary,
                     modifier = Modifier.size(20.dp)
                 )
                 Text(
-                    text = "最近 $weeks 周阅读热力图",
+                    text = stringResource(R.string.stats_heatmap_title, weeks),
                     style = MaterialTheme.typography.titleMedium,
                     fontWeight = FontWeight.Bold
                 )
@@ -70,7 +72,7 @@ internal fun HeatmapSection(
             Spacer(modifier = Modifier.height(14.dp))
 
             if (columns.isEmpty()) {
-                Text("暂无数据", color = MaterialTheme.colorScheme.outline)
+                Text(stringResource(R.string.common_no_data), color = MaterialTheme.colorScheme.outline)
             } else {
                 Row(
                     modifier = Modifier

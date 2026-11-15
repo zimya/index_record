@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.material3.Switch
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.res.stringResource
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -37,6 +38,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.melonhu.indexrecord.R
+import com.melonhu.indexrecord.settings.AppLanguage
 import com.melonhu.indexrecord.settings.RedditRecordMode
 import com.melonhu.indexrecord.settings.TweetRecordMode
 import com.melonhu.indexrecord.settings.WeiboRecordMode
@@ -49,6 +52,7 @@ import com.melonhu.indexrecord.viewmodel.SettingsViewModel
 @Composable
 fun SettingsScreen(viewModel: SettingsViewModel = viewModel()) {
     val themeMode by viewModel.themeMode.collectAsState()
+    val appLanguage by viewModel.appLanguage.collectAsState()
     val tweetRecordMode by viewModel.tweetRecordMode.collectAsState()
     val weiboRecordMode by viewModel.weiboRecordMode.collectAsState()
     val threadsRecordMode by viewModel.threadsRecordMode.collectAsState()
@@ -61,7 +65,7 @@ fun SettingsScreen(viewModel: SettingsViewModel = viewModel()) {
         contentWindowInsets = WindowInsets(0, 0, 0, 0),
         topBar = {
             TopAppBar(
-                title = { Text("设置") },
+                title = { Text(stringResource(R.string.settings_title)) },
                 colors = TopAppBarDefaults.topAppBarColors(
                     containerColor = Color.Transparent,
                     titleContentColor = MaterialTheme.colorScheme.primary,
@@ -79,64 +83,86 @@ fun SettingsScreen(viewModel: SettingsViewModel = viewModel()) {
             Spacer(modifier = Modifier.height(12.dp))
             LsposedStatusCard(status = lsposedStatus)
             Spacer(modifier = Modifier.height(12.dp))
-            SettingsSectionTitle("外观")
+            SettingsSectionTitle(stringResource(R.string.settings_section_appearance))
             SettingsDropdownRow(
-                title = "主题",
+                title = stringResource(R.string.settings_theme),
                 selected = themeMode,
                 options = listOf(ThemeMode.SYSTEM, ThemeMode.LIGHT, ThemeMode.DARK),
                 label = {
                     when (it) {
-                        ThemeMode.SYSTEM -> "跟随系统"
-                        ThemeMode.LIGHT -> "明亮"
-                        ThemeMode.DARK -> "暗黑"
+                        ThemeMode.SYSTEM -> stringResource(R.string.settings_theme_system)
+                        ThemeMode.LIGHT -> stringResource(R.string.settings_theme_light)
+                        ThemeMode.DARK -> stringResource(R.string.settings_theme_dark)
                     }
                 },
                 onSelect = viewModel::setThemeMode
             )
 
+            SettingsDropdownRow(
+                title = stringResource(R.string.settings_language),
+                selected = appLanguage,
+                options = listOf(
+                    AppLanguage.SYSTEM,
+                    AppLanguage.SIMPLIFIED_CHINESE,
+                    AppLanguage.TRADITIONAL_CHINESE,
+                    AppLanguage.ENGLISH
+                ),
+                label = {
+                    when (it) {
+                        AppLanguage.SYSTEM -> stringResource(R.string.settings_language_system)
+                        AppLanguage.SIMPLIFIED_CHINESE -> stringResource(R.string.settings_language_zh_cn)
+                        AppLanguage.TRADITIONAL_CHINESE -> stringResource(R.string.settings_language_zh_tw)
+                        AppLanguage.ENGLISH -> stringResource(R.string.settings_language_en)
+                    }
+                },
+                onSelect = viewModel::setAppLanguage
+            )
+
             SettingsSwitchRow(
-                title = "多条目默认收起",
+                title = stringResource(R.string.settings_collapse_multiple),
                 checked = collapseMultipleItems,
                 onCheckedChange = viewModel::setCollapseMultipleItems
             )
 
             Spacer(modifier = Modifier.height(24.dp))
-            SettingsSectionTitle("统计")
+            SettingsSectionTitle(stringResource(R.string.settings_section_stats))
             SettingsSwitchRow(
-                title = "统计回复和评论",
-                description = "开启后将回复和评论纳入本地条目、字数、分布和连续天数统计。",
+                title = stringResource(R.string.settings_include_replies_stats),
+                description = stringResource(R.string.settings_include_replies_stats_desc),
                 checked = includeRepliesAndCommentsInStats,
                 onCheckedChange = viewModel::setIncludeRepliesAndCommentsInStats
             )
 
             Spacer(modifier = Modifier.height(24.dp))
-            SettingsSectionTitle("记录")
+            SettingsSectionTitle(stringResource(R.string.settings_section_record))
+            val modePushLabel = stringResource(R.string.settings_mode_push)
+            val modeReadLabel = stringResource(R.string.settings_mode_read)
             SettingsDropdownRow(
-                title = "记录推文的形式",
+                title = stringResource(R.string.settings_tweet_record_mode),
                 selected = tweetRecordMode,
                 options = listOf(TweetRecordMode.PUSH, TweetRecordMode.READ),
-                label = { if (it == TweetRecordMode.PUSH) "推送" else "阅读" },
+                label = { if (it == TweetRecordMode.PUSH) modePushLabel else modeReadLabel },
                 onSelect = viewModel::setTweetRecordMode
             )
             SettingsDropdownRow(
-                title = "记录微博的形式",
+                title = stringResource(R.string.settings_weibo_record_mode),
                 selected = weiboRecordMode,
                 options = listOf(WeiboRecordMode.PUSH, WeiboRecordMode.READ),
-                label = { if (it == WeiboRecordMode.PUSH) "推送" else "阅读" },
+                label = { if (it == WeiboRecordMode.PUSH) modePushLabel else modeReadLabel },
                 onSelect = viewModel::setWeiboRecordMode
             )
             SettingsDropdownRow(
-                title = "记录 Threads 的形式",
+                title = stringResource(R.string.settings_threads_record_mode),
                 selected = threadsRecordMode,
                 options = listOf(ThreadsRecordMode.PUSH, ThreadsRecordMode.READ),
-                label = { if (it == ThreadsRecordMode.PUSH) "推送" else "阅读" },
+                label = { if (it == ThreadsRecordMode.PUSH) modePushLabel else modeReadLabel },
                 onSelect = viewModel::setThreadsRecordMode
             )
             SettingsDropdownRow(
-                title = "记录 Reddit 的形式",
+                title = stringResource(R.string.settings_reddit_record_mode),
                 selected = redditRecordMode,
                 options = listOf(RedditRecordMode.PUSH, RedditRecordMode.READ),
-                label = { if (it == RedditRecordMode.PUSH) "推送" else "阅读" },
+                label = { if (it == RedditRecordMode.PUSH) modePushLabel else modeReadLabel },
                 onSelect = viewModel::setRedditRecordMode
             )
         }
@@ -201,7 +227,7 @@ private fun <T> SettingsDropdownRow(
     title: String,
     selected: T,
     options: List<T>,
-    label: (T) -> String,
+    label: @Composable (T) -> String,
     onSelect: (T) -> Unit
 ) {
     var expanded by remember { mutableStateOf(false) }

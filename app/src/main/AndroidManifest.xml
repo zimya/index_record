@@ -15,6 +15,7 @@
         <package android:name="com.sina.weibo" />
         <package android:name="com.weico.international" />
         <package android:name="com.coolapk.market" />
+        <package android:name="com.hupu.games" />
     </queries>
 
     <application

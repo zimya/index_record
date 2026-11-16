@@ -6,5 +6,7 @@
         <domain includeSubdomains="false">tb.himg.baidu.com</domain>
         <domain includeSubdomains="false">tb1.bdstatic.com</domain>
         <domain includeSubdomains="true">coolapk.com</domain>
+        <domain includeSubdomains="true">hupu.com</domain>
+        <domain includeSubdomains="true">hoopchina.com.cn</domain>
     </domain-config>
 </network-security-config>

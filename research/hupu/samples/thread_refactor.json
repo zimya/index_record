@@ -1,0 +1,166 @@
+{
+    "code": "200",
+    "data": {
+        "basicInfo": {
+            "fid": 3441,
+            "topicCategoryName": "英雄联盟",
+            "author": {
+                "puid": 47670658,
+                "name": "iGtheshywow",
+                "nftInfo": {
+                    "assetAmount": null,
+                    "assetCate": null,
+                    "assetId": null,
+                    "assetTitle": null,
+                    "assetType": null,
+                    "contentUrl": null,
+                    "hasNFT": null,
+                    "id": null,
+                    "ownerPuid": null,
+                    "shardId": null,
+                    "shardNo": null,
+                    "shardUniqueCode": null
+                }
+            },
+            "topicName": "英雄联盟",
+            "topic_id": 85,
+            "tid": 643971336,
+            "relation": -2,
+            "status": 0,
+            "isAuthor": false
+        },
+        "cardList": [],
+        "containsAi": 0,
+        "containsPodcast": null,
+        "contentStyleType": null,
+        "contentType": 1,
+        "deepTalk": {
+            "guideName": "Bin选武器还是格温当皮肤？",
+            "guideNameSubtitle": "每个热帖，都值得再聊两句",
+            "guideOutTime": 15,
+            "guideStayTime": 8,
+            "iconDay": "https://i11.hoopchina.com.cn/editor/312ef0e0c48e54a6501c00cb9f509318_w_176_h_176_.png",
+            "iconName": "问AI",
+            "iconNight": "https://i11.hoopchina.com.cn/editor/312ef0e0c48e54a6501c00cb9f509318_w_176_h_176_.png",
+            "needShow": true,
+            "replyAiShow": true,
+            "replyGuideName": "@深聊 补充一下背景信息"
+        },
+        "enableCorrect": 0,
+        "giftCacheDtoList": [],
+        "guideWords": null,
+        "hcoinThreadDTO": {
+            "detailDtoList": [],
+            "hcoinReplyDTOMap": null,
+            "showGiftIconMinCount": 3,
+            "tid": null,
+            "totalCoins": 0,
+            "totalUsers": 0
+        },
+        "location": "山东",
+        "marketThreadFlag": false,
+        "moduleConfigList": {
+            "jfb": {
+                "moduleContent": null,
+                "moduleName": "九分半",
+                "moduleShow": null
+            },
+            "topic": {
+                "moduleContent": {
+                    "tags": [
+                        {
+                            "logo": "https://i1.hoopchina.com.cn/marketing-activity/25318-tby5pw.png",
+                            "name": "英雄联盟",
+                            "topic_category": "英雄联盟",
+                            "topic_id": 85,
+                            "unlight": 1,
+                            "url": "huputiyu://bbs/subject/85"
+                        }
+                    ]
+                },
+                "moduleName": "话题",
+                "moduleShow": true
+            },
+            "redpacket": {
+                "moduleContent": {},
+                "moduleName": "红包",
+                "moduleShow": true
+            },
+            "title": {
+                "moduleContent": {
+                    "merge_title": "",
+                    "title": "爆了！blg上辅决裂"
+                },
+                "moduleName": "头部",
+                "moduleShow": true
+            },
+            "user": {
+                "moduleContent": {
+                    "badge": "https://i1.hoopchina.com.cn/reply/1676618639072-e5167fb0-5ea4-4294-903a-8a37423966bb.gif",
+                    "badgeForwardUrl": "huputiyu://webview/openencodeurl?url=https%3A%2F%2Foffline-download.hupu.com%2Fonline%2Fprod%2F310004%2FmedalDetail.html%3FbadgeId%3D12978%26mfullscreen%3D1&fullscreen=1",
+                    "badgeName": "虎扑有房",
+                    "enableSendMsg": false,
+                    "header": "https://i1.hoopchina.com.cn/user/00224AB943F1FAD905B891D851ABA267_w_0_h_0_.jpg",
+                    "name": "iGtheshywow",
+                    "nftInfo": {
+                        "assetAmount": null,
+                        "assetCate": null,
+                        "assetId": null,
+                        "assetTitle": null,
+                        "assetType": null,
+                        "contentUrl": null,
+                        "hasNFT": null,
+                        "id": null,
+                        "ownerPuid": null,
+                        "shardId": null,
+                        "shardNo": null,
+                        "shardUniqueCode": null
+                    },
+                    "puid": 47670658,
+                    "time": "11-16 09:25",
+                    "type": 0,
+                    "view": 243371
+                },
+                "moduleName": "用户",
+                "moduleShow": true
+            },
+            "content": {
+                "moduleContent": {
+                    "content": "<p>bin皮肤纠结武器还是格温，on了建议武器，武器眼睛多全割成眼皮开局领先18刀</p><div><center class=\"hupu-img\"  data-origin=\"https://i10.hoopchina.com.cn/2EB1266FD1A60773A4E0ECE6A92DAE07_w_1170_h_2532_.png?x-oss-process=image/format,png\"  data_url=\"https://i10.hoopchina.com.cn/2EB1266FD1A60773A4E0ECE6A92DAE07_w_1170_h_2532_.png?x-oss-process=image/resize,w_1000/format,png\"  src=\"https://i10.hoopchina.com.cn/2EB1266FD1A60773A4E0ECE6A92DAE07_w_1170_h_2532_.png?x-oss-process=image/resize,w_600/format,jpg/quality,Q_60\"  ></center></div><div><center class=\"hupu-img\"  data-origin=\"https://i10.hoopchina.com.cn/9007536217D0DA7E2335C1D97A26FF4A_w_1170_h_2532_.png?x-oss-process=image/format,png\"  data_url=\"https://i10.hoopchina.com.cn/9007536217D0DA7E2335C1D97A26FF4A_w_1170_h_2532_.png?x-oss-process=image/resize,w_1000/format,png\"  src=\"https://i10.hoopchina.com.cn/9007536217D0DA7E2335C1D97A26FF4A_w_1170_h_2532_.png?x-oss-process=image/resize,w_600/format,jpg/quality,Q_60\"  ></center></div>",
+                    "description": "bin皮肤纠结武器还是格温，on了建议武器，武器眼睛多全割成眼皮开局领先18刀"
+                },
+                "moduleName": "正文内容",
+                "moduleShow": true
+            }
+        },
+        "podcastInfo": null,
+        "replies": 108,
+        "searchWords": [],
+        "tagInfoList": [
+            {
+                "activityIcon": "",
+                "activityJumpUrl": "",
+                "aggregationType": "EVENT",
+                "banner": "https://i3.hoopchina.com.cn/newsPost/261115-3853r7rc-upload-1794674993678-13.png",
+                "bannerRgb": "#04046c",
+                "description": null,
+                "discussNum": 6557,
+                "followNum": 0,
+                "followed": 0,
+                "heat": "341020",
+                "icon": "",
+                "tagId": 162001,
+                "tagName": "Bin成为LPL历史首位大满贯上路选手",
+                "tagSchema": "huputiyu://bbs/topicTag?tagId=162001"
+            }
+        ],
+        "templateId": 1,
+        "templateType": 1,
+        "topicPushingFlag": false,
+        "videoTranscodeState": null,
+        "video_info": null,
+        "visibleRange": "ALL_SEE"
+    },
+    "message": "请求成功",
+    "success": true
+}

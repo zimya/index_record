@@ -65,6 +65,10 @@ internal fun platformEngagement(platform: String, values: JsonObject): Engagemen
             favoriteCount = count("favnum", "favlists_count"),
             shareCount = count("share_num", "share_count")
         )
+        "hupu" -> EngagementMetadata(
+            likeCount = count("lights", "light_count"),
+            replyCount = count("replies", "reply_count")
+        )
         // Reddit's signed/hidden score is interpreted by RedditMetadata, never as a like count.
         else -> EngagementMetadata()
     }

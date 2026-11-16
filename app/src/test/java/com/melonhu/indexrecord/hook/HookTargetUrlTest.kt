@@ -98,6 +98,23 @@ class HookTargetUrlTest {
     }
 
     @Test
+    fun testHupuTargetUrls() {
+        assertTrue(HupuHook.isTargetUrl("https://bbs.mobileapi.hupu.com/1/8.2.51/threads/643989029"))
+        assertTrue(HupuHook.isTargetUrl("https://bbs.mobileapi.hupu.com/1/8.2.51/threads/refactor/643971336"))
+        assertTrue(HupuHook.isTargetUrl("https://bbs.mobileapi.hupu.com/1/8.2.51/threads/getsThreadPostList?tid=643989029"))
+        assertTrue(HupuHook.isTargetUrl("https://bbs.mobileapi.hupu.com/1/8.2.51/threads/getsThreadLightReplyList?tid=643989029"))
+
+        // Excluded
+        assertFalse(HupuHook.isTargetUrl("https://e-goblin.hupu.com/rm?placement_type=2"))
+        assertFalse(HupuHook.isTargetUrl("http://collect.hupu.com/app"))
+        assertFalse(HupuHook.isTargetUrl("https://hermes.hupu.com/server/ts"))
+        assertFalse(HupuHook.isTargetUrl("https://games.mobileapi.hupu.com/1/8.2.51/bplcommentapi/relation/score/statement"))
+        assertFalse(HupuHook.isTargetUrl("https://bbs.mobileapi.hupu.com/1/8.2.51/bbsevaluateapi/evaluate/info"))
+        assertFalse(HupuHook.isTargetUrl("https://example.com/threads/123"))
+        assertFalse(HupuHook.isTargetUrl(null))
+    }
+
+    @Test
     fun testReflectionHelper() {
         assertEquals(java.lang.Integer::class.java, ReflectionHelper.wrapPrimitive(Int::class.javaPrimitiveType))
         assertEquals(java.lang.Boolean::class.java, ReflectionHelper.wrapPrimitive(Boolean::class.javaPrimitiveType))

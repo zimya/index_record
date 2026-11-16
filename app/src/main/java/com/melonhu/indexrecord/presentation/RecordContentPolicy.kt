@@ -14,6 +14,7 @@ object RecordContentPolicy {
         "threads" -> record.recordType == "thread"
         "douban" -> record.recordType in setOf("topic", "review", "interest", "subject")
         "coolapk" -> record.recordType in setOf("feed", "rating", "feedArticle", "question", "answer")
+        "hupu" -> record.recordType == "post"
         else -> false
     }
 

@@ -10,6 +10,7 @@ import com.melonhu.indexrecord.parser.threads.ThreadsParser
 import com.melonhu.indexrecord.parser.zhihu.ZhihuParser
 import com.melonhu.indexrecord.parser.reddit.RedditParser
 import com.melonhu.indexrecord.parser.coolapk.CoolapkParser
+import com.melonhu.indexrecord.parser.hupu.HupuParser
 
 /**
  * 平台解析器注册中心。
@@ -25,7 +26,8 @@ object ParserRegistry {
         WeiboParser,
         ThreadsParser,
         RedditParser,
-        CoolapkParser
+        CoolapkParser,
+        HupuParser
     )
 
     fun findParser(cleanUrl: String, raw: RawData): RawDataParser? {

@@ -22,6 +22,8 @@ jobs:
         steps:
             - name: Checkout
               uses: actions/checkout@v4
+              with:
+                  fetch-depth: 0
 
             - name: Setup JDK 17
               uses: actions/setup-java@v4
@@ -47,9 +49,16 @@ jobs:
                     TAG="${GITHUB_REF_NAME}"
                   fi
 
-                  # 提取 versionCode 与 versionName 供 Xposed-Modules-Repo 使用 (格式要求: [version_code]-[version_name])
-                  VERSION_CODE=$(sed -n -E 's/.*versionCode[[:space:]]*=[[:space:]]*([0-9]+).*/\1/p' app/build.gradle.kts | head -n 1)
-                  VERSION_NAME=$(sed -n -E 's/.*versionName[[:space:]]*=[[:space:]]*"([^"]+)".*/\1/p' app/build.gradle.kts | head -n 1)
+                  VERSION_CODE=$(jq -r '.elements[0].versionCode // empty' app/build/outputs/apk/release/output-metadata.json 2>/dev/null)
+                  VERSION_NAME=$(jq -r '.elements[0].versionName // empty' app/build/outputs/apk/release/output-metadata.json 2>/dev/null)
+
+                  if [ -z "$VERSION_CODE" ]; then
+                    VERSION_CODE=$(git rev-list --count HEAD)
+                  fi
+                  if [ -z "$VERSION_NAME" ]; then
+                    VERSION_NAME="${TAG#v}"
+                  fi
+
                   XPOSED_TAG="${VERSION_CODE}-${VERSION_NAME}"
 
                   mkdir -p release-assets
@@ -64,12 +73,26 @@ jobs:
                   echo "xposed_tag=$XPOSED_TAG" >> $GITHUB_OUTPUT
 
             - name: Create GitHub Release and Upload APKs
+              id: create_release
               uses: softprops/action-gh-release@v2
               with:
                   tag_name: ${{ steps.prepare.outputs.tag }}
                   name: "Release ${{ steps.prepare.outputs.tag }}"
                   generate_release_notes: true
                   files: release-assets/*.apk
+
+            - name: Fetch Release Notes from Main Repo
+              env:
+                  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+              run: |
+                  curl -s -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
+                       -H "Accept: application/vnd.github+json" \
+                       "https://api.github.com/repos/${{ github.repository }}/releases/${{ steps.create_release.outputs.id }}" \
+                       | jq -r '.body // empty' > release-notes.md
+
+                  if [ ! -s release-notes.md ]; then
+                    echo "See changelog at: https://github.com/${{ github.repository }}/releases/tag/${{ steps.prepare.outputs.tag }}" > release-notes.md
+                  fi
 
             - name: Push Release to Xposed-Modules-Repo
               if: ${{ env.HAVE_TOKEN == 'true' }}
@@ -81,5 +104,6 @@ jobs:
                   repository: Xposed-Modules-Repo/com.melonhu.indexrecord
                   tag_name: ${{ steps.prepare.outputs.xposed_tag }}
                   name: "Release ${{ steps.prepare.outputs.xposed_tag }}"
-                  generate_release_notes: true
+                  body_path: release-notes.md
+                  generate_release_notes: false
                   files: release-assets/*.apk

@@ -279,7 +279,8 @@ private fun formatDateTime(millis: Long?): String? {
 
 internal fun filterAppLabel(pkg: String): String {
     return com.melonhu.indexrecord.data.PlatformCatalog.packageLabel(pkg)
-        ?: if (pkg == "threads" || pkg == "reddit") com.melonhu.indexrecord.data.PlatformCatalog.displayName(pkg) else pkg
+        ?: com.melonhu.indexrecord.data.PlatformCatalog.knownDisplayName(pkg)
+        ?: pkg
 }
 
 internal fun typeLabel(type: String): String {

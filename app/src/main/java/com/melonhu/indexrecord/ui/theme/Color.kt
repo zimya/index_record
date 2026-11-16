@@ -61,11 +61,32 @@ val CoolapkLightText = Color(0xFF0A6E3F)
 val CoolapkDarkContainer = Color(0xFF143826)
 val CoolapkDarkText = Color(0xFF7AE0AA)
 
+// 虎扑红
+val HupuRed = Color(0xFFC60100)
+val HupuRedLightContainer = Color(0xFFFFEBEE)
+val HupuRedLightText = Color(0xFFB71C1C)
+val HupuRedDarkContainer = Color(0xFF3A1012)
+val HupuRedDarkText = Color(0xFFFF8A85)
+
 data class PlatformThemeColor(
     val brand: Color,
     val container: Color,
     val text: Color
 )
+
+fun getPlatformBrandColor(platform: String): Color? {
+    return when (platform.lowercase()) {
+        "zhihu", "com.zhihu.android" -> ZhihuBlue
+        "douban", "com.douban.frodo" -> DoubanGreen
+        "tieba", "com.baidu.tieba" -> TiebaBlue
+        "weibo", "com.sina.weibo", "com.weico.international" -> WeiboOrange
+        "twitter", "x", "com.twitter.android", "threads", "com.instagram.barcelona" -> XBlack
+        "reddit", "com.reddit.frontpage" -> RedditOrange
+        "coolapk", "com.coolapk.market" -> CoolapkGreen
+        "hupu", "com.hupu.games" -> HupuRed
+        else -> null
+    }
+}
 
 fun getPlatformThemeColor(platform: String, isDark: Boolean): PlatformThemeColor {
     return when (platform.lowercase()) {
@@ -89,7 +110,7 @@ fun getPlatformThemeColor(platform: String, isDark: Boolean): PlatformThemeColor
         } else {
             PlatformThemeColor(WeiboOrange, Color(0xFFFFF0E3), Color(0xFF963E00))
         }
-        "twitter", "com.twitter.android", "threads", "com.instagram.barcelona" -> if (isDark) {
+        "twitter", "x", "com.twitter.android", "threads", "com.instagram.barcelona" -> if (isDark) {
             PlatformThemeColor(XBlack, XDarkContainer, XDarkText)
         } else {
             PlatformThemeColor(XBlack, XLightContainer, XLightText)
@@ -103,6 +124,11 @@ fun getPlatformThemeColor(platform: String, isDark: Boolean): PlatformThemeColor
             PlatformThemeColor(CoolapkGreen, CoolapkDarkContainer, CoolapkDarkText)
         } else {
             PlatformThemeColor(CoolapkGreen, CoolapkLightContainer, CoolapkLightText)
+        }
+        "hupu", "com.hupu.games" -> if (isDark) {
+            PlatformThemeColor(HupuRed, HupuRedDarkContainer, HupuRedDarkText)
+        } else {
+            PlatformThemeColor(HupuRed, HupuRedLightContainer, HupuRedLightText)
         }
         else -> if (isDark) {
             PlatformThemeColor(IndexBlue, Color(0xFF2A2B30), Color(0xFFD0D0D5))

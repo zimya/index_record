@@ -7,15 +7,16 @@ import org.junit.Test
 
 class PlatformCatalogTest {
     @Test fun knownPlatformsHaveUniqueDefaultPackages() {
-        assertEquals(7, PlatformCatalog.platforms.size)
-        assertEquals(7, PlatformCatalog.platforms.map { it.defaultPackage }.distinct().size)
+        assertEquals(8, PlatformCatalog.platforms.size)
+        assertEquals(8, PlatformCatalog.platforms.map { it.defaultPackage }.distinct().size)
         PlatformCatalog.platforms.forEach {
             assertEquals(it.name, PlatformCatalog.displayName(it.id))
             assertEquals(it.defaultPackage, PlatformCatalog.defaultPackage(it.id))
             assertEquals(it.name, PlatformCatalog.packageLabel(it.defaultPackage))
         }
         assertEquals("微博国际版", PlatformCatalog.packageLabel("com.weico.international"))
-        assertEquals(8, PlatformCatalog.hostPackages.size)
+        assertEquals("酷安", PlatformCatalog.packageLabel("com.coolapk.market"))
+        assertEquals(9, PlatformCatalog.hostPackages.size)
     }
 
     @Test fun unknownValuesRemainLiteralAndBlankValuesAreExplicitlyUnknown() {
@@ -34,5 +35,11 @@ class PlatformCatalogTest {
         assertEquals("知乎回答", PlatformCatalog.filterTypeLabel("answer"))
         assertEquals("帖子", PlatformCatalog.typeLabel("threads", "thread"))
         assertEquals("Threads 帖子", PlatformCatalog.filterTypeLabel("thread"))
+        assertEquals("动态", PlatformCatalog.typeLabel("coolapk", "feed"))
+        assertEquals("点评", PlatformCatalog.typeLabel("coolapk", "rating"))
+        assertEquals("图文", PlatformCatalog.typeLabel("coolapk", "feedArticle"))
+        assertEquals("酷安动态", PlatformCatalog.filterTypeLabel("feed"))
+        assertEquals("酷安点评", PlatformCatalog.filterTypeLabel("rating"))
+        assertEquals("酷安图文", PlatformCatalog.filterTypeLabel("feedArticle"))
     }
 }

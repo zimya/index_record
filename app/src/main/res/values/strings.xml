@@ -178,6 +178,7 @@
     <string name="platform_reddit">Reddit</string>
     <string name="platform_weibo">微博</string>
     <string name="platform_weibo_intl">微博国际版</string>
+    <string name="platform_coolapk">酷安</string>
 
     <string name="type_question">问题</string>
     <string name="type_answer">回答</string>
@@ -196,4 +197,7 @@
     <string name="type_status">微博</string>
     <string name="type_subfloor">楼中楼</string>
     <string name="type_reply">回复</string>
+    <string name="type_feed">动态</string>
+    <string name="type_rating">点评</string>
+    <string name="type_feed_article">图文</string>
 </resources>

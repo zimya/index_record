@@ -59,6 +59,12 @@ internal fun platformEngagement(platform: String, values: JsonObject): Engagemen
             repostCount = count("repost_count", "repostCount"), quoteCount = count("quote_count"),
             shareCount = count("reshare_count"), viewCount = count("view_count", "views_count", "viewCount")
         )
+        "coolapk" -> EngagementMetadata(
+            likeCount = count("likenum", "like_count"),
+            replyCount = count("replynum", "comment_count"),
+            favoriteCount = count("favnum", "favlists_count"),
+            shareCount = count("share_num", "share_count")
+        )
         // Reddit's signed/hidden score is interpreted by RedditMetadata, never as a like count.
         else -> EngagementMetadata()
     }

@@ -87,6 +87,17 @@ class HookTargetUrlTest {
     }
 
     @Test
+    fun testCoolapkTargetUrls() {
+        assertTrue(CoolapkHook.isTargetUrl("https://api2.coolapk.com/v6/feed/detail?id=75046118"))
+        assertTrue(CoolapkHook.isTargetUrl("https://api.coolapk.com/v6/feed/detail?id=12345"))
+        assertTrue(CoolapkHook.isTargetUrl("https://api.coolapk.com/v6/feed/replyList?id=75091227&listType=lastupdate_desc&page=1"))
+        assertTrue(CoolapkHook.isTargetUrl("https://api.coolapk.com/v6/feed/replyDetail?id=617293084"))
+        assertFalse(CoolapkHook.isTargetUrl("https://api.coolapk.com/v6/main/indexV8"))
+        assertFalse(CoolapkHook.isTargetUrl("https://example.com/v6/feed/detail?id=123"))
+        assertFalse(CoolapkHook.isTargetUrl(null))
+    }
+
+    @Test
     fun testReflectionHelper() {
         assertEquals(java.lang.Integer::class.java, ReflectionHelper.wrapPrimitive(Int::class.javaPrimitiveType))
         assertEquals(java.lang.Boolean::class.java, ReflectionHelper.wrapPrimitive(Boolean::class.javaPrimitiveType))

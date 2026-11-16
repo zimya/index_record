@@ -7,20 +7,33 @@ internal data class RecordIdentity(val platform: String, val contentId: String) 
     val kind: RecordIdentityKind get() = when {
         platform == "reddit" && contentId.startsWith("reddit_comment_") -> RecordIdentityKind.COMMENT
         platform == "reddit" && contentId.startsWith("reddit_post_") -> RecordIdentityKind.POST
+        platform == "coolapk" && contentId.startsWith("coolapk_comment_") -> RecordIdentityKind.COMMENT
         else -> RecordIdentityKind.CONTENT
     }
-    fun storageIds(): Set<String> = if (platform == "twitter" && contentId.startsWith("twitter_status_")) {
-        val id = contentId.removePrefix("twitter_status_")
-        linkedSetOf("twitter_tweet_$id", "twitter_comment_$id")
-    } else setOf(contentId)
+    fun storageIds(): Set<String> = when {
+        platform == "twitter" && contentId.startsWith("twitter_status_") -> {
+            val id = contentId.removePrefix("twitter_status_")
+            linkedSetOf("twitter_tweet_$id", "twitter_comment_$id")
+        }
+        platform == "coolapk" && contentId.startsWith("coolapk_feed_") -> {
+            val id = contentId.removePrefix("coolapk_feed_")
+            linkedSetOf("coolapk_feed_$id", "coolapk_rating_$id", "coolapk_article_$id")
+        }
+        else -> setOf(contentId)
+    }
 
     companion object {
         fun of(platform: String, platformId: String): RecordIdentity {
-            val contentId = if (platform == "twitter") when {
-                platformId.startsWith("twitter_tweet_") -> "twitter_status_" + platformId.removePrefix("twitter_tweet_")
-                platformId.startsWith("twitter_comment_") -> "twitter_status_" + platformId.removePrefix("twitter_comment_")
+            val contentId = when {
+                platform == "twitter" && platformId.startsWith("twitter_tweet_") -> "twitter_status_" + platformId.removePrefix("twitter_tweet_")
+                platform == "twitter" && platformId.startsWith("twitter_comment_") -> "twitter_status_" + platformId.removePrefix("twitter_comment_")
+                platform == "coolapk" && (
+                    platformId.startsWith("coolapk_feed_") ||
+                    platformId.startsWith("coolapk_rating_") ||
+                    platformId.startsWith("coolapk_article_")
+                ) -> "coolapk_feed_" + platformId.substringAfterLast('_')
                 else -> platformId
-            } else platformId
+            }
             return RecordIdentity(platform, contentId)
         }
     }

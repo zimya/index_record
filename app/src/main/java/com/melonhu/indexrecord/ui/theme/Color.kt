@@ -54,6 +54,13 @@ val XLightText = Color(0xFF0F1419)
 val XDarkContainer = Color(0xFF242628)
 val XDarkText = Color(0xFFE7E9EA)
 
+// 酷安绿
+val CoolapkGreen = Color(0xFF0FB066)
+val CoolapkLightContainer = Color(0xFFE8F8F0)
+val CoolapkLightText = Color(0xFF0A6E3F)
+val CoolapkDarkContainer = Color(0xFF143826)
+val CoolapkDarkText = Color(0xFF7AE0AA)
+
 data class PlatformThemeColor(
     val brand: Color,
     val container: Color,
@@ -91,6 +98,11 @@ fun getPlatformThemeColor(platform: String, isDark: Boolean): PlatformThemeColor
             PlatformThemeColor(RedditOrange, RedditDarkContainer, RedditDarkText)
         } else {
             PlatformThemeColor(RedditOrange, RedditLightContainer, RedditLightText)
+        }
+        "coolapk", "com.coolapk.market" -> if (isDark) {
+            PlatformThemeColor(CoolapkGreen, CoolapkDarkContainer, CoolapkDarkText)
+        } else {
+            PlatformThemeColor(CoolapkGreen, CoolapkLightContainer, CoolapkLightText)
         }
         else -> if (isDark) {
             PlatformThemeColor(IndexBlue, Color(0xFF2A2B30), Color(0xFFD0D0D5))

@@ -16,12 +16,21 @@ internal data class RecordHeaderPresentation(
 
 internal fun recordHeaderPresentation(record: RecordContent): RecordHeaderPresentation {
     val metadata = PlatformMetadataAdapters(record.extraMetadata, record.platform)
+    val authorHeadline = metadata.zhihu?.authorHeadline
+        ?: metadata.coolapk?.let {
+            listOfNotNull(
+                it.deviceTitle.takeIf { d -> d.isNotBlank() }?.let { d -> "来自 $d" },
+                it.ttitle.takeIf { t -> t.isNotBlank() }?.let { t -> "#$t#" }
+            ).joinToString(" · ")
+        }.orEmpty()
+    val starCount = metadata.douban?.starCount
+        ?: (metadata.coolapk?.ratingScore?.let { it / 2.0 } ?: 0.0)
     return RecordHeaderPresentation(
         title = record.title,
-        titleImage = metadata.zhihu?.titleImage ?: metadata.douban?.titleImage.orEmpty(),
+        titleImage = metadata.zhihu?.titleImage ?: metadata.douban?.titleImage ?: metadata.coolapk?.messageCover.orEmpty(),
         author = record.authorName.ifBlank { "作者未知" },
-        authorHeadline = metadata.zhihu?.authorHeadline.orEmpty(),
-        starCount = metadata.douban?.starCount ?: 0.0
+        authorHeadline = authorHeadline,
+        starCount = starCount
     )
 }
 

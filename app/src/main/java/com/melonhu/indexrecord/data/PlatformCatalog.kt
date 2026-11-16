@@ -13,7 +13,8 @@ object PlatformCatalog {
         Platform("twitter", "X", "com.twitter.android"),
         Platform("threads", "Threads", "com.instagram.barcelona"),
         Platform("reddit", "Reddit", "com.reddit.frontpage"),
-        Platform("weibo", "微博", "com.sina.weibo")
+        Platform("weibo", "微博", "com.sina.weibo"),
+        Platform("coolapk", "酷安", "com.coolapk.market")
     )
     private val byId = platforms.associateBy { it.id }
     private val packageNames = platforms.associate { it.defaultPackage to it.name } +
@@ -32,7 +33,8 @@ object PlatformCatalog {
         "question" to "问题", "answer" to "回答", "article" to "文章", "pin" to "想法",
         "comment" to "评论", "lou" to "主帖", "thread" to "帖子", "floor" to "楼层",
         "topic" to "帖子", "post" to "帖子", "review" to "长评", "interest" to "短评",
-        "subject" to "条目", "tweet" to "推文", "status" to "微博"
+        "subject" to "条目", "tweet" to "推文", "status" to "微博",
+        "feed" to "动态", "rating" to "点评", "feedArticle" to "图文"
     )
 
     fun typeLabel(platform: String, type: String): String = when {
@@ -52,6 +54,7 @@ object PlatformCatalog {
         "lou", "floor" -> "贴吧${typeLabel("tieba", type)}"
         "thread" -> "Threads 帖子"
         "tweet" -> "X 推文"
+        "feed", "rating", "feedArticle" -> "酷安${typeLabel("coolapk", type)}"
         else -> typeLabel("", type)
     }
 
@@ -63,6 +66,7 @@ object PlatformCatalog {
         "threads" -> R.string.platform_threads
         "reddit" -> R.string.platform_reddit
         "weibo" -> R.string.platform_weibo
+        "coolapk" -> R.string.platform_coolapk
         else -> null
     }
 
@@ -84,6 +88,9 @@ object PlatformCatalog {
         type == "subject" -> R.string.type_subject
         type == "tweet" -> R.string.type_tweet
         type == "status" -> R.string.type_status
+        type == "feed" -> R.string.type_feed
+        type == "rating" -> R.string.type_rating
+        type == "feedArticle" -> R.string.type_feed_article
         else -> null
     }
 }

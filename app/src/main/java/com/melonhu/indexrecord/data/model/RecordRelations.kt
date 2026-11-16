@@ -27,6 +27,8 @@ private fun relationOf(platform: String, recordType: String, parentId: String): 
     return when {
         platform == "zhihu" && recordType == "answer" && parentId.startsWith("zhihu_question_") ->
             RecordRelation.AnswerToQuestion(target)
+        platform == "coolapk" && recordType == "answer" && parentId.startsWith("coolapk_question_") ->
+            RecordRelation.AnswerToQuestion(target)
         platform == "douban" && recordType != "comment" && parentId.startsWith("douban_") ->
             RecordRelation.BelongsToSubject(target)
         platform == "tieba" && recordType == "floor" -> RecordRelation.FloorInThread(target)

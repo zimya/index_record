@@ -34,6 +34,14 @@ internal class DoubanRecordMetadata(values: JsonObject) {
         ?: values.metadataDecimal("rating_value")?.takeIf { it in 0.0..5.0 } ?: 0.0
 }
 
+internal class CoolapkRecordMetadata(values: JsonObject) {
+    val deviceTitle: String = values.metadataText("device_title")
+    val ttitle: String = values.metadataText("ttitle")
+    val feedType: String = values.metadataText("feed_type")
+    val messageCover: String = values.metadataText("message_cover")
+    val ratingScore: Double? = values.metadataDecimal("rating_score")
+}
+
 /** Only the selected platform gets an adapter, even if the payload contains foreign keys. */
 internal class PlatformMetadataAdapters(values: JsonObject, platform: String) {
     constructor(extraMetadata: String, platform: String) : this(parseMetadataObject(extraMetadata), platform)
@@ -44,6 +52,7 @@ internal class PlatformMetadataAdapters(values: JsonObject, platform: String) {
     val douban: DoubanRecordMetadata? = if (platform == "douban") DoubanRecordMetadata(values) else null
     val tieba: TiebaMetadata? = if (platform == "tieba") TiebaMetadata(values) else null
     val reddit: RedditMetadata? = if (platform == "reddit") RedditMetadata(values) else null
+    val coolapk: CoolapkRecordMetadata? = if (platform == "coolapk") CoolapkRecordMetadata(values) else null
 }
 
 private fun JsonObject.metadataText(key: String): String =

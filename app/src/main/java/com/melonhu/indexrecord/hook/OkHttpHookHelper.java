@@ -35,11 +35,13 @@ public final class OkHttpHookHelper {
 
         Class<?> builderClass = ReflectionHelper.findClassIfExists("okhttp3.OkHttpClient$Builder", classLoader);
         if (builderClass == null) {
+            hookedLoaders.remove(classLoader);
             return false;
         }
 
         Method buildMethod = ReflectionHelper.findMethodExactIfExists(builderClass, "build");
         if (buildMethod == null) {
+            hookedLoaders.remove(classLoader);
             return false;
         }
 

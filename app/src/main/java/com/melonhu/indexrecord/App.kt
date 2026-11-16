@@ -35,6 +35,10 @@ class App : Application(), ImageLoaderFactory {
                         .header("User-Agent", "api-client/1 com.douban.frodo/7.132.0(360) Android/36  udid/db87f91e63b18b9f94b50c897f792525533f0517  douban_udid/25e33fbb4f6ecfb0d41a8c29e82dd0879c05305f model/PLZ110 brand/OnePlus  rom/android  network/wifi  platform/mobile  foldable/0 product/PLZ110 vendor/OnePlus udid/db87f91e63b18b9f94b50c897f792525533f0517")
                         .header("Referer", "https://frodo.douban.com/")
                         .build()
+                } else if (url.contains("coolapk.com")) {
+                    request.newBuilder()
+                        .header("User-Agent", "Mozilla/5.0 (Linux; Android 14; 24129PN74C Build/UKQ1.231003.002; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/130.0.6723.107 Mobile Safari/537.36 #CoolMarket#14.5.3")
+                        .build()
                 } else {
                     request
                 }

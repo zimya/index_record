@@ -14,6 +14,7 @@ internal fun recordDisplayTitle(
             "weibo" -> if (record.recordType == "comment") "微博评论" else "${record.authorName.ifBlank { "微博用户" }}的微博"
             "threads" -> if (record.recordType == "comment") "Threads 回复" else "${record.authorName.ifBlank { "Threads 用户" }}的帖子"
             "reddit" -> if (record.recordType == "comment") "Reddit 回复" else "${record.authorName.ifBlank { "Reddit 用户" }}的帖子"
+            "coolapk" -> "${record.authorName.ifBlank { "酷安用户" }}的动态"
             else -> "无标题"
         }
     }
@@ -30,6 +31,10 @@ internal fun recordContext(
     "reddit" -> listOfNotNull(
         metadata.reddit?.subreddit?.takeIf { it.isNotBlank() }?.let { "r/$it" },
         metadata.reddit?.flair?.takeIf { it.isNotBlank() }
+    ).joinToString(" · ")
+    "coolapk" -> listOfNotNull(
+        metadata.coolapk?.ttitle?.takeIf { it.isNotBlank() }?.let { "#$it#" },
+        metadata.coolapk?.deviceTitle?.takeIf { it.isNotBlank() }
     ).joinToString(" · ")
     else -> ""
 }

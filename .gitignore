@@ -31,3 +31,6 @@ wheels/
 
 *.dylib
 /research/rednote/static_security
+/.idea/
+local.properties
+gradle/gradle-daemon-jvm.properties

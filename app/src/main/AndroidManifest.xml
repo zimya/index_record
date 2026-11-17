@@ -16,6 +16,7 @@
         <package android:name="com.weico.international" />
         <package android:name="com.coolapk.market" />
         <package android:name="com.hupu.games" />
+        <package android:name="com.max.xiaoheihe" />
     </queries>
 
     <application

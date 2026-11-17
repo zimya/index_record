@@ -10,6 +10,8 @@ internal data class RecordIdentity(val platform: String, val contentId: String) 
         platform == "coolapk" && contentId.startsWith("coolapk_comment_") -> RecordIdentityKind.COMMENT
         platform == "hupu" && contentId.startsWith("hupu_comment_") -> RecordIdentityKind.COMMENT
         platform == "hupu" && contentId.startsWith("hupu_post_") -> RecordIdentityKind.POST
+        platform == "xiaoheihe" && contentId.startsWith("xiaoheihe_comment_") -> RecordIdentityKind.COMMENT
+        platform == "xiaoheihe" && contentId.startsWith("xiaoheihe_post_") -> RecordIdentityKind.POST
         else -> RecordIdentityKind.CONTENT
     }
     fun storageIds(): Set<String> = when {

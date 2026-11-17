@@ -115,6 +115,21 @@ class HookTargetUrlTest {
     }
 
     @Test
+    fun testXiaoheiheTargetUrls() {
+        assertTrue(XiaoheiheHook.isTargetUrl("https://api.xiaoheihe.cn/bbs/app/link/tree/v2?link_id=197066485"))
+        assertTrue(XiaoheiheHook.isTargetUrl("https://api.xiaoheihe.cn/bbs/app/comment/sub/comments?root_comment_id=1002022354"))
+        assertTrue(XiaoheiheHook.isTargetUrl("https://api.xiaoheihe.cn/bbs/app/link/web/view?link_id=197066485"))
+        assertTrue(XiaoheiheHook.isTargetUrl("https://api.maxjia.com/bbs/app/link/tree/v2?link_id=123"))
+        assertTrue(XiaoheiheHook.isTargetUrl("https://heybox.maxjia.com/bbs/app/link/tree?link_id=123"))
+
+        // Excluded
+        assertFalse(XiaoheiheHook.isTargetUrl("https://data.xiaoheihe.cn/account/data_report/"))
+        assertFalse(XiaoheiheHook.isTargetUrl("https://api.xiaoheihe.cn/bbs/app/profile/follow/user"))
+        assertFalse(XiaoheiheHook.isTargetUrl("https://example.com/bbs/app/link/tree"))
+        assertFalse(XiaoheiheHook.isTargetUrl(null))
+    }
+
+    @Test
     fun testReflectionHelper() {
         assertEquals(java.lang.Integer::class.java, ReflectionHelper.wrapPrimitive(Int::class.javaPrimitiveType))
         assertEquals(java.lang.Boolean::class.java, ReflectionHelper.wrapPrimitive(Boolean::class.javaPrimitiveType))

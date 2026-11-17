@@ -8,5 +8,8 @@
         <item>com.baidu.tieba</item>
         <item>com.sina.weibo</item>
         <item>com.weico.international</item>
+        <item>com.coolapk.market</item>
+        <item>com.hupu.games</item>
+        <item>com.max.xiaoheihe</item>
     </string-array>
 </resources>

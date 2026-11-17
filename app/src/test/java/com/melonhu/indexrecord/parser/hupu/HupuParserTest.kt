@@ -22,8 +22,8 @@ class HupuParserTest {
 
     private fun readSample(name: String): String {
         val candidates = listOf(
-            File("research/hupu/samples/$name"),
-            File("../research/hupu/samples/$name")
+            File("research/hupu/$name"),
+            File("../research/hupu/$name")
         )
         val file = candidates.firstOrNull { it.exists() }
         requireNotNull(file) { "Sample file $name not found in candidates: $candidates" }

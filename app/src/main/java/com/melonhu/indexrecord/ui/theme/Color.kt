@@ -68,6 +68,13 @@ val HupuRedLightText = Color(0xFFB71C1C)
 val HupuRedDarkContainer = Color(0xFF3A1012)
 val HupuRedDarkText = Color(0xFFFF8A85)
 
+// 小黑盒深灰
+val XiaoheiheDark = Color(0xFF383C3F)
+val XiaoheiheLightContainer = Color(0xFFEBECEE)
+val XiaoheiheLightText = Color(0xFF202326)
+val XiaoheiheDarkContainer = Color(0xFF232628)
+val XiaoheiheDarkText = Color(0xFFDCDFE2)
+
 data class PlatformThemeColor(
     val brand: Color,
     val container: Color,
@@ -84,6 +91,7 @@ fun getPlatformBrandColor(platform: String): Color? {
         "reddit", "com.reddit.frontpage" -> RedditOrange
         "coolapk", "com.coolapk.market" -> CoolapkGreen
         "hupu", "com.hupu.games" -> HupuRed
+        "xiaoheihe", "com.max.xiaoheihe" -> XiaoheiheDark
         else -> null
     }
 }
@@ -129,6 +137,11 @@ fun getPlatformThemeColor(platform: String, isDark: Boolean): PlatformThemeColor
             PlatformThemeColor(HupuRed, HupuRedDarkContainer, HupuRedDarkText)
         } else {
             PlatformThemeColor(HupuRed, HupuRedLightContainer, HupuRedLightText)
+        }
+        "xiaoheihe", "com.max.xiaoheihe" -> if (isDark) {
+            PlatformThemeColor(XiaoheiheDark, XiaoheiheDarkContainer, XiaoheiheDarkText)
+        } else {
+            PlatformThemeColor(XiaoheiheDark, XiaoheiheLightContainer, XiaoheiheLightText)
         }
         else -> if (isDark) {
             PlatformThemeColor(IndexBlue, Color(0xFF2A2B30), Color(0xFFD0D0D5))

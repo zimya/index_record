@@ -49,6 +49,12 @@ internal class HupuRecordMetadata(values: JsonObject) {
     val location: String = values.metadataText("location")
 }
 
+internal class XiaoheiheRecordMetadata(values: JsonObject) {
+    val ipLocation: String = values.metadataText("ip_location")
+    val floor: String = values.metadataText("floor")
+    val linkId: String = values.metadataText("link_id")
+}
+
 /** Only the selected platform gets an adapter, even if the payload contains foreign keys. */
 internal class PlatformMetadataAdapters(values: JsonObject, platform: String) {
     constructor(extraMetadata: String, platform: String) : this(parseMetadataObject(extraMetadata), platform)
@@ -61,6 +67,7 @@ internal class PlatformMetadataAdapters(values: JsonObject, platform: String) {
     val reddit: RedditMetadata? = if (platform == "reddit") RedditMetadata(values) else null
     val coolapk: CoolapkRecordMetadata? = if (platform == "coolapk") CoolapkRecordMetadata(values) else null
     val hupu: HupuRecordMetadata? = if (platform == "hupu") HupuRecordMetadata(values) else null
+    val xiaoheihe: XiaoheiheRecordMetadata? = if (platform == "xiaoheihe") XiaoheiheRecordMetadata(values) else null
 }
 
 private fun JsonObject.metadataText(key: String): String =

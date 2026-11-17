@@ -8,5 +8,7 @@
         <domain includeSubdomains="true">coolapk.com</domain>
         <domain includeSubdomains="true">hupu.com</domain>
         <domain includeSubdomains="true">hoopchina.com.cn</domain>
+        <domain includeSubdomains="true">xiaoheihe.cn</domain>
+        <domain includeSubdomains="true">max-c.com</domain>
     </domain-config>
 </network-security-config>

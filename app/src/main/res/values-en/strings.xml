@@ -178,6 +178,9 @@
     <string name="platform_reddit">Reddit</string>
     <string name="platform_weibo">Weibo</string>
     <string name="platform_weibo_intl">Weibo International</string>
+    <string name="platform_coolapk">Coolapk</string>
+    <string name="platform_hupu">Hupu</string>
+    <string name="platform_xiaoheihe">Xiaoheihe</string>
 
     <string name="type_question">Question</string>
     <string name="type_answer">Answer</string>

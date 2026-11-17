@@ -69,6 +69,8 @@ internal fun recordStatistics(
         if (surface == StatisticsSurface.DETAIL) {
             val location = metadata.zhihu?.ipInfo ?: metadata.douban?.ipInfo
                 ?: metadata.tieba?.ipAddress?.takeIf { it.isNotBlank() }
+                ?: metadata.hupu?.location?.takeIf { it.isNotBlank() }
+                ?: metadata.xiaoheihe?.ipLocation?.takeIf { it.isNotBlank() }
             location?.let { add(RecordStatistic(StatisticKind.LOCATION, it)) }
         }
     }

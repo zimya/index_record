@@ -3,6 +3,25 @@
 <img alt="Icon" src="app/src/main/res/mipmap-xxxhdpi/ic_launcher.png" height="150">
 </picture>
 <h1>小茵记录 (Index Record)</h1>
+
+<p align="center">
+<a href="https://modules.lsposed.org/module/com.melonhu.indexrecord/">
+<img src="https://img.shields.io/badge/LSPosed-Module-green.svg">
+</a>
+<a href="https://github.com/zimya/index_record/releases">
+<img src="https://img.shields.io/github/v/release/zimya/index_record?&sort=semver">
+</a>
+<a href="https://github.com/zimya/index_record/releases">
+<img src="https://img.shields.io/github/downloads/Xposed-Modules-Repo/com.melonhu.indexrecord/total">
+</a>
+<a href="https://github.com/zimya/index_record/blob/main/LICENSE">
+<img src="https://img.shields.io/github/license/zimya/index_record">
+</a>
+<a href="https://t.me/index_record_group">
+<img src="https://img.shields.io/badge/telegram-blue?logo=telegram&logoColor=white">
+</a>
+</p>
+
 </div>
 
 > 上条的“知识”在诉说着。她拥有完全记忆能力的体质，对于一旦记住的东西绝对不会遗忘。所以她靠着这种体质，将十万三千本魔道书都记忆在脑海中。—— 《某魔法的禁书目录 · 第二卷》
@@ -44,21 +63,29 @@
     - [x] 贴吧楼中楼
 - [x] **Twitter (X)**
     - [x] 推文
+    - [x] 推文回复
 - [x] **微博**
     - [x] 博文
+    - [x] 博文回复
+    - [x] 微博超话
 - [x] **Threads**
     - [x] thread
+    - [x] 回复
 - [x] **Reddit**
     - [x] 帖子
+    - [x] 回复
 - [x] **酷安**
-    - [x] 动态
-    - [x] 点评
-    - [x] 图文
-    - [x] 问答
+    - [x] 酷安动态
+    - [x] 酷安点评
+    - [x] 酷安图文
+    - [x] 酷安问答
 - [x] **虎扑**
     - [x] 帖子
+    - [x] 回复
+    - [ ] 虎扑评分
 - [x] **小黑盒**
     - [x] 帖子
+    - [x] 回复
 - [x] **Bluesky**
     - [x] 帖子
     - [x] 回复

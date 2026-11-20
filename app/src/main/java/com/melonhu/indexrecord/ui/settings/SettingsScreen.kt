@@ -44,6 +44,7 @@ import com.melonhu.indexrecord.settings.RedditRecordMode
 import com.melonhu.indexrecord.settings.TweetRecordMode
 import com.melonhu.indexrecord.settings.WeiboRecordMode
 import com.melonhu.indexrecord.settings.ThreadsRecordMode
+import com.melonhu.indexrecord.ui.components.SyncPullRefreshContainer
 import com.melonhu.indexrecord.ui.theme.ThemeMode
 import com.melonhu.indexrecord.ui.util.rememberAppHapticFeedback
 import com.melonhu.indexrecord.viewmodel.SettingsViewModel
@@ -60,6 +61,7 @@ fun SettingsScreen(viewModel: SettingsViewModel = viewModel()) {
     val collapseMultipleItems by viewModel.collapseMultipleItems.collectAsState()
     val includeRepliesAndCommentsInStats by viewModel.includeRepliesAndCommentsInStats.collectAsState()
     val lsposedStatus by viewModel.lsposedStatus.collectAsState()
+    val syncProgress by viewModel.syncProgress.collectAsState()
 
     Scaffold(
         contentWindowInsets = WindowInsets(0, 0, 0, 0),
@@ -73,13 +75,20 @@ fun SettingsScreen(viewModel: SettingsViewModel = viewModel()) {
             )
         }
     ) { padding ->
-        Column(
-            modifier = Modifier
-                .padding(padding)
-                .fillMaxSize()
-                .verticalScroll(rememberScrollState())
-                .padding(horizontal = 16.dp)
+        SyncPullRefreshContainer(
+            rawPendingCount = 0L,
+            syncProgress = syncProgress,
+            onRefresh = { viewModel.refreshData() },
+            modifier = Modifier.padding(padding),
+            showSyncStatusBanner = false,
+            showResultHint = false
         ) {
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .verticalScroll(rememberScrollState())
+                    .padding(horizontal = 16.dp)
+            ) {
             Spacer(modifier = Modifier.height(12.dp))
             LsposedStatusCard(status = lsposedStatus)
             Spacer(modifier = Modifier.height(12.dp))
@@ -165,6 +174,7 @@ fun SettingsScreen(viewModel: SettingsViewModel = viewModel()) {
                 label = { if (it == RedditRecordMode.PUSH) modePushLabel else modeReadLabel },
                 onSelect = viewModel::setRedditRecordMode
             )
+            }
         }
     }
 }

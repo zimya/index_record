@@ -1,16 +1,21 @@
 package com.melonhu.indexrecord.ui.stats
 
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
+import androidx.compose.material3.LoadingIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -20,6 +25,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
@@ -32,6 +38,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.melonhu.indexrecord.R
 import com.melonhu.indexrecord.logic.DistributionRange
+import com.melonhu.indexrecord.ui.components.SyncPullRefreshContainer
 import com.melonhu.indexrecord.viewmodel.StatsViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -39,6 +46,8 @@ import com.melonhu.indexrecord.viewmodel.StatsViewModel
 fun StatsScreen(viewModel: StatsViewModel = viewModel()) {
     val uiState by viewModel.state.collectAsState()
     val isRetrying by viewModel.isRetrying.collectAsState()
+    val rawPendingCount by viewModel.rawPendingCountFlow.collectAsState(initial = 0L)
+    val syncProgress by viewModel.syncProgress.collectAsState()
     val stats = uiState.stats
     val scrollState = rememberScrollState()
     val hasAnimated = viewModel.hasAnimatedNumbers
@@ -64,29 +73,49 @@ fun StatsScreen(viewModel: StatsViewModel = viewModel()) {
             )
         }
     ) { padding ->
-        Column(
-            modifier = Modifier
-                .padding(padding)
-                .fillMaxSize()
-                .verticalScroll(scrollState)
-                .padding(horizontal = 16.dp)
+        SyncPullRefreshContainer(
+            rawPendingCount = rawPendingCount,
+            syncProgress = syncProgress,
+            onRefresh = { viewModel.refreshData() },
+            modifier = Modifier.padding(padding),
+            showSyncStatusBanner = false,
+            showResultHint = false
         ) {
-            Spacer(modifier = Modifier.height(8.dp))
+            if (!uiState.hasStats && (uiState.isLoading || isRetrying) && uiState.errorMessage == null) {
+                BoxWithConstraints(modifier = Modifier.fillMaxSize()) {
+                    Column(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .heightIn(min = maxHeight)
+                            .verticalScroll(scrollState)
+                            .padding(horizontal = 16.dp),
+                        verticalArrangement = Arrangement.Center,
+                        horizontalAlignment = Alignment.CenterHorizontally
+                    ) {
+                        StatsLoadingContent(
+                            hasStats = false,
+                            loadingDesc = stringResource(R.string.stats_loading_content_desc)
+                        )
+                    }
+                }
+                return@SyncPullRefreshContainer
+            }
 
-            if (uiState.isLoading || isRetrying) {
-                val loadingDesc = stringResource(R.string.stats_loading_content_desc)
-                Column(
-                    modifier = Modifier.semantics { liveRegion = LiveRegionMode.Polite }
-                ) {
-                    CircularProgressIndicator(
-                        modifier = Modifier.semantics { contentDescription = loadingDesc }
-                    )
-                    Text(
-                        if (uiState.hasStats) stringResource(R.string.stats_reloading_with_previous) else stringResource(R.string.stats_loading),
-                        modifier = Modifier.padding(vertical = 12.dp)
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .verticalScroll(scrollState)
+                    .padding(horizontal = 16.dp)
+            ) {
+                Spacer(modifier = Modifier.height(8.dp))
+
+                if (uiState.isLoading || isRetrying) {
+                    StatsLoadingContent(
+                        hasStats = uiState.hasStats,
+                        loadingDesc = stringResource(R.string.stats_loading_content_desc),
+                        modifier = Modifier.fillMaxWidth()
                     )
                 }
-            }
             uiState.errorMessage?.let { message ->
                 Column(modifier = Modifier.semantics { liveRegion = LiveRegionMode.Polite }) {
                     Text(message, color = MaterialTheme.colorScheme.error)
@@ -170,6 +199,35 @@ fun StatsScreen(viewModel: StatsViewModel = viewModel()) {
             )
 
             Spacer(modifier = Modifier.height(32.dp))
+            }
         }
+    }
+}
+
+@OptIn(ExperimentalMaterial3ExpressiveApi::class)
+@Composable
+private fun StatsLoadingContent(
+    hasStats: Boolean,
+    loadingDesc: String,
+    modifier: Modifier = Modifier
+) {
+    Column(
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center,
+        modifier = modifier
+            .padding(vertical = 12.dp)
+            .semantics { liveRegion = LiveRegionMode.Polite }
+    ) {
+        LoadingIndicator(
+            modifier = Modifier.semantics { contentDescription = loadingDesc }
+        )
+        Text(
+            text = if (hasStats) {
+                stringResource(R.string.stats_reloading_with_previous)
+            } else {
+                stringResource(R.string.stats_loading)
+            },
+            modifier = Modifier.padding(top = 12.dp)
+        )
     }
 }

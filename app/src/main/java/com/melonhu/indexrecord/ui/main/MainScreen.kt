@@ -14,8 +14,10 @@ import androidx.compose.material.icons.filled.BarChart
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
+import androidx.compose.material3.NavigationBarItemDefaults
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -37,6 +39,9 @@ fun MainScreen() {
     Scaffold(
         contentWindowInsets = WindowInsets(0, 0, 0, 0),
         bottomBar = {
+            val navItemColors = NavigationBarItemDefaults.colors(
+                selectedTextColor = MaterialTheme.colorScheme.onSurface
+            )
             NavigationBar {
                 NavigationBarItem(
                     selected = selectedTab == 0,
@@ -46,6 +51,7 @@ fun MainScreen() {
                             selectedTab = 0
                         }
                     },
+                    colors = navItemColors,
                     icon = { androidx.compose.material3.Icon(Icons.Default.Home, contentDescription = stringResource(R.string.nav_home)) },
                     label = { androidx.compose.material3.Text(stringResource(R.string.nav_home)) }
                 )
@@ -57,6 +63,7 @@ fun MainScreen() {
                             selectedTab = 1
                         }
                     },
+                    colors = navItemColors,
                     icon = { androidx.compose.material3.Icon(Icons.Default.BarChart, contentDescription = stringResource(R.string.nav_stats)) },
                     label = { androidx.compose.material3.Text(stringResource(R.string.nav_stats)) }
                 )
@@ -68,6 +75,7 @@ fun MainScreen() {
                             selectedTab = 2
                         }
                     },
+                    colors = navItemColors,
                     icon = { androidx.compose.material3.Icon(Icons.Default.Settings, contentDescription = stringResource(R.string.nav_settings)) },
                     label = { androidx.compose.material3.Text(stringResource(R.string.nav_settings)) }
                 )

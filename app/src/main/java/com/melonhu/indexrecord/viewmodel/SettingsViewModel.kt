@@ -6,11 +6,14 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import io.github.libxposed.service.XposedService
 import io.github.libxposed.service.XposedServiceHelper
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import com.melonhu.indexrecord.logic.DataProcessor
 import com.melonhu.indexrecord.ui.theme.ThemeMode
 import com.melonhu.indexrecord.settings.AppLanguage
 import com.melonhu.indexrecord.settings.LocaleHelper
@@ -32,6 +35,24 @@ sealed interface LsposedStatus {
 
 class SettingsViewModel(application: Application) : AndroidViewModel(application) {
     private val prefs = application.getSharedPreferences("settings", Context.MODE_PRIVATE)
+    @Volatile
+    private var boundService: XposedService? = null
+
+    val syncProgress: StateFlow<DataProcessor.SyncProgress> = MutableStateFlow(
+        DataProcessor.SyncProgress(isRunning = false, total = 0, processed = 0)
+    )
+
+    suspend fun refreshData(): Int {
+        withContext(Dispatchers.IO) {
+            val service = boundService
+            if (service != null) {
+                _lsposedStatus.value = readLsposedStatus(service)
+            } else {
+                delay(300)
+            }
+        }
+        return 0
+    }
 
     private val _lsposedStatus = MutableStateFlow<LsposedStatus>(LsposedStatus.Checking)
     val lsposedStatus: StateFlow<LsposedStatus> = _lsposedStatus.asStateFlow()
@@ -59,29 +80,12 @@ class SettingsViewModel(application: Application) : AndroidViewModel(application
         try {
             XposedServiceHelper.registerListener(object : XposedServiceHelper.OnServiceListener {
                 override fun onServiceBind(service: XposedService) {
-                    val scopes = try {
-                        service.scope?.toList() ?: emptyList()
-                    } catch (e: Throwable) {
-                        emptyList()
-                    }
-                    val frameworkName = try {
-                        service.frameworkName ?: "LSPosed"
-                    } catch (e: Throwable) {
-                        "LSPosed"
-                    }
-                    val frameworkVersion = try {
-                        service.frameworkVersion
-                    } catch (e: Throwable) {
-                        null
-                    }
-                    _lsposedStatus.value = LsposedStatus.Active(
-                        frameworkName = frameworkName,
-                        frameworkVersion = frameworkVersion,
-                        activeScopes = scopes
-                    )
+                    boundService = service
+                    _lsposedStatus.value = readLsposedStatus(service)
                 }
 
                 override fun onServiceDied(service: XposedService) {
+                    boundService = null
                     _lsposedStatus.value = LsposedStatus.Inactive
                 }
             })
@@ -94,6 +98,34 @@ class SettingsViewModel(application: Application) : AndroidViewModel(application
             if (_lsposedStatus.value is LsposedStatus.Checking) {
                 _lsposedStatus.value = LsposedStatus.Inactive
             }
+        }
+    }
+
+    private fun readLsposedStatus(service: XposedService): LsposedStatus {
+        return try {
+            val scopes = try {
+                service.scope?.toList() ?: emptyList()
+            } catch (_: Throwable) {
+                emptyList()
+            }
+            val frameworkName = try {
+                service.frameworkName ?: "LSPosed"
+            } catch (_: Throwable) {
+                "LSPosed"
+            }
+            val frameworkVersion = try {
+                service.frameworkVersion
+            } catch (_: Throwable) {
+                null
+            }
+            LsposedStatus.Active(
+                frameworkName = frameworkName,
+                frameworkVersion = frameworkVersion,
+                activeScopes = scopes
+            )
+        } catch (_: Throwable) {
+            boundService = null
+            LsposedStatus.Inactive
         }
     }
 

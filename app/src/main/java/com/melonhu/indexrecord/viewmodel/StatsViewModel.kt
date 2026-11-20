@@ -14,11 +14,13 @@ import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.stateIn
 import com.melonhu.indexrecord.data.model.UniversalRecord
+import com.melonhu.indexrecord.data.repository.HomeRecordRepository
 import com.melonhu.indexrecord.data.repository.RecordHistoryRepository
 import com.melonhu.indexrecord.logic.ComputedStats
 import com.melonhu.indexrecord.logic.DistributionRange
 import com.melonhu.indexrecord.logic.StatsCalculator
 import com.melonhu.indexrecord.settings.RecordSettings
+import com.melonhu.indexrecord.sync.HomeSyncCoordinator
 import java.time.ZoneId
 
 data class StatsUiState(
@@ -34,13 +36,24 @@ class StatsViewModel(application: Application) : AndroidViewModel(application) {
     var hasAnimatedNumbers: Boolean = false
 
     private val historyRepository = RecordHistoryRepository()
+    private val homeRecordRepository = HomeRecordRepository()
+    private val syncCoordinator = HomeSyncCoordinator(application, viewModelScope)
     private val zone = ZoneId.systemDefault()
 
     private val selectedRangeFlow = MutableStateFlow(DistributionRange.LAST_30_DAYS)
 
     private val reads = DetailRetry { historyRepository.observeAllResult() }
     val isRetrying = reads.isRetrying
+    val rawPendingCountFlow = homeRecordRepository.rawPendingCount
+    val syncProgress = syncCoordinator.syncProgress
     fun retry() = reads.retry()
+
+    suspend fun refreshData(): Int {
+        if (state.value.errorMessage != null) {
+            retry()
+        }
+        return syncCoordinator.refresh()
+    }
 
     private val computedStatsFlow = statsStates(
         reads.snapshots,

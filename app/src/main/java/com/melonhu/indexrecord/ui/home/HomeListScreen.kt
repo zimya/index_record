@@ -2,31 +2,25 @@ package com.melonhu.indexrecord.ui.home
 
 import androidx.activity.compose.BackHandler
 import androidx.compose.animation.*
-import androidx.compose.animation.core.tween
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.*
-
-import androidx.compose.material3.pulltorefresh.rememberPullToRefreshState
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.input.nestedscroll.nestedScroll
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.unit.dp
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import com.melonhu.indexrecord.R
 import com.melonhu.indexrecord.data.model.UniversalRecord
 import com.melonhu.indexrecord.ui.components.RecordItem
-import com.melonhu.indexrecord.ui.components.RefreshResultHint
+import com.melonhu.indexrecord.ui.components.SyncPullRefreshContainer
 import com.melonhu.indexrecord.viewmodel.HomeViewModel
 import androidx.compose.runtime.saveable.rememberSaveable
 import com.melonhu.indexrecord.logic.DataProcessor
@@ -49,13 +43,9 @@ fun PullToRefreshListScreen(
     syncProgress: DataProcessor.SyncProgress,
     onItemClick: (UniversalRecord) -> Unit
 ) {
-    val pullState = rememberPullToRefreshState()
     val listItems = remember(records) { groupRecordsForHome(records) }
+    val recordIds = remember(records) { records.map { it.id } }
     val scope = rememberCoroutineScope()
-    var hintVisible by remember { mutableStateOf(false) }
-    var hintMessage by remember { mutableStateOf("") }
-    var hintShowArrow by remember { mutableStateOf(false) }
-    var hintNoNewToken by remember { mutableLongStateOf(0L) }
     val isAtTop by remember {
         derivedStateOf {
             listState.firstVisibleItemIndex == 0 && listState.firstVisibleItemScrollOffset == 0
@@ -63,7 +53,6 @@ fun PullToRefreshListScreen(
     }
 
     val keyboardController = LocalSoftwareKeyboardController.current
-    val context = LocalContext.current
     val isSearching = isSearchActive || searchQuery.isNotBlank()
 
     var textFieldValue by rememberSaveable(stateSaver = TextFieldValue.Saver) {
@@ -87,103 +76,6 @@ fun PullToRefreshListScreen(
         onSearchActiveChange(false)
     }
 
-    var syncSessionActive by remember { mutableStateOf(false) }
-    val syncInProgress = syncProgress.isRunning || pullState.isRefreshing
-    val showSync = (syncSessionActive || syncInProgress) && !isSearching
-    val showSyncStatus = (showSync || rawPendingCount > 0L) && !isSearching
-    var sessionLoadedCount by remember { mutableStateOf(0) }
-    var acknowledgedLoadedCount by remember { mutableStateOf(0) }
-    var previousRecordIds by remember { mutableStateOf<Set<Long>?>(null) }
-
-    LaunchedEffect(records, recordsLoaded) {
-        if (!recordsLoaded) return@LaunchedEffect
-        val ids = records.mapTo(HashSet()) { it.id }
-        val previous = previousRecordIds
-        previousRecordIds = ids
-        if (previous == null) return@LaunchedEffect
-        // 只有在真实的同步或刷新会话中、且非搜索状态下，列表新增项才计入本轮加载数
-        if (syncSessionActive && !isSearching) {
-            val addedCount = ids.count { it !in previous }
-            if (addedCount > 0) {
-                sessionLoadedCount += addedCount
-            }
-        }
-    }
-
-    // 当用户进入搜索时，立即清理提示和历史统计
-    LaunchedEffect(isSearching) {
-        if (isSearching) {
-            hintVisible = false
-            sessionLoadedCount = 0
-            acknowledgedLoadedCount = 0
-        }
-    }
-
-    // 只由真实处理/刷新维持会话；失败保留的 RawData 不代表仍在加载。
-    // 持续空闲 2.5 秒后结束展示，衔接宿主逐条转存的批次间隙。
-    LaunchedEffect(syncInProgress) {
-        if (syncInProgress) {
-            if (!syncSessionActive) {
-                sessionLoadedCount = 0
-                acknowledgedLoadedCount = 0
-            }
-            syncSessionActive = true
-        } else if (syncSessionActive) {
-            delay(2500)
-            syncSessionActive = false
-        }
-    }
-
-    LaunchedEffect(showSync, sessionLoadedCount, isAtTop, isSearching) {
-        if (isSearching || showSync) {
-            hintVisible = false
-            return@LaunchedEffect
-        }
-        if (sessionLoadedCount == 0 || sessionLoadedCount <= acknowledgedLoadedCount) {
-            hintVisible = false
-            return@LaunchedEffect
-        }
-        if (isAtTop && hintShowArrow) {
-            acknowledgedLoadedCount = sessionLoadedCount
-            hintVisible = false
-            hintShowArrow = false
-            return@LaunchedEffect
-        }
-        hintMessage = context.getString(R.string.sync_hint_loaded, sessionLoadedCount)
-        hintShowArrow = !isAtTop
-        hintVisible = true
-        if (isAtTop) {
-            acknowledgedLoadedCount = sessionLoadedCount
-            hintNoNewToken = System.currentTimeMillis()
-        } else {
-            hintNoNewToken = 0L
-        }
-    }
-
-    LaunchedEffect(hintNoNewToken, showSync) {
-        if (hintNoNewToken == 0L || showSync) return@LaunchedEffect
-        delay(1800)
-        hintVisible = false
-    }
-
-    LaunchedEffect(pullState.isRefreshing) {
-        if (!pullState.isRefreshing) return@LaunchedEffect
-        try {
-            val loadedCount = onRefresh()
-            // 新增数量统一由列表变化累计，刷新返回值不覆盖批次累计值。
-            if (loadedCount == 0 && sessionLoadedCount == 0 && !showSync) {
-                hintMessage = context.getString(R.string.sync_hint_empty)
-                hintShowArrow = false
-                hintVisible = true
-                hintNoNewToken = System.currentTimeMillis()
-            } else if (loadedCount > 0 && sessionLoadedCount == 0) {
-                sessionLoadedCount = loadedCount
-            }
-        } finally {
-            pullState.endRefresh()
-        }
-    }
-
     Scaffold(
         contentWindowInsets = WindowInsets(0, 0, 0, 0),
         topBar = {
@@ -199,132 +91,89 @@ fun PullToRefreshListScreen(
             )
         }
     ) { padding ->
-        Box(
-            modifier = Modifier
-                .padding(padding)
-                .fillMaxSize()
-                .nestedScroll(pullState.nestedScrollConnection)
-        ) {
-            Column(modifier = Modifier.fillMaxSize()) {
-                AnimatedVisibility(
-                    visible = showSyncStatus,
-                    enter = expandVertically(
-                        expandFrom = Alignment.Top,
-                        animationSpec = tween(300)
-                    ) + fadeIn(animationSpec = tween(300)),
-                    exit = shrinkVertically(
-                        shrinkTowards = Alignment.Top,
-                        animationSpec = tween(250)
-                    ) + fadeOut(animationSpec = tween(250))
-                ) {
-                    HomeSyncProgress(
-                        syncProgress = syncProgress,
-                        rawPendingCount = rawPendingCount,
-                        sessionLoadedCount = sessionLoadedCount,
-                        syncSessionActive = showSync
+        SyncPullRefreshContainer(
+            rawPendingCount = rawPendingCount,
+            syncProgress = syncProgress,
+            onRefresh = onRefresh,
+            modifier = Modifier.padding(padding),
+            suppressSyncUi = isSearching,
+            observedItemIds = recordIds,
+            observedItemsLoaded = recordsLoaded,
+            isAtTop = isAtTop,
+            onScrollToTop = {
+                scope.launch {
+                    if (listState.firstVisibleItemIndex > 15) {
+                        listState.scrollToItem(15)
+                    }
+                    listState.animateScrollToItem(0)
+                }
+            },
+            overlayContent = {
+                if (listItems.size >= 2) {
+                    DateFastScroller(
+                        items = listItems,
+                        listState = listState,
+                        modifier = Modifier
+                            .align(Alignment.CenterEnd)
+                            .fillMaxHeight()
+                            .padding(end = 0.dp, top = 10.dp, bottom = 10.dp)
                     )
                 }
-
-                if (records.isEmpty()) {
-                    Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                        val emptyText = if (searchQuery.isNotEmpty()) {
-                            stringResource(R.string.home_empty_search)
-                        } else if (!recordsLoaded) {
-                            ""
-                        } else {
-                            stringResource(R.string.home_empty_prompt)
-                        }
-                        Text(
-                            text = emptyText,
-                            color = Color.Gray
-                        )
+            }
+        ) {
+            if (records.isEmpty()) {
+                Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                    val emptyText = if (searchQuery.isNotEmpty()) {
+                        stringResource(R.string.home_empty_search)
+                    } else if (!recordsLoaded) {
+                        ""
+                    } else {
+                        stringResource(R.string.home_empty_prompt)
                     }
-                } else {
-                    LazyColumn(
-                        modifier = Modifier.fillMaxSize(),
-                        state = listState
-                    ) {
-                        items(listItems, key = { it.key }) { item ->
-                            AnimatedVisibility(
-                                visible = true,
-                                enter = fadeIn() + expandVertically(),
-                                exit = fadeOut() + shrinkVertically()
-                            ) {
-                                when (item) {
-                                    is RecordListItem -> {
-                                        RecordItem(item.record, searchQuery) {
-                                            onItemClick(item.record)
-                                        }
+                    Text(
+                        text = emptyText,
+                        color = Color.Gray
+                    )
+                }
+            } else {
+                LazyColumn(
+                    modifier = Modifier.fillMaxSize(),
+                    state = listState
+                ) {
+                    items(listItems, key = { it.key }) { item ->
+                        AnimatedVisibility(
+                            visible = true,
+                            enter = fadeIn() + expandVertically(),
+                            exit = fadeOut() + shrinkVertically()
+                        ) {
+                            when (item) {
+                                is RecordListItem -> {
+                                    RecordItem(item.record, searchQuery) {
+                                        onItemClick(item.record)
                                     }
-                                    is AnswerGroupListItem -> {
-                                        AnswerGroupItem(
-                                            questionTitle = item.questionTitle,
-                                            answers = item.answers,
-                                            searchQuery = searchQuery,
-                                            onOpenAnswer = onItemClick
-                                        )
-                                    }
-                                    is InterestGroupListItem -> {
-                                        InterestGroupItem(
-                                            subjectTitle = item.subjectTitle,
-                                            typeLabel = item.typeLabel,
-                                            interests = item.interests,
-                                            searchQuery = searchQuery,
-                                            onOpenInterest = onItemClick
-                                        )
-                                    }
+                                }
+                                is AnswerGroupListItem -> {
+                                    AnswerGroupItem(
+                                        questionTitle = item.questionTitle,
+                                        answers = item.answers,
+                                        searchQuery = searchQuery,
+                                        onOpenAnswer = onItemClick
+                                    )
+                                }
+                                is InterestGroupListItem -> {
+                                    InterestGroupItem(
+                                        subjectTitle = item.subjectTitle,
+                                        typeLabel = item.typeLabel,
+                                        interests = item.interests,
+                                        searchQuery = searchQuery,
+                                        onOpenInterest = onItemClick
+                                    )
                                 }
                             }
                         }
                     }
                 }
             }
-
-            if (listItems.size >= 2) {
-                DateFastScroller(
-                    items = listItems,
-                    listState = listState,
-                    modifier = Modifier
-                        .align(Alignment.CenterEnd)
-                        .fillMaxHeight()
-                        .padding(end = 0.dp, top = 10.dp, bottom = 10.dp)
-                )
-            }
-
-            RefreshResultHint(
-                visible = hintVisible,
-                message = hintMessage,
-                showArrow = hintShowArrow,
-                onClick = if (hintShowArrow) {
-                    {
-                        acknowledgedLoadedCount = sessionLoadedCount
-                        hintVisible = false
-                        hintShowArrow = false
-                        scope.launch {
-                            if (listState.firstVisibleItemIndex > 15) {
-                                listState.scrollToItem(15)
-                            }
-                            listState.animateScrollToItem(0)
-                        }
-                    }
-                } else {
-                    null
-                },
-                modifier = Modifier
-                    .align(Alignment.TopCenter)
-                    .padding(top = 8.dp)
-            )
-
-            HomePullRefreshBar(
-                state = pullState,
-                loading = pullState.isRefreshing || showSync,
-                syncFraction = if (showSync && syncProgress.total > 0) {
-                    syncProgress.processed.toFloat() / syncProgress.total.toFloat()
-                } else {
-                    null
-                },
-                modifier = Modifier.align(Alignment.TopCenter)
-            )
         }
     }
 }

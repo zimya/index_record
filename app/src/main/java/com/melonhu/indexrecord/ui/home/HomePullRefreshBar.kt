@@ -68,13 +68,12 @@ private fun InfiniteTransition.loopValue(delayMillis: Int, durationMillis: Int, 
 @Composable
 internal fun HomePullRefreshBar(
     state: PullToRefreshState,
+    isRefreshing: Boolean,
     loading: Boolean,
     syncFraction: Float?,
     modifier: Modifier = Modifier
 ) {
-    // 用 verticalOffset 而不是 progress：松手后 progress 会立刻归零，而 verticalOffset 带回弹动画。
-    val threshold = state.positionalThreshold.coerceAtLeast(1f)
-    val pullProgress = (state.verticalOffset / threshold).coerceIn(0f, 1f)
+    val pullProgress = state.distanceFraction.coerceIn(0f, 1f)
 
     val loadingAlpha by animateFloatAsState(
         targetValue = if (loading) 1f else 0f,
@@ -83,8 +82,8 @@ internal fun HomePullRefreshBar(
     )
 
     val appHaptics = rememberAppHapticFeedback()
-    LaunchedEffect(state) {
-        snapshotFlow { state.progress >= 1f && !state.isRefreshing }
+    LaunchedEffect(state, isRefreshing) {
+        snapshotFlow { state.distanceFraction >= 1f && !isRefreshing }
             .distinctUntilChanged()
             .collect { reachedThreshold ->
                 if (reachedThreshold) appHaptics.refreshThreshold()

@@ -120,6 +120,25 @@ class WeiboParserTest {
         assertTrue(parse("comments/allowed", """{"id":100,"allowed":true,"user":${status()}}""").isEmpty())
     }
 
+    @Test fun superGroupDetailLongTextContent() {
+        val extra = """, "isLongText":true,"longText":{"content":"超话完整长文<br>结尾"}"""
+        val r = parse("statuses/container_detail", """{"detailInfo":{"status":${status("100", extra)}}}""").single()
+        assertEquals("超话完整长文\n结尾", r.content)
+        val meta = JsonParser.parseString(r.extraMetadata).asJsonObject
+        assertTrue(meta["full_text"].asBoolean)
+    }
+
+    @Test fun superGroupCommentsResolveStatusIdFromAnalysisExtra() {
+        val nested = comment("201")
+        val top = comment("200", """, "analysis_extra":"author_uid:88|mid:100|page:1","comments":[$nested]""")
+        val rs = parse("statuses/container_detail_comment", """{"items":[{"category":"detail","type":"comment","data":$top}]}""", "?is_container=1").associateBy { it.platformId }
+        assertEquals(2, rs.size)
+        assertEquals("weibo_status_100", rs.getValue("weibo_comment_200").parentId)
+        assertEquals("https://m.weibo.cn/detail/100?cid=200", rs.getValue("weibo_comment_200").sourceUrl)
+        assertEquals("weibo_comment_200", rs.getValue("weibo_comment_201").parentId)
+        assertEquals("https://m.weibo.cn/detail/100?cid=201", rs.getValue("weibo_comment_201").sourceUrl)
+    }
+
     @Test fun malformedAndNonContentDoNotCreateRecords() {
         for (body in listOf("{}", "null", "[]", "broken", "{\"user\":{\"id\":123}}")) {
             assertTrue(parse("statuses/container_detail", body).isEmpty())

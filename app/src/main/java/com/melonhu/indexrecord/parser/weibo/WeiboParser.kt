@@ -36,18 +36,17 @@ object WeiboParser : RawDataParser {
             .ifEmpty { query["source_mid"].orEmpty().removePrefix("mid:").takeIf { it.all(Char::isDigit) }.orEmpty() }
         val records = linkedMapOf<String, UniversalRecord>()
         fun key(type: String, id: String) = if (id.isEmpty() || id == "0") "" else "weibo_${type}_$id"
-        fun emit(o: JsonObject, type: String, parent: String): String {
+        fun emit(o: JsonObject, type: String, parent: String, commentStatusId: String = statusId): String {
             val id = o.id()
             val pid = key(type, id)
             val user = o.obj("user") ?: return ""
             val longText = o.obj("longText")
             // Sparse patches cannot safely be inserted by the current generic persistence path.
             if (pid.isEmpty() || user.id().isBlank() || user.str("screen_name").ifEmpty { user.str("name") }.isBlank() || ad(o)) return ""
+            val longTextContent = longText?.str("longTextContent").orEmpty().ifEmpty { longText?.str("content").orEmpty() }
             val batchContent = if (type == "status" && path.endsWith("/longtext_show_batch")) o.str("content") else ""
-            if (!listOf("text", "text_raw", "longTextContent").any { o.str(it).isNotBlank() } &&
-                longText?.str("longTextContent").isNullOrBlank() && batchContent.isBlank()) return ""
-            val richText = longText?.str("longTextContent").orEmpty().ifEmpty { o.str("longTextContent") }
-                .ifEmpty { batchContent }
+            val richText = longTextContent.ifEmpty { o.str("longTextContent") }.ifEmpty { batchContent }
+            if (richText.isBlank() && listOf("text", "text_raw").none { o.str(it).isNotBlank() }) return ""
             val text = if (richText.isNotEmpty()) html(richText)
                 else o.str("text_raw").ifEmpty { html(o.str("text")) }
             val images = images(o)
@@ -63,10 +62,7 @@ object WeiboParser : RawDataParser {
             meta.addProperty("source", html(o.str("source")))
             meta.addProperty("region_name", o.str("region_name"))
             if (o.has("isLongText")) meta.add("is_long_text", o["isLongText"])
-                        if (!longText?.str("longTextContent").isNullOrBlank() ||
-                            o.str("longTextContent").isNotBlank() || batchContent.isNotBlank()) {
-                            meta.addProperty("full_text", true)
-                        }
+            if (richText.isNotBlank()) meta.addProperty("full_text", true)
             if (images.isNotEmpty()) meta.add("images", JsonArray().apply { images.forEach { add(it) } })
             val record = UniversalRecord(
                             contentFormat = if (images.isEmpty()) RecordBodyFormat.PLAIN_TEXT.storageValue else RecordBodyFormat.MARKDOWN.storageValue,
@@ -74,7 +70,7 @@ object WeiboParser : RawDataParser {
                 platformId = pid, content = content.trim(), authorId = user.id(),
                 authorName = user.str("screen_name").ifEmpty { user.str("name") },
                 authorAvatar = user.str("avatar_hd").ifEmpty { user.str("avatar_large") }.ifEmpty { user.str("profile_image_url") },
-                sourceUrl = if (type == "status") "https://m.weibo.cn/detail/$id" else if (statusId.isNotEmpty()) "https://m.weibo.cn/detail/$statusId?cid=$id" else "https://m.weibo.cn/comment/$id",
+                sourceUrl = if (type == "status") "https://m.weibo.cn/detail/$id" else if (commentStatusId.isNotEmpty()) "https://m.weibo.cn/detail/$commentStatusId?cid=$id" else "https://m.weibo.cn/comment/$id",
                 parentId = parent, publishTime = time(o.str("created_at")), captureTime = raw.timestamp,
                 extraMetadata = meta.toString())
             val previous = records[pid]
@@ -87,17 +83,18 @@ object WeiboParser : RawDataParser {
             return emit(o, "status", parent)
         }
 
-        fun comment(o: JsonObject?, fallback: String, depth: Int = 0) {
+        fun comment(o: JsonObject?, fallback: String, depth: Int = 0, statusFallback: String = statusId) {
             if (o == null || depth > 16 || ad(o)) return
             val id = o.id()
+            val sid = statusFallback.ifEmpty { o.analysisMid() }
             val reply = o.obj("reply_comment")
             val rootId = o.str("rootidstr").ifEmpty { o.str("rootid") }
             val parent = reply?.id()?.takeIf { it != id && it != "0" }?.let { key("comment", it) }
                 ?: rootId.takeIf { it.isNotEmpty() && it != "0" && it != id }?.let { key("comment", it) }
-                ?: fallback.takeUnless { it == key("comment", id) }.orEmpty().ifEmpty { key("status", statusId) }
-            if (reply != null && reply.id() != id) comment(reply, fallback, depth + 1)
-            val own = emit(o, "comment", parent)
-            if (own.isNotEmpty()) o.array("comments").forEach { if (it.isJsonObject) comment(it.asJsonObject, own, depth + 1) }
+                ?: fallback.takeUnless { it == key("comment", id) }.orEmpty().ifEmpty { key("status", sid) }
+            if (reply != null && reply.id() != id) comment(reply, fallback, depth + 1, sid)
+            val own = emit(o, "comment", parent, sid)
+            if (own.isNotEmpty()) o.array("comments").forEach { if (it.isJsonObject) comment(it.asJsonObject, own, depth + 1, sid) }
         }
         fun items(array: JsonArray, depth: Int = 0) {
             if (depth > 16) return
@@ -143,6 +140,9 @@ object WeiboParser : RawDataParser {
     private fun JsonObject.obj(key: String): JsonObject? = get(key)?.takeIf { it.isJsonObject }?.asJsonObject
     private fun JsonObject.array(key: String): JsonArray = get(key)?.takeIf { it.isJsonArray }?.asJsonArray ?: JsonArray()
     private fun JsonObject.id() = str("idstr").ifEmpty { str("id") }.ifEmpty { str("mid") }
+    private fun JsonObject.analysisMid(): String = str("analysis_extra").split('|')
+        .firstNotNullOfOrNull { it.takeIf { p -> p.startsWith("mid:") }?.removePrefix("mid:")?.takeIf { v -> v.isNotEmpty() && v.all(Char::isDigit) } }
+        .orEmpty()
     private fun ad(o: JsonObject): Boolean = listOf("is_ad", "ad_marked", "is_promoted").any { o.str(it) in setOf("1", "true") } ||
         o.str("type") in setOf("ad", "heartbeat") || o.str("category") in setOf("ad", "heartbeat") || o.obj("ad") != null
     private fun html(text: String): String {

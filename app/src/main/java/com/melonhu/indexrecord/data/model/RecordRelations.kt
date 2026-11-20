@@ -33,7 +33,7 @@ private fun relationOf(platform: String, recordType: String, parentId: String): 
             RecordRelation.BelongsToSubject(target)
         platform == "tieba" && recordType == "floor" -> RecordRelation.FloorInThread(target)
         recordType == "comment" -> RecordRelation.ReplyTo(target)
-        platform in setOf("weibo", "threads") -> RecordRelation.ReferencesContent(target)
+        platform in setOf("weibo", "threads", "bluesky") -> RecordRelation.ReferencesContent(target)
         else -> null
     }
 }

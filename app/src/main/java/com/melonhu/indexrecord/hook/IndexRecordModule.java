@@ -53,6 +53,10 @@ public class IndexRecordModule extends XposedModule {
                 hook = new XiaoheiheHook();
                 hookTag = "XiaoheiheRecord: ";
                 break;
+            case BlueskyHook.HOST_APP:
+                hook = new BlueskyHook();
+                hookTag = "BlueskyRecord: ";
+                break;
             case "com.sina.weibo":
             case "com.weico.international":
                 hook = new WeiboHook();

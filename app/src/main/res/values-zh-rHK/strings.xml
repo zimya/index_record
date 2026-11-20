@@ -74,6 +74,7 @@
     <string name="settings_tweet_record_mode">記錄推文的形式</string>
     <string name="settings_weibo_record_mode">記錄微博的形式</string>
     <string name="settings_threads_record_mode">記錄 Threads 的形式</string>
+    <string name="settings_bluesky_record_mode">記錄 Bluesky 的形式</string>
     <string name="settings_reddit_record_mode">記錄 Reddit 的形式</string>
     <string name="settings_mode_push">推播</string>
     <string name="settings_mode_read">閱讀</string>
@@ -175,6 +176,7 @@
     <string name="platform_tieba">貼吧</string>
     <string name="platform_twitter">X</string>
     <string name="platform_threads">Threads</string>
+    <string name="platform_bluesky">Bluesky</string>
     <string name="platform_reddit">Reddit</string>
     <string name="platform_weibo">微博</string>
     <string name="platform_weibo_intl">微博國際版</string>

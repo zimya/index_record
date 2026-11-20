@@ -22,6 +22,7 @@ import com.melonhu.indexrecord.settings.RedditRecordMode
 import com.melonhu.indexrecord.settings.TweetRecordMode
 import com.melonhu.indexrecord.settings.WeiboRecordMode
 import com.melonhu.indexrecord.settings.ThreadsRecordMode
+import com.melonhu.indexrecord.settings.BlueskyRecordMode
 
 sealed interface LsposedStatus {
     object Checking : LsposedStatus
@@ -71,6 +72,9 @@ class SettingsViewModel(application: Application) : AndroidViewModel(application
 
     private val _redditRecordMode = MutableStateFlow(RecordSettings.redditRecordMode)
     val redditRecordMode: StateFlow<RedditRecordMode> = _redditRecordMode.asStateFlow()
+
+    private val _blueskyRecordMode = MutableStateFlow(RecordSettings.blueskyRecordMode)
+    val blueskyRecordMode: StateFlow<BlueskyRecordMode> = _blueskyRecordMode.asStateFlow()
 
     init {
         initLsposedService()
@@ -151,6 +155,11 @@ class SettingsViewModel(application: Application) : AndroidViewModel(application
     fun setRedditRecordMode(mode: RedditRecordMode) {
         RecordSettings.redditRecordMode = mode
         _redditRecordMode.value = mode
+    }
+
+    fun setBlueskyRecordMode(mode: BlueskyRecordMode) {
+        RecordSettings.blueskyRecordMode = mode
+        _blueskyRecordMode.value = mode
     }
 
     fun setThreadsRecordMode(mode: ThreadsRecordMode) {

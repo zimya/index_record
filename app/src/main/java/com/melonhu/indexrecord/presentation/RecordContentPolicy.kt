@@ -16,6 +16,7 @@ object RecordContentPolicy {
         "coolapk" -> record.recordType in setOf("feed", "rating", "feedArticle", "question", "answer")
         "hupu" -> record.recordType == "post"
         "xiaoheihe" -> record.recordType == "post"
+        "bluesky" -> record.recordType == "post"
         else -> false
     }
 

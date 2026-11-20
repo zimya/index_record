@@ -20,6 +20,7 @@ import com.melonhu.indexrecord.data.model.UniversalRecord_
 import com.melonhu.indexrecord.parser.reddit.RedditRelations
 import com.melonhu.indexrecord.parser.reddit.RedditReadVisit
 import com.melonhu.indexrecord.parser.threads.ThreadsRelations
+import com.melonhu.indexrecord.parser.bluesky.BlueskyRelations
 import com.melonhu.indexrecord.parser.tieba.TiebaRelations
 import com.melonhu.indexrecord.parser.zhihu.ZhihuQuestionParser
 import com.melonhu.indexrecord.parser.zhihu.ZhihuRelations
@@ -309,6 +310,9 @@ private object WeiboPersistence : PlatformPersistence {
 private object ThreadsPersistence : PlatformPersistence {
     override fun mergeBody(existing: UniversalRecord, incoming: UniversalRecord) = ThreadsRelations.mergeRecord(existing, incoming)
 }
+private object BlueskyPersistence : PlatformPersistence {
+    override fun mergeBody(existing: UniversalRecord, incoming: UniversalRecord) = BlueskyRelations.mergeRecord(existing, incoming)
+}
 private object RedditPersistence : PlatformPersistence {
     override val preserveGenericContent = false
     override fun mergeBody(existing: UniversalRecord, incoming: UniversalRecord) = RedditRelations.mergeRecord(existing, incoming)
@@ -365,7 +369,7 @@ private object ZhihuPersistence : PlatformPersistence {
 }
 
 private fun defaultPersistencePlatforms(): Map<String, PlatformPersistence> = mapOf(
-    "weibo" to WeiboPersistence, "threads" to ThreadsPersistence, "reddit" to RedditPersistence,
+    "weibo" to WeiboPersistence, "threads" to ThreadsPersistence, "bluesky" to BlueskyPersistence, "reddit" to RedditPersistence,
     "zhihu" to ZhihuPersistence, "douban" to DoubanPersistence(),
     "tieba" to TiebaPersistence, "twitter" to TwitterPersistence
 )

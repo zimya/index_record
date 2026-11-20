@@ -74,6 +74,7 @@
     <string name="settings_tweet_record_mode">Tweet recording mode</string>
     <string name="settings_weibo_record_mode">Weibo recording mode</string>
     <string name="settings_threads_record_mode">Threads recording mode</string>
+    <string name="settings_bluesky_record_mode">Bluesky recording mode</string>
     <string name="settings_reddit_record_mode">Reddit recording mode</string>
     <string name="settings_mode_push">Push</string>
     <string name="settings_mode_read">Read</string>
@@ -175,6 +176,7 @@
     <string name="platform_tieba">Tieba</string>
     <string name="platform_twitter">X</string>
     <string name="platform_threads">Threads</string>
+    <string name="platform_bluesky">Bluesky</string>
     <string name="platform_reddit">Reddit</string>
     <string name="platform_weibo">Weibo</string>
     <string name="platform_weibo_intl">Weibo International</string>

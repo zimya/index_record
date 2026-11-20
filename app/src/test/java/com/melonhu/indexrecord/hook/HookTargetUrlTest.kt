@@ -131,6 +131,18 @@ class HookTargetUrlTest {
     }
 
     @Test
+    fun testBlueskyTargetUrls() {
+        assertTrue(BlueskyHook.isTargetUrl("https://enoki.us-east.host.bsky.network/xrpc/app.bsky.feed.getTimeline?limit=30"))
+        assertTrue(BlueskyHook.isTargetUrl("https://enoki.us-east.host.bsky.network/xrpc/app.bsky.feed.getFeed?feed=at://did:plc:abc"))
+        assertTrue(BlueskyHook.isTargetUrl("https://enoki.us-east.host.bsky.network/xrpc/app.bsky.unspecced.getPostThreadV2?anchor=at://did:plc:abc"))
+        assertTrue(BlueskyHook.isTargetUrl("https://public.api.bsky.app/xrpc/app.bsky.feed.getPostThread?uri=at://did:plc:abc"))
+
+        assertFalse(BlueskyHook.isTargetUrl("https://enoki.us-east.host.bsky.network/xrpc/app.bsky.actor.getPreferences"))
+        assertFalse(BlueskyHook.isTargetUrl("https://enoki.us-east.host.bsky.network/xrpc/chat.bsky.convo.getLog"))
+        assertFalse(BlueskyHook.isTargetUrl(null))
+    }
+
+    @Test
     fun testReflectionHelper() {
         assertEquals(java.lang.Integer::class.java, ReflectionHelper.wrapPrimitive(Int::class.javaPrimitiveType))
         assertEquals(java.lang.Boolean::class.java, ReflectionHelper.wrapPrimitive(Boolean::class.javaPrimitiveType))

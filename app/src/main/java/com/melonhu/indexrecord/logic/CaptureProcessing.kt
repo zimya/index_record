@@ -16,6 +16,7 @@ import com.melonhu.indexrecord.parser.reddit.RedditParser
 import com.melonhu.indexrecord.parser.reddit.RedditReadBuffer
 import com.melonhu.indexrecord.parser.reddit.RedditReadVisit
 import com.melonhu.indexrecord.parser.threads.ThreadsParser
+import com.melonhu.indexrecord.parser.bluesky.BlueskyParser
 import com.melonhu.indexrecord.parser.weibo.WeiboParser
 import com.melonhu.indexrecord.parser.x.XParser
 import com.melonhu.indexrecord.settings.RecordSettings
@@ -195,6 +196,7 @@ internal fun objectBoxCaptureProcessing(chunkSize: Long): CaptureProcessing {
         FilteredCapturePolicy(XParser::canHandle) { RecordSettings.tweetRecordMode.shouldProcess(it) },
         FilteredCapturePolicy(WeiboParser::canHandle) { RecordSettings.weiboRecordMode.shouldProcess(it) },
         FilteredCapturePolicy(ThreadsParser::canHandle) { RecordSettings.threadsRecordMode.shouldProcess(it) },
+        FilteredCapturePolicy(BlueskyParser::canHandle) { RecordSettings.blueskyRecordMode.shouldProcess(it) },
         RedditCapturePolicy(buffer), DoubanCapturePolicy, RegistryCapturePolicy
     )) { consume -> scanPendingReddit(chunkSize, consume) }
 }

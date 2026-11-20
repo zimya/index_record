@@ -92,13 +92,14 @@ fun getPlatformBrandColor(platform: String): Color? {
         "coolapk", "com.coolapk.market" -> CoolapkGreen
         "hupu", "com.hupu.games" -> HupuRed
         "xiaoheihe", "com.max.xiaoheihe" -> XiaoheiheDark
+        "bluesky", "xyz.blueskyweb.app" -> ZhihuBlue
         else -> null
     }
 }
 
 fun getPlatformThemeColor(platform: String, isDark: Boolean): PlatformThemeColor {
     return when (platform.lowercase()) {
-        "zhihu", "com.zhihu.android" -> if (isDark) {
+        "zhihu", "com.zhihu.android", "bluesky", "xyz.blueskyweb.app" -> if (isDark) {
             PlatformThemeColor(ZhihuBlue, ZhihuBlueDarkContainer, ZhihuBlueDarkText)
         } else {
             PlatformThemeColor(ZhihuBlue, ZhihuBlueLightContainer, ZhihuBlueLightText)

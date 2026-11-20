@@ -44,6 +44,7 @@ import com.melonhu.indexrecord.settings.RedditRecordMode
 import com.melonhu.indexrecord.settings.TweetRecordMode
 import com.melonhu.indexrecord.settings.WeiboRecordMode
 import com.melonhu.indexrecord.settings.ThreadsRecordMode
+import com.melonhu.indexrecord.settings.BlueskyRecordMode
 import com.melonhu.indexrecord.ui.components.SyncPullRefreshContainer
 import com.melonhu.indexrecord.ui.theme.ThemeMode
 import com.melonhu.indexrecord.ui.util.rememberAppHapticFeedback
@@ -58,6 +59,7 @@ fun SettingsScreen(viewModel: SettingsViewModel = viewModel()) {
     val weiboRecordMode by viewModel.weiboRecordMode.collectAsState()
     val threadsRecordMode by viewModel.threadsRecordMode.collectAsState()
     val redditRecordMode by viewModel.redditRecordMode.collectAsState()
+    val blueskyRecordMode by viewModel.blueskyRecordMode.collectAsState()
     val collapseMultipleItems by viewModel.collapseMultipleItems.collectAsState()
     val includeRepliesAndCommentsInStats by viewModel.includeRepliesAndCommentsInStats.collectAsState()
     val lsposedStatus by viewModel.lsposedStatus.collectAsState()
@@ -173,6 +175,13 @@ fun SettingsScreen(viewModel: SettingsViewModel = viewModel()) {
                 options = listOf(RedditRecordMode.PUSH, RedditRecordMode.READ),
                 label = { if (it == RedditRecordMode.PUSH) modePushLabel else modeReadLabel },
                 onSelect = viewModel::setRedditRecordMode
+            )
+            SettingsDropdownRow(
+                title = stringResource(R.string.settings_bluesky_record_mode),
+                selected = blueskyRecordMode,
+                options = listOf(BlueskyRecordMode.PUSH, BlueskyRecordMode.READ),
+                label = { if (it == BlueskyRecordMode.PUSH) modePushLabel else modeReadLabel },
+                onSelect = viewModel::setBlueskyRecordMode
             )
             }
         }

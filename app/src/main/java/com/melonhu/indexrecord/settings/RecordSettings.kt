@@ -68,11 +68,29 @@ enum class RedditRecordMode {
     }
 }
 
+enum class BlueskyRecordMode {
+    PUSH,
+    READ;
+
+    fun shouldProcess(url: String): Boolean {
+        if (this == PUSH) return true
+        val path = runCatching { java.net.URI(url).path }.getOrNull() ?: return false
+        return path == "/xrpc/app.bsky.feed.getPostThread" ||
+            path == "/xrpc/app.bsky.unspecced.getPostThreadV2"
+    }
+
+    companion object {
+        fun fromStoredValue(value: Any?): BlueskyRecordMode =
+            entries.firstOrNull { it.name == value } ?: READ
+    }
+}
+
 object RecordSettings {
     private const val TWEET_RECORD_MODE = "tweet_record_mode"
     private const val WEIBO_RECORD_MODE = "weibo_record_mode"
     private const val THREADS_RECORD_MODE = "threads_record_mode"
     private const val REDDIT_RECORD_MODE = "reddit_record_mode"
+    private const val BLUESKY_RECORD_MODE = "bluesky_record_mode"
     private const val INCLUDE_REPLIES_AND_COMMENTS_IN_STATS = "include_replies_and_comments_in_stats"
     private val _includeRepliesAndCommentsInStats = MutableStateFlow(false)
     val includeRepliesAndCommentsInStats = _includeRepliesAndCommentsInStats.asStateFlow()
@@ -113,6 +131,12 @@ object RecordSettings {
         prefs.edit().putBoolean(COLLAPSE_MULTIPLE_ITEMS, enabled).apply()
         _collapseMultipleItems.value = enabled
     }
+
+    var blueskyRecordMode: BlueskyRecordMode
+        get() = BlueskyRecordMode.fromStoredValue(prefs.all[BLUESKY_RECORD_MODE])
+        set(value) {
+            prefs.edit().putString(BLUESKY_RECORD_MODE, value.name).apply()
+        }
 
     var redditRecordMode: RedditRecordMode
         get() = RedditRecordMode.fromStoredValue(prefs.all[REDDIT_RECORD_MODE])

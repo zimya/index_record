@@ -12,6 +12,7 @@ import com.melonhu.indexrecord.parser.reddit.RedditParser
 import com.melonhu.indexrecord.parser.coolapk.CoolapkParser
 import com.melonhu.indexrecord.parser.hupu.HupuParser
 import com.melonhu.indexrecord.parser.xiaoheihe.XiaoheiheParser
+import com.melonhu.indexrecord.parser.bluesky.BlueskyParser
 
 /**
  * 平台解析器注册中心。
@@ -29,7 +30,8 @@ object ParserRegistry {
         RedditParser,
         CoolapkParser,
         HupuParser,
-        XiaoheiheParser
+        XiaoheiheParser,
+        BlueskyParser
     )
 
     fun findParser(cleanUrl: String, raw: RawData): RawDataParser? {

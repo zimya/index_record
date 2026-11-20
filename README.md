@@ -59,11 +59,13 @@
     - [x] 帖子
 - [x] **小黑盒**
     - [x] 帖子
+- [x] **Bluesky**
+    - [x] 帖子
+    - [x] 回复
 - [ ] 微信读书
 - [ ] Lofter
 - [ ] Mastodon(长毛象)
 - [ ] NGA玩家社区
-- [ ] Bluesky
 - [ ] Medium
 - [ ] Goodreads
 - [ ] 哔哩哔哩图文/评论区

@@ -1,7 +1,10 @@
 package com.melonhu.indexrecord.hook;
 
+import android.os.Handler;
+import android.os.Looper;
 import com.melonhu.indexrecord.parser.zhihu.ZhihuCaptureDecoder;
 import com.melonhu.indexrecord.sync.HookCaptureClient;
+import java.lang.reflect.Method;
 
 public class ZhihuHook implements PlatformHook {
 
@@ -21,7 +24,7 @@ public class ZhihuHook implements PlatformHook {
     }
 
     private void setupHooks(HookContext context, ClassLoader classLoader) {
-        okHttpHelper.setupOkHttpHook(
+        boolean installed = okHttpHelper.setupOkHttpHook(
             context,
             classLoader,
             "ZhihuRecordInterceptor",
@@ -50,6 +53,51 @@ public class ZhihuHook implements PlatformHook {
                 });
             }
         );
+        if (installed) {
+            hookLaunchBuildViewMainThread(context, classLoader);
+        }
+    }
+
+    /**
+     * Zhihu's LaunchWellC invokes LaunchImpl.buildLaunchView on whichever ad-rocket thread finishes
+     * last (e.g. GDT background thread). When OkHttp interception shifts that race, building
+     * ScreenTouchView and adding the splash view off the main thread throws and gets swallowed,
+     * leaving LauncherActivity stuck on the splash screen.
+     */
+    private void hookLaunchBuildViewMainThread(HookContext context, ClassLoader classLoader) {
+        Class<?> launchImplClass = ReflectionHelper.findClassIfExists(
+            "com.zhihu.android.launch.impl.LaunchImpl",
+            classLoader
+        );
+        if (launchImplClass == null) {
+            return;
+        }
+        Handler mainHandler = new Handler(Looper.getMainLooper());
+        for (Method method : launchImplClass.getDeclaredMethods()) {
+            if (!"buildLaunchView".equals(method.getName())) {
+                continue;
+            }
+            method.setAccessible(true);
+            try {
+                context.getXposed().hook(method).intercept(chain -> {
+                    if (Looper.myLooper() == Looper.getMainLooper()) {
+                        return chain.proceed();
+                    }
+                    Object thisObj = chain.getThisObject();
+                    Object[] args = chain.getArgs().toArray();
+                    mainHandler.post(() -> {
+                        try {
+                            method.invoke(thisObj, args);
+                        } catch (Throwable t) {
+                            context.log("Failed to dispatch buildLaunchView to main thread", t);
+                        }
+                    });
+                    return null;
+                });
+            } catch (Throwable t) {
+                context.log("Error hooking LaunchImpl.buildLaunchView: " + t.getMessage(), t);
+            }
+        }
     }
 
     public static boolean isTargetUrl(String url) {

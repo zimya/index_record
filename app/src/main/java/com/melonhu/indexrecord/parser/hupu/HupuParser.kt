@@ -19,16 +19,17 @@ object HupuParser : RawDataParser {
 
     private val THREAD_DETAIL_REGEX = Regex(""".*/threads/(?:refactor/)?(\d+)(?:/.*)?$""")
     private val TID_PARAM_REGEX = Regex("""[?&]tid=(\d+)""")
+    private val PID_PARAM_REGEX = Regex("""[?&]pid=(\d+)""")
 
     override fun canHandle(cleanUrl: String, raw: RawData): Boolean {
         if (!cleanUrl.contains("hupu.com") && raw.hostApp != HupuHook.HOST_APP) {
             return false
         }
-        return isThreadDetailUrl(cleanUrl) || isReplyListUrl(cleanUrl)
+        return isThreadDetailUrl(cleanUrl) || isReplyListUrl(cleanUrl) || isCheckReplyUrl(cleanUrl)
     }
 
     fun isThreadDetailUrl(cleanUrl: String): Boolean {
-        if (cleanUrl.contains("getsThreadPostList") || cleanUrl.contains("getsThreadLightReplyList")) {
+        if (isReplyListUrl(cleanUrl) || isCheckReplyUrl(cleanUrl)) {
             return false
         }
         return THREAD_DETAIL_REGEX.containsMatchIn(cleanUrl)
@@ -38,6 +39,10 @@ object HupuParser : RawDataParser {
         return cleanUrl.contains("getsThreadPostList") || cleanUrl.contains("getsThreadLightReplyList")
     }
 
+    fun isCheckReplyUrl(cleanUrl: String): Boolean {
+        return cleanUrl.endsWith("/getCheckReply")
+    }
+
     override fun parse(raw: RawData, cleanUrl: String): List<UniversalRecord> {
         val root = runCatching {
             JsonParser.parseString(raw.json).asJsonObject
@@ -45,7 +50,7 @@ object HupuParser : RawDataParser {
 
         return when {
             isThreadDetailUrl(cleanUrl) -> parseThreadDetail(root, raw, cleanUrl)
-            isReplyListUrl(cleanUrl) -> parseReplyList(root, raw, cleanUrl)
+            isReplyListUrl(cleanUrl) || isCheckReplyUrl(cleanUrl) -> parseReplyList(root, raw, cleanUrl)
             else -> emptyList()
         }
     }
@@ -150,16 +155,25 @@ object HupuParser : RawDataParser {
         val tid = TID_PARAM_REGEX.find(raw.url)?.groupValues?.getOrNull(1)
             ?: TID_PARAM_REGEX.find(cleanUrl)?.groupValues?.getOrNull(1).orEmpty()
 
-        val dataElem = root.get("data")
-        val array = when {
-            dataElem != null && dataElem.isJsonObject -> {
-                val dataObj = dataElem.asJsonObject
-                val resultObj = dataObj.obj("result")
-                resultObj?.get("list")?.takeIf { it.isJsonArray }?.asJsonArray
-                    ?: dataObj.get("list")?.takeIf { it.isJsonArray }?.asJsonArray
-            }
-            else -> root.get("list")?.takeIf { it.isJsonArray }?.asJsonArray
-        } ?: return emptyList()
+        val dataObj = root.obj("data")
+        val resultObj = dataObj?.obj("result") ?: root.obj("result")
+        val array = resultObj?.get("list")?.takeIf { it.isJsonArray }?.asJsonArray
+            ?: dataObj?.get("list")?.takeIf { it.isJsonArray }?.asJsonArray
+            ?: root.get("list")?.takeIf { it.isJsonArray }?.asJsonArray
+            ?: return emptyList()
+
+        val checkTargetPid = if (isCheckReplyUrl(cleanUrl)) {
+            PID_PARAM_REGEX.find(raw.url)?.groupValues?.getOrNull(1)
+                ?: PID_PARAM_REGEX.find(cleanUrl)?.groupValues?.getOrNull(1)
+                ?: resultObj?.obj("post_info")?.text("pid").orEmpty()
+        } else {
+            ""
+        }
+        val parentId = when {
+            checkTargetPid.isNotEmpty() -> "hupu_comment_$checkTargetPid"
+            tid.isNotEmpty() -> "hupu_post_$tid"
+            else -> ""
+        }
 
         val records = mutableListOf<UniversalRecord>()
         for (elem in array) {
@@ -213,12 +227,13 @@ object HupuParser : RawDataParser {
                 rawContent
             }
 
+            val effectiveQuotePid = quotePid?.takeIf { it.isNotEmpty() } ?: checkTargetPid.takeIf { it.isNotEmpty() }
             val extra = JsonObject().apply {
                 if (tid.isNotEmpty()) addProperty("tid", tid)
                 if (floor.isNotEmpty()) addProperty("floor", floor)
                 if (location.isNotEmpty()) addProperty("location", location)
                 if (lightCount > 0L) addProperty("light_count", lightCount)
-                quotePid?.takeIf { it.isNotEmpty() }?.let { addProperty("quote_pid", it) }
+                effectiveQuotePid?.let { addProperty("quote_pid", it) }
             }
 
             records.add(
@@ -233,7 +248,7 @@ object HupuParser : RawDataParser {
                     authorName = authorName,
                     authorAvatar = authorAvatar,
                     sourceUrl = if (tid.isNotEmpty()) "https://bbs.hupu.com/$tid.html" else "",
-                    parentId = if (tid.isNotEmpty()) "hupu_post_$tid" else "",
+                    parentId = parentId,
                     publishTime = publishTime,
                     captureTime = raw.timestamp,
                     extraMetadata = extra.toString(),

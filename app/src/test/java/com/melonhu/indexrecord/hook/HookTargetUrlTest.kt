@@ -103,6 +103,7 @@ class HookTargetUrlTest {
         assertTrue(HupuHook.isTargetUrl("https://bbs.mobileapi.hupu.com/1/8.2.51/threads/refactor/643971336"))
         assertTrue(HupuHook.isTargetUrl("https://bbs.mobileapi.hupu.com/1/8.2.51/threads/getsThreadPostList?tid=643989029"))
         assertTrue(HupuHook.isTargetUrl("https://bbs.mobileapi.hupu.com/1/8.2.51/threads/getsThreadLightReplyList?tid=643989029"))
+        assertTrue(HupuHook.isTargetUrl("https://bbs.mobileapi.hupu.com/1/8.2.51/threads/getCheckReply?pid=38446&tid=643879180"))
 
         // Excluded
         assertFalse(HupuHook.isTargetUrl("https://e-goblin.hupu.com/rm?placement_type=2"))

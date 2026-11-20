@@ -157,12 +157,42 @@ class HupuParserTest {
     }
 
     @Test
+    fun testParseCheckReply() {
+        val json = readSample("check_reply.json")
+        val records = parse(
+            "https://bbs.mobileapi.hupu.com/1/8.2.51/threads/getCheckReply?pid=38446&tid=643879180&fid=34&order=light&type=1",
+            json
+        )
+        assertEquals(9, records.size)
+
+        val r0 = records.first()
+        assertEquals("hupu", r0.platform)
+        assertEquals("comment", r0.recordType)
+        assertEquals("hupu_comment_38940", r0.platformId)
+        assertEquals("深聊", r0.authorName)
+        assertEquals("117645466", r0.authorId)
+        assertTrue(r0.content.contains("狂是我草率了"))
+        assertEquals("hupu_comment_38446", r0.parentId)
+        assertEquals("https://bbs.hupu.com/643879180.html", r0.sourceUrl)
+        assertEquals(1794480856000L, r0.publishTime)
+        assertEquals(RecordBodyFormat.HTML.storageValue, r0.contentFormat)
+        assertTrue(r0.directRelation() is RecordRelation.ReplyTo)
+        assertEquals("hupu_comment_38446", r0.replyTarget()?.contentId)
+
+        val extra0 = JsonParser.parseString(r0.extraMetadata).asJsonObject
+        assertEquals("643879180", extra0["tid"].asString)
+        assertEquals("38446", extra0["quote_pid"].asString)
+        assertEquals(245L, extra0["light_count"].asLong)
+    }
+
+    @Test
     fun testHupuParserCanHandle() {
         val raw = RawData(url = "", json = "", hostApp = "com.hupu.games", timestamp = 0L)
         assertTrue(HupuParser.canHandle("https://bbs.mobileapi.hupu.com/1/8.2.51/threads/643989029", raw))
         assertTrue(HupuParser.canHandle("https://bbs.mobileapi.hupu.com/1/8.2.51/threads/refactor/643971336", raw))
         assertTrue(HupuParser.canHandle("https://bbs.mobileapi.hupu.com/1/8.2.51/threads/getsThreadPostList", raw))
         assertTrue(HupuParser.canHandle("https://bbs.mobileapi.hupu.com/1/8.2.51/threads/getsThreadLightReplyList", raw))
+        assertTrue(HupuParser.canHandle("https://bbs.mobileapi.hupu.com/1/8.2.51/threads/getCheckReply", raw))
 
         assertFalse(HupuParser.canHandle("https://games.mobileapi.hupu.com/1/8.2.51/bplcommentapi/relation/score/statement", raw))
         assertFalse(HupuParser.canHandle("https://bbs.mobileapi.hupu.com/1/8.2.51/bbsevaluateapi/evaluate/info", raw))

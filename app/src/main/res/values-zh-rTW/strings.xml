@@ -220,4 +220,26 @@
     <string name="type_status">微博</string>
     <string name="type_subfloor">樓中樓</string>
     <string name="type_reply">回覆</string>
+
+    <string name="settings_check_update">檢查更新</string>
+    <string name="settings_check_update_desc">目前版本 %1$s</string>
+    <string name="settings_checking_update">正在檢查更新…</string>
+    <string name="update_up_to_date">目前已是最新版本</string>
+    <string name="update_check_failed">檢查更新失敗：%1$s</string>
+    <string name="update_available_title">發現新版本 %1$s</string>
+    <string name="update_no_changelog">暫無更新說明</string>
+    <string name="update_manual">手動更新</string>
+    <string name="update_auto">自動更新</string>
+    <string name="update_skip_version">略過此版本</string>
+    <string name="update_install_permission_required">請先開啟「安裝未知應用」權限</string>
+    <string name="update_download_failed">下載失敗：%1$s</string>
+    <string name="settings_auto_update">自動檢查更新</string>
+    <string name="update_freq_every_launch">每次啟動</string>
+    <string name="update_freq_daily">每天</string>
+    <string name="update_freq_weekly">每週</string>
+    <string name="update_freq_off">關閉</string>
+    <string name="update_downloading">下載中…</string>
+    <string name="settings_section_update">更新設定</string>
+    <string name="settings_section_update_desc">自動更新頻率與代理設定</string>
+    <string name="settings_use_github_proxy">使用 GitHub 代理</string>
 </resources>

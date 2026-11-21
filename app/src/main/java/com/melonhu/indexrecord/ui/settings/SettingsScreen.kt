@@ -28,6 +28,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
 import androidx.compose.material.icons.filled.BarChart
 import androidx.compose.material.icons.outlined.Palette
+import androidx.compose.material.icons.outlined.SystemUpdate
 import androidx.compose.material.icons.outlined.Tune
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -56,6 +57,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.melonhu.indexrecord.R
 import com.melonhu.indexrecord.ui.components.SyncPullRefreshContainer
+import com.melonhu.indexrecord.update.UpdateSettingsScreen
 import com.melonhu.indexrecord.viewmodel.SettingsViewModel
 
 private enum class SettingsSubPage(
@@ -77,6 +79,11 @@ private enum class SettingsSubPage(
         titleRes = R.string.settings_section_record,
         subtitleRes = R.string.settings_section_record_desc,
         icon = Icons.Outlined.Tune
+    ),
+    UPDATE(
+        titleRes = R.string.settings_section_update,
+        subtitleRes = R.string.settings_section_update_desc,
+        icon = Icons.Outlined.SystemUpdate
     )
 }
 
@@ -164,6 +171,7 @@ fun SettingsScreen(viewModel: SettingsViewModel = viewModel()) {
                         SettingsSubPage.APPEARANCE -> AppearanceSettingsScreen(viewModel, onBack)
                         SettingsSubPage.STATS -> StatsSettingsScreen(viewModel, onBack)
                         SettingsSubPage.RECORD -> RecordSettingsScreen(viewModel, onBack)
+                        SettingsSubPage.UPDATE -> UpdateSettingsScreen(onBack = onBack)
                     }
                 }
             }

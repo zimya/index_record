@@ -91,6 +91,8 @@ jobs:
 
                   echo "tag=$TAG" >> $GITHUB_OUTPUT
                   echo "xposed_tag=$XPOSED_TAG" >> $GITHUB_OUTPUT
+                  echo "version_name=$VERSION_NAME" >> $GITHUB_OUTPUT
+                  echo "version_code=$VERSION_CODE" >> $GITHUB_OUTPUT
 
             - name: Create GitHub Release and Upload APKs
               id: create_release
@@ -113,6 +115,50 @@ jobs:
                   if [ ! -s release-notes.md ]; then
                     echo "See changelog at: https://github.com/${{ github.repository }}/releases/tag/${{ steps.prepare.outputs.tag }}" > release-notes.md
                   fi
+
+            - name: Generate version.json for Cloudflare Pages
+              run: |
+                  TAG="${{ steps.prepare.outputs.tag }}"
+                  rm -f changelog.txt
+                  if [ "$(git cat-file -t "refs/tags/${TAG}" 2>/dev/null)" = "tag" ]; then
+                    git tag -l --format='%(contents)' "$TAG" \
+                      | sed '/-----BEGIN PGP SIGNATURE-----/,$d' > changelog.txt
+                  fi
+                  if [ ! -s changelog.txt ] || [ -z "$(tr -d '[:space:]' < changelog.txt)" ]; then
+                    cp release-notes.md changelog.txt
+                  fi
+
+                  mkdir -p pages-dist
+                  ASSETS_JSON=$(
+                    for apk in release-assets/*.apk; do
+                      [ -f "$apk" ] || continue
+                      basename "$apk"
+                    done | jq -R . | jq -s .
+                  )
+                  jq -n \
+                    --arg versionName "${{ steps.prepare.outputs.version_name }}" \
+                    --argjson versionCode "${{ steps.prepare.outputs.version_code }}" \
+                    --arg tag "$TAG" \
+                    --arg xposedTag "${{ steps.prepare.outputs.xposed_tag }}" \
+                    --arg downloadBaseUrl "https://github.com/Xposed-Modules-Repo/com.melonhu.indexrecord/releases/download/${{ steps.prepare.outputs.xposed_tag }}" \
+                    --argjson assets "$ASSETS_JSON" \
+                    --rawfile changelog changelog.txt \
+                    '{
+                      versionName: $versionName,
+                      versionCode: $versionCode,
+                      tag: $tag,
+                      xposedTag: $xposedTag,
+                      changelog: ($changelog | gsub("^\\s+|\\s+$"; "")),
+                      downloadBaseUrl: $downloadBaseUrl,
+                      assets: $assets
+                    }' > pages-dist/version.json
+
+            - name: Upload version.json artifact
+              uses: actions/upload-artifact@v4
+              with:
+                  name: version-json
+                  path: pages-dist/version.json
+                  if-no-files-found: error
 
             - name: Push Release to Xposed-Modules-Repo
               if: ${{ env.HAVE_TOKEN == 'true' }}

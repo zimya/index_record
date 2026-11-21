@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
@@ -19,6 +20,8 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.melonhu.indexrecord.settings.LocaleHelper
 import com.melonhu.indexrecord.ui.main.MainScreen
 import com.melonhu.indexrecord.ui.theme.IndexRecordTheme
+import com.melonhu.indexrecord.update.AppUpdateDialogHost
+import com.melonhu.indexrecord.update.AppUpdateViewModel
 import com.melonhu.indexrecord.viewmodel.SettingsViewModel
 
 class MainActivity : ComponentActivity() {
@@ -31,6 +34,7 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             val settingsViewModel: SettingsViewModel = viewModel()
+            val updateViewModel: AppUpdateViewModel = viewModel()
             val themeMode by settingsViewModel.themeMode.collectAsState()
             val monetDynamicColor by settingsViewModel.monetDynamicColor.collectAsState()
             val themeColor by settingsViewModel.themeColor.collectAsState()
@@ -53,7 +57,11 @@ class MainActivity : ComponentActivity() {
                         modifier = Modifier.fillMaxSize(),
                         color = MaterialTheme.colorScheme.background
                     ) {
+                        LaunchedEffect(Unit) {
+                            updateViewModel.checkForUpdate(silent = true)
+                        }
                         MainScreen()
+                        AppUpdateDialogHost(updateViewModel)
                     }
                 }
             }

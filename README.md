@@ -89,10 +89,12 @@
 - [x] **Bluesky**
     - [x] 帖子
     - [x] 回复
+- [x] **NGA玩家社区**
+    - [x] 帖子
+    - [x] 回复
 - [ ] 微信读书
 - [ ] Lofter
 - [ ] Mastodon(长毛象)
-- [ ] NGA玩家社区
 - [ ] Medium
 - [ ] Goodreads
 - [ ] 哔哩哔哩图文/评论区

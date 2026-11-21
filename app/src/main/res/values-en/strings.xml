@@ -78,6 +78,9 @@
     <string name="settings_reddit_record_mode">Reddit recording mode</string>
     <string name="settings_mode_push">Push</string>
     <string name="settings_mode_read">Read</string>
+    <string name="settings_section_appearance_desc">Theme, language, collapse multiple items</string>
+    <string name="settings_section_stats_desc">Reply and comment counting rules</string>
+    <string name="settings_section_record_desc">Recording modes by platform</string>
 
     <!-- LSPosed Card -->
     <string name="lsposed_active">%1$s Active</string>

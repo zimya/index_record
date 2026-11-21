@@ -22,6 +22,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
@@ -82,11 +83,14 @@ internal fun HomePullRefreshBar(
     )
 
     val appHaptics = rememberAppHapticFeedback()
-    LaunchedEffect(state, isRefreshing) {
-        snapshotFlow { state.distanceFraction >= 1f && !isRefreshing }
+    val currentIsRefreshing by rememberUpdatedState(isRefreshing)
+    LaunchedEffect(state) {
+        snapshotFlow { state.distanceFraction >= 1f }
             .distinctUntilChanged()
             .collect { reachedThreshold ->
-                if (reachedThreshold) appHaptics.refreshThreshold()
+                if (reachedThreshold && !currentIsRefreshing) {
+                    appHaptics.refreshThreshold()
+                }
             }
     }
 

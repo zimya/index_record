@@ -78,6 +78,9 @@
     <string name="settings_reddit_record_mode">记录 Reddit 的形式</string>
     <string name="settings_mode_push">推送</string>
     <string name="settings_mode_read">阅读</string>
+    <string name="settings_section_appearance_desc">主题、语言、多条目默认收起</string>
+    <string name="settings_section_stats_desc">回复和评论统计口径</string>
+    <string name="settings_section_record_desc">各平台记录形式</string>
 
     <!-- LSPosed Card -->
     <string name="lsposed_active">%1$s 已激活</string>

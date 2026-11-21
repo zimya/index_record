@@ -14,6 +14,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import com.melonhu.indexrecord.logic.DataProcessor
+import com.melonhu.indexrecord.ui.theme.ThemeColor
 import com.melonhu.indexrecord.ui.theme.ThemeMode
 import com.melonhu.indexrecord.settings.AppLanguage
 import com.melonhu.indexrecord.settings.LocaleHelper
@@ -60,6 +61,12 @@ class SettingsViewModel(application: Application) : AndroidViewModel(application
 
     private val _themeMode = MutableStateFlow(loadThemeMode())
     val themeMode: StateFlow<ThemeMode> = _themeMode.asStateFlow()
+
+    private val _monetDynamicColor = MutableStateFlow(loadMonetDynamicColor())
+    val monetDynamicColor: StateFlow<Boolean> = _monetDynamicColor.asStateFlow()
+
+    private val _themeColor = MutableStateFlow(loadThemeColor())
+    val themeColor: StateFlow<ThemeColor> = _themeColor.asStateFlow()
 
     private val _tweetRecordMode = MutableStateFlow(RecordSettings.tweetRecordMode)
     val tweetRecordMode: StateFlow<TweetRecordMode> = _tweetRecordMode.asStateFlow()
@@ -185,5 +192,24 @@ class SettingsViewModel(application: Application) : AndroidViewModel(application
     private fun loadThemeMode(): ThemeMode {
         val v = prefs.getInt("theme_mode", ThemeMode.SYSTEM.ordinal)
         return ThemeMode.entries.getOrNull(v) ?: ThemeMode.SYSTEM
+    }
+
+    fun setMonetDynamicColor(enabled: Boolean) {
+        prefs.edit().putBoolean("monet_dynamic_color", enabled).apply()
+        _monetDynamicColor.value = enabled
+    }
+
+    private fun loadMonetDynamicColor(): Boolean {
+        return prefs.getBoolean("monet_dynamic_color", false)
+    }
+
+    fun setThemeColor(color: ThemeColor) {
+        prefs.edit().putString("theme_color", color.name).apply()
+        _themeColor.value = color
+    }
+
+    private fun loadThemeColor(): ThemeColor {
+        val name = prefs.getString("theme_color", null)
+        return ThemeColor.entries.firstOrNull { it.name == name } ?: ThemeColor.INDEX_BLUE
     }
 }

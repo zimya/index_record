@@ -6,6 +6,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.res.stringResource
 import com.melonhu.indexrecord.R
 import com.melonhu.indexrecord.settings.AppLanguage
+import com.melonhu.indexrecord.ui.theme.ThemeColor
 import com.melonhu.indexrecord.ui.theme.ThemeMode
 import com.melonhu.indexrecord.viewmodel.SettingsViewModel
 
@@ -15,6 +16,8 @@ internal fun AppearanceSettingsScreen(
     onBack: () -> Unit
 ) {
     val themeMode by viewModel.themeMode.collectAsState()
+    val monetDynamicColor by viewModel.monetDynamicColor.collectAsState()
+    val themeColor by viewModel.themeColor.collectAsState()
     val appLanguage by viewModel.appLanguage.collectAsState()
     val collapseMultipleItems by viewModel.collapseMultipleItems.collectAsState()
 
@@ -34,6 +37,34 @@ internal fun AppearanceSettingsScreen(
                 }
             },
             onSelect = viewModel::setThemeMode
+        )
+        SettingsSwitchRow(
+            title = stringResource(R.string.settings_monet_dynamic_color),
+            description = stringResource(R.string.settings_monet_dynamic_color_desc),
+            checked = monetDynamicColor,
+            onCheckedChange = viewModel::setMonetDynamicColor
+        )
+        SettingsDropdownRow(
+            title = stringResource(R.string.settings_theme_color),
+            selected = themeColor,
+            options = ThemeColor.entries,
+            enabled = !monetDynamicColor,
+            label = {
+                when (it) {
+                    ThemeColor.INDEX_BLUE -> stringResource(R.string.settings_theme_color_index_blue)
+                    ThemeColor.INDEX_GREEN -> stringResource(R.string.settings_theme_color_index_green)
+                    ThemeColor.PINK -> stringResource(R.string.settings_theme_color_pink)
+                    ThemeColor.BLUE -> stringResource(R.string.settings_theme_color_blue)
+                    ThemeColor.PURPLE -> stringResource(R.string.settings_theme_color_purple)
+                    ThemeColor.ORANGE -> stringResource(R.string.settings_theme_color_orange)
+                    ThemeColor.MINT_GREEN -> stringResource(R.string.settings_theme_color_mint_green)
+                    ThemeColor.CYAN -> stringResource(R.string.settings_theme_color_cyan)
+                    ThemeColor.ICE_BLUE -> stringResource(R.string.settings_theme_color_ice_blue)
+                }
+            },
+            optionLeading = { ColorSwatchCircle(it.swatchColor) },
+            selectedTrailing = { ColorSwatchCircle(it.swatchColor) },
+            onSelect = viewModel::setThemeColor
         )
         SettingsDropdownRow(
             title = stringResource(R.string.settings_language),

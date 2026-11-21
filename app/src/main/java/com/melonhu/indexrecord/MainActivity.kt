@@ -32,6 +32,8 @@ class MainActivity : ComponentActivity() {
         setContent {
             val settingsViewModel: SettingsViewModel = viewModel()
             val themeMode by settingsViewModel.themeMode.collectAsState()
+            val monetDynamicColor by settingsViewModel.monetDynamicColor.collectAsState()
+            val themeColor by settingsViewModel.themeColor.collectAsState()
             val currentLanguage by settingsViewModel.appLanguage.collectAsState()
             val baseContext = LocalContext.current
             val localizedContext = remember(currentLanguage, baseContext) {
@@ -41,7 +43,11 @@ class MainActivity : ComponentActivity() {
                 LocalContext provides localizedContext,
                 LocalConfiguration provides localizedContext.resources.configuration
             ) {
-                IndexRecordTheme(themeMode = themeMode) {
+                IndexRecordTheme(
+                    themeMode = themeMode,
+                    themeColor = themeColor,
+                    dynamicColor = monetDynamicColor
+                ) {
                     // Surface 是背景容器
                     Surface(
                         modifier = Modifier.fillMaxSize(),

@@ -7,13 +7,17 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.selection.toggleable
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
@@ -28,6 +32,8 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
@@ -112,24 +118,36 @@ internal fun <T> SettingsDropdownRow(
     selected: T,
     options: List<T>,
     label: @Composable (T) -> String,
-    onSelect: (T) -> Unit
+    onSelect: (T) -> Unit,
+    enabled: Boolean = true,
+    optionLeading: (@Composable (T) -> Unit)? = null,
+    selectedTrailing: (@Composable (T) -> Unit)? = null
 ) {
     var expanded by remember { mutableStateOf(false) }
 
     Box(modifier = Modifier.fillMaxWidth()) {
-        Column(
+        Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .clickable(role = Role.Button) { expanded = true }
-                .padding(horizontal = 12.dp, vertical = 16.dp)
+                .clickable(enabled = enabled, role = Role.Button) { expanded = true }
+                .alpha(if (enabled) 1f else 0.38f)
+                .padding(horizontal = 12.dp, vertical = 16.dp),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically
         ) {
-            Text(title, style = MaterialTheme.typography.bodyLarge)
-            Text(
-                text = label(selected),
-                style = MaterialTheme.typography.bodyMedium,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
-                modifier = Modifier.padding(top = 4.dp)
-            )
+            Column(modifier = Modifier.weight(1f)) {
+                Text(title, style = MaterialTheme.typography.bodyLarge)
+                Text(
+                    text = label(selected),
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    modifier = Modifier.padding(top = 4.dp)
+                )
+            }
+            if (selectedTrailing != null) {
+                Spacer(modifier = Modifier.width(12.dp))
+                selectedTrailing(selected)
+            }
         }
         DropdownMenu(
             expanded = expanded,
@@ -139,6 +157,7 @@ internal fun <T> SettingsDropdownRow(
             options.forEach { option ->
                 DropdownMenuItem(
                     text = { Text(label(option)) },
+                    leadingIcon = optionLeading?.let { leading -> { leading(option) } },
                     onClick = {
                         expanded = false
                         onSelect(option)
@@ -151,4 +170,17 @@ internal fun <T> SettingsDropdownRow(
             }
         }
     }
+}
+
+@Composable
+internal fun ColorSwatchCircle(
+    color: Color,
+    modifier: Modifier = Modifier
+) {
+    Box(
+        modifier = modifier
+            .size(18.dp)
+            .clip(CircleShape)
+            .background(color)
+    )
 }

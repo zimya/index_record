@@ -38,6 +38,7 @@ internal interface RecordRepository {
 
 internal interface RecordSnapshotStorage {
     fun contains(key: String): Boolean
+    fun findByKey(key: String): RecordSnapshot? = null
     fun hasIdentity(identity: RecordIdentity): Boolean
     fun append(snapshot: RecordSnapshot)
     fun findRedditVisit(key: String): RecordSnapshot? = null
@@ -69,6 +70,10 @@ private class ObjectBoxSnapshotStorage(private val box: Box<RecordSnapshot>) : R
     override fun contains(key: String): Boolean {
         val query = box.query().equal(RecordSnapshot_.key, key, CASE_SENSITIVE).build()
         return try { query.count() > 0 } finally { query.close() }
+    }
+    override fun findByKey(key: String): RecordSnapshot? {
+        val query = box.query().equal(RecordSnapshot_.key, key, CASE_SENSITIVE).build()
+        return try { query.findFirst() } finally { query.close() }
     }
     override fun hasIdentity(identity: RecordIdentity): Boolean {
         val query = box.query().equal(RecordSnapshot_.platform, identity.platform, CASE_SENSITIVE)
@@ -108,9 +113,16 @@ internal fun prunePendingHistory(history: RecordSnapshotStorage, now: Long) {
 }
 
 /** Back up every old X storage role before the first event makes identity-level fallback disappear. */
-internal fun archiveLegacyIndex(record: UniversalRecord, repository: RecordRepository, history: RecordSnapshotStorage) {
-    if (history.hasIdentity(record.identity)) return
-    for (old in repository.findIds(record.identity.storageIds().toList()).filter { it.identity == record.identity }) {
+internal fun archiveLegacyIndex(record: UniversalRecord, repository: RecordRepository, history: RecordSnapshotStorage) =
+    archiveLegacyIndexForIdentity(record.identity, repository, history)
+
+internal fun archiveLegacyIndexForIdentity(
+    identity: RecordIdentity,
+    repository: RecordRepository,
+    history: RecordSnapshotStorage
+) {
+    if (history.hasIdentity(identity)) return
+    for (old in repository.findIds(identity.storageIds().toList()).filter { it.identity == identity }) {
         if (ZhihuQuestionParser.isAuxiliaryQuestion(old)) continue
         val key = legacySnapshotKey(old)
         if (!history.contains(key)) history.append(recordSnapshot(key, old, legacy = true))
@@ -173,6 +185,8 @@ internal interface CompletionEvidence {
 internal class RecordPersistenceContext {
     internal val platforms: Map<String, PlatformPersistence> = defaultPersistencePlatforms()
 }
+
+internal enum class ImportRecordOutcome { INSERTED, MERGED, UNCHANGED }
 
 internal class RecordPersistence(
     private val repository: RecordRepository,
@@ -276,30 +290,56 @@ internal class RecordPersistence(
         updateIndex(record)
     }
 
+    fun mergeImportedRecord(incoming: UniversalRecord): ImportRecordOutcome {
+        val platform = platforms[incoming.platform] ?: DefaultPersistence
+        val existing = repository.find(incoming.platformId)
+        if (existing == null) {
+            val candidate = incoming.copy(id = 0L)
+            platform.complete(candidate, repository)
+            repository.put(candidate)
+            platform.afterPut(candidate, repository)
+            return ImportRecordOutcome.INSERTED
+        }
+        val incomingIsNewer = incoming.captureTime > existing.captureTime ||
+            (incoming.captureTime == existing.captureTime && incoming.publishTime > existing.publishTime)
+        val older = if (incomingIsNewer) existing else incoming
+        val merged = (if (incomingIsNewer) incoming else existing).copy(id = existing.id)
+        mergeFields(platform, older, merged)
+        if (merged == existing) return ImportRecordOutcome.UNCHANGED
+        repository.put(merged)
+        platform.afterPut(merged, repository)
+        return ImportRecordOutcome.MERGED
+    }
+
     private fun updateIndex(record: UniversalRecord) {
         val platform = platforms[record.platform] ?: DefaultPersistence
         val existing = repository.find(record.platformId)
         if (existing != null) {
             record.id = existing.id
-            platform.mergeBody(existing, record)
-            if (record.parentId.isBlank()) record.parentId = existing.parentId
-            if (record.title.isBlank()) record.title = existing.title
-            if (platform.preserveGenericContent && (record.content.isBlank() || (record.recordType == "subject" && record.content == record.title))) {
-                if (existing.content.isNotBlank() && !(existing.recordType == "subject" && existing.content == existing.title)) {
-                    record.content = existing.content
-                    record.contentFormat = existing.contentFormat
-                }
-            }
-            if (record.authorId.isBlank()) record.authorId = existing.authorId
-            if (record.authorName.isBlank()) record.authorName = existing.authorName
-            if (record.authorAvatar.isBlank()) record.authorAvatar = existing.authorAvatar
-            if (record.sourceUrl.isBlank()) record.sourceUrl = existing.sourceUrl
-            record.publishTime = maxOf(existing.publishTime, record.publishTime)
-            record.captureTime = maxOf(existing.captureTime, record.captureTime)
-            platform.mergeExtra(existing, record)
+            mergeFields(platform, existing, record)
         }
         repository.put(record)
         platform.afterPut(record, repository)
+    }
+
+    private fun mergeFields(platform: PlatformPersistence, older: UniversalRecord, target: UniversalRecord) {
+        platform.mergeBody(older, target)
+        if (target.parentId.isBlank()) target.parentId = older.parentId
+        if (target.title.isBlank()) target.title = older.title
+        if (platform.preserveGenericContent && (target.content.isBlank() || (target.recordType == "subject" && target.content == target.title))) {
+            if (older.content.isNotBlank() && !(older.recordType == "subject" && older.content == older.title)) {
+                target.content = older.content
+                target.contentFormat = older.contentFormat
+            }
+        }
+        if (target.authorId.isBlank()) target.authorId = older.authorId
+        if (target.authorName.isBlank()) target.authorName = older.authorName
+        if (target.authorAvatar.isBlank()) target.authorAvatar = older.authorAvatar
+        if (target.sourceUrl.isBlank()) target.sourceUrl = older.sourceUrl
+        if (target.sourceApp.isNullOrBlank() && !older.sourceApp.isNullOrBlank()) target.sourceApp = older.sourceApp
+        target.publishTime = maxOf(older.publishTime, target.publishTime)
+        target.captureTime = maxOf(older.captureTime, target.captureTime)
+        platform.mergeExtra(older, target)
     }
 }
 

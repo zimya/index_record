@@ -46,7 +46,9 @@ internal fun encodeSnapshotRecord(record: UniversalRecord): String = JsonObject(
     addProperty("contentFormat", record.contentFormat)
 }.toString()
 
-internal fun RecordSnapshot.toRecord(): UniversalRecord {
+internal fun RecordSnapshot.toRecord(): UniversalRecord = decodeSnapshotRecord(recordJson)
+
+internal fun decodeSnapshotRecord(recordJson: String): UniversalRecord {
     val json = JsonParser.parseString(recordJson).asJsonObject
     require(json.get("version")?.asInt == 1) { "Unsupported record snapshot version" }
     fun text(name: String): String = json.get(name).asString

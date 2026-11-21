@@ -28,6 +28,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
 import androidx.compose.material.icons.filled.BarChart
 import androidx.compose.material.icons.outlined.Palette
+import androidx.compose.material.icons.outlined.Storage
 import androidx.compose.material.icons.outlined.SystemUpdate
 import androidx.compose.material.icons.outlined.Tune
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -79,6 +80,11 @@ private enum class SettingsSubPage(
         titleRes = R.string.settings_section_record,
         subtitleRes = R.string.settings_section_record_desc,
         icon = Icons.Outlined.Tune
+    ),
+    DATA(
+        titleRes = R.string.settings_section_data,
+        subtitleRes = R.string.settings_section_data_desc,
+        icon = Icons.Outlined.Storage
     ),
     UPDATE(
         titleRes = R.string.settings_section_update,
@@ -171,6 +177,7 @@ fun SettingsScreen(viewModel: SettingsViewModel = viewModel()) {
                         SettingsSubPage.APPEARANCE -> AppearanceSettingsScreen(viewModel, onBack)
                         SettingsSubPage.STATS -> StatsSettingsScreen(viewModel, onBack)
                         SettingsSubPage.RECORD -> RecordSettingsScreen(viewModel, onBack)
+                        SettingsSubPage.DATA -> DataSettingsScreen(onBack = onBack)
                         SettingsSubPage.UPDATE -> UpdateSettingsScreen(onBack = onBack)
                     }
                 }

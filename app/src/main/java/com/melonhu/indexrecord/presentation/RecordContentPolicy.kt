@@ -17,6 +17,7 @@ object RecordContentPolicy {
         "hupu" -> record.recordType == "post"
         "xiaoheihe" -> record.recordType == "post"
         "bluesky" -> record.recordType == "post"
+        "nga" -> record.recordType == "post"
         else -> false
     }
 

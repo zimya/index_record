@@ -13,6 +13,7 @@ import com.melonhu.indexrecord.parser.coolapk.CoolapkParser
 import com.melonhu.indexrecord.parser.hupu.HupuParser
 import com.melonhu.indexrecord.parser.xiaoheihe.XiaoheiheParser
 import com.melonhu.indexrecord.parser.bluesky.BlueskyParser
+import com.melonhu.indexrecord.parser.nga.NgaParser
 
 /**
  * 平台解析器注册中心。
@@ -31,7 +32,8 @@ object ParserRegistry {
         CoolapkParser,
         HupuParser,
         XiaoheiheParser,
-        BlueskyParser
+        BlueskyParser,
+        NgaParser
     )
 
     fun findParser(cleanUrl: String, raw: RawData): RawDataParser? {

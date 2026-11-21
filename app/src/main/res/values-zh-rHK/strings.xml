@@ -177,6 +177,7 @@
     <string name="platform_twitter">X</string>
     <string name="platform_threads">Threads</string>
     <string name="platform_bluesky">Bluesky</string>
+    <string name="platform_nga">NGA</string>
     <string name="platform_reddit">Reddit</string>
     <string name="platform_weibo">微博</string>
     <string name="platform_weibo_intl">微博國際版</string>

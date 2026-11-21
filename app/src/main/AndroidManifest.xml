@@ -18,6 +18,7 @@
         <package android:name="com.hupu.games" />
         <package android:name="com.max.xiaoheihe" />
         <package android:name="xyz.blueskyweb.app" />
+        <package android:name="gov.pianzong.androidnga" />
     </queries>
 
     <application

@@ -75,6 +75,13 @@ val XiaoheiheLightText = Color(0xFF202326)
 val XiaoheiheDarkContainer = Color(0xFF232628)
 val XiaoheiheDarkText = Color(0xFFDCDFE2)
 
+// NGA 琥珀棕
+val NgaAmber = Color(0xFFB4691E)
+val NgaLightContainer = Color(0xFFFFF3E0)
+val NgaLightText = Color(0xFF7A440F)
+val NgaDarkContainer = Color(0xFF3B2611)
+val NgaDarkText = Color(0xFFFFCA8A)
+
 data class PlatformThemeColor(
     val brand: Color,
     val container: Color,
@@ -93,6 +100,7 @@ fun getPlatformBrandColor(platform: String): Color? {
         "hupu", "com.hupu.games" -> HupuRed
         "xiaoheihe", "com.max.xiaoheihe" -> XiaoheiheDark
         "bluesky", "xyz.blueskyweb.app" -> ZhihuBlue
+        "nga", "gov.pianzong.androidnga" -> NgaAmber
         else -> null
     }
 }
@@ -143,6 +151,11 @@ fun getPlatformThemeColor(platform: String, isDark: Boolean): PlatformThemeColor
             PlatformThemeColor(XiaoheiheDark, XiaoheiheDarkContainer, XiaoheiheDarkText)
         } else {
             PlatformThemeColor(XiaoheiheDark, XiaoheiheLightContainer, XiaoheiheLightText)
+        }
+        "nga", "gov.pianzong.androidnga" -> if (isDark) {
+            PlatformThemeColor(NgaAmber, NgaDarkContainer, NgaDarkText)
+        } else {
+            PlatformThemeColor(NgaAmber, NgaLightContainer, NgaLightText)
         }
         else -> if (isDark) {
             PlatformThemeColor(IndexBlue, Color(0xFF2A2B30), Color(0xFFD0D0D5))

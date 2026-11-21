@@ -80,6 +80,10 @@ internal fun platformEngagement(platform: String, values: JsonObject): Engagemen
             quoteCount = count("quote_count", "quoteCount"),
             bookmarkCount = count("bookmark_count", "bookmarkCount")
         )
+        "nga" -> EngagementMetadata(
+            likeCount = count("vote_good"),
+            replyCount = count("replies")
+        )
         // Reddit's signed/hidden score is interpreted by RedditMetadata, never as a like count.
         else -> EngagementMetadata()
     }

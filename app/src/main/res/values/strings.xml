@@ -183,6 +183,7 @@
     <string name="platform_hupu">虎扑</string>
     <string name="platform_xiaoheihe">小黑盒</string>
     <string name="platform_bluesky">Bluesky</string>
+    <string name="platform_nga">NGA</string>
 
     <string name="type_question">问题</string>
     <string name="type_answer">回答</string>

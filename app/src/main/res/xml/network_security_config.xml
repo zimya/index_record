@@ -10,5 +10,6 @@
         <domain includeSubdomains="true">hoopchina.com.cn</domain>
         <domain includeSubdomains="true">xiaoheihe.cn</domain>
         <domain includeSubdomains="true">max-c.com</domain>
+        <domain includeSubdomains="true">nga.cn</domain>
     </domain-config>
 </network-security-config>

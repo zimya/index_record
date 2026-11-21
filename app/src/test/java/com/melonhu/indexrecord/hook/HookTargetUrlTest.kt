@@ -143,6 +143,18 @@ class HookTargetUrlTest {
     }
 
     @Test
+    fun testNgaTargetUrls() {
+        assertTrue(NgaHook.isTargetUrl("https://ngabbs.com/app_api.php?__lib=post&__act=list&tid=47912491&page=1"))
+        assertTrue(NgaHook.isTargetUrl("https://bbs.nga.cn/app_api.php?__lib=post&__act=list"))
+        assertTrue(NgaHook.isTargetUrl("https://nga.178.com/read.php?tid=47912491"))
+
+        assertFalse(NgaHook.isTargetUrl("https://ngabbs.com/nuke.php?__lib=check_in&__act=get_stat"))
+        assertFalse(NgaHook.isTargetUrl("https://ngabbs.com/nuke.php?__lib=app_inter&__act=static_file_list"))
+        assertFalse(NgaHook.isTargetUrl("https://example.com/app_api.php?__lib=post&__act=list"))
+        assertFalse(NgaHook.isTargetUrl(null))
+    }
+
+    @Test
     fun testReflectionHelper() {
         assertEquals(java.lang.Integer::class.java, ReflectionHelper.wrapPrimitive(Int::class.javaPrimitiveType))
         assertEquals(java.lang.Boolean::class.java, ReflectionHelper.wrapPrimitive(Boolean::class.javaPrimitiveType))

@@ -17,7 +17,8 @@ object PlatformCatalog {
         Platform("coolapk", "酷安", "com.coolapk.market"),
         Platform("hupu", "虎扑", "com.hupu.games"),
         Platform("xiaoheihe", "小黑盒", "com.max.xiaoheihe"),
-        Platform("bluesky", "Bluesky", "xyz.blueskyweb.app")
+        Platform("bluesky", "Bluesky", "xyz.blueskyweb.app"),
+        Platform("nga", "NGA", "gov.pianzong.androidnga")
     )
     private val byId = platforms.associateBy { it.id }
     private val packageNames = platforms.associate { it.defaultPackage to it.name } +
@@ -42,7 +43,7 @@ object PlatformCatalog {
 
     fun typeLabel(platform: String, type: String): String = when {
         type == "comment" && platform == "tieba" -> "楼中楼"
-        type == "comment" && platform in setOf("reddit", "threads", "hupu", "xiaoheihe", "bluesky") -> "回复"
+        type == "comment" && platform in setOf("reddit", "threads", "hupu", "xiaoheihe", "bluesky", "nga") -> "回复"
         else -> typeNames[type] ?: type.trim().ifEmpty { "类型未知" }
     }
 
@@ -73,12 +74,13 @@ object PlatformCatalog {
         "hupu" -> R.string.platform_hupu
         "xiaoheihe" -> R.string.platform_xiaoheihe
         "bluesky" -> R.string.platform_bluesky
+        "nga" -> R.string.platform_nga
         else -> null
     }
 
     fun typeNameRes(platform: String, type: String): Int? = when {
         type == "comment" && platform == "tieba" -> R.string.type_subfloor
-        type == "comment" && platform in setOf("reddit", "threads", "hupu", "xiaoheihe", "bluesky") -> R.string.type_reply
+        type == "comment" && platform in setOf("reddit", "threads", "hupu", "xiaoheihe", "bluesky", "nga") -> R.string.type_reply
         type == "question" -> R.string.type_question
         type == "answer" -> R.string.type_answer
         type == "article" -> R.string.type_article

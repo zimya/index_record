@@ -5,20 +5,44 @@ import com.melonhu.indexrecord.data.model.UniversalRecord
 
 /** Presentation identities only: never write these keys back to recordType. */
 object RecordContentPolicy {
-    fun isPrimaryContent(record: UniversalRecord): Boolean = when (record.platform) {
-        "zhihu" -> record.recordType in setOf("question", "answer", "article", "pin")
-        "tieba" -> record.recordType == "lou"
-        "reddit" -> record.recordType == "post"
-        "twitter" -> record.recordType == "tweet"
-        "weibo" -> record.recordType == "status"
-        "threads" -> record.recordType == "thread"
-        "douban" -> record.recordType in setOf("topic", "review", "interest", "subject")
-        "coolapk" -> record.recordType in setOf("feed", "rating", "feedArticle", "question", "answer")
-        "hupu" -> record.recordType == "post"
-        "xiaoheihe" -> record.recordType == "post"
-        "bluesky" -> record.recordType == "post"
-        "nga" -> record.recordType == "post"
-        else -> false
+    private val primaryTypesByPlatform: Map<String, List<String>> = mapOf(
+        "zhihu" to listOf("question", "answer", "article", "pin"),
+        "douban" to listOf("topic", "review", "interest", "subject"),
+        "tieba" to listOf("lou"),
+        "twitter" to listOf("tweet"),
+        "weibo" to listOf("status"),
+        "threads" to listOf("thread"),
+        "reddit" to listOf("post"),
+        "coolapk" to listOf("feed", "rating", "feedArticle", "question", "answer"),
+        "hupu" to listOf("post"),
+        "xiaoheihe" to listOf("post"),
+        "bluesky" to listOf("post"),
+        "nga" to listOf("post")
+    )
+
+    private val secondaryTypesByPlatform: Map<String, List<String>> = mapOf(
+        "zhihu" to listOf("comment"),
+        "douban" to listOf("comment"),
+        "tieba" to listOf("floor", "comment"),
+        "twitter" to listOf("comment"),
+        "weibo" to listOf("comment"),
+        "threads" to listOf("comment"),
+        "reddit" to listOf("comment"),
+        "coolapk" to listOf("comment"),
+        "hupu" to listOf("comment"),
+        "xiaoheihe" to listOf("comment"),
+        "bluesky" to listOf("comment"),
+        "nga" to listOf("comment")
+    )
+
+    fun isPrimaryContent(record: UniversalRecord): Boolean =
+        record.recordType in primaryTypesByPlatform[record.platform].orEmpty()
+
+    /** Returns the platform entry types included in statistics for the current scope setting. */
+    fun statsRecordTypes(platform: String, includeRepliesAndComments: Boolean): List<String> {
+        val primary = primaryTypesByPlatform[platform].orEmpty()
+        if (!includeRepliesAndComments) return primary
+        return primary + secondaryTypesByPlatform[platform].orEmpty()
     }
 
     fun isEligibleForHome(record: UniversalRecord, includeSecondary: Boolean): Boolean =

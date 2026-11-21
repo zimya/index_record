@@ -18,6 +18,7 @@ import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.selection.toggleable
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
@@ -81,6 +82,7 @@ internal fun SettingsSwitchRow(
     Row(
         modifier = modifier
             .fillMaxWidth()
+            .clip(RoundedCornerShape(12.dp))
             .toggleable(
                 value = checked,
                 role = Role.Switch,
@@ -129,6 +131,7 @@ internal fun <T> SettingsDropdownRow(
         Row(
             modifier = Modifier
                 .fillMaxWidth()
+                .clip(RoundedCornerShape(12.dp))
                 .clickable(enabled = enabled, role = Role.Button) { expanded = true }
                 .alpha(if (enabled) 1f else 0.38f)
                 .padding(horizontal = 12.dp, vertical = 16.dp),

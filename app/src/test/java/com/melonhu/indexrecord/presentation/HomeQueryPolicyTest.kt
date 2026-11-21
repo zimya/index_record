@@ -94,4 +94,24 @@ class HomeQueryPolicyTest {
         assertEquals(secondary.filter { it.platform == "zhihu" }, HomeQueryPolicy.apply(secondary, "zhihu"))
         assertEquals(secondary.filter { it.recordType == "comment" }, HomeQueryPolicy.apply(secondary, "comment"))
     }
+
+    @Test fun statsRecordTypesReflectScopeSettingForEveryKnownPlatform() {
+        assertEquals(
+            listOf("question", "answer", "article", "pin"),
+            RecordContentPolicy.statsRecordTypes("zhihu", includeRepliesAndComments = false)
+        )
+        assertEquals(
+            listOf("question", "answer", "article", "pin", "comment"),
+            RecordContentPolicy.statsRecordTypes("zhihu", includeRepliesAndComments = true)
+        )
+        assertEquals(
+            listOf("lou"),
+            RecordContentPolicy.statsRecordTypes("tieba", includeRepliesAndComments = false)
+        )
+        assertEquals(
+            listOf("lou", "floor", "comment"),
+            RecordContentPolicy.statsRecordTypes("tieba", includeRepliesAndComments = true)
+        )
+        assertTrue(RecordContentPolicy.statsRecordTypes("unknown", includeRepliesAndComments = true).isEmpty())
+    }
 }

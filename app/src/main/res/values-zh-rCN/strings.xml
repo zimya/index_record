@@ -11,6 +11,7 @@
     <!-- Common -->
     <string name="common_back">返回</string>
     <string name="common_close">关闭</string>
+    <string name="common_confirm">确定</string>
     <string name="common_cancel">取消</string>
     <string name="common_next">下一步</string>
     <string name="common_clear">清除</string>
@@ -117,6 +118,11 @@
     <string name="stats_retry_button">重试读取统计</string>
     <string name="stats_scope_with_replies">统计范围：主内容及已阅读的回复、评论。按每次阅读的时间与快照统计，重复阅读也计数。</string>
     <string name="stats_scope_main_only">统计范围：仅主内容，不含回复和评论。按每次阅读的时间与快照统计，重复阅读也计数。</string>
+    <string name="stats_scope_info_desc">统计范围说明</string>
+    <string name="stats_scope_dialog_title">统计范围说明</string>
+    <string name="stats_scope_platforms_title">各平台统计条目类型</string>
+    <string name="stats_scope_platform_item">%1$s：%2$s</string>
+    <string name="stats_scope_type_separator">、</string>
     <string name="stats_today_reading">今日阅读</string>
     <string name="stats_checked_in">已打卡</string>
     <string name="stats_pending_read">待阅读</string>

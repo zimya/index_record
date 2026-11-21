@@ -12,19 +12,28 @@ import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.Info
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
+import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.LoadingIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -37,7 +46,9 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.melonhu.indexrecord.R
+import com.melonhu.indexrecord.data.PlatformCatalog
 import com.melonhu.indexrecord.logic.DistributionRange
+import com.melonhu.indexrecord.presentation.RecordContentPolicy
 import com.melonhu.indexrecord.ui.components.SyncPullRefreshContainer
 import com.melonhu.indexrecord.viewmodel.StatsViewModel
 
@@ -54,6 +65,14 @@ fun StatsScreen(viewModel: StatsViewModel = viewModel()) {
     val onAnimationEnd = remember(viewModel) {
         { viewModel.hasAnimatedNumbers = true }
     }
+    var showScopeDialog by remember { mutableStateOf(false) }
+
+    if (showScopeDialog) {
+        StatsScopeDialog(
+            includeRepliesAndComments = uiState.includeRepliesAndComments,
+            onDismiss = { showScopeDialog = false }
+        )
+    }
 
     Scaffold(
         contentWindowInsets = WindowInsets(0, 0, 0, 0),
@@ -65,6 +84,15 @@ fun StatsScreen(viewModel: StatsViewModel = viewModel()) {
                         style = MaterialTheme.typography.titleLarge,
                         fontWeight = FontWeight.Bold
                     )
+                },
+                actions = {
+                    IconButton(onClick = { showScopeDialog = true }) {
+                        Icon(
+                            imageVector = Icons.Outlined.Info,
+                            contentDescription = stringResource(R.string.stats_scope_info_desc),
+                            tint = MaterialTheme.colorScheme.primary
+                        )
+                    }
                 },
                 colors = TopAppBarDefaults.topAppBarColors(
                     containerColor = Color.Transparent,
@@ -131,17 +159,6 @@ fun StatsScreen(viewModel: StatsViewModel = viewModel()) {
                 }
             }
             if (!uiState.hasStats) return@Column
-
-            Text(
-                text = if (uiState.includeRepliesAndComments) {
-                    stringResource(R.string.stats_scope_with_replies)
-                } else {
-                    stringResource(R.string.stats_scope_main_only)
-                },
-                style = MaterialTheme.typography.bodySmall,
-                color = MaterialTheme.colorScheme.onSurfaceVariant
-            )
-            Spacer(modifier = Modifier.height(12.dp))
 
             // 1. 今日阅读字数 & 统计小组件卡片
             TodayReadingCard(
@@ -230,4 +247,70 @@ private fun StatsLoadingContent(
             modifier = Modifier.padding(top = 12.dp)
         )
     }
+}
+
+@Composable
+private fun StatsScopeDialog(
+    includeRepliesAndComments: Boolean,
+    onDismiss: () -> Unit
+) {
+    AlertDialog(
+        onDismissRequest = onDismiss,
+        title = {
+            Text(text = stringResource(R.string.stats_scope_dialog_title))
+        },
+        text = {
+            Column(
+                modifier = Modifier.verticalScroll(rememberScrollState()),
+                verticalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                Text(
+                    text = if (includeRepliesAndComments) {
+                        stringResource(R.string.stats_scope_with_replies)
+                    } else {
+                        stringResource(R.string.stats_scope_main_only)
+                    },
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+                HorizontalDivider(modifier = Modifier.padding(vertical = 4.dp))
+                Text(
+                    text = stringResource(R.string.stats_scope_platforms_title),
+                    style = MaterialTheme.typography.titleSmall,
+                    fontWeight = FontWeight.SemiBold,
+                    color = MaterialTheme.colorScheme.onSurface
+                )
+                val separator = stringResource(R.string.stats_scope_type_separator)
+                PlatformCatalog.platforms.forEach { platform ->
+                    val types = RecordContentPolicy.statsRecordTypes(
+                        platform = platform.id,
+                        includeRepliesAndComments = includeRepliesAndComments
+                    )
+                    if (types.isNotEmpty()) {
+                        val platformName = PlatformCatalog.platformNameRes(platform.id)
+                            ?.let { stringResource(it) } ?: platform.name
+                        val typeLabels = types.map { type ->
+                            PlatformCatalog.typeNameRes(platform.id, type)
+                                ?.let { stringResource(it) }
+                                ?: PlatformCatalog.typeLabel(platform.id, type)
+                        }.joinToString(separator)
+                        Text(
+                            text = stringResource(
+                                R.string.stats_scope_platform_item,
+                                platformName,
+                                typeLabels
+                            ),
+                            style = MaterialTheme.typography.bodySmall,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                        )
+                    }
+                }
+            }
+        },
+        confirmButton = {
+            TextButton(onClick = onDismiss) {
+                Text(text = stringResource(R.string.common_confirm))
+            }
+        }
+    )
 }

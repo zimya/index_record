@@ -11,6 +11,7 @@
     <!-- Common -->
     <string name="common_back">Back</string>
     <string name="common_close">Close</string>
+    <string name="common_confirm">OK</string>
     <string name="common_cancel">Cancel</string>
     <string name="common_next">Next</string>
     <string name="common_clear">Clear</string>
@@ -117,6 +118,11 @@
     <string name="stats_retry_button">Retry Loading Statistics</string>
     <string name="stats_scope_with_replies">Scope: Primary content and read replies/comments. Counted per reading time and snapshot; repeated readings are counted.</string>
     <string name="stats_scope_main_only">Scope: Primary content only, excluding replies and comments. Counted per reading time and snapshot; repeated readings are counted.</string>
+    <string name="stats_scope_info_desc">Statistics scope info</string>
+    <string name="stats_scope_dialog_title">Statistics Scope</string>
+    <string name="stats_scope_platforms_title">Included Entry Types by Platform</string>
+    <string name="stats_scope_platform_item">%1$s: %2$s</string>
+    <string name="stats_scope_type_separator">, </string>
     <string name="stats_today_reading">Today\'s Reading</string>
     <string name="stats_checked_in">Checked in</string>
     <string name="stats_pending_read">Pending</string>

@@ -37,3 +37,4 @@ wheels/
 .settings/
 local.properties
 gradle/gradle-daemon-jvm.properties
+release.jks

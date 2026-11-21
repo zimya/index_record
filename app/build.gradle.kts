@@ -1,3 +1,4 @@
+import java.util.Properties
 import java.util.concurrent.TimeUnit
 
 plugins {
@@ -39,7 +40,7 @@ android {
         minSdk = 26
         targetSdk = 34
         versionCode = getGitCommitCount()
-        versionName = "0.7.0"
+        versionName = "0.7.1"
         resourceConfigurations += listOf("zh", "zh-rCN", "zh-rTW", "zh-rHK", "en")
     }
 
@@ -68,6 +69,34 @@ android {
         }
     }
 
+    signingConfigs {
+        val localProps = Properties().apply {
+            val file = rootProject.file("local.properties")
+            if (file.exists()) file.inputStream().use { load(it) }
+        }
+        val releaseStorePath = System.getenv("SIGNING_KEYSTORE_PATH")
+            ?: localProps.getProperty("signing.storeFile")
+        val releaseStorePassword = System.getenv("SIGNING_STORE_PASSWORD")
+            ?: localProps.getProperty("signing.storePassword")
+        val releaseKeyAlias = System.getenv("SIGNING_KEY_ALIAS")
+            ?: localProps.getProperty("signing.keyAlias")
+        val releaseKeyPassword = System.getenv("SIGNING_KEY_PASSWORD")
+            ?: localProps.getProperty("signing.keyPassword")
+
+        if (!releaseStorePath.isNullOrBlank() &&
+            !releaseStorePassword.isNullOrBlank() &&
+            !releaseKeyAlias.isNullOrBlank() &&
+            !releaseKeyPassword.isNullOrBlank()
+        ) {
+            create("release") {
+                storeFile = rootProject.file(releaseStorePath)
+                storePassword = releaseStorePassword
+                keyAlias = releaseKeyAlias
+                keyPassword = releaseKeyPassword
+            }
+        }
+    }
+
     buildTypes {
         getByName("release") {
             isMinifyEnabled = true
@@ -76,7 +105,8 @@ android {
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
-            signingConfig = signingConfigs.getByName("debug")
+            signingConfig = signingConfigs.findByName("release")
+                ?: signingConfigs.getByName("debug")
         }
     }
 

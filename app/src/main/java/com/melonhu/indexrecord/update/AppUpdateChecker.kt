@@ -1,6 +1,7 @@
 package com.melonhu.indexrecord.update
 
 import android.os.Build
+import androidx.annotation.Keep
 import com.google.gson.Gson
 import com.melonhu.indexrecord.BuildConfig
 import okhttp3.OkHttpClient
@@ -9,6 +10,7 @@ import java.io.File
 import java.io.IOException
 import java.util.concurrent.TimeUnit
 
+@Keep
 data class RemoteVersionInfo(
     val versionName: String = "",
     val versionCode: Int = 0,

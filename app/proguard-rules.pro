@@ -57,6 +57,10 @@
 -keep class com.melonhu.indexrecord.parser.** { *; }
 -keepclassmembers class com.melonhu.indexrecord.parser.** { *; }
 
+# 自动更新数据模型 (Gson 反序列化)
+-keep class com.melonhu.indexrecord.update.RemoteVersionInfo { *; }
+-keepclassmembers class com.melonhu.indexrecord.update.RemoteVersionInfo { *; }
+
 # ==============================================================================
 # 4. Native / JNI 接口
 # ==============================================================================

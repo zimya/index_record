@@ -1,9 +1,12 @@
 package com.melonhu.indexrecord
 
 import android.app.Application
+import android.os.Build
 import android.util.Log
 import coil.ImageLoader
 import coil.ImageLoaderFactory
+import coil.decode.GifDecoder
+import coil.decode.ImageDecoderDecoder
 import io.objectbox.android.AndroidObjectBrowser
 import okhttp3.OkHttpClient
 
@@ -48,6 +51,13 @@ class App : Application(), ImageLoaderFactory {
 
         return ImageLoader.Builder(this)
             .okHttpClient(okHttpClient)
+            .components {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+                    add(ImageDecoderDecoder.Factory())
+                } else {
+                    add(GifDecoder.Factory())
+                }
+            }
             .crossfade(true)
             .build()
     }

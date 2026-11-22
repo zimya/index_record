@@ -315,13 +315,15 @@ object RedditParser : RawDataParser {
         if (more.length() > 0) meta.put("comment_more", more)
     }
 
+    private val RICHTEXT_MEDIA_REGEX = Regex("""!\[([^\]]*)\]\(([^)\s]+)(\s+(?:"[^"]*"|'[^']*'))?\)""")
+
     private fun body(value: JSONObject, meta: JSONObject, allowMedia: Boolean): String {
         val content = value.optJSONObject("content")
         val markdown = content?.nullableString("markdown")
         val html = content?.nullableString("html")
         val preview = content?.nullableString("preview")
         val text = when {
-            markdown != null -> markdown // No trimming, HTML conversion, or Markdown escaping of the real source.
+            markdown != null -> resolveRichtextMedia(markdown, content) // No trimming, HTML conversion, or Markdown escaping of the real source.
             html != null -> runCatching { htmlToMdAst(html).toMarkdown() }.getOrElse { escapeText(html) }
             preview != null -> escapeText(preview)
             else -> ""
@@ -399,17 +401,45 @@ object RedditParser : RawDataParser {
         }
     }
 
-    private fun mediaBlock(media: JSONObject?, caption: String = ""): String? {
-        if (media == null || RedditCaptureFilter.isAd(media)) return null
+    private fun resolveRichtextMedia(markdown: String, content: JSONObject): String {
+        val items = content.optJSONArray("richtextMedia")?.objects().orEmpty()
+        if (items.isEmpty()) return markdown
+        val mediaById = items.mapNotNull { item ->
+            item.string("id").takeIf { it.isNotEmpty() }?.let { it to item }
+        }.toMap()
+        if (mediaById.isEmpty()) return markdown
+        return RICHTEXT_MEDIA_REGEX.replace(markdown) { match ->
+            val asset = mediaById[match.groupValues[2]] ?: return@replace match.value
+            if (RedditCaptureFilter.isAd(asset)) return@replace match.value
+            val (image, videoUrl) = extractMediaUrls(asset)
+            when {
+                videoUrl.isNotEmpty() -> videoMarkdown(image, videoUrl)
+                image.isNotEmpty() -> "![${match.groupValues[1]}](${markdownUrl(image)}${match.groupValues[3]})"
+                else -> match.value
+            }
+        }
+    }
+
+    private fun extractMediaUrls(media: JSONObject): Pair<String, String> {
         val still = media.optJSONObject("still")
         val image = bestImage(still ?: media)
         val video = media.optJSONObject("video") ?: media.optJSONObject("streaming")
-        val videoUrl = sequenceOf("fallbackUrl", "mp4Url", "url", "hlsUrl", "dashUrl").map { safeUrl(video?.string(it).orEmpty()) }
+        val videoUrl = sequenceOf("fallbackUrl", "mp4Url", "url", "hlsUrl", "dashUrl")
+            .map { safeUrl(video?.string(it).orEmpty()) }
             .firstOrNull { it.isNotEmpty() }.orEmpty()
-        val alt = caption.ifEmpty { still?.string("altText").orEmpty() }.ifEmpty { "图片" }
+        return image to videoUrl
+    }
+
+    private fun videoMarkdown(image: String, videoUrl: String): String =
+        if (image.isEmpty()) "[▶ 点击播放视频](${markdownUrl(videoUrl)})" else
+            "[![视频封面](${markdownUrl(image)})](${markdownUrl(videoUrl)})\n\n[▶ 点击播放视频](${markdownUrl(videoUrl)})"
+
+    private fun mediaBlock(media: JSONObject?, caption: String = ""): String? {
+        if (media == null || RedditCaptureFilter.isAd(media)) return null
+        val (image, videoUrl) = extractMediaUrls(media)
+        val alt = caption.ifEmpty { media.optJSONObject("still")?.string("altText").orEmpty() }.ifEmpty { "图片" }
         return when {
-            videoUrl.isNotEmpty() -> if (image.isEmpty()) "[▶ 点击播放视频](${markdownUrl(videoUrl)})" else
-                "[![视频封面](${markdownUrl(image)})](${markdownUrl(videoUrl)})\n\n[▶ 点击播放视频](${markdownUrl(videoUrl)})"
+            videoUrl.isNotEmpty() -> videoMarkdown(image, videoUrl)
             image.isNotEmpty() -> "![${escapeLabel(alt)}](${markdownUrl(image)})"
             else -> null
         }

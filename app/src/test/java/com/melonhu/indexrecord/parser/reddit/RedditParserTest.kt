@@ -152,6 +152,63 @@ class RedditParserTest {
         assertTrue(parse(JSONObject().put("data", data).toString()).isEmpty())
     }
 
+    @Test fun commentAndPostRichtextMediaIdsResolveToRealImageAndGifUrls() {
+        val data = root(fixture("thread"))
+        val post = data.getJSONObject("postInfoById")
+        val trees = post.getJSONObject("commentForest").getJSONArray("trees")
+        val pngComment = trees.getJSONObject(1).getJSONObject("node")
+        pngComment.put("content", JSONObject()
+            .put("markdown", "look at this\n\n![img](b9wip0noo12i1)\n\n")
+            .put("richtextMedia", JSONArray().put(JSONObject()
+                .put("id", "b9wip0noo12i1")
+                .put("mimetype", "image/png")
+                .put("url", "https://i.redd.it/b9wip0noo12i1.png")
+            ))
+        )
+        val giphyComment = trees.getJSONObject(2).getJSONObject("node")
+        giphyComment.put("content", JSONObject()
+            .put("markdown", "![gif](giphy|R2yYkZbpnHCKc)")
+            .put("richtextMedia", JSONArray().put(JSONObject()
+                .put("id", "giphy|R2yYkZbpnHCKc")
+                .put("mimetype", "image/gif")
+                .put("url", "https://external-preview.redd.it/example.gif?auto=webp&s=abc")
+            ))
+        )
+        val fallbackComment = trees.getJSONObject(3).getJSONObject("node")
+        fallbackComment.put("content", JSONObject()
+            .put("markdown", "![img](missing123)\n\n![img](fallback456 \"caption\")")
+            .put("richtextMedia", JSONArray().put(JSONObject()
+                .put("id", "fallback456")
+                .put("medium", JSONObject().put("url", "https://preview.redd.it/fallback456.jpg?width=216"))
+            ))
+        )
+        post.put("content", JSONObject()
+            .put("markdown", "post inline\n\n![img](postmedia1)")
+            .put("richtextMedia", JSONArray().put(JSONObject()
+                .put("id", "postmedia1")
+                .put("url", "https://i.redd.it/postmedia1.jpg")
+            ))
+        )
+
+        val records = parse(JSONObject().put("data", data).toString()).associateBy { it.platformId }
+        assertEquals(
+            "post inline\n\n![img](https://i.redd.it/postmedia1.jpg)",
+            records.getValue("reddit_post_1xr0ctd").content
+        )
+        assertEquals(
+            "look at this\n\n![img](https://i.redd.it/b9wip0noo12i1.png)\n\n",
+            records.getValue(RedditParser.commentId(pngComment.getString("id"))).content
+        )
+        assertEquals(
+            "![gif](https://external-preview.redd.it/example.gif?auto=webp&s=abc)",
+            records.getValue(RedditParser.commentId(giphyComment.getString("id"))).content
+        )
+        assertEquals(
+            "![img](missing123)\n\n![img](https://preview.redd.it/fallback456.jpg?width=216 \"caption\")",
+            records.getValue(RedditParser.commentId(fallbackComment.getString("id"))).content
+        )
+    }
+
     @Test fun retainedFullPrivateSampleWhenExplicitlyAvailable() {
         // Optional local replay neither copies private cache files nor prints their contents.
         val directory = System.getenv("REDDIT_EVIDENCE_DIR")?.let(::File)?.takeIf { it.isDirectory } ?: return

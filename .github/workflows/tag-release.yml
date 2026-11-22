@@ -94,40 +94,38 @@ jobs:
                   echo "version_name=$VERSION_NAME" >> $GITHUB_OUTPUT
                   echo "version_code=$VERSION_CODE" >> $GITHUB_OUTPUT
 
+            - name: Extract Changelog from Tag
+              id: changelog
+              run: |
+                  TAG="${{ steps.prepare.outputs.tag }}"
+                  rm -f changelog.md
+
+                  if [ "$(git cat-file -t "refs/tags/${TAG}" 2>/dev/null)" = "tag" ]; then
+                    git tag -l --format='%(contents)' "$TAG" \
+                      | sed '/-----BEGIN PGP SIGNATURE-----/,$d' \
+                      | sed 's/\\n/\n/g' > changelog.md
+                  fi
+
+                  if [ -s changelog.md ] && [ -n "$(tr -d '[:space:]' < changelog.md)" ]; then
+                    echo "has_custom_notes=true" >> $GITHUB_OUTPUT
+                  else
+                    echo "has_custom_notes=false" >> $GITHUB_OUTPUT
+                    echo "See changelog at: https://github.com/${{ github.repository }}/releases/tag/${TAG}" > changelog.md
+                  fi
+
             - name: Create GitHub Release and Upload APKs
               id: create_release
               uses: softprops/action-gh-release@v2
               with:
                   tag_name: ${{ steps.prepare.outputs.tag }}
                   name: "Release ${{ steps.prepare.outputs.tag }}"
+                  body_path: ${{ steps.changelog.outputs.has_custom_notes == 'true' && 'changelog.md' || '' }}
                   generate_release_notes: true
                   files: release-assets/*.apk
 
-            - name: Fetch Release Notes from Main Repo
-              env:
-                  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-              run: |
-                  curl -s -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
-                       -H "Accept: application/vnd.github+json" \
-                       "https://api.github.com/repos/${{ github.repository }}/releases/${{ steps.create_release.outputs.id }}" \
-                       | jq -r '.body // empty' > release-notes.md
-
-                  if [ ! -s release-notes.md ]; then
-                    echo "See changelog at: https://github.com/${{ github.repository }}/releases/tag/${{ steps.prepare.outputs.tag }}" > release-notes.md
-                  fi
-
-            - name: Generate version.json for Cloudflare Pages
+            - name: Generate version.json for Cloudflare Workers
               run: |
                   TAG="${{ steps.prepare.outputs.tag }}"
-                  rm -f changelog.txt
-                  if [ "$(git cat-file -t "refs/tags/${TAG}" 2>/dev/null)" = "tag" ]; then
-                    git tag -l --format='%(contents)' "$TAG" \
-                      | sed '/-----BEGIN PGP SIGNATURE-----/,$d' > changelog.txt
-                  fi
-                  if [ ! -s changelog.txt ] || [ -z "$(tr -d '[:space:]' < changelog.txt)" ]; then
-                    cp release-notes.md changelog.txt
-                  fi
-
                   mkdir -p pages-dist
                   ASSETS_JSON=$(
                     for apk in release-assets/*.apk; do
@@ -142,7 +140,7 @@ jobs:
                     --arg xposedTag "${{ steps.prepare.outputs.xposed_tag }}" \
                     --arg downloadBaseUrl "https://github.com/Xposed-Modules-Repo/com.melonhu.indexrecord/releases/download/${{ steps.prepare.outputs.xposed_tag }}" \
                     --argjson assets "$ASSETS_JSON" \
-                    --rawfile changelog changelog.txt \
+                    --rawfile changelog changelog.md \
                     '{
                       versionName: $versionName,
                       versionCode: $versionCode,
@@ -153,12 +151,19 @@ jobs:
                       assets: $assets
                     }' > pages-dist/version.json
 
-            - name: Upload version.json artifact
-              uses: actions/upload-artifact@v4
-              with:
-                  name: version-json
-                  path: pages-dist/version.json
-                  if-no-files-found: error
+                  cat << 'EOF' > pages-dist/index.html
+                  <!DOCTYPE html>
+                  <html>
+                  <head>
+                    <meta charset="utf-8">
+                    <title>Index Record Version</title>
+                    <meta http-equiv="refresh" content="0; url=/version.json">
+                  </head>
+                  <body>
+                    <p>Redirecting to <a href="/version.json">/version.json</a>...</p>
+                  </body>
+                  </html>
+                  EOF
 
             - name: Push Release to Xposed-Modules-Repo
               if: ${{ env.HAVE_TOKEN == 'true' }}
@@ -170,6 +175,17 @@ jobs:
                   repository: Xposed-Modules-Repo/com.melonhu.indexrecord
                   tag_name: ${{ steps.prepare.outputs.xposed_tag }}
                   name: "Release ${{ steps.prepare.outputs.xposed_tag }}"
-                  body_path: release-notes.md
+                  body_path: changelog.md
                   generate_release_notes: false
                   files: release-assets/*.apk
+
+            - name: Deploy version.json to Cloudflare Workers
+              if: ${{ env.HAVE_CF_TOKEN == 'true' && env.HAVE_CF_ACCOUNT == 'true' }}
+              env:
+                  HAVE_CF_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN != '' }}
+                  HAVE_CF_ACCOUNT: ${{ secrets.CLOUDFLARE_ACCOUNT_ID != '' }}
+              uses: cloudflare/wrangler-action@v3
+              with:
+                  apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+                  accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+                  command: deploy

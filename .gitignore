@@ -20,6 +20,9 @@ wheels/
 !gradle/wrapper/gradle-wrapper.jar
 !gradle/wrapper/gradle-wrapper.properties
 
+# Build artifacts
+pages-dist/
+release-assets/
 .gradle/
 *.zip
 

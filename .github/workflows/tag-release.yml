@@ -24,6 +24,7 @@ jobs:
               uses: actions/checkout@v4
               with:
                   fetch-depth: 0
+                  fetch-tags: true
 
             - name: Setup JDK 17
               uses: actions/setup-java@v4
@@ -96,20 +97,34 @@ jobs:
 
             - name: Extract Changelog from Tag
               id: changelog
+              env:
+                  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
               run: |
                   TAG="${{ steps.prepare.outputs.tag }}"
                   rm -f changelog.md
 
-                  if [ "$(git cat-file -t "refs/tags/${TAG}" 2>/dev/null)" = "tag" ]; then
-                    git tag -l --format='%(contents)' "$TAG" \
-                      | sed '/-----BEGIN PGP SIGNATURE-----/,$d' \
-                      | sed 's/\\n/\n/g' > changelog.md
+                  # 确保拉取所有 tag 引用
+                  git fetch --tags --force 2>/dev/null || true
+
+                  # 优先通过本地 git 获取
+                  git tag -l --format='%(contents)' "$TAG" \
+                    | sed '/-----BEGIN PGP SIGNATURE-----/,$d' \
+                    | sed 's/\\n/\n/g' > changelog.md
+
+                  # 如果本地 git 依然没有提取到，直接通过 GitHub API 获取（双重保险）
+                  if [ ! -s changelog.md ] || [ -z "$(tr -d '[:space:]' < changelog.md)" ]; then
+                    TAG_SHA=$(curl -s -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
+                         "https://api.github.com/repos/${{ github.repository }}/git/ref/tags/${TAG}" \
+                         | jq -r '.object.sha // empty')
+                    if [ -n "$TAG_SHA" ]; then
+                      curl -s -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
+                           "https://api.github.com/repos/${{ github.repository }}/git/tags/${TAG_SHA}" \
+                           | jq -r '.message // empty' > changelog.md
+                    fi
                   fi
 
-                  if [ -s changelog.md ] && [ -n "$(tr -d '[:space:]' < changelog.md)" ]; then
-                    echo "has_custom_notes=true" >> $GITHUB_OUTPUT
-                  else
-                    echo "has_custom_notes=false" >> $GITHUB_OUTPUT
+                  # 若仍为空则回退到默认链接
+                  if [ ! -s changelog.md ] || [ -z "$(tr -d '[:space:]' < changelog.md)" ]; then
                     echo "See changelog at: https://github.com/${{ github.repository }}/releases/tag/${TAG}" > changelog.md
                   fi
 
@@ -119,7 +134,7 @@ jobs:
               with:
                   tag_name: ${{ steps.prepare.outputs.tag }}
                   name: "Release ${{ steps.prepare.outputs.tag }}"
-                  body_path: ${{ steps.changelog.outputs.has_custom_notes == 'true' && 'changelog.md' || '' }}
+                  body_path: changelog.md
                   generate_release_notes: true
                   files: release-assets/*.apk
 

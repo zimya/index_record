@@ -13,6 +13,7 @@ import com.melonhu.indexrecord.parser.douban.DoubanUtils.extractDoubanPhotos
 import com.melonhu.indexrecord.parser.douban.DoubanUtils.extractUser
 import com.melonhu.indexrecord.parser.douban.DoubanUtils.parseDoubanDate
 import com.melonhu.indexrecord.parser.douban.DoubanUtils.safeString
+import com.melonhu.indexrecord.parser.douban.DoubanUtils.statCount
 import java.net.URI
 import java.util.regex.Pattern
 
@@ -45,7 +46,7 @@ object DoubanGroupTopicParser {
         val title = json.safeString("title")
         val rawContent = json.safeString("content")
         val photos = extractDoubanPhotos(json.getAsJsonArray("photos"))
-        val content = appendMissingPhotos(doubanHtmlToMarkdown(rawContent).trim(), photos)
+        val content = appendMissingPhotos(doubanHtmlToMarkdown(rawContent, photos).trim(), photos)
 
         val author = extractUser(json)
         val createdTime = parseDoubanDate(json.safeString("create_time"), raw.timestamp)
@@ -105,10 +106,5 @@ object DoubanGroupTopicParser {
         )
 
         return listOf(record)
-    }
-
-    private fun JsonObject.statCount(key: String): Long? {
-        val value = get(key)?.takeIf { it.isJsonPrimitive } ?: return null
-        return value.asString.toLongOrNull()?.takeIf { it >= 0 }
     }
 }

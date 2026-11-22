@@ -23,7 +23,8 @@ class RecordFilterTypeTest {
             "floor" to "贴吧楼层",
             "review" to "豆瓣长评",
             "interest" to "豆瓣短评",
-            "subject" to "豆瓣条目"
+            "subject" to "豆瓣条目",
+            "note" to "豆瓣日记"
         )
         labels.forEach { (type, label) -> assertEquals(label, typeLabel(type)) }
         assertEquals(labels.size, labels.keys.map(::typeLabel).toSet().size)

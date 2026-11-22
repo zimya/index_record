@@ -7,7 +7,7 @@ import com.melonhu.indexrecord.data.model.UniversalRecord
 object RecordContentPolicy {
     private val primaryTypesByPlatform: Map<String, List<String>> = mapOf(
         "zhihu" to listOf("question", "answer", "article", "pin"),
-        "douban" to listOf("topic", "review", "interest", "subject", "feed"),
+        "douban" to listOf("topic", "review", "interest", "subject", "feed", "note"),
         "tieba" to listOf("lou"),
         "twitter" to listOf("tweet"),
         "weibo" to listOf("status"),

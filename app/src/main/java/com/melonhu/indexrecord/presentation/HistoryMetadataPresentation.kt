@@ -139,7 +139,7 @@ private val historyMetadataLabels = mapOf(
     "dislike_count" to "反对数", "follower_count" to "关注者数", "answer_count" to "回答数",
     "collapsed_answer_count" to "折叠回答数", "score" to "净投票分", "is_score_hidden" to "隐藏分数",
     "question_id" to "问题标识", "subject_id" to "条目标识", "subject_title" to "条目标题",
-    "subject_type" to "条目类型", "topic_id" to "话题标识", "review_id" to "长评标识", "status_id" to "动态标识",
+    "subject_type" to "条目类型", "topic_id" to "话题标识", "review_id" to "长评标识", "status_id" to "动态标识", "note_id" to "日记标识",
     "group_name" to "小组名称", "group_id" to "小组标识", "topics" to "话题", "tags" to "标签",
     "thread_id" to "帖子标识", "thread_title" to "帖子标题", "post_id" to "帖子标识",
     "forum_name" to "贴吧名称", "forum_id" to "贴吧标识", "floor" to "楼层", "sub_floor" to "楼中楼层",

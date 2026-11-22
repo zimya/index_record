@@ -216,6 +216,7 @@
     <string name="type_review">長評</string>
     <string name="type_interest">短評</string>
     <string name="type_subject">條目</string>
+    <string name="type_note">日記</string>
     <string name="type_tweet">推文</string>
     <string name="type_status">微博</string>
     <string name="type_subfloor">樓中樓</string>

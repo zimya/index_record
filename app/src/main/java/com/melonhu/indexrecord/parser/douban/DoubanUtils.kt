@@ -10,7 +10,9 @@ import com.melonhu.indexrecord.data.model.RecordBodyFormat
 import com.melonhu.indexrecord.data.model.UniversalRecord
 import com.melonhu.indexrecord.markdown.escapeMarkdownText
 import com.melonhu.indexrecord.markdown.toMarkdown
+import com.melonhu.indexrecord.parser.zhihu.markdown.extractImageUrl
 import com.melonhu.indexrecord.parser.zhihu.markdown.htmlToMdAst
+import org.jsoup.Jsoup
 import java.text.SimpleDateFormat
 import java.util.Locale
 import java.util.TimeZone
@@ -96,13 +98,40 @@ object DoubanUtils {
         }
     }
 
-    fun doubanHtmlToMarkdown(html: String): String {
+    fun doubanHtmlToMarkdown(html: String, photos: List<DoubanPhoto> = emptyList()): String {
         if (html.isBlank()) return ""
         return try {
-            htmlToMdAst(html).toMarkdown()
+            val resolvedHtml = if (photos.isEmpty()) html else resolveInlinePhotoUrls(html, photos)
+            htmlToMdAst(resolvedHtml).toMarkdown()
         } catch (_: Exception) {
             html
         }
+    }
+
+    private fun resolveInlinePhotoUrls(html: String, photos: List<DoubanPhoto>): String {
+        val byKey = mutableMapOf<String, DoubanPhoto>()
+        for (photo in photos) {
+            if (photo.tagName.isNotBlank()) byKey.putIfAbsent(photo.tagName, photo)
+            if (photo.id.isNotBlank()) {
+                byKey.putIfAbsent("img_${photo.id}", photo)
+                byKey.putIfAbsent(photo.id, photo)
+            }
+        }
+        if (byKey.isEmpty()) return html
+
+        val doc = Jsoup.parseBodyFragment(html)
+        var changed = false
+        for (img in doc.select("img")) {
+            if (!extractImageUrl(img::attr).isNullOrBlank()) continue
+            val key = img.id().trim().ifBlank { img.attr("data-id").trim() }
+            val photo = byKey[key] ?: byKey[key.removePrefix("img_")] ?: continue
+            img.attr("src", photo.url)
+            if (img.attr("alt").isBlank() && photo.title.isNotBlank()) {
+                img.attr("alt", escapeMarkdownText(photo.title.replace(Regex("\\s+"), " ").trim()))
+            }
+            changed = true
+        }
+        return if (changed) doc.body().html() else html
     }
 
     data class UserInfo(val id: String, val name: String, val avatar: String)
@@ -119,7 +148,11 @@ object DoubanUtils {
         return UserInfo(id = id, name = name, avatar = avatar)
     }
 
-    data class DoubanPhoto(val id: String, val url: String, val title: String = "")
+    data class DoubanPhoto(val id: String, val url: String, val title: String = "", val tagName: String = "")
+
+    fun JsonObject.statCount(vararg keys: String): Long? = keys.firstNotNullOfOrNull { key ->
+        get(key)?.takeIf { it.isJsonPrimitive }?.asString?.toLongOrNull()?.takeIf { it >= 0 }
+    }
 
     fun extractPhotoUrl(photoObj: JsonObject): String {
         val imgObj = photoObj.get("image")?.takeIf { it.isJsonObject }?.asJsonObject
@@ -143,7 +176,8 @@ object DoubanUtils {
             val obj = elem.asJsonObject
             val url = extractPhotoUrl(obj).trim()
             if (url.isNotBlank() && seenUrls.add(url)) {
-                photos.add(DoubanPhoto(id = obj.safeString("id"), url = url, title = obj.safeString("title").trim()))
+                val title = obj.safeString("title").ifBlank { obj.safeString("description") }.trim()
+                photos.add(DoubanPhoto(id = obj.safeString("id"), url = url, title = title, tagName = obj.safeString("tag_name").trim()))
             }
         }
         return photos

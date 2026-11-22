@@ -37,7 +37,7 @@ object PlatformCatalog {
         "question" to "问题", "answer" to "回答", "article" to "文章", "pin" to "想法",
         "comment" to "评论", "lou" to "主帖", "thread" to "帖子", "floor" to "楼层",
         "topic" to "帖子", "post" to "帖子", "review" to "长评", "interest" to "短评",
-        "subject" to "条目", "tweet" to "推文", "status" to "微博",
+        "subject" to "条目", "note" to "日记", "tweet" to "推文", "status" to "微博",
         "feed" to "动态", "rating" to "点评", "feedArticle" to "图文"
     )
 
@@ -53,7 +53,7 @@ object PlatformCatalog {
     // Filters identify the source as well as the type; list cards already show a platform badge.
     fun filterTypeLabel(type: String): String = when (type) {
         "question", "answer", "article", "pin" -> "知乎${typeLabel("zhihu", type)}"
-        "topic", "review", "interest", "subject" -> "豆瓣${typeLabel("douban", type)}"
+        "topic", "review", "interest", "subject", "note" -> "豆瓣${typeLabel("douban", type)}"
         "post" -> "Reddit 帖子"
         "lou", "floor" -> "贴吧${typeLabel("tieba", type)}"
         "thread" -> "Threads 帖子"
@@ -94,6 +94,7 @@ object PlatformCatalog {
         type == "review" -> R.string.type_review
         type == "interest" -> R.string.type_interest
         type == "subject" -> R.string.type_subject
+        type == "note" -> R.string.type_note
         type == "tweet" -> R.string.type_tweet
         type == "status" -> R.string.type_status
         type == "feed" -> R.string.type_feed

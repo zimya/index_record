@@ -6,7 +6,7 @@ import com.melonhu.indexrecord.parser.RawDataParser
 
 /**
  * 豆瓣平台总解析器。
- * 负责分发和调度豆瓣各种类型（小组帖子、小组评论、书影音游热评/短评、长评、长评评论、论坛话题贴、话题讨论）的解析工作。
+ * 负责分发和调度豆瓣各种类型（小组帖子、小组评论、广播/动态及评论、日记及评论、书影音游热评/短评、长评、长评评论、论坛话题贴、话题讨论）的解析工作。
  */
 object DoubanParser : RawDataParser {
 
@@ -20,6 +20,8 @@ object DoubanParser : RawDataParser {
                 DoubanGroupTopicParser.canHandle(cleanUrl) ||
                 DoubanStatusCommentsParser.canHandle(cleanUrl) ||
                 DoubanStatusParser.canHandle(cleanUrl) ||
+                DoubanNoteCommentsParser.canHandle(cleanUrl) ||
+                DoubanNoteParser.canHandle(cleanUrl) ||
                 DoubanHotInterestsParser.canHandle(cleanUrl) ||
                 DoubanReviewCommentsParser.canHandle(cleanUrl) ||
                 DoubanReviewParser.canHandle(cleanUrl) ||
@@ -34,6 +36,8 @@ object DoubanParser : RawDataParser {
             DoubanGroupTopicParser.canHandle(cleanUrl) -> DoubanGroupTopicParser.parse(raw, cleanUrl)
             DoubanStatusCommentsParser.canHandle(cleanUrl) -> DoubanStatusCommentsParser.parse(raw, cleanUrl)
             DoubanStatusParser.canHandle(cleanUrl) -> DoubanStatusParser.parse(raw, cleanUrl)
+            DoubanNoteCommentsParser.canHandle(cleanUrl) -> DoubanNoteCommentsParser.parse(raw, cleanUrl)
+            DoubanNoteParser.canHandle(cleanUrl) -> DoubanNoteParser.parse(raw, cleanUrl)
             DoubanHotInterestsParser.canHandle(cleanUrl) -> DoubanHotInterestsParser.parse(raw, cleanUrl)
             DoubanReviewCommentsParser.canHandle(cleanUrl) -> DoubanReviewCommentsParser.parse(raw, cleanUrl)
             DoubanReviewParser.canHandle(cleanUrl) -> DoubanReviewParser.parse(raw, cleanUrl)

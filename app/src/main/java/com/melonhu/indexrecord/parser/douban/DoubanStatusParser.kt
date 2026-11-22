@@ -14,6 +14,7 @@ import com.melonhu.indexrecord.parser.douban.DoubanUtils.extractUser
 import com.melonhu.indexrecord.parser.douban.DoubanUtils.parseDoubanDate
 import com.melonhu.indexrecord.parser.douban.DoubanUtils.safeLong
 import com.melonhu.indexrecord.parser.douban.DoubanUtils.safeString
+import com.melonhu.indexrecord.parser.douban.DoubanUtils.statCount
 import java.util.regex.Pattern
 
 /**
@@ -179,9 +180,5 @@ object DoubanStatusParser {
             return Triple(uriMatcher.group(1) ?: "", uriMatcher.group(2) ?: "", cardTitle)
         }
         return Triple("", "", "")
-    }
-
-    private fun JsonObject.statCount(vararg keys: String): Long? = keys.firstNotNullOfOrNull { key ->
-        get(key)?.takeIf { it.isJsonPrimitive }?.asString?.toLongOrNull()?.takeIf { it >= 0 }
     }
 }

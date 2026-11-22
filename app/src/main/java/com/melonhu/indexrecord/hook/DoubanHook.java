@@ -10,6 +10,9 @@ public class DoubanHook implements PlatformHook {
     private static final Pattern STATUS_URL = Pattern.compile(
         "^https?://[^/]*douban\\.com/api/v2/status/(?:\\d+(?:/comments)?|comment/\\d+/replies)/?$"
     );
+    private static final Pattern NOTE_URL = Pattern.compile(
+        "^https?://[^/]*douban\\.com/api/v2/note/(?:\\d+(?:/comments)?|comment/\\d+/replies)/?$"
+    );
     private final OkHttpHookHelper okHttpHelper = new OkHttpHookHelper();
 
     @Override
@@ -57,6 +60,7 @@ public class DoubanHook implements PlatformHook {
             || url.contains("/review/")
             || url.contains("/forum_topic/")
             || STATUS_URL.matcher(cleanUrl).matches()
+            || NOTE_URL.matcher(cleanUrl).matches()
             || DoubanSubjectUrls.shouldCapture(url);
     }
 }

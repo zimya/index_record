@@ -219,6 +219,7 @@
     <string name="type_review">Review</string>
     <string name="type_interest">Short Review</string>
     <string name="type_subject">Subject</string>
+    <string name="type_note">Note</string>
     <string name="type_tweet">Tweet</string>
     <string name="type_status">Weibo</string>
     <string name="type_subfloor">Sub-floor</string>

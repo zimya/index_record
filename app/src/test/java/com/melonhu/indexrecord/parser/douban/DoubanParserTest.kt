@@ -2,6 +2,9 @@ package com.melonhu.indexrecord.parser.douban
 
 import com.google.gson.JsonParser
 import com.melonhu.indexrecord.data.model.RawData
+import com.melonhu.indexrecord.markdown.MarkdownContentFormat
+import com.melonhu.indexrecord.markdown.collectImageUrls
+import com.melonhu.indexrecord.markdown.contentToMdAst
 import com.melonhu.indexrecord.parser.ParserRegistry
 import com.melonhu.indexrecord.parser.ParseResult
 import org.junit.Assert.assertEquals
@@ -794,5 +797,97 @@ class DoubanParserTest {
         assertEquals("剧院魅影", record.title)
         assertTrue(record.content.contains("巴黎歌剧院"))
         assertTrue(record.extraMetadata.contains("哈罗德·普林斯"))
+    }
+
+    @Test
+    fun testDoubanNoteWithInlinePhotosAndComments() {
+        val url = "https://frodo.douban.com/api/v2/note/878617681?video_process=0&event_source=user_profile"
+        val cleanUrl = "https://frodo.douban.com/api/v2/note/878617681"
+        val json = loadFixture("v2_note.json")
+        val raw = RawData(url = url, json = json, hostApp = "com.douban.frodo")
+
+        assertTrue(DoubanParser.canHandle(cleanUrl, raw))
+        val records = ParserRegistry.parse(raw, cleanUrl)
+        assertNotNull(records)
+        assertEquals(1, records!!.size)
+
+        val record = records[0]
+        assertEquals("douban", record.platform)
+        assertEquals("note", record.recordType)
+        assertEquals("douban_note_878617681", record.platformId)
+        assertEquals("去大埔悼念", record.title)
+        assertEquals("Sally博物馆", record.authorName)
+        assertEquals("178769601", record.authorId)
+        assertEquals("markdown", record.contentFormat)
+
+        // Inline photos must stay between their surrounding paragraphs instead of being appended at the end.
+        val beforeImgIdx = record.content.indexOf("两个着绿色制服的安保站在桥旁边。")
+        val firstImgUrl = "https://img3.doubanio.com/view/note/l/public/p102741663.webp"
+        val firstImgIdx = record.content.indexOf(firstImgUrl)
+        val afterImgIdx = record.content.indexOf("悼念现场设置在临近宏福苑的广福邨休憩处")
+        assertTrue(beforeImgIdx >= 0 && firstImgIdx > beforeImgIdx && afterImgIdx > firstImgIdx)
+        assertEquals(1, Regex("p102741663\\.webp").findAll(record.content).count())
+
+        val mdDoc = contentToMdAst(record.content, MarkdownContentFormat.MARKDOWN)
+        assertEquals(11, mdDoc.collectImageUrls().size)
+
+        val extra = JsonParser.parseString(record.extraMetadata).asJsonObject
+        assertEquals("878617681", extra.get("note_id").asString)
+        assertEquals(111L, extra.get("like_count").asLong)
+        assertEquals(16L, extra.get("comment_count").asLong)
+        assertEquals(14L, extra.get("favlists_count").asLong)
+        assertEquals(44L, extra.get("reshares_count").asLong)
+        assertEquals("广东", extra.get("ip_info").asString)
+        assertEquals("社会热点", extra.getAsJsonArray("tags")[0].asString)
+
+        assertTrue(com.melonhu.indexrecord.presentation.RecordContentPolicy.isPrimaryContent(record))
+        val listPresentation = com.melonhu.indexrecord.presentation.recordListPresentation(record, "")
+        assertEquals("豆瓣 · 日记", listPresentation.badgeText)
+        assertEquals("去大埔悼念", listPresentation.title)
+
+        val commentsUrl = "https://frodo.douban.com/api/v2/note/878617681/comments"
+        val commentsRaw = RawData(
+            url = "$commentsUrl?start=0&count=20&nested=1",
+            json = loadFixture("v2_note_comments.json"),
+            hostApp = "com.douban.frodo"
+        )
+        assertTrue(DoubanParser.canHandle(commentsUrl, commentsRaw))
+        val commentRecords = ParserRegistry.parse(commentsRaw, commentsUrl)!!
+        assertTrue(commentRecords.any { it.platformId == "douban_comment_76508393" && it.parentId == "douban_note_878617681" })
+        assertTrue(commentRecords.any { it.platformId == "douban_comment_76528800" && it.parentId == "douban_comment_76508393" })
+
+        val repliesUrl = "https://frodo.douban.com/api/v2/note/comment/76509791/replies"
+        val repliesRaw = RawData(
+            url = "$repliesUrl?start=3&count=5",
+            json = loadFixture("v2_note_comment_replies.json"),
+            hostApp = "com.douban.frodo"
+        )
+        assertTrue(DoubanParser.canHandle(repliesUrl, repliesRaw))
+        val replyRecords = ParserRegistry.parse(repliesRaw, repliesUrl)!!
+        assertEquals(1, replyRecords.size)
+        assertEquals("douban_comment_76528845", replyRecords[0].platformId)
+        assertEquals("douban_comment_76509791", replyRecords[0].parentId)
+        assertEquals("Sally博物馆", replyRecords[0].authorName)
+    }
+
+    @Test
+    fun testDoubanNoteWithCaptionsTopicAndTags() {
+        val url = "https://frodo.douban.com/api/v2/note/870397538"
+        val json = loadFixture("v2_note_870397538.json")
+        val raw = RawData(url = url, json = json, hostApp = "com.douban.frodo")
+
+        val record = ParserRegistry.parse(raw, url)!!.single()
+        assertEquals("douban_note_870397538", record.platformId)
+        assertEquals("塞尔维亚街头的高中生", record.title)
+        assertTrue(record.content.contains("![时间表和步行路线](https://img9.doubanio.com/view/note/l/public/p100443684.webp)"))
+        assertTrue(record.content.contains("时间表和步行路线"))
+
+        val mdDoc = contentToMdAst(record.content, MarkdownContentFormat.MARKDOWN)
+        assertEquals(16, mdDoc.collectImageUrls().size)
+
+        val extra = JsonParser.parseString(record.extraMetadata).asJsonObject
+        assertEquals("塞尔维亚", extra.get("ip_info").asString)
+        assertEquals("我的旅行日记", extra.getAsJsonArray("topics")[0].asString)
+        assertEquals(3, extra.getAsJsonArray("tags").size())
     }
 }

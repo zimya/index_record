@@ -20,6 +20,7 @@ class RecordDetailTitleTest {
             Triple("douban", "review", "豆瓣 · 长评"),
             Triple("douban", "topic", "豆瓣 · 帖子"),
             Triple("douban", "subject", "豆瓣 · 条目"),
+            Triple("douban", "note", "豆瓣 · 日记"),
             Triple("douban", "comment", "豆瓣 · 评论"),
             Triple("tieba", "lou", "贴吧 · 主帖"),
             Triple("tieba", "floor", "贴吧 · 楼层"),

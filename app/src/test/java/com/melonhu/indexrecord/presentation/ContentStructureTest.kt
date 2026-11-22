@@ -55,5 +55,6 @@ class ContentStructureTest {
         val record = UniversalRecord(platform = "future", recordType = "comment", title = "标题", parentId = "parent")
         assertEquals(ContentStructure(true, true, true), contentStructure(record))
         assertEquals(ContentStructure(false, true, false), contentStructure(record.copy(title = "", parentId = "")))
+        assertTrue(contentStructure(UniversalRecord(platform = "douban", recordType = "note")).supportsLocalReplies)
     }
 }

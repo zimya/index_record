@@ -204,6 +204,10 @@ class RecordPresentationTest {
         assertEquals("微博用户的微博", recordDisplayTitle(record("weibo")))
         assertEquals("Threads 用户的帖子", recordDisplayTitle(record("threads")))
         assertEquals("豆瓣用户的动态", recordDisplayTitle(record("douban", type = "feed")))
+        assertEquals("豆瓣用户的日记", recordDisplayTitle(record("douban", type = "note")))
+        assertEquals("Sally的日记", recordDisplayTitle(record("douban", type = "note").apply {
+            authorName = "Sally"
+        }))
         assertEquals("Sally的动态", recordDisplayTitle(record("douban", type = "topic").apply {
             platformId = "douban_group_topic_1"
             authorName = "Sally"

@@ -106,7 +106,7 @@ internal class DoubanPersistence : PlatformPersistence {
     override fun mergeExtra(existing: UniversalRecord, incoming: UniversalRecord) {
         if (incoming.recordType == "subject") {
             incoming.extraMetadata = DoubanRelations.mergeSubjectExtra(existing.extraMetadata, incoming.extraMetadata)
-        } else if (incoming.recordType == "topic" && incoming.platformId.startsWith("douban_group_topic_")) {
+        } else if (incoming.recordType in setOf("topic", "feed") && incoming.platformId.startsWith("douban_group_topic_")) {
             val merged = runCatching { metadata(existing) }.getOrElse { JsonObject() }
             metadata(incoming).entrySet().forEach { (key, value) -> merged.add(key, value) }
             incoming.extraMetadata = merged.toString()

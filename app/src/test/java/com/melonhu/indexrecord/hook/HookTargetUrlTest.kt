@@ -27,10 +27,16 @@ class HookTargetUrlTest {
     fun testDoubanTargetUrls() {
         assertTrue(DoubanHook.isTargetUrl("https://frodo.douban.com/api/v2/group/topic/12345"))
         assertTrue(DoubanHook.isTargetUrl("https://frodo.douban.com/api/v2/status/hot_interests"))
+        assertTrue(DoubanHook.isTargetUrl("https://frodo.douban.com/api/v2/status/10033798803?apikey=abc"))
+        assertTrue(DoubanHook.isTargetUrl("https://frodo.douban.com/api/v2/status/10033798803/comments?start=0"))
+        assertTrue(DoubanHook.isTargetUrl("https://frodo.douban.com/api/v2/status/comment/468264521/replies"))
         assertTrue(DoubanHook.isTargetUrl("https://frodo.douban.com/api/v2/review/12345"))
         assertTrue(DoubanHook.isTargetUrl("https://frodo.douban.com/api/v2/forum_topic/12345"))
         assertTrue(DoubanHook.isTargetUrl("https://frodo.douban.com/api/v2/movie/12345"))
 
+        assertFalse(DoubanHook.isTargetUrl("https://frodo.douban.com/api/v2/status/10033798803/allow_comment"))
+        assertFalse(DoubanHook.isTargetUrl("https://frodo.douban.com/api/v2/status/10033798803/gifts"))
+        assertFalse(DoubanHook.isTargetUrl("https://frodo.douban.com/api/v2/status/10033798803/reactions"))
         assertFalse(DoubanHook.isTargetUrl("https://frodo.douban.com/api/v2/user/settings"))
         assertFalse(DoubanHook.isTargetUrl("https://example.com/group/topic/123"))
         assertFalse(DoubanHook.isTargetUrl(null))

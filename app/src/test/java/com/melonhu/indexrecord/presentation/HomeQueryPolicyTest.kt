@@ -14,7 +14,7 @@ class HomeQueryPolicyTest {
         record("zhihu", "pin"), record("tieba", "lou"), record("reddit", "post"),
         record("twitter", "tweet"), record("weibo", "status"), record("threads", "thread"),
         record("douban", "topic"), record("douban", "review"), record("douban", "interest"),
-        record("douban", "subject")
+        record("douban", "subject"), record("douban", "feed")
     )
     private val secondary = listOf(
         record("tieba", "floor"), record("tieba", "comment"), record("reddit", "comment"),
@@ -72,6 +72,7 @@ class HomeQueryPolicyTest {
         assertEquals("贴吧楼中楼", RecordContentPolicy.filterTypeLabel("tieba:comment"))
         assertEquals("X评论", RecordContentPolicy.filterTypeLabel("twitter:comment"))
         assertEquals("豆瓣评论", RecordContentPolicy.filterTypeLabel("douban:comment"))
+        assertEquals("豆瓣动态", RecordContentPolicy.filterTypeLabel("douban:feed"))
     }
 
     @Test fun combinedConditionsRemainConjunctiveAndClearingRestoresDefault() {

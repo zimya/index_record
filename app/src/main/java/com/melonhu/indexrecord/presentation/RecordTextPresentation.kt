@@ -16,6 +16,13 @@ internal fun recordDisplayTitle(
             "bluesky" -> if (record.recordType == "comment") "Bluesky 回复" else "${record.authorName.ifBlank { "Bluesky 用户" }}的帖子"
             "reddit" -> if (record.recordType == "comment") "Reddit 回复" else "${record.authorName.ifBlank { "Reddit 用户" }}的帖子"
             "coolapk" -> "${record.authorName.ifBlank { "酷安用户" }}的动态"
+            "douban" -> if (record.recordType == "feed" ||
+                (record.recordType == "topic" && record.platformId.startsWith("douban_group_topic_") && metadata.douban?.groupName.isNullOrBlank())
+            ) {
+                "${record.authorName.ifBlank { "豆瓣用户" }}的动态"
+            } else {
+                "无标题"
+            }
             else -> "无标题"
         }
     }

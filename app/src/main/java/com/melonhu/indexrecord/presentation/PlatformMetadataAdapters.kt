@@ -23,6 +23,7 @@ internal class DoubanRecordMetadata(values: JsonObject) {
     val intro: String = values.metadataText("intro")
     val cardSubtitle: String = values.metadataText("card_subtitle")
     val titleImage: String = values.metadataText("title_image")
+    val groupName: String = values.metadataText("group_name")
     val subjectId: String = values.metadataText("subject_id")
     val subjectType: String = values.metadataText("subject_type").trim()
     val subjectTarget: RecordIdentity? = subjectId.trim().takeIf { it.isNotBlank() }?.let {

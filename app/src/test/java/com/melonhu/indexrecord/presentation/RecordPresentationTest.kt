@@ -203,6 +203,14 @@ class RecordPresentationTest {
         assertEquals("Reddit 回复", recordDisplayTitle(record("reddit", type = "comment")))
         assertEquals("微博用户的微博", recordDisplayTitle(record("weibo")))
         assertEquals("Threads 用户的帖子", recordDisplayTitle(record("threads")))
+        assertEquals("豆瓣用户的动态", recordDisplayTitle(record("douban", type = "feed")))
+        assertEquals("Sally的动态", recordDisplayTitle(record("douban", type = "topic").apply {
+            platformId = "douban_group_topic_1"
+            authorName = "Sally"
+        }))
+        assertEquals("无标题", recordDisplayTitle(record("douban", """{"group_name":"小组"}""", type = "topic").apply {
+            platformId = "douban_group_topic_2"
+        }))
         assertEquals("无标题", recordDisplayTitle(record("zhihu")))
     }
 
@@ -244,9 +252,11 @@ class RecordPresentationTest {
         val header = recordHeaderPresentation(r)
         assertEquals("作者未知", header.author)
         assertEquals("", header.title)
-        assertEquals("cover", header.titleImage)
+        assertEquals("", header.titleImage)
         assertEquals("", header.authorHeadline)
         assertEquals(4.5, header.starCount, 0.0)
+        assertEquals("zhihu_cover", recordHeaderPresentation(record("zhihu", """{"title_image":"zhihu_cover"}""")).titleImage)
+        assertEquals("coolapk_cover", recordHeaderPresentation(record("coolapk", """{"message_cover":"coolapk_cover"}""")).titleImage)
         assertEquals(3.0, recordHeaderPresentation(record("douban", """{"star_count":3,"rating_value":4.5}""")).starCount, 0.0)
         r.content = "<b>raw</b>"
         assertEquals(r.content, recordBodyPresentation(r).content)

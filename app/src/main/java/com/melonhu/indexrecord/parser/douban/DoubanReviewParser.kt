@@ -78,7 +78,6 @@ object DoubanReviewParser {
         if (starCount > 0) extra.addProperty("star_count", starCount)
         if (coverUrl.isNotBlank()) {
             extra.addProperty("cover_url", coverUrl)
-            extra.addProperty("title_image", coverUrl)
         }
 
         val parentId = if (subjectId.isNotBlank() && subjectType.isNotBlank()) {

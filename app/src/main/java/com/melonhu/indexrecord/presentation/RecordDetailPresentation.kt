@@ -27,7 +27,7 @@ internal fun recordHeaderPresentation(record: RecordContent): RecordHeaderPresen
         ?: (metadata.coolapk?.ratingScore?.let { it / 2.0 } ?: 0.0)
     return RecordHeaderPresentation(
         title = record.title,
-        titleImage = metadata.zhihu?.titleImage ?: metadata.douban?.titleImage ?: metadata.coolapk?.messageCover.orEmpty(),
+        titleImage = metadata.zhihu?.titleImage ?: metadata.coolapk?.messageCover.orEmpty(),
         author = record.authorName.ifBlank { "作者未知" },
         authorHeadline = authorHeadline,
         starCount = starCount

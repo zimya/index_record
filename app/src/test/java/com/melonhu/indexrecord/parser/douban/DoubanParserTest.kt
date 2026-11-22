@@ -50,7 +50,164 @@ class DoubanParserTest {
         assertEquals("121327671", record.authorId)
         assertTrue(record.content.contains("已获得原po主授权"))
         assertTrue(record.content.contains("https://img3.doubanio.com/view/group_topic/l/public/p753077423.webp"))
+        assertEquals(
+            1,
+            Regex("p753077423\\.webp").findAll(record.content).count()
+        )
+        assertFalse(JsonParser.parseString(record.extraMetadata).asJsonObject.has("title_image"))
         assertTrue(record.publishTime > 0)
+    }
+
+    @Test
+    fun testDoubanPersonalDynamicWithMultiplePhotos() {
+        val url = "https://frodo.douban.com/api/v2/group/topic/506438877?subtype=personal&source=user_profile"
+        val cleanUrl = "https://frodo.douban.com/api/v2/group/topic/506438877"
+        val json = """
+            {
+              "id": "506438877",
+              "type": "topic",
+              "subtype": "personal",
+              "title": "",
+              "create_time": "2026-11-22 11:58:46",
+              "cover_url": "https://img3.doubanio.com/view/group_topic/sqxs/public/p754553148.webp",
+              "author": {"id": "178769601", "name": "Sally博物馆", "avatar": "https://img3.doubanio.com/icon/up178769601-20.webp"},
+              "group": {"id": "0", "name": ""},
+              "content": "<div id='content'><p data-align=\"left\">第一段内容</p></div>",
+              "like_count": 226,
+              "comments_count": 6,
+              "collections_count": 49,
+              "reshares_count": 129,
+              "ip_location": "广东",
+              "photos": [
+                {"id": "754553148", "image": {"large": {"url": "https://img3.doubanio.com/view/group_topic/l/public/p754553148.webp"}, "normal": {"url": "https://img3.doubanio.com/view/group_topic/l/public/p754553148.webp"}, "raw": null}},
+                {"id": "754553147", "image": {"large": {"url": "https://img3.doubanio.com/view/group_topic/l/public/p754553147.webp"}, "normal": {"url": "https://img3.doubanio.com/view/group_topic/l/public/p754553147.webp"}, "raw": null}}
+              ]
+            }
+        """.trimIndent()
+
+        val raw = RawData(url = url, json = json, hostApp = "com.douban.frodo")
+        val record = ParserRegistry.parse(raw, cleanUrl)!!.single()
+
+        assertEquals("douban", record.platform)
+        assertEquals("feed", record.recordType)
+        assertEquals("douban_group_topic_506438877", record.platformId)
+        assertEquals("", record.title)
+        assertTrue(record.content.contains("第一段内容"))
+        assertTrue(record.content.contains("![图片](https://img3.doubanio.com/view/group_topic/l/public/p754553148.webp)"))
+        assertTrue(record.content.contains("![图片](https://img3.doubanio.com/view/group_topic/l/public/p754553147.webp)"))
+
+        val extra = JsonParser.parseString(record.extraMetadata).asJsonObject
+        assertFalse(extra.has("title_image"))
+        assertFalse(extra.has("group_id"))
+        assertFalse(extra.has("group_name"))
+        assertEquals(129L, extra.get("reshares_count").asLong)
+        assertEquals(226L, extra.get("like_count").asLong)
+
+        assertTrue(com.melonhu.indexrecord.presentation.RecordContentPolicy.isPrimaryContent(record))
+        val header = com.melonhu.indexrecord.presentation.recordHeaderPresentation(record)
+        assertEquals("", header.titleImage)
+        val listPresentation = com.melonhu.indexrecord.presentation.recordListPresentation(record, "")
+        assertEquals("豆瓣 · 动态", listPresentation.badgeText)
+        assertEquals("Sally博物馆的动态", listPresentation.title)
+        assertTrue(listPresentation.statistics.any {
+            it.kind == com.melonhu.indexrecord.presentation.StatisticKind.REPOST && it.value == 129L
+        })
+    }
+
+    @Test
+    fun testDoubanStatusAndComments() {
+        val statusUrl = "https://frodo.douban.com/api/v2/status/10057508302"
+        val statusJson = """
+            {
+              "id": "10057508302",
+              "type": "status",
+              "activity": "玩过",
+              "create_time": "2026-11-15 19:10:00",
+              "author": {"id": "178769601", "name": "Sally博物馆", "avatar": "https://img3.doubanio.com/icon/up178769601-20.webp"},
+              "text": "第一行\n第二行",
+              "rating": {"value": 5, "star_count": 5},
+              "like_count": 12,
+              "comments_count": 1,
+              "reshares_count": 3,
+              "images": [
+                {"id": "11", "image": {"large": {"url": "https://img3.doubanio.com/view/status/l/public/11.webp"}}},
+                {"id": "12", "image": {"large": {"url": "https://img3.doubanio.com/view/status/l/public/12.webp"}}}
+              ],
+              "card": {
+                "id": "37669001",
+                "title": "测试游戏",
+                "subtitle": "2026 / 游戏",
+                "url": "https://www.douban.com/game/37669001/",
+                "uri": "douban://douban.com/game/37669001",
+                "images_block": {
+                  "images": [
+                    {"image": {"large": {"url": "https://img3.doubanio.com/view/note/l/public/99.webp"}}}
+                  ]
+                }
+              }
+            }
+        """.trimIndent()
+
+        val rawStatus = RawData(url = statusUrl, json = statusJson, hostApp = "com.douban.frodo")
+        assertTrue(DoubanParser.canHandle(statusUrl, rawStatus))
+        val statusRecord = ParserRegistry.parse(rawStatus, statusUrl)!!.single()
+        assertEquals("feed", statusRecord.recordType)
+        assertEquals("douban_status_10057508302", statusRecord.platformId)
+        assertEquals("douban_game_37669001", statusRecord.parentId)
+        assertTrue(statusRecord.content.contains("第一行"))
+        assertTrue(statusRecord.content.contains("第二行"))
+        assertTrue(statusRecord.content.contains("测试游戏"))
+        assertTrue(statusRecord.content.contains("https://img3.doubanio.com/view/status/l/public/11.webp"))
+        assertTrue(statusRecord.content.contains("https://img3.doubanio.com/view/status/l/public/12.webp"))
+        assertTrue(statusRecord.content.contains("https://img3.doubanio.com/view/note/l/public/99.webp"))
+
+        val commentsUrl = "https://frodo.douban.com/api/v2/status/10057508302/comments"
+        val commentsJson = """
+            {
+              "comments": [
+                {
+                  "id": 468264521,
+                  "author": {"id": "204718445", "name": "南瓜瓜"},
+                  "text": "主评论",
+                  "create_time": "2026-11-16 01:56:24",
+                  "vote_count": 2,
+                  "replies": [
+                    {
+                      "id": 468267692,
+                      "parent_comment_id": "468264521",
+                      "author": {"id": "218545496", "name": "东瓜"},
+                      "text": "嵌套回复",
+                      "create_time": "2026-11-16 09:14:47",
+                      "vote_count": 0
+                    }
+                  ]
+                }
+              ]
+            }
+        """.trimIndent()
+        val commentRecords = ParserRegistry.parse(RawData(url = commentsUrl, json = commentsJson, hostApp = "com.douban.frodo"), commentsUrl)!!
+        assertEquals(2, commentRecords.size)
+        assertEquals("douban_status_10057508302", commentRecords[0].parentId)
+        assertEquals("douban_comment_468264521", commentRecords[1].parentId)
+
+        val repliesUrl = "https://frodo.douban.com/api/v2/status/comment/468264521/replies"
+        val repliesJson = """
+            {
+              "replies": [
+                {
+                  "id": 468288852,
+                  "parent_comment_id": "468264521",
+                  "author": {"id": "254729518", "name": "lsh"},
+                  "text": "二级回复",
+                  "create_time": "2026-11-17 02:49:45",
+                  "vote_count": 1
+                }
+              ]
+            }
+        """.trimIndent()
+        val replyRecords = ParserRegistry.parse(RawData(url = repliesUrl, json = repliesJson, hostApp = "com.douban.frodo"), repliesUrl)!!
+        assertEquals(1, replyRecords.size)
+        assertEquals("douban_comment_468264521", replyRecords[0].parentId)
     }
 
     @Test

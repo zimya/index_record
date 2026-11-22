@@ -7,7 +7,9 @@ import com.melonhu.indexrecord.data.PlatformCatalog
 import com.melonhu.indexrecord.data.model.RawData
 import com.melonhu.indexrecord.data.model.RecordBodyFormat
 import com.melonhu.indexrecord.data.model.UniversalRecord
+import com.melonhu.indexrecord.parser.douban.DoubanUtils.appendMissingPhotos
 import com.melonhu.indexrecord.parser.douban.DoubanUtils.doubanHtmlToMarkdown
+import com.melonhu.indexrecord.parser.douban.DoubanUtils.extractDoubanPhotos
 import com.melonhu.indexrecord.parser.douban.DoubanUtils.extractUser
 import com.melonhu.indexrecord.parser.douban.DoubanUtils.parseDoubanDate
 import com.melonhu.indexrecord.parser.douban.DoubanUtils.safeString
@@ -15,7 +17,7 @@ import java.net.URI
 import java.util.regex.Pattern
 
 /**
- * 豆瓣小组帖子解析器。
+ * 豆瓣小组帖子与个人动态解析器。
  * 例如：https://frodo.douban.com/api/v2/group/topic/505200892
  */
 object DoubanGroupTopicParser {
@@ -42,19 +44,23 @@ object DoubanGroupTopicParser {
 
         val title = json.safeString("title")
         val rawContent = json.safeString("content")
-        val content = doubanHtmlToMarkdown(rawContent)
+        val photos = extractDoubanPhotos(json.getAsJsonArray("photos"))
+        val content = appendMissingPhotos(doubanHtmlToMarkdown(rawContent).trim(), photos)
 
         val author = extractUser(json)
         val createdTime = parseDoubanDate(json.safeString("create_time"), raw.timestamp)
         val coverUrl = json.safeString("cover_url")
+        val isPersonal = json.safeString("subtype") == "personal"
 
         val extra = JsonObject()
         extra.addProperty("topic_id", topicId)
 
         val groupObj = json.getAsJsonObject("group")
         if (groupObj != null) {
-            extra.addProperty("group_name", groupObj.safeString("name"))
-            extra.addProperty("group_id", groupObj.safeString("id"))
+            val groupName = groupObj.safeString("name")
+            val groupId = groupObj.safeString("id")
+            if (groupName.isNotBlank()) extra.addProperty("group_name", groupName)
+            if (groupId.isNotBlank() && groupId != "0") extra.addProperty("group_id", groupId)
         }
 
         // The Rexxar detail response uses like_count=0 as a placeholder and omits
@@ -67,6 +73,7 @@ object DoubanGroupTopicParser {
         val likeCount = likeKeys.firstNotNullOfOrNull { json.statCount(it) }
         val commentCount = json.statCount("comments_count")
         val collectCount = json.statCount("collections_count")
+        val reshareCount = json.statCount("reshares_count")
         val ipLocation = json.safeString("ip_location")
 
         if (likeCount != null) {
@@ -75,17 +82,14 @@ object DoubanGroupTopicParser {
         }
         if (commentCount != null) extra.addProperty("comment_count", commentCount)
         if (collectCount != null) extra.addProperty("favlists_count", collectCount)
+        if (reshareCount != null) extra.addProperty("reshares_count", reshareCount)
         if (ipLocation.isNotBlank()) extra.addProperty("ip_info", ipLocation)
-        if (coverUrl.isNotBlank()) {
-            extra.addProperty("cover_url", coverUrl)
-            extra.addProperty("title_image", coverUrl)
-        }
+        if (coverUrl.isNotBlank()) extra.addProperty("cover_url", coverUrl)
 
         val record = UniversalRecord(
-
             contentFormat = RecordBodyFormat.MARKDOWN.storageValue,
             platform = "douban",
-            recordType = "topic",
+            recordType = if (isPersonal) "feed" else "topic",
             sourceApp = raw.hostApp.ifBlank { PlatformCatalog.defaultPackage("douban") },
             platformId = "douban_group_topic_$topicId",
             title = title,

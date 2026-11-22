@@ -78,7 +78,6 @@ object DoubanForumTopicParser {
         if (ipLocation.isNotBlank()) extra.addProperty("ip_info", ipLocation)
         if (coverUrl.isNotBlank()) {
             extra.addProperty("cover_url", coverUrl)
-            extra.addProperty("title_image", coverUrl)
         }
 
         val parentId = if (subjectId.isNotBlank() && subjectType.isNotBlank()) {

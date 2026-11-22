@@ -39,7 +39,9 @@ internal fun platformEngagement(platform: String, values: JsonObject): Engagemen
         )
         "douban" -> EngagementMetadata(
             likeCount = count("like_count", "voteup_count", "vote_count", "useful_count"),
-            replyCount = count("comment_count"), favoriteCount = count("favlists_count")
+            replyCount = count("comment_count"),
+            repostCount = count("reshares_count", "retweet_count"),
+            favoriteCount = count("favlists_count")
         )
         "tieba" -> EngagementMetadata(
             likeCount = count("agree_count"), replyCount = count("reply_count"),

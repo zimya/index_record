@@ -18,6 +18,8 @@ object DoubanParser : RawDataParser {
         }
         return DoubanGroupTopicCommentsParser.canHandle(cleanUrl) ||
                 DoubanGroupTopicParser.canHandle(cleanUrl) ||
+                DoubanStatusCommentsParser.canHandle(cleanUrl) ||
+                DoubanStatusParser.canHandle(cleanUrl) ||
                 DoubanHotInterestsParser.canHandle(cleanUrl) ||
                 DoubanReviewCommentsParser.canHandle(cleanUrl) ||
                 DoubanReviewParser.canHandle(cleanUrl) ||
@@ -30,6 +32,8 @@ object DoubanParser : RawDataParser {
         return when {
             DoubanGroupTopicCommentsParser.canHandle(cleanUrl) -> DoubanGroupTopicCommentsParser.parse(raw, cleanUrl)
             DoubanGroupTopicParser.canHandle(cleanUrl) -> DoubanGroupTopicParser.parse(raw, cleanUrl)
+            DoubanStatusCommentsParser.canHandle(cleanUrl) -> DoubanStatusCommentsParser.parse(raw, cleanUrl)
+            DoubanStatusParser.canHandle(cleanUrl) -> DoubanStatusParser.parse(raw, cleanUrl)
             DoubanHotInterestsParser.canHandle(cleanUrl) -> DoubanHotInterestsParser.parse(raw, cleanUrl)
             DoubanReviewCommentsParser.canHandle(cleanUrl) -> DoubanReviewCommentsParser.parse(raw, cleanUrl)
             DoubanReviewParser.canHandle(cleanUrl) -> DoubanReviewParser.parse(raw, cleanUrl)

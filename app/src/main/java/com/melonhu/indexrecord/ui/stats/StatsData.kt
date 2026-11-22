@@ -3,6 +3,7 @@ package com.melonhu.indexrecord.ui.stats
 
 import com.melonhu.indexrecord.logic.BarData
 import com.melonhu.indexrecord.logic.DistributionRange
+import com.melonhu.indexrecord.presentation.formatCompactNumber as formatCompactNumberPresentation
 import java.util.Locale
 
 internal fun formatNumber(num: Long): String {
@@ -10,11 +11,7 @@ internal fun formatNumber(num: Long): String {
 }
 
 internal fun formatCompactNumber(num: Long): String {
-    return if (num < 10000) {
-        String.format(Locale.getDefault(), "%,d", num)
-    } else {
-        String.format(Locale.getDefault(), "%.1f万", num / 10000.0)
-    }
+    return formatCompactNumberPresentation(num)
 }
 
 internal fun distributionLabelIndices(

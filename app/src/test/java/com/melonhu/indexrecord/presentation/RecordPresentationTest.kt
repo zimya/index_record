@@ -22,16 +22,54 @@ class RecordPresentationTest {
     fun compactCountsKeepBoundariesLocaleAndSignedScores() {
         val previous = Locale.getDefault()
         try {
-            Locale.setDefault(Locale.US)
-            val cases = mapOf(
+            Locale.setDefault(Locale.CHINA)
+            val casesChina = mapOf(
                 Long.MIN_VALUE to "-92233720368.5亿", -1L to "-1", 0L to "0", 999L to "999",
                 1000L to "1.0k", 9999L to "10.0k", 10000L to "1.0万",
                 12057L to "1.2万", 399205L to "39.9万", 1160320L to "116.0万",
                 100000000L to "1.0亿"
             )
-            cases.forEach { (count, expected) -> assertEquals(expected, formatCount(count)) }
+            casesChina.forEach { (count, expected) -> assertEquals(expected, formatCount(count)) }
+
+            Locale.setDefault(Locale.TRADITIONAL_CHINESE)
+            assertEquals("1.2萬", formatCount(12057))
+            assertEquals("1.0億", formatCount(100000000))
+
+            Locale.setDefault(Locale.US)
+            val casesUS = mapOf(
+                Long.MIN_VALUE to "-9223372036.9B", -1L to "-1", 0L to "0", 999L to "999",
+                1000L to "1.0k", 9999L to "10.0k", 10000L to "10.0k",
+                12057L to "12.1k", 399205L to "399.2k", 1160320L to "1.2M",
+                100000000L to "100.0M", 1000000000L to "1.0B"
+            )
+            casesUS.forEach { (count, expected) -> assertEquals(expected, formatCount(count)) }
+
             Locale.setDefault(Locale.GERMANY)
-            assertEquals("1,2万", formatCount(12057))
+            assertEquals("12,1k", formatCount(12057))
+        } finally {
+            Locale.setDefault(previous)
+        }
+    }
+
+    @Test
+    fun compactNumbersSupportMultiLocale() {
+        val previous = Locale.getDefault()
+        try {
+            Locale.setDefault(Locale.CHINA)
+            assertEquals("9,999", formatCompactNumber(9999))
+            assertEquals("1.0万", formatCompactNumber(10000))
+            assertEquals("134.6万", formatCompactNumber(1346000))
+            assertEquals("1.0亿", formatCompactNumber(100000000))
+
+            Locale.setDefault(Locale.TRADITIONAL_CHINESE)
+            assertEquals("134.6萬", formatCompactNumber(1346000))
+
+            Locale.setDefault(Locale.US)
+            assertEquals("9,999", formatCompactNumber(9999))
+            assertEquals("10.0k", formatCompactNumber(10000))
+            assertEquals("86.9k", formatCompactNumber(86880))
+            assertEquals("1.3M", formatCompactNumber(1346000))
+            assertEquals("1.0B", formatCompactNumber(1000000000))
         } finally {
             Locale.setDefault(previous)
         }

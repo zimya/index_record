@@ -21,6 +21,9 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import java.util.Locale
 import com.melonhu.indexrecord.data.model.DoubanSubjectMetadata
+import com.melonhu.indexrecord.presentation.formatCount
+import com.melonhu.indexrecord.presentation.isChineseLocale
+import com.melonhu.indexrecord.presentation.isTraditionalChinese
 import com.melonhu.indexrecord.ui.components.RatingStars
 
 @Composable
@@ -68,10 +71,19 @@ internal fun SubjectRatingCard(subject: DoubanSubjectMetadata, isDark: Boolean) 
                             Column {
                                 RatingStars(ratingStars)
                                 Spacer(modifier = Modifier.height(2.dp))
-                                val countText = if (ratingCount > 10000) {
-                                    String.format(Locale.CHINA, "%.1f万人评价", ratingCount / 10000f)
+                                val countText = if (isChineseLocale()) {
+                                    if (ratingCount >= 10000) {
+                                        String.format(
+                                            Locale.getDefault(),
+                                            "%.1f%s人评价",
+                                            ratingCount / 10000f,
+                                            if (isTraditionalChinese()) "萬" else "万"
+                                        )
+                                    } else {
+                                        "${ratingCount}人评价"
+                                    }
                                 } else {
-                                    "${ratingCount}人评价"
+                                    "${formatCount(ratingCount.toLong())} ratings"
                                 }
                                 Text(
                                     text = countText,

@@ -229,34 +229,44 @@ internal fun MetricsRow(
     val wordUnit = stringResource(R.string.stats_unit_words).trim()
     val dayUnit = stringResource(R.string.stats_unit_days).trim()
 
-    Row(
+    Column(
         modifier = Modifier.fillMaxWidth(),
-        horizontalArrangement = Arrangement.spacedBy(6.dp)
+        verticalArrangement = Arrangement.spacedBy(10.dp)
     ) {
-        CompactMetricCard(
-            modifier = Modifier.weight(1f),
-            title = stringResource(R.string.stats_total_records),
-            value = formatNumber(animRecords),
-            unit = itemUnit
-        )
-        CompactMetricCard(
-            modifier = Modifier.weight(1f),
-            title = stringResource(R.string.stats_total_words),
-            value = formatCompactNumber(animWords),
-            unit = wordUnit
-        )
-        CompactMetricCard(
-            modifier = Modifier.weight(1f),
-            title = stringResource(R.string.stats_current_streak),
-            value = "$animCurrentStreak",
-            unit = dayUnit
-        )
-        CompactMetricCard(
-            modifier = Modifier.weight(1f),
-            title = stringResource(R.string.stats_longest_streak),
-            value = "$animMaxStreak",
-            unit = dayUnit
-        )
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.spacedBy(10.dp)
+        ) {
+            CompactMetricCard(
+                modifier = Modifier.weight(1f),
+                title = stringResource(R.string.stats_total_records),
+                value = formatNumber(animRecords),
+                unit = itemUnit
+            )
+            CompactMetricCard(
+                modifier = Modifier.weight(1f),
+                title = stringResource(R.string.stats_total_words),
+                value = formatCompactNumber(animWords),
+                unit = wordUnit
+            )
+        }
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.spacedBy(10.dp)
+        ) {
+            CompactMetricCard(
+                modifier = Modifier.weight(1f),
+                title = stringResource(R.string.stats_current_streak),
+                value = "$animCurrentStreak",
+                unit = dayUnit
+            )
+            CompactMetricCard(
+                modifier = Modifier.weight(1f),
+                title = stringResource(R.string.stats_longest_streak),
+                value = "$animMaxStreak",
+                unit = dayUnit
+            )
+        }
     }
 }
 
@@ -269,7 +279,7 @@ private fun CompactMetricCard(
 ) {
     Card(
         modifier = modifier,
-        shape = RoundedCornerShape(14.dp),
+        shape = RoundedCornerShape(16.dp),
         colors = CardDefaults.cardColors(
             containerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.45f)
         )
@@ -277,12 +287,12 @@ private fun CompactMetricCard(
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(vertical = 10.dp, horizontal = 2.dp),
+                .padding(vertical = 12.dp, horizontal = 12.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Text(
                 text = title,
-                style = MaterialTheme.typography.labelSmall,
+                style = MaterialTheme.typography.bodyMedium,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
                 maxLines = 1,
                 softWrap = false
@@ -296,16 +306,16 @@ private fun CompactMetricCard(
             ) {
                 Text(
                     text = value,
-                    style = MaterialTheme.typography.titleMedium,
+                    style = MaterialTheme.typography.headlineSmall,
                     fontWeight = FontWeight.Bold,
                     color = MaterialTheme.colorScheme.onSurface,
                     maxLines = 1
                 )
                 Text(
-                    text = " $unit",
-                    style = MaterialTheme.typography.labelSmall,
+                    text = unit,
+                    style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.outline,
-                    modifier = Modifier.padding(bottom = 1.dp)
+                    modifier = Modifier.padding(bottom = 2.dp, start = 3.dp)
                 )
             }
         }

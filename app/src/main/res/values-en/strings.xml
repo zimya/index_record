@@ -278,4 +278,23 @@
     <string name="data_clear_confirm_action">Delete everything</string>
     <string name="data_clear_success_title">Data cleared</string>
     <string name="data_clear_success_message">Deleted %1$d records, %2$d history snapshots, and %3$d raw payloads.</string>
+
+    <!-- About -->
+    <string name="settings_section_about">About</string>
+    <string name="settings_section_about_desc">Version, repository, and licenses</string>
+    <string name="about_app_name">Index Record</string>
+    <string name="about_version_format">Version %1$s (%2$d)</string>
+    <string name="about_tagline">103,000 grimoires, all memorized in your mind</string>
+    <string name="about_github">GitHub Repository</string>
+    <string name="about_github_url">https://github.com/zimya/index_record</string>
+    <string name="about_telegram">Telegram Group</string>
+    <string name="about_telegram_url">https://t.me/index_record_group</string>
+    <string name="about_licenses">Open Source Licenses</string>
+    <string name="about_licenses_desc">Third-party open-source libraries and notices</string>
+    <string name="about_licenses_dialog_title">Open Source Licenses</string>
+    <string name="about_app_license_title">App License</string>
+    <string name="about_app_license_desc">GNU General Public License v3.0 (GPL-3.0)</string>
+    <string name="about_third_party_licenses_title">Third-party Libraries</string>
+    <string name="about_index_image_desc">Index Librorum Prohibitorum</string>
+    <string name="about_link_copied">Link copied to clipboard</string>
 </resources>

@@ -281,4 +281,23 @@
     <string name="data_clear_confirm_action">确认清空</string>
     <string name="data_clear_success_title">数据已清空</string>
     <string name="data_clear_success_message">已删除 %1$d 条记录、%2$d 条历史快照与 %3$d 条原始数据。</string>
+
+    <!-- About -->
+    <string name="settings_section_about">关于</string>
+    <string name="settings_section_about_desc">版本、开源仓库与相关许可</string>
+    <string name="about_app_name">小茵记录</string>
+    <string name="about_version_format">版本 %1$s (%2$d)</string>
+    <string name="about_tagline">十万三千本魔道书，全都记在脑海中</string>
+    <string name="about_github">GitHub 仓库</string>
+    <string name="about_github_url">https://github.com/zimya/index_record</string>
+    <string name="about_telegram">Telegram 群组</string>
+    <string name="about_telegram_url">https://t.me/index_record_group</string>
+    <string name="about_licenses">开源许可列表</string>
+    <string name="about_licenses_desc">第三方开源库与许可证声明</string>
+    <string name="about_licenses_dialog_title">开源许可列表</string>
+    <string name="about_app_license_title">本应用许可</string>
+    <string name="about_app_license_desc">GNU General Public License v3.0 (GPL-3.0)</string>
+    <string name="about_third_party_licenses_title">第三方开源库</string>
+    <string name="about_index_image_desc">茵蒂克丝</string>
+    <string name="about_link_copied">链接已复制到剪贴板</string>
 </resources>

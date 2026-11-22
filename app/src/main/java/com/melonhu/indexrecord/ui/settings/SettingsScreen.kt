@@ -27,6 +27,7 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
 import androidx.compose.material.icons.filled.BarChart
+import androidx.compose.material.icons.outlined.Info
 import androidx.compose.material.icons.outlined.Palette
 import androidx.compose.material.icons.outlined.Storage
 import androidx.compose.material.icons.outlined.SystemUpdate
@@ -90,6 +91,11 @@ private enum class SettingsSubPage(
         titleRes = R.string.settings_section_update,
         subtitleRes = R.string.settings_section_update_desc,
         icon = Icons.Outlined.SystemUpdate
+    ),
+    ABOUT(
+        titleRes = R.string.settings_section_about,
+        subtitleRes = R.string.settings_section_about_desc,
+        icon = Icons.Outlined.Info
     )
 }
 
@@ -179,6 +185,7 @@ fun SettingsScreen(viewModel: SettingsViewModel = viewModel()) {
                         SettingsSubPage.RECORD -> RecordSettingsScreen(viewModel, onBack)
                         SettingsSubPage.DATA -> DataSettingsScreen(onBack = onBack)
                         SettingsSubPage.UPDATE -> UpdateSettingsScreen(onBack = onBack)
+                        SettingsSubPage.ABOUT -> AboutSettingsScreen(onBack = onBack)
                     }
                 }
             }

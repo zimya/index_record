@@ -40,6 +40,7 @@
     <string name="filter_time_unlimited">不限</string>
     <string name="filter_type">类型</string>
     <string name="filter_app">应用</string>
+    <string name="filter_select_app_first">请先选择应用</string>
     <string name="filter_clear">清除</string>
     <string name="filter_apply">确定</string>
     <string name="filter_select_all">全选</string>

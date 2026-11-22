@@ -36,7 +36,7 @@ internal class DoubanSubjectViewModel(
 
     val state: StateFlow<DoubanSubjectData> = doubanSubjectStates(initial, reads.snapshots).stateIn(
         scope = viewModelScope,
-        started = SharingStarted.WhileSubscribed(5_000),
+        started = SharingStarted.Lazily,
         initialValue = DoubanSubjectData(DoubanSubjectSnapshot(initial))
     )
 }

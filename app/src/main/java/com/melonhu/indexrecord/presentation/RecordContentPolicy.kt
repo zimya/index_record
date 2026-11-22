@@ -52,6 +52,21 @@ object RecordContentPolicy {
 
     fun filterTypeKey(platform: String, recordType: String): String = "$platform:$recordType"
 
+    fun platformFromFilterTypeKey(key: String): String {
+        if (':' in key) return key.substringBefore(':')
+        return when (key) {
+            "question", "answer", "article", "pin" -> "zhihu"
+            "topic", "review", "interest", "subject", "note" -> "douban"
+            "post" -> "reddit"
+            "lou", "floor" -> "tieba"
+            "thread" -> "threads"
+            "tweet" -> "twitter"
+            "status" -> "weibo"
+            "feed", "rating", "feedArticle" -> "coolapk"
+            else -> key
+        }
+    }
+
     fun filterTypeLabel(record: UniversalRecord): String = filterTypeLabel(filterTypeKey(record))
 
     fun filterTypeLabel(key: String): String {

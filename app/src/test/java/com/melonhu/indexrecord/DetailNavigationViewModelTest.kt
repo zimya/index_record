@@ -79,4 +79,22 @@ class DetailNavigationViewModelTest {
         ownerStore.clear()
         assertTrue(state.cleared)
     }
+
+    @Test fun inStackNavigationPreservesEntryIdentityAndKeyOnPop() {
+        val navigation = DetailNavigationViewModel()
+        navigation.push(record("parent"))
+        val parentEntry = navigation.entries.single()
+        val parentKey = parentEntry.key
+        navigation.attach(parentEntry)
+
+        navigation.push(record("child"))
+        assertEquals(2, navigation.entries.size)
+        val childEntry = navigation.entries.last()
+
+        assertTrue(navigation.pop())
+        assertEquals(1, navigation.entries.size)
+        val current = navigation.entries.single()
+        assertSame(parentEntry, current)
+        assertEquals(parentKey, current.key)
+    }
 }

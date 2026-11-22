@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.text.selection.SelectionContainer
@@ -57,6 +58,7 @@ import java.util.Locale
 @Composable
 internal fun RecordHistoryAction(record: UniversalRecord) {
     var open by rememberSaveable(record.platform, record.platformId) { mutableStateOf(false) }
+    val historyListState = rememberLazyListState()
     TextButton(
         onClick = { open = true },
         modifier = Modifier.semantics { contentDescription = "查看此记录的历史快照" }
@@ -70,12 +72,16 @@ internal fun RecordHistoryAction(record: UniversalRecord) {
             override fun <T : ViewModel> create(modelClass: Class<T>): T = RecordHistoryViewModel(record) as T
         }
     )
-    RecordHistoryDialog(model) { model.closePages(); open = false }
+    RecordHistoryDialog(model, historyListState) { model.closePages(); open = false }
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-private fun RecordHistoryDialog(model: RecordHistoryViewModel, onClose: () -> Unit) {
+private fun RecordHistoryDialog(
+    model: RecordHistoryViewModel,
+    listState: LazyListState = rememberLazyListState(),
+    onClose: () -> Unit
+) {
     val history by model.state.collectAsState()
     val retrying by model.isRetrying.collectAsState()
     val snapshot by model.snapshot.collectAsState()
@@ -85,7 +91,8 @@ private fun RecordHistoryDialog(model: RecordHistoryViewModel, onClose: () -> Un
     var second by remember { mutableStateOf<HistoricalRecord?>(null) }
     var viewerUrls by remember { mutableStateOf(emptyList<String>()) }
     var viewerIndex by remember { mutableStateOf(0) }
-    val listState = rememberLazyListState()
+    val snapshotListState = rememberLazyListState()
+    val diffListState = rememberLazyListState()
     val back: () -> Unit = {
         when {
             diff != null -> model.closeDiff()
@@ -117,13 +124,16 @@ private fun RecordHistoryDialog(model: RecordHistoryViewModel, onClose: () -> Un
                 val currentSnapshot = snapshot
                 val currentDiff = diff
                 when {
-                    currentDiff != null -> HistoryDiff(currentDiff, showUnchanged, Modifier.padding(padding)) {
+                    currentDiff != null -> HistoryDiff(currentDiff, showUnchanged, Modifier.padding(padding), diffListState) {
                         model.compare(currentDiff.old, currentDiff.new)
                     }
                     currentSnapshot != null -> {
                         // Render the captured value, never navigate through a live detail repository.
                         androidx.compose.runtime.key(currentSnapshot.key) {
-                            LazyColumn(Modifier.padding(padding).padding(horizontal = 16.dp)) {
+                            LazyColumn(
+                                modifier = Modifier.padding(padding).padding(horizontal = 16.dp),
+                                state = snapshotListState
+                            ) {
                                 item { SnapshotLabel(currentSnapshot) }
                                 item { RecordDetailHeader(currentSnapshot.record) { urls, index -> viewerUrls = urls; viewerIndex = index } }
                                 item {
@@ -208,10 +218,19 @@ private fun SnapshotLabel(entry: HistoricalRecord) {
 }
 
 @Composable
-private fun HistoryDiff(state: HistoryDiffState, showUnchanged: Boolean, modifier: Modifier, retry: () -> Unit) {
+private fun HistoryDiff(
+    state: HistoryDiffState,
+    showUnchanged: Boolean,
+    modifier: Modifier,
+    listState: LazyListState = rememberLazyListState(),
+    retry: () -> Unit
+) {
     androidx.compose.runtime.key(state.old.key, state.new.key) {
 
-        LazyColumn(modifier.fillMaxSize().padding(horizontal = 16.dp)) {
+        LazyColumn(
+            modifier = modifier.fillMaxSize().padding(horizontal = 16.dp),
+            state = listState
+        ) {
             item {
                 Text("旧 → 新", style = MaterialTheme.typography.titleLarge)
                 Text("旧快照", style = MaterialTheme.typography.titleSmall)

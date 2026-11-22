@@ -47,6 +47,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.saveable.rememberSaveableStateHolder
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -104,6 +105,7 @@ private enum class SettingsSubPage(
 fun SettingsScreen(viewModel: SettingsViewModel = viewModel()) {
     val lsposedStatus by viewModel.lsposedStatus.collectAsState()
     val syncProgress by viewModel.syncProgress.collectAsState()
+    val subPageStates = rememberSaveableStateHolder()
     var selectedSubPage by rememberSaveable { mutableStateOf<SettingsSubPage?>(null) }
     var lastSubPage by remember { mutableStateOf<SettingsSubPage?>(null) }
 
@@ -179,13 +181,15 @@ fun SettingsScreen(viewModel: SettingsViewModel = viewModel()) {
                     shadowElevation = 8.dp
                 ) {
                     val onBack = { selectedSubPage = null }
-                    when (activeSubPage) {
-                        SettingsSubPage.APPEARANCE -> AppearanceSettingsScreen(viewModel, onBack)
-                        SettingsSubPage.STATS -> StatsSettingsScreen(viewModel, onBack)
-                        SettingsSubPage.RECORD -> RecordSettingsScreen(viewModel, onBack)
-                        SettingsSubPage.DATA -> DataSettingsScreen(onBack = onBack)
-                        SettingsSubPage.UPDATE -> UpdateSettingsScreen(onBack = onBack)
-                        SettingsSubPage.ABOUT -> AboutSettingsScreen(onBack = onBack)
+                    subPageStates.SaveableStateProvider(activeSubPage.name) {
+                        when (activeSubPage) {
+                            SettingsSubPage.APPEARANCE -> AppearanceSettingsScreen(viewModel, onBack)
+                            SettingsSubPage.STATS -> StatsSettingsScreen(viewModel, onBack)
+                            SettingsSubPage.RECORD -> RecordSettingsScreen(viewModel, onBack)
+                            SettingsSubPage.DATA -> DataSettingsScreen(onBack = onBack)
+                            SettingsSubPage.UPDATE -> UpdateSettingsScreen(onBack = onBack)
+                            SettingsSubPage.ABOUT -> AboutSettingsScreen(onBack = onBack)
+                        }
                     }
                 }
             }

@@ -124,6 +124,7 @@ fun HomeScreen(viewModel: HomeViewModel = viewModel()) {
                 ) {
                     AnimatedContent(
                         targetState = entryToShow,
+                        contentKey = { it.key },
                         transitionSpec = {
                             if (lastNavAction == DetailNavigationViewModel.Action.PUSH) {
                                 (slideInHorizontally(

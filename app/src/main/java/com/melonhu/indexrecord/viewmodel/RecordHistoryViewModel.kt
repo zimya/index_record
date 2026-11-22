@@ -51,7 +51,7 @@ internal class RecordHistoryViewModel(
     val isRetrying = reads.isRetrying
     fun retry() = reads.retry()
     val state: StateFlow<RecordHistoryState> = recordHistoryStates(reads.snapshots).stateIn(
-        viewModelScope, SharingStarted.WhileSubscribed(5_000), RecordHistoryState()
+        viewModelScope, SharingStarted.Lazily, RecordHistoryState()
     )
 
     private val selected = MutableStateFlow<HistoricalRecord?>(null)

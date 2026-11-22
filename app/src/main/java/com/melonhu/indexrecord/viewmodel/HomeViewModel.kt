@@ -5,9 +5,11 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 
 import kotlinx.coroutines.flow.*
+import com.melonhu.indexrecord.data.PlatformCatalog
 import com.melonhu.indexrecord.data.model.UniversalRecord
 import com.melonhu.indexrecord.data.repository.HomeRecordRepository
 import com.melonhu.indexrecord.presentation.HomeQueryFilter
+import com.melonhu.indexrecord.presentation.RecordContentPolicy
 import com.melonhu.indexrecord.sync.HomeSyncCoordinator
 
 class HomeViewModel(application: Application) : AndroidViewModel(application) {
@@ -45,7 +47,11 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
     }
 
     fun updateApps(apps: Set<String>) {
-        _filter.value = _filter.value.copy(apps = apps)
+        val platforms = apps.mapNotNull { PlatformCatalog.platformForPackage(it) }.toSet()
+        val validTypes = if (platforms.isEmpty()) emptySet() else {
+            _filter.value.types.filter { RecordContentPolicy.platformFromFilterTypeKey(it) in platforms }.toSet()
+        }
+        _filter.value = _filter.value.copy(apps = apps, types = validTypes)
     }
 
     fun updateTypes(types: Set<String>) {

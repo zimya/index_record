@@ -113,11 +113,21 @@ internal fun HomeTopBar(
                     }
                     IconButton(onClick = onOpenFilter) {
                         val hasFilter = filter.isActive
-                        Icon(
-                            imageVector = if (hasFilter) Icons.Filled.FilterList else Icons.Outlined.FilterList,
-                            contentDescription = stringResource(R.string.filter_title),
-                            tint = if (hasFilter) MaterialTheme.colorScheme.primary else LocalContentColor.current
-                        )
+                        BadgedBox(
+                            badge = {
+                                if (hasFilter) {
+                                    Badge(
+                                        containerColor = MaterialTheme.colorScheme.primary
+                                    )
+                                }
+                            }
+                        ) {
+                            Icon(
+                                imageVector = if (hasFilter) Icons.Filled.FilterList else Icons.Outlined.FilterList,
+                                contentDescription = stringResource(R.string.filter_title),
+                                tint = if (hasFilter) MaterialTheme.colorScheme.primary else LocalContentColor.current
+                            )
+                        }
                     }
                 },
                 colors = TopAppBarDefaults.topAppBarColors(

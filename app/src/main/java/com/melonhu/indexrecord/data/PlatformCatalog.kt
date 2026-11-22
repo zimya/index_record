@@ -33,6 +33,12 @@ object PlatformCatalog {
     fun packageLabel(packageName: String): String? = packageNames[packageName]
     fun knownDisplayName(platform: String): String? = byId[platform]?.name
 
+    fun platformForPackage(packageName: String): String? {
+        if (packageName == "com.weico.international") return "weibo"
+        return platforms.firstOrNull { it.defaultPackage.equals(packageName, ignoreCase = true) }?.id
+            ?: byId[packageName]?.id
+    }
+
     private val typeNames = mapOf(
         "question" to "问题", "answer" to "回答", "article" to "文章", "pin" to "想法",
         "comment" to "评论", "lou" to "主帖", "thread" to "帖子", "floor" to "楼层",

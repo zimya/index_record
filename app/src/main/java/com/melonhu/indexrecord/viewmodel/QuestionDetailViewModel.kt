@@ -48,7 +48,7 @@ internal class QuestionDetailViewModel(
 
     val state: StateFlow<QuestionDetailUiState> = questionDetailStates(seed, reads.snapshots)
         .combine(sort) { state, order -> state.copy(sort = order) }
-        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000),
+        .stateIn(viewModelScope, SharingStarted.Lazily,
             QuestionDetailUiState(assembleQuestionDetailSnapshot(seed) { null }))
 
     fun setSort(value: AnswerSort) { sort.value = value }

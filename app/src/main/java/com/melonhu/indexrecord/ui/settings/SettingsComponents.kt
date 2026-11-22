@@ -1,5 +1,6 @@
 package com.melonhu.indexrecord.ui.settings
 
+import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -47,6 +48,7 @@ import com.melonhu.indexrecord.ui.util.rememberAppHapticFeedback
 internal fun SettingsSubPageScaffold(
     title: String,
     onBack: () -> Unit,
+    scrollState: ScrollState = rememberScrollState(),
     content: @Composable ColumnScope.() -> Unit
 ) {
     Scaffold(
@@ -63,7 +65,7 @@ internal fun SettingsSubPageScaffold(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(padding)
-                .verticalScroll(rememberScrollState())
+                .verticalScroll(scrollState)
                 .padding(horizontal = 16.dp),
             content = content
         )

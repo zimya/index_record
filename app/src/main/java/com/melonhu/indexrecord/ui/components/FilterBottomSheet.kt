@@ -66,20 +66,46 @@ fun FilterBottomSheet(
     onApply: (startMillis: Long?, endMillis: Long?, apps: Set<String>, types: Set<String>) -> Unit,
     onClear: () -> Unit
 ) {
+    FilterBottomSheet(
+        initialStartMillis = filter.startMillis,
+        initialEndMillis = filter.endMillis,
+        initialApps = filter.apps,
+        initialTypes = filter.types,
+        availableApps = availableApps,
+        availableTypes = availableTypes,
+        onDismiss = onDismiss,
+        onApply = onApply,
+        onClear = onClear
+    )
+}
+
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalLayoutApi::class)
+@Composable
+fun FilterBottomSheet(
+    initialStartMillis: Long?,
+    initialEndMillis: Long?,
+    initialApps: Set<String>,
+    initialTypes: Set<String>,
+    availableApps: List<String>,
+    availableTypes: List<String>,
+    onDismiss: () -> Unit,
+    onApply: (startMillis: Long?, endMillis: Long?, apps: Set<String>, types: Set<String>) -> Unit,
+    onClear: () -> Unit
+) {
     val context = LocalContext.current
     val isDark = isAppInDarkTheme()
     val zone = remember { ZoneId.systemDefault() }
     val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
     val scrollState = rememberScrollState()
 
-    var startMillis by remember { mutableStateOf(filter.startMillis) }
-    var endMillis by remember { mutableStateOf(filter.endMillis) }
-    var selectedApps by remember { mutableStateOf(filter.apps) }
+    var startMillis by remember { mutableStateOf(initialStartMillis) }
+    var endMillis by remember { mutableStateOf(initialEndMillis) }
+    var selectedApps by remember { mutableStateOf(initialApps) }
     var selectedTypes by remember {
-        val initialPlatforms = filter.apps.mapNotNull { PlatformCatalog.platformForPackage(it) }.toSet()
+        val initialPlatforms = initialApps.mapNotNull { PlatformCatalog.platformForPackage(it) }.toSet()
         mutableStateOf(
             if (initialPlatforms.isEmpty()) emptySet()
-            else filter.types.filter { RecordContentPolicy.platformFromFilterTypeKey(it) in initialPlatforms }.toSet()
+            else initialTypes.filter { RecordContentPolicy.platformFromFilterTypeKey(it) in initialPlatforms }.toSet()
         )
     }
 

@@ -20,8 +20,11 @@ class HomeRecordRepository(private val store: BoxStore = ObjectBox.store) {
     private val recordBox = store.boxFor(UniversalRecord::class.java)
     private val rawBox = store.boxFor(RawData::class.java)
 
-    private fun observeRecords(): Flow<List<UniversalRecord>> = callbackFlow {
-        val query = recordBox.query().orderDesc(UniversalRecord_.captureTime).build()
+    private fun observeRecords(filter: HomeQueryFilter): Flow<List<UniversalRecord>> = callbackFlow {
+        val builder = recordBox.query()
+        filter.startMillis?.let { builder.greaterOrEqual(UniversalRecord_.captureTime, it) }
+        filter.endMillis?.let { builder.lessOrEqual(UniversalRecord_.captureTime, it) }
+        val query = builder.orderDesc(UniversalRecord_.captureTime).build()
         val subscription = query.subscribe().observer { trySend(it) }
         trySend(query.find())
         awaitClose {
@@ -30,8 +33,8 @@ class HomeRecordRepository(private val store: BoxStore = ObjectBox.store) {
         }
     }.flowOn(Dispatchers.IO)
 
-    fun records(queryText: String, filter: HomeQueryFilter): Flow<List<UniversalRecord>> =
-        observeRecords().map { HomeQueryPolicy.apply(it, queryText, filter) }.flowOn(Dispatchers.IO)
+    fun records(filter: HomeQueryFilter): Flow<List<UniversalRecord>> =
+        observeRecords(filter).map { HomeQueryPolicy.apply(it, filter) }.flowOn(Dispatchers.IO)
 
     // Filter options project only indexed identity fields, not large content/metadata strings.
     private fun <T> observeOptions(snapshot: () -> T): Flow<T> = observeRecordSnapshots(store, snapshot)

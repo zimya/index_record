@@ -33,6 +33,20 @@
         android:localeConfig="@xml/locales_config"
     >
 
+        <!-- LiteRT-LM GPU (OpenCL) acceleration on Android 12+ -->
+        <uses-native-library
+            android:name="libvndksupport.so"
+            android:required="false" />
+        <uses-native-library
+            android:name="libOpenCL.so"
+            android:required="false" />
+        <uses-native-library
+            android:name="libOpenCL-pixel.so"
+            android:required="false" />
+        <uses-native-library
+            android:name="libOpenCL-car.so"
+            android:required="false" />
+
 	    <!-- 这里的 android:exported="true" 是 Android 12+ 必须的 -->
         <activity
             android:name=".MainActivity"

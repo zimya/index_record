@@ -70,7 +70,8 @@ object DataProcessor {
         _syncProgress.value = SyncProgress(isRunning = true, total = total, processed = 0)
 
         val processing = objectBoxCaptureProcessing(CHUNK_SIZE)
-        val persistence = RecordPersistence(ObjectBoxRecordRepository(recordBox), persistenceContext)
+        val recordRepository = ObjectBoxRecordRepository(recordBox)
+        val persistence = RecordPersistence(recordRepository, persistenceContext)
 
         val query = rawBox.query().order(RawData_.id).build()
         var retainedOffset = 0L
@@ -92,6 +93,7 @@ object DataProcessor {
                     val processedRawIds = processing.persist(parsedItems, persistence)
                     if (processedRawIds.isNotEmpty()) rawBox.remove(*processedRawIds)
                 }
+                com.melonhu.indexrecord.search.SearchRuntime.onRecordsPersisted(recordRepository.drainPersisted())
                 retainedOffset += parsedItems.count { !it.result.consumeRaw }
                 parsedItems.filter { !it.result.consumeRaw }.forEach { item ->
                     val raw = chunk.firstOrNull { it.id == item.rawId }

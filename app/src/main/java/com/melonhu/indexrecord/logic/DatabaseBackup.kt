@@ -209,6 +209,10 @@ internal class DatabaseBackupManager(
         )
         storage.clearAll()
         cleared
+    }.also {
+        if (storage is ObjectBoxBackupStorage) {
+            com.melonhu.indexrecord.search.SearchRuntime.clearAllIndexes()
+        }
     }
 
     fun exportZip(
@@ -345,6 +349,11 @@ internal class DatabaseBackupManager(
                 rawDataInserted = rawDataInserted,
                 rawDataSkipped = rawDataSkipped
             )
+        }.also {
+            val repo = storage.repository
+            if (repo is ObjectBoxRecordRepository) {
+                com.melonhu.indexrecord.search.SearchRuntime.onRecordsPersisted(repo.drainPersisted())
+            }
         }
     }
 

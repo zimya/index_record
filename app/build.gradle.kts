@@ -117,6 +117,7 @@ android {
     }
     kotlinOptions {
         jvmTarget = "17"
+        freeCompilerArgs += listOf("-Xskip-metadata-version-check")
     }
 }
 
@@ -169,10 +170,18 @@ dependencies {
     testImplementation("junit:junit:4.13.2")
     // Exercise the exact Java projection used inside Reddit's hooked process (Android supplies org.json).
     testImplementation("org.json:json:20240303")
+    testImplementation("androidx.sqlite:sqlite-bundled-jvm:2.7.1")
 
     // Modern Xposed (API 102)
     compileOnly("io.github.libxposed:api:102.0.0")
     implementation("io.github.libxposed:service:102.0.0")
+
+    // Search: SQLite FTS5 (bundled SQLite with FTS5 enabled), LiteRT-LM EmbeddingGemma 2, ML Kit OCR
+    implementation("androidx.sqlite:sqlite:2.7.1")
+    implementation("androidx.sqlite:sqlite-bundled:2.7.1")
+    implementation("com.google.ai.edge.litertlm:litertlm-android:0.19.1")
+    implementation("com.google.mlkit:text-recognition:16.0.1")
+    implementation("com.google.mlkit:text-recognition-chinese:16.0.1")
 }
 
 // 【修复2】解决 Configuration not found 问题

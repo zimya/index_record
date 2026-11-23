@@ -73,6 +73,11 @@
 -keep class io.ratex.** { *; }
 -keepclassmembers class io.ratex.** { *; }
 
+# LiteRT-LM 与 USearch
+-dontwarn com.google.ai.edge.litertlm.**
+-keep class com.google.ai.edge.litertlm.** { *; }
+-keep class com.melonhu.indexrecord.search.UsearchNative { *; }
+
 # ==============================================================================
 # 5. 通用 Android 与 Kotlin 保留规则
 # ==============================================================================

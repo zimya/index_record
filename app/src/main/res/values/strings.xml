@@ -5,6 +5,7 @@
 
     <!-- Navigation -->
     <string name="nav_home">首页</string>
+    <string name="nav_search">搜索</string>
     <string name="nav_stats">统计</string>
     <string name="nav_settings">设置</string>
 
@@ -30,11 +31,70 @@
     <string name="untitled_record">未记录标题</string>
 
     <!-- Home & Search & Filter -->
-    <string name="search_placeholder">搜索内容、作者、平台...</string>
+    <string name="search_placeholder">搜索图片和数据库...</string>
+    <string name="search_semantic_toggle">语义</string>
+    <string name="search_filter_platform">平台</string>
+    <string name="search_filter_source">搜索来源</string>
+    <string name="search_filter_source_count">搜索来源 (%1$d/%2$d)</string>
+    <string name="search_idle_hint">支持精确词频检索、图片 OCR 识别与语义/画面混合搜索</string>
+    <string name="search_ocr_snippet_label">图内文字 OCR</string>
+    <string name="search_source_text_exact">文本匹配</string>
+    <string name="search_source_ocr_exact">图内 OCR</string>
+    <string name="search_source_text_semantic">文本语义</string>
+    <string name="search_source_image_visual">图片画面</string>
+    <string name="search_visual_matched_image_hint">画面内容与搜索语义相符</string>
+    <string name="search_visual_similarity_label">· 相似度 %1$d%%</string>
+    <string name="search_text_semantic_hint">正文语义与搜索意图相符</string>
+    <string name="search_index_stage_loading_model">正在加载向量模型…</string>
+    <string name="search_index_stage_paused">索引已暂停</string>
+    <string name="search_index_stage_scanning">正在扫描新记录…</string>
+    <string name="search_index_stage_text">正在提取文本向量…</string>
+    <string name="search_index_stage_image">正在索引图片与 OCR…</string>
+    <string name="search_index_stage_pending">等待处理索引任务</string>
+    <string name="search_index_stage_ready">索引就绪</string>
+    <string name="search_index_counts">待处理 %1$d（文本 %2$d · 图片 %3$d）</string>
+    <string name="search_index_pause">暂停索引</string>
+    <string name="search_index_resume">继续索引</string>
+    <string name="search_index_recheck">重试失败</string>
+    <string name="search_index_retry_count">重试失败 (%1$d)</string>
+    <string name="search_clear_image_cache">清除图片缓存 (%1$s)</string>
+    <string name="search_progress_title">索引进度</string>
+    <string name="search_progress_ready_short">已就绪</string>
+    <string name="search_progress_paused_short">已暂停 %1$d%%</string>
+    <string name="search_pipeline_text_semantic">文本语义</string>
+    <string name="search_pipeline_image_download">图片下载与 OCR</string>
+    <string name="search_pipeline_image_semantic">图片语义</string>
+    <string name="search_pipeline_running_gpu">GPU 推理中…</string>
+    <string name="search_pipeline_downloading_ocr">并发下载与 OCR 中…</string>
+    <string name="search_pipeline_waiting_text">等待文本语义完成后开始</string>
+    <string name="search_pipeline_waiting_download">等待图片下载完成</string>
+    <string name="search_pipeline_queued">等待处理</string>
+    <string name="search_pipeline_paused">已暂停</string>
+    <string name="search_pipeline_done">已完成</string>
+    <string name="search_pipeline_ocr_count">OCR %1$d/%2$d</string>
+    <string name="search_pipeline_pending_only">待处理 %1$d</string>
+    <string name="search_pipeline_pending_failed">待处理 %1$d · 失败 %2$d</string>
+    <string name="search_pipeline_need_model">需先下载语义模型</string>
+    <string name="search_progress_model_needed_short">精确就绪</string>
+    <string name="search_model_section_title">语义模型 (EmbeddingGemma 2)</string>
+    <string name="search_model_not_downloaded">未下载（约 %1$s）。不下载也能使用文字匹配与图内 OCR；下载后可开启文本语义与以文搜图。</string>
+    <string name="search_model_downloading">正在下载模型 (%1$s / %2$s)</string>
+    <string name="search_model_paused">下载已暂停 (%1$s / %2$s)</string>
+    <string name="search_model_verifying">正在校验模型完整性 (SHA-256)…</string>
+    <string name="search_model_ready">已就绪 (%1$s)</string>
+    <string name="search_model_download_btn">下载模型</string>
+    <string name="search_model_resume_btn">继续下载</string>
+    <string name="search_model_pause_btn">暂停</string>
+    <string name="search_model_cancel_btn">取消</string>
+    <string name="search_model_delete_btn">删除模型</string>
+    <string name="search_model_retry_btn">重试下载</string>
+    <string name="search_model_required_error">尚未下载语义向量模型，请先下载模型，或在“搜索来源”中保留“文本匹配”或“图内 OCR”。</string>
     <string name="home_empty_prompt">暂无记录，去刷刷社交网络吧！</string>
     <string name="home_empty_search">没有找到匹配的记录</string>
     <string name="filter_title">过滤器</string>
     <string name="filter_time">时间</string>
+    <string name="filter_start_time">开始时间</string>
+    <string name="filter_end_time">结束时间</string>
     <string name="filter_time_start">开始：%1$s</string>
     <string name="filter_time_end">结束：%1$s</string>
     <string name="filter_time_unlimited">不限</string>
@@ -46,6 +106,7 @@
     <string name="filter_select_all">全选</string>
     <string name="filter_select_invert">反选</string>
     <string name="filter_select_reset">重置</string>
+    <string name="filter_empty_hint">已应用筛选条件，可能导致结果受限</string>
     <string name="filter_open">打开过滤器</string>
     <string name="filter_close">关闭过滤器</string>
     <string name="sync_hint_loaded">已加载 %1$d 条内容</string>

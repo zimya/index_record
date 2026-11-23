@@ -1,6 +1,7 @@
 package com.melonhu.indexrecord.ui.main
 
 import com.melonhu.indexrecord.ui.home.HomeScreen
+import com.melonhu.indexrecord.ui.search.SearchScreen
 import com.melonhu.indexrecord.ui.settings.SettingsScreen
 import com.melonhu.indexrecord.ui.stats.StatsScreen
 import com.melonhu.indexrecord.ui.util.rememberAppHapticFeedback
@@ -12,6 +13,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.BarChart
 import androidx.compose.material.icons.filled.Home
+import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
@@ -64,8 +66,8 @@ fun MainScreen() {
                         }
                     },
                     colors = navItemColors,
-                    icon = { androidx.compose.material3.Icon(Icons.Default.BarChart, contentDescription = stringResource(R.string.nav_stats)) },
-                    label = { androidx.compose.material3.Text(stringResource(R.string.nav_stats)) }
+                    icon = { androidx.compose.material3.Icon(Icons.Default.Search, contentDescription = stringResource(R.string.nav_search)) },
+                    label = { androidx.compose.material3.Text(stringResource(R.string.nav_search)) }
                 )
                 NavigationBarItem(
                     selected = selectedTab == 2,
@@ -73,6 +75,18 @@ fun MainScreen() {
                         if (selectedTab != 2) {
                             appHaptics.tabSwitch()
                             selectedTab = 2
+                        }
+                    },
+                    colors = navItemColors,
+                    icon = { androidx.compose.material3.Icon(Icons.Default.BarChart, contentDescription = stringResource(R.string.nav_stats)) },
+                    label = { androidx.compose.material3.Text(stringResource(R.string.nav_stats)) }
+                )
+                NavigationBarItem(
+                    selected = selectedTab == 3,
+                    onClick = {
+                        if (selectedTab != 3) {
+                            appHaptics.tabSwitch()
+                            selectedTab = 3
                         }
                     },
                     colors = navItemColors,
@@ -90,7 +104,8 @@ fun MainScreen() {
             saveableStateHolder.SaveableStateProvider(key = selectedTab) {
                 when (selectedTab) {
                     0 -> HomeScreen()
-                    1 -> StatsScreen()
+                    1 -> SearchScreen()
+                    2 -> StatsScreen()
                     else -> SettingsScreen()
                 }
             }

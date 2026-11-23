@@ -32,13 +32,6 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
         syncCoordinator.start()
     }
 
-    private val _searchQuery = MutableStateFlow("")
-    val searchQuery: StateFlow<String> = _searchQuery.asStateFlow()
-
-    fun updateSearchQuery(query: String) {
-        _searchQuery.value = query
-    }
-
     private val _filter = MutableStateFlow(HomeFilter())
     val filter: StateFlow<HomeFilter> = _filter.asStateFlow()
 
@@ -73,9 +66,9 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
     val isInitialLoaded: StateFlow<Boolean> = _isInitialLoaded.asStateFlow()
 
     @OptIn(kotlinx.coroutines.ExperimentalCoroutinesApi::class)
-    val recordsFlow: StateFlow<List<UniversalRecord>> = combine(_searchQuery, _filter) { q, f -> q to f }
-        .flatMapLatest { (queryText, filterState) ->
-            repository.records(queryText, filterState.queryFilter())
+    val recordsFlow: StateFlow<List<UniversalRecord>> = _filter
+        .flatMapLatest { filterState ->
+            repository.records(filterState.queryFilter())
         }
         .onEach { _isInitialLoaded.value = true }
         .stateIn(

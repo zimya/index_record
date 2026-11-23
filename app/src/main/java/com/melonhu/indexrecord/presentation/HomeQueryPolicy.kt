@@ -1,7 +1,6 @@
 package com.melonhu.indexrecord.presentation
 
 import com.melonhu.indexrecord.data.model.UniversalRecord
-import com.melonhu.indexrecord.data.model.bodyPlainText
 
 /** Immutable query input, independent of Android and storage. */
 data class HomeQueryFilter(
@@ -17,22 +16,15 @@ data class HomeQueryFilter(
 object HomeQueryPolicy {
     fun apply(
         records: List<UniversalRecord>,
-        queryText: String,
         filter: HomeQueryFilter = HomeQueryFilter()
     ): List<UniversalRecord> {
-        val query = queryText.trim()
-        val includeSecondary = query.isNotEmpty() || filter.isActive
+        val includeSecondary = filter.isActive
         return records.filter { record ->
             RecordContentPolicy.isEligibleForHome(record, includeSecondary) &&
                 (filter.startMillis == null || record.captureTime >= filter.startMillis) &&
                 (filter.endMillis == null || record.captureTime <= filter.endMillis) &&
                 (filter.apps.isEmpty() || RecordContentPolicy.sourceApp(record) in filter.apps) &&
-                (filter.types.isEmpty() || RecordContentPolicy.filterTypeKey(record) in filter.types) &&
-                (query.isEmpty() || sequenceOf(
-                    record.title, record.bodyPlainText(), record.authorName, record.platform,
-                    record.recordType, record.extraMetadata, record.sourceUrl,
-                    RecordContentPolicy.sourceApp(record), RecordContentPolicy.filterTypeLabel(record)
-                ).any { it.contains(query, ignoreCase = true) })
+                (filter.types.isEmpty() || RecordContentPolicy.filterTypeKey(record) in filter.types)
         }
     }
 }

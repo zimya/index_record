@@ -131,6 +131,15 @@ internal fun archiveLegacyIndexForIdentity(
 
 internal class ObjectBoxRecordRepository(private val box: Box<UniversalRecord>) : RecordRepository {
     override val history: RecordSnapshotStorage = ObjectBoxSnapshotStorage(box.store.boxFor(RecordSnapshot::class.java))
+    private val persistedBatch = LinkedHashMap<Long, UniversalRecord>()
+
+    fun drainPersisted(): List<UniversalRecord> {
+        if (persistedBatch.isEmpty()) return emptyList()
+        val copy = persistedBatch.values.toList()
+        persistedBatch.clear()
+        return copy
+    }
+
     override fun find(platformId: String): UniversalRecord? {
         val query = box.query().equal(UniversalRecord_.platformId, platformId, CASE_SENSITIVE).build()
         return try { query.findFirst() } finally { query.close() }
@@ -158,6 +167,9 @@ internal class ObjectBoxRecordRepository(private val box: Box<UniversalRecord>) 
         // afterPut can update an uncaptured legacy row too; freeze its old value before that write.
         archiveLegacyIndex(record, this, history)
         box.put(record)
+        if (record.id > 0L) {
+            persistedBatch[record.id] = record.copy()
+        }
     }
 }
 

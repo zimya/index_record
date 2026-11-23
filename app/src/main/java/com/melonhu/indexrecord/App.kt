@@ -19,6 +19,7 @@ class App : Application(), ImageLoaderFactory {
 
         // 初始化数据库
         ObjectBox.init(this)
+        com.melonhu.indexrecord.search.SearchRuntime.init(this)
         com.melonhu.indexrecord.sync.RecordSyncBridge.init(this)
 
         // 仅在 Debug 模式下开启浏览器调试

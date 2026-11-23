@@ -16,8 +16,8 @@ import java.util.regex.Pattern
  */
 object ZhihuCommentParser {
 
-    private val PATTERN_ZHIHU_ROOT_COMMENT = Pattern.compile("https?://api\\.zhihu\\.com/comment_v5/(answers|articles|pins)/(\\d+)/root_comment.*")
-    private val PATTERN_ZHIHU_CHILD_COMMENT = Pattern.compile("https?://api\\.zhihu\\.com/comment_v5/comment/(\\d+)/child_comment.*")
+    private val PATTERN_ZHIHU_ROOT_COMMENT = Pattern.compile("https?://(?:api|www)\\.zhihu\\.com/(?:api/v4/)?comment_v5/(answers|articles|pins)/(\\d+)/root_comment.*")
+    private val PATTERN_ZHIHU_CHILD_COMMENT = Pattern.compile("https?://(?:api|www)\\.zhihu\\.com/(?:api/v4/)?comment_v5/comment/(\\d+)/child_comment.*")
 
     private val gson = Gson()
 

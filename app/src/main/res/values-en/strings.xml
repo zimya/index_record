@@ -280,7 +280,6 @@
     <string name="type_review">Review</string>
     <string name="type_interest">Short Review</string>
     <string name="type_subject">Subject</string>
-    <string name="type_note">Note</string>
     <string name="type_tweet">Tweet</string>
     <string name="type_status">Weibo</string>
     <string name="type_subfloor">Sub-floor</string>
@@ -359,4 +358,23 @@
     <string name="about_third_party_licenses_title">Third-party Libraries</string>
     <string name="about_index_image_desc">Index Librorum Prohibitorum</string>
     <string name="about_link_copied">Link copied to clipboard</string>
+    <string name="platform_github">GitHub</string>
+    <string name="platform_mastodon">Mastodon</string>
+    <string name="platform_bilibili">Bilibili</string>
+    <string name="platform_medium">Medium</string>
+    <string name="platform_goodreads">Goodreads</string>
+    <string name="platform_lofter">LOFTER</string>
+    <string name="platform_dcard">Dcard</string>
+    <string name="platform_weread">WeRead</string>
+    <string name="platform_netease">NetEase Music</string>
+    <string name="type_issue">Issue</string>
+    <string name="type_pr">PR</string>
+    <string name="type_discussion">Discussion</string>
+    <string name="type_release">Release</string>
+    <string name="type_readme">README</string>
+    <string name="type_opus">Post</string>
+    <string name="type_note">Note</string>
+    <string name="type_book">Book</string>
+    <string name="type_song">Song</string>
+    <string name="type_video">Video</string>
 </resources>

@@ -14,6 +14,15 @@ import com.melonhu.indexrecord.parser.hupu.HupuParser
 import com.melonhu.indexrecord.parser.xiaoheihe.XiaoheiheParser
 import com.melonhu.indexrecord.parser.bluesky.BlueskyParser
 import com.melonhu.indexrecord.parser.nga.NgaParser
+import com.melonhu.indexrecord.parser.netease.NetEaseMusicParser
+import com.melonhu.indexrecord.parser.weread.WeReadParser
+import com.melonhu.indexrecord.parser.dcard.DCardParser
+import com.melonhu.indexrecord.parser.lofter.LofterParser
+import com.melonhu.indexrecord.parser.goodreads.GoodreadsParser
+import com.melonhu.indexrecord.parser.medium.MediumParser
+import com.melonhu.indexrecord.parser.bilibili.BilibiliParser
+import com.melonhu.indexrecord.parser.mastodon.MastodonParser
+import com.melonhu.indexrecord.parser.github.GitHubParser
 
 /**
  * 平台解析器注册中心。
@@ -33,7 +42,16 @@ object ParserRegistry {
         HupuParser,
         XiaoheiheParser,
         BlueskyParser,
-        NgaParser
+        NgaParser,
+        GitHubParser,
+        MastodonParser,
+        BilibiliParser,
+        MediumParser,
+        GoodreadsParser,
+        LofterParser,
+        DCardParser,
+        WeReadParser,
+        NetEaseMusicParser
     )
 
     fun findParser(cleanUrl: String, raw: RawData): RawDataParser? {

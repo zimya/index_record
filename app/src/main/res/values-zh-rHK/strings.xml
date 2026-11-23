@@ -216,7 +216,6 @@
     <string name="type_review">長評</string>
     <string name="type_interest">短評</string>
     <string name="type_subject">條目</string>
-    <string name="type_note">日記</string>
     <string name="type_tweet">推文</string>
     <string name="type_status">微博</string>
     <string name="type_subfloor">樓中樓</string>
@@ -295,4 +294,23 @@
     <string name="about_third_party_licenses_title">第三方開源庫</string>
     <string name="about_index_image_desc">茵蒂克絲</string>
     <string name="about_link_copied">連結已複製到剪貼簿</string>
+    <string name="platform_github">GitHub</string>
+    <string name="platform_mastodon">Mastodon</string>
+    <string name="platform_bilibili">嗶哩嗶哩</string>
+    <string name="platform_medium">Medium</string>
+    <string name="platform_goodreads">Goodreads</string>
+    <string name="platform_lofter">LOFTER</string>
+    <string name="platform_dcard">Dcard</string>
+    <string name="platform_weread">微信讀書</string>
+    <string name="platform_netease">網易雲音樂</string>
+    <string name="type_issue">Issue</string>
+    <string name="type_pr">PR</string>
+    <string name="type_discussion">討論</string>
+    <string name="type_release">版本</string>
+    <string name="type_readme">README</string>
+    <string name="type_opus">圖文</string>
+    <string name="type_note">想法</string>
+    <string name="type_book">書籍</string>
+    <string name="type_song">歌曲</string>
+    <string name="type_video">影片</string>
 </resources>

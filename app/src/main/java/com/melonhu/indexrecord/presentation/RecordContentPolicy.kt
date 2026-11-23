@@ -7,7 +7,7 @@ import com.melonhu.indexrecord.data.model.UniversalRecord
 object RecordContentPolicy {
     private val primaryTypesByPlatform: Map<String, List<String>> = mapOf(
         "zhihu" to listOf("question", "answer", "article", "pin"),
-        "douban" to listOf("topic", "review", "interest", "subject", "feed", "note"),
+        "douban" to listOf("topic", "review", "interest", "subject"),
         "tieba" to listOf("lou"),
         "twitter" to listOf("tweet"),
         "weibo" to listOf("status"),
@@ -17,7 +17,16 @@ object RecordContentPolicy {
         "hupu" to listOf("post"),
         "xiaoheihe" to listOf("post"),
         "bluesky" to listOf("post"),
-        "nga" to listOf("post")
+        "nga" to listOf("post"),
+        "github" to listOf("issue", "pr", "discussion", "release", "readme"),
+        "mastodon" to listOf("post"),
+        "bilibili" to listOf("article", "opus", "video"),
+        "medium" to listOf("article"),
+        "goodreads" to listOf("review", "book"),
+        "lofter" to listOf("post"),
+        "dcard" to listOf("post"),
+        "weread" to listOf("book", "note", "review"),
+        "netease" to listOf("song")
     )
 
     private val secondaryTypesByPlatform: Map<String, List<String>> = mapOf(
@@ -32,7 +41,16 @@ object RecordContentPolicy {
         "hupu" to listOf("comment"),
         "xiaoheihe" to listOf("comment"),
         "bluesky" to listOf("comment"),
-        "nga" to listOf("comment")
+        "nga" to listOf("comment"),
+        "github" to listOf("comment"),
+        "mastodon" to listOf("comment"),
+        "bilibili" to listOf("comment"),
+        "medium" to listOf("comment"),
+        "goodreads" to listOf("comment"),
+        "lofter" to listOf("comment"),
+        "dcard" to listOf("comment"),
+        "weread" to listOf("comment"),
+        "netease" to listOf("comment")
     )
 
     fun isPrimaryContent(record: UniversalRecord): Boolean =

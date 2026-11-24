@@ -20,17 +20,6 @@
         <package android:name="com.max.xiaoheihe" />
         <package android:name="xyz.blueskyweb.app" />
         <package android:name="gov.pianzong.androidnga" />
-        <package android:name="com.github.android" />
-        <package android:name="org.joinmastodon.android" />
-        <package android:name="tv.danmaku.bili" />
-        <package android:name="com.medium.reader" />
-        <package android:name="com.goodreads" />
-        <package android:name="com.lofter.android" />
-        <package android:name="com.dcard.app" />
-        <package android:name="com.tencent.weread" />
-        <package android:name="com.netease.cloudmusic" />
-        <package android:name="com.github.zly2006.zhplus.lite" />
-        <package android:name="com.github.zly2006.zhplus" />
     </queries>
 
     <application

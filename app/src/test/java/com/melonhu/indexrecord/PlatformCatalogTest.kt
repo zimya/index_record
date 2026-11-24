@@ -7,8 +7,8 @@ import org.junit.Test
 
 class PlatformCatalogTest {
     @Test fun knownPlatformsHaveUniqueDefaultPackages() {
-        assertEquals(21, PlatformCatalog.platforms.size)
-        assertEquals(21, PlatformCatalog.platforms.map { it.defaultPackage }.distinct().size)
+        assertEquals(12, PlatformCatalog.platforms.size)
+        assertEquals(12, PlatformCatalog.platforms.map { it.defaultPackage }.distinct().size)
         PlatformCatalog.platforms.forEach {
             assertEquals(it.name, PlatformCatalog.displayName(it.id))
             assertEquals(it.defaultPackage, PlatformCatalog.defaultPackage(it.id))
@@ -20,13 +20,7 @@ class PlatformCatalogTest {
         assertEquals("小黑盒", PlatformCatalog.packageLabel("com.max.xiaoheihe"))
         assertEquals("Bluesky", PlatformCatalog.packageLabel("xyz.blueskyweb.app"))
         assertEquals("NGA", PlatformCatalog.packageLabel("gov.pianzong.androidnga"))
-        assertEquals("GitHub", PlatformCatalog.packageLabel("com.github.android"))
-        assertEquals("Mastodon", PlatformCatalog.packageLabel("org.joinmastodon.android"))
-        assertEquals("哔哩哔哩", PlatformCatalog.packageLabel("tv.danmaku.bili"))
-        assertEquals("微信读书", PlatformCatalog.packageLabel("com.tencent.weread"))
-        assertEquals("网易云音乐", PlatformCatalog.packageLabel("com.netease.cloudmusic"))
-        assertEquals("知乎++", PlatformCatalog.packageLabel("com.github.zly2006.zhplus.lite"))
-        assertEquals(24, PlatformCatalog.hostPackages.size)
+        assertEquals(13, PlatformCatalog.hostPackages.size)
     }
 
     @Test fun unknownValuesRemainLiteralAndBlankValuesAreExplicitlyUnknown() {

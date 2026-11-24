@@ -20,8 +20,7 @@ object ZhihuParser : RawDataParser {
         if (!cleanUrl.contains("zhihu.com") && raw.hostApp != "com.zhihu.android") {
             return false
         }
-        return isPinV2Url(cleanUrl) || ZhihuV4Parser.canHandle(cleanUrl) ||
-                ZhihuArticleParser.canHandle(cleanUrl) ||
+        return isPinV2Url(cleanUrl) || ZhihuArticleParser.canHandle(cleanUrl) ||
                 ZhihuAnswerParser.canHandle(cleanUrl) ||
                 ZhihuQuestionParser.canHandle(cleanUrl) ||
                 ZhihuFeedParser.canHandle(cleanUrl) ||
@@ -43,7 +42,6 @@ object ZhihuParser : RawDataParser {
                 com.google.gson.JsonParser.parseString(raw.json).asJsonObject, raw, defaultType = "pin"
             ))
             ZhihuFeedParser.canHandle(cleanUrl) -> ZhihuFeedParser.parse(raw, cleanUrl)
-            ZhihuV4Parser.canHandle(cleanUrl) -> ZhihuV4Parser.parse(raw, cleanUrl)
             ZhihuArticleParser.canHandle(cleanUrl) -> ZhihuArticleParser.parse(raw, cleanUrl)
             ZhihuAnswerParser.canHandle(cleanUrl) -> ZhihuAnswerParser.parse(raw, cleanUrl)
             ZhihuQuestionParser.canHandle(cleanUrl) -> ZhihuQuestionParser.parse(raw, cleanUrl)

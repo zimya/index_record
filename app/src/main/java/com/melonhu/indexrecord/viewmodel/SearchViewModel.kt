@@ -8,6 +8,7 @@ import com.melonhu.indexrecord.data.repository.HomeRecordRepository
 import com.melonhu.indexrecord.presentation.RecordContentPolicy
 import com.melonhu.indexrecord.search.HybridSearchOutput
 import com.melonhu.indexrecord.search.SearchFilter
+import com.melonhu.indexrecord.search.SearchHistoryStore
 import com.melonhu.indexrecord.search.SearchIndexingState
 import com.melonhu.indexrecord.search.SearchMatchSource
 import com.melonhu.indexrecord.search.SearchResultItem
@@ -40,12 +41,16 @@ internal data class SearchUiState(
 internal class SearchViewModel(application: Application) : AndroidViewModel(application) {
 
     private val optionRepository = HomeRecordRepository()
+    private val historyStore = SearchHistoryStore(application)
 
     private val _query = MutableStateFlow("")
     val query: StateFlow<String> = _query.asStateFlow()
 
     private val _filter = MutableStateFlow(SearchFilter())
     val filter: StateFlow<SearchFilter> = _filter.asStateFlow()
+
+    private val _searchHistory = MutableStateFlow(historyStore.load())
+    val searchHistory: StateFlow<List<String>> = _searchHistory.asStateFlow()
 
     private val _searchTrigger = MutableStateFlow(0L)
 
@@ -143,7 +148,27 @@ internal class SearchViewModel(application: Application) : AndroidViewModel(appl
     }
 
     fun submitSearch() {
+        recordSearchHistory(_query.value)
         _searchTrigger.value = _searchTrigger.value + 1L
+    }
+
+    fun recordSearchHistory(term: String = _query.value) {
+        if (term.isBlank()) return
+        _searchHistory.value = historyStore.add(term)
+    }
+
+    fun selectHistoryQuery(term: String) {
+        _query.value = term
+        recordSearchHistory(term)
+        _searchTrigger.value = _searchTrigger.value + 1L
+    }
+
+    fun removeSearchHistory(term: String) {
+        _searchHistory.value = historyStore.remove(term)
+    }
+
+    fun clearSearchHistory() {
+        _searchHistory.value = historyStore.clear()
     }
 
     fun applyMetadataFilter(

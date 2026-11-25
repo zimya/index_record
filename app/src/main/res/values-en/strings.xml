@@ -36,6 +36,9 @@
     <string name="search_filter_platform">Platform</string>
     <string name="search_filter_source">Sources</string>
     <string name="search_filter_source_count">Sources (%1$d/%2$d)</string>
+    <string name="search_history_title">Search History</string>
+    <string name="search_history_clear">Clear</string>
+    <string name="search_history_remove">Remove history</string>
     <string name="search_idle_hint">Hybrid exact FTS5, image OCR, and semantic/visual vector search</string>
     <string name="search_ocr_snippet_label">Image OCR</string>
     <string name="search_source_text_exact">Text Match</string>

@@ -36,6 +36,9 @@
     <string name="search_filter_platform">平台</string>
     <string name="search_filter_source">搜尋來源</string>
     <string name="search_filter_source_count">搜尋來源 (%1$d/%2$d)</string>
+    <string name="search_history_title">搜尋歷史</string>
+    <string name="search_history_clear">清空</string>
+    <string name="search_history_remove">刪除歷史紀錄</string>
     <string name="search_idle_hint">支援精確詞頻檢索、圖片 OCR 辨識與語義/畫面混合搜尋</string>
     <string name="search_ocr_snippet_label">圖內文字 OCR</string>
     <string name="search_source_text_exact">文字匹配</string>

@@ -165,7 +165,6 @@ internal fun SearchResultCard(
             }
 
             val isDark = isAppInDarkTheme()
-            val cardTextColor = Color.Black
 
             // 1. 文本匹配 (TEXT_EXACT)
             if (SearchMatchSource.TEXT_EXACT in item.sources) {
@@ -189,20 +188,20 @@ internal fun SearchResultCard(
                                     imageVector = theme.icon,
                                     contentDescription = null,
                                     modifier = Modifier.size(15.dp),
-                                    tint = cardTextColor
+                                    tint = theme.accent
                                 )
                                 Text(
                                     text = stringResource(R.string.search_source_text_exact),
                                     style = MaterialTheme.typography.labelMedium,
                                     fontWeight = FontWeight.Bold,
-                                    color = cardTextColor
+                                    color = theme.accent
                                 )
                             }
                             Spacer(modifier = Modifier.height(6.dp))
                             Text(
                                 text = highlightKeywords(textExactSnippet, highlightTerms),
                                 style = MaterialTheme.typography.bodySmall,
-                                color = cardTextColor,
+                                color = theme.content,
                                 maxLines = 3,
                                 overflow = TextOverflow.Ellipsis
                             )
@@ -237,13 +236,13 @@ internal fun SearchResultCard(
                                     imageVector = theme.icon,
                                     contentDescription = null,
                                     modifier = Modifier.size(15.dp),
-                                    tint = cardTextColor
+                                    tint = theme.accent
                                 )
                                 Text(
                                     text = stringResource(R.string.search_source_text_semantic),
                                     style = MaterialTheme.typography.labelMedium,
                                     fontWeight = FontWeight.Bold,
-                                    color = cardTextColor
+                                    color = theme.accent
                                 )
                                 val sim = item.textSimilarity
                                 if (sim != null && sim > 0f) {
@@ -252,7 +251,7 @@ internal fun SearchResultCard(
                                         text = stringResource(R.string.search_visual_similarity_label, pct),
                                         style = MaterialTheme.typography.labelSmall,
                                         fontWeight = FontWeight.Bold,
-                                        color = cardTextColor.copy(alpha = 0.85f)
+                                        color = theme.accent.copy(alpha = 0.85f)
                                     )
                                 }
                             }
@@ -262,7 +261,7 @@ internal fun SearchResultCard(
                             Text(
                                 text = highlightKeywords(textSemanticSnippet, highlightTerms),
                                 style = MaterialTheme.typography.bodySmall,
-                                color = cardTextColor,
+                                color = theme.content,
                                 maxLines = 3,
                                 overflow = TextOverflow.Ellipsis
                             )
@@ -271,7 +270,7 @@ internal fun SearchResultCard(
                         Text(
                             text = stringResource(R.string.search_text_semantic_hint),
                             style = MaterialTheme.typography.labelSmall,
-                            color = cardTextColor.copy(alpha = 0.75f)
+                            color = theme.content.copy(alpha = 0.75f)
                         )
                     }
                 }
@@ -305,13 +304,13 @@ internal fun SearchResultCard(
                                     imageVector = theme.icon,
                                     contentDescription = null,
                                     modifier = Modifier.size(15.dp),
-                                    tint = cardTextColor
+                                    tint = theme.accent
                                 )
                                 Text(
                                     text = stringResource(R.string.search_ocr_snippet_label),
                                     style = MaterialTheme.typography.labelMedium,
                                     fontWeight = FontWeight.Bold,
-                                    color = cardTextColor
+                                    color = theme.accent
                                 )
                             }
 
@@ -320,7 +319,7 @@ internal fun SearchResultCard(
                                     text = "${ocrPagerState.currentPage + 1}/${item.matchedOcrItems.size}",
                                     style = MaterialTheme.typography.labelSmall,
                                     fontWeight = FontWeight.Medium,
-                                    color = cardTextColor
+                                    color = theme.accent
                                 )
                             }
                         }
@@ -350,7 +349,7 @@ internal fun SearchResultCard(
                                 Text(
                                     text = highlightKeywords(ocr.snippet, highlightTerms),
                                     style = MaterialTheme.typography.bodySmall,
-                                    color = cardTextColor,
+                                    color = theme.content,
                                     maxLines = 3,
                                     overflow = TextOverflow.Ellipsis,
                                     modifier = Modifier.weight(1f)
@@ -383,7 +382,7 @@ internal fun SearchResultCard(
                                     Text(
                                         text = highlightKeywords(ocr.snippet, highlightTerms),
                                         style = MaterialTheme.typography.bodySmall,
-                                        color = cardTextColor,
+                                        color = theme.content,
                                         maxLines = 3,
                                         overflow = TextOverflow.Ellipsis,
                                         modifier = Modifier.weight(1f)
@@ -423,13 +422,13 @@ internal fun SearchResultCard(
                                     imageVector = theme.icon,
                                     contentDescription = null,
                                     modifier = Modifier.size(15.dp),
-                                    tint = cardTextColor
+                                    tint = theme.accent
                                 )
                                 Text(
                                     text = stringResource(R.string.search_source_image_visual),
                                     style = MaterialTheme.typography.labelMedium,
                                     fontWeight = FontWeight.Bold,
-                                    color = cardTextColor
+                                    color = theme.accent
                                 )
                                 if (item.matchedVisualItems.size == 1) {
                                     val sim = item.matchedVisualItems.first().similarity
@@ -439,7 +438,7 @@ internal fun SearchResultCard(
                                             text = stringResource(R.string.search_visual_similarity_label, pct),
                                             style = MaterialTheme.typography.labelSmall,
                                             fontWeight = FontWeight.Bold,
-                                            color = cardTextColor.copy(alpha = 0.85f)
+                                            color = theme.accent.copy(alpha = 0.85f)
                                         )
                                     }
                                 }
@@ -450,7 +449,7 @@ internal fun SearchResultCard(
                                     text = "${visualPagerState.currentPage + 1}/${item.matchedVisualItems.size}",
                                     style = MaterialTheme.typography.labelSmall,
                                     fontWeight = FontWeight.Medium,
-                                    color = cardTextColor
+                                    color = theme.accent
                                 )
                             }
                         }
@@ -478,7 +477,7 @@ internal fun SearchResultCard(
                                 Text(
                                     text = stringResource(R.string.search_visual_matched_image_hint),
                                     style = MaterialTheme.typography.bodySmall,
-                                    color = cardTextColor.copy(alpha = 0.85f),
+                                    color = theme.content.copy(alpha = 0.85f),
                                     maxLines = 2,
                                     overflow = TextOverflow.Ellipsis,
                                     modifier = Modifier.weight(1f)
@@ -512,7 +511,7 @@ internal fun SearchResultCard(
                                             Text(
                                                 text = stringResource(R.string.search_visual_similarity_label, pct).removePrefix("· ").trim(),
                                                 style = MaterialTheme.typography.labelSmall,
-                                                color = cardTextColor,
+                                                color = theme.accent,
                                                 fontWeight = FontWeight.Bold
                                             )
                                             Spacer(modifier = Modifier.height(2.dp))
@@ -520,7 +519,7 @@ internal fun SearchResultCard(
                                         Text(
                                             text = stringResource(R.string.search_visual_matched_image_hint),
                                             style = MaterialTheme.typography.bodySmall,
-                                            color = cardTextColor.copy(alpha = 0.85f),
+                                            color = theme.content.copy(alpha = 0.85f),
                                             maxLines = 2,
                                             overflow = TextOverflow.Ellipsis
                                         )
@@ -536,37 +535,38 @@ internal fun SearchResultCard(
 }
 
 private data class SourceColorTheme(
-    val badgeContainer: Color,
     val container: Color,
-    val icon: ImageVector,
-    val labelRes: Int
+    val accent: Color,
+    val content: Color,
+    val icon: ImageVector
 )
 
 private fun getSourceColorTheme(source: SearchMatchSource, isDark: Boolean): SourceColorTheme {
+    val contentColor = if (isDark) Color(0xFFE5E7EB) else Color.Black
     return when (source) {
         SearchMatchSource.TEXT_EXACT -> SourceColorTheme(
-            badgeContainer = if (isDark) Color(0xFFBFDBFE) else Color(0xFFDBEAFE),
-            container = if (isDark) Color(0xFFDBEAFE) else Color(0xFFEFF6FF),
-            icon = Icons.Outlined.TextFields,
-            labelRes = R.string.search_source_text_exact
+            container = if (isDark) Color(0xFF162436) else Color(0xFFEFF6FF),
+            accent = if (isDark) Color(0xFF93C5FD) else Color.Black,
+            content = contentColor,
+            icon = Icons.Outlined.TextFields
         )
         SearchMatchSource.OCR_EXACT -> SourceColorTheme(
-            badgeContainer = if (isDark) Color(0xFFFDE68A) else Color(0xFFFEF3C7),
-            container = if (isDark) Color(0xFFFEF3C7) else Color(0xFFFFFBEB),
-            icon = Icons.AutoMirrored.Outlined.TextSnippet,
-            labelRes = R.string.search_source_ocr_exact
+            container = if (isDark) Color(0xFF2D2414) else Color(0xFFFFFBEB),
+            accent = if (isDark) Color(0xFFFCD34D) else Color.Black,
+            content = contentColor,
+            icon = Icons.AutoMirrored.Outlined.TextSnippet
         )
         SearchMatchSource.TEXT_SEMANTIC -> SourceColorTheme(
-            badgeContainer = if (isDark) Color(0xFFDDD6FE) else Color(0xFFEDE9FE),
-            container = if (isDark) Color(0xFFEDE9FE) else Color(0xFFF5F3FF),
-            icon = Icons.Outlined.Psychology,
-            labelRes = R.string.search_source_text_semantic
+            container = if (isDark) Color(0xFF241C38) else Color(0xFFF5F3FF),
+            accent = if (isDark) Color(0xFFC4B5FD) else Color.Black,
+            content = contentColor,
+            icon = Icons.Outlined.Psychology
         )
         SearchMatchSource.IMAGE_VISUAL -> SourceColorTheme(
-            badgeContainer = if (isDark) Color(0xFFFBCFE8) else Color(0xFFFFD9E4),
-            container = if (isDark) Color(0xFFFFD9E4) else Color(0xFFFFF1F5),
-            icon = Icons.Outlined.ImageSearch,
-            labelRes = R.string.search_source_image_visual
+            container = if (isDark) Color(0xFF331B26) else Color(0xFFFFF1F5),
+            accent = if (isDark) Color(0xFFF9A8D4) else Color.Black,
+            content = contentColor,
+            icon = Icons.Outlined.ImageSearch
         )
     }
 }

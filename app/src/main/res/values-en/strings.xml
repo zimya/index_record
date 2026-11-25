@@ -1,7 +1,9 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8" ?>
 <resources>
     <string name="app_name">Index Record</string>
-    <string name="app_description">Record browsing content from Zhihu, Douban, X, Threads, Reddit, and Baidu Tieba</string>
+    <string
+        name="app_description"
+    >Record browsing content from Zhihu, Douban, X, Threads, Reddit, and Baidu Tieba</string>
 
     <!-- Navigation -->
     <string name="nav_home">Home</string>
@@ -39,23 +41,33 @@
     <string name="search_history_title">Search History</string>
     <string name="search_history_clear">Clear</string>
     <string name="search_history_remove">Remove history</string>
-    <string name="search_idle_hint">Hybrid exact FTS5, image OCR, and semantic/visual vector search</string>
+    <string
+        name="search_idle_hint"
+    >Hybrid exact FTS5, image OCR, and semantic/visual vector search</string>
     <string name="search_ocr_snippet_label">Image OCR</string>
     <string name="search_source_text_exact">Text Match</string>
     <string name="search_source_ocr_exact">Image OCR</string>
     <string name="search_source_text_semantic">Text Semantic</string>
     <string name="search_source_image_visual">Image Visual</string>
-    <string name="search_visual_matched_image_hint">Visual content matches search semantics</string>
+    <string
+        name="search_visual_matched_image_hint"
+    >Visual content matches search semantics</string>
     <string name="search_visual_similarity_label">· Match %1$d%%</string>
-    <string name="search_text_semantic_hint">Content semantics match search intent</string>
-    <string name="search_index_stage_loading_model">Loading embedding model…</string>
+    <string
+        name="search_text_semantic_hint"
+    >Content semantics match search intent</string>
+    <string
+        name="search_index_stage_loading_model"
+    >Loading embedding model…</string>
     <string name="search_index_stage_paused">Indexing paused</string>
     <string name="search_index_stage_scanning">Scanning records…</string>
     <string name="search_index_stage_text">Embedding text…</string>
     <string name="search_index_stage_image">Indexing images &amp; OCR…</string>
     <string name="search_index_stage_pending">Pending index tasks</string>
     <string name="search_index_stage_ready">Index ready</string>
-    <string name="search_index_counts">Pending %1$d (Text %2$d · Images %3$d)</string>
+    <string
+        name="search_index_counts"
+    >Pending %1$d (Text %2$d · Images %3$d)</string>
     <string name="search_index_pause">Pause indexing</string>
     <string name="search_index_resume">Resume indexing</string>
     <string name="search_index_recheck">Retry failed</string>
@@ -65,25 +77,43 @@
     <string name="search_progress_ready_short">Ready</string>
     <string name="search_progress_paused_short">Paused %1$d%%</string>
     <string name="search_pipeline_text_semantic">Text Semantic</string>
-    <string name="search_pipeline_image_download">Image Download &amp; OCR</string>
+    <string
+        name="search_pipeline_image_download"
+    >Image Download &amp; OCR</string>
     <string name="search_pipeline_image_semantic">Image Semantic</string>
     <string name="search_pipeline_running_gpu">Running on GPU…</string>
-    <string name="search_pipeline_downloading_ocr">Downloading &amp; running OCR…</string>
-    <string name="search_pipeline_waiting_text">Waiting for text semantic to finish</string>
-    <string name="search_pipeline_waiting_download">Waiting for image download</string>
+    <string
+        name="search_pipeline_downloading_ocr"
+    >Downloading &amp; running OCR…</string>
+    <string
+        name="search_pipeline_waiting_text"
+    >Waiting for text semantic to finish</string>
+    <string
+        name="search_pipeline_waiting_download"
+    >Waiting for image download</string>
     <string name="search_pipeline_queued">Queued</string>
     <string name="search_pipeline_paused">Paused</string>
     <string name="search_pipeline_done">Done</string>
     <string name="search_pipeline_ocr_count">OCR %1$d/%2$d</string>
     <string name="search_pipeline_pending_only">Pending %1$d</string>
-    <string name="search_pipeline_pending_failed">Pending %1$d · Failed %2$d</string>
+    <string
+        name="search_pipeline_pending_failed"
+    >Pending %1$d · Failed %2$d</string>
     <string name="search_pipeline_need_model">Model download required</string>
     <string name="search_progress_model_needed_short">Exact ready</string>
-    <string name="search_model_section_title">Semantic Model (EmbeddingGemma 2)</string>
-    <string name="search_model_not_downloaded">Not downloaded (~%1$s). Text Match and Image OCR still work without it; download to enable semantic &amp; visual search.</string>
-    <string name="search_model_downloading">Downloading model (%1$s / %2$s)</string>
+    <string
+        name="search_model_section_title"
+    >Semantic Model (EmbeddingGemma 2)</string>
+    <string
+        name="search_model_not_downloaded"
+    >Not downloaded (~%1$s). Text Match and Image OCR still work without it; download to enable semantic &amp; visual search.</string>
+    <string
+        name="search_model_downloading"
+    >Downloading model (%1$s / %2$s)</string>
     <string name="search_model_paused">Download paused (%1$s / %2$s)</string>
-    <string name="search_model_verifying">Verifying integrity (SHA-256)…</string>
+    <string
+        name="search_model_verifying"
+    >Verifying integrity (SHA-256)…</string>
     <string name="search_model_ready">Ready (%1$s)</string>
     <string name="search_model_download_btn">Download Model</string>
     <string name="search_model_resume_btn">Resume</string>
@@ -91,8 +121,12 @@
     <string name="search_model_cancel_btn">Cancel</string>
     <string name="search_model_delete_btn">Delete Model</string>
     <string name="search_model_retry_btn">Retry Download</string>
-    <string name="search_model_required_error">Semantic model is not downloaded yet. Download the model or enable Text Match / Image OCR in Sources.</string>
-    <string name="home_empty_prompt">No records yet, browse your social feeds!</string>
+    <string
+        name="search_model_required_error"
+    >Semantic model is not downloaded yet. Download the model or enable Text Match / Image OCR in Sources.</string>
+    <string
+        name="home_empty_prompt"
+    >No records yet, browse your social feeds!</string>
     <string name="home_empty_search">No matching records found</string>
     <string name="filter_title">Filters</string>
     <string name="filter_time">Time</string>
@@ -113,11 +147,21 @@
     <string name="filter_close">Close Filters</string>
     <string name="sync_hint_loaded">Loaded %1$d items</string>
     <string name="sync_hint_empty">No new content received</string>
-    <string name="sync_retry_pending">Pending retry: %1$d raw items retained</string>
-    <string name="sync_completed">Sync complete: %1$d items loaded in this round</string>
-    <string name="sync_in_progress_with_pending">Syncing: %1$d remaining · %2$d items loaded</string>
-    <string name="sync_waiting_process">Processing: %1$d remaining · %2$d items loaded</string>
-    <string name="sync_in_progress_waiting_more">Syncing: %1$d items loaded · waiting for more…</string>
+    <string
+        name="sync_retry_pending"
+    >Pending retry: %1$d raw items retained</string>
+    <string
+        name="sync_completed"
+    >Sync complete: %1$d items loaded in this round</string>
+    <string
+        name="sync_in_progress_with_pending"
+    >Syncing: %1$d remaining · %2$d items loaded</string>
+    <string
+        name="sync_waiting_process"
+    >Processing: %1$d remaining · %2$d items loaded</string>
+    <string
+        name="sync_in_progress_waiting_more"
+    >Syncing: %1$d items loaded · waiting for more…</string>
 
     <!-- Settings -->
     <string name="settings_title">Settings</string>
@@ -127,7 +171,9 @@
     <string name="settings_theme_light">Light</string>
     <string name="settings_theme_dark">Dark</string>
     <string name="settings_monet_dynamic_color">Monet Dynamic Color</string>
-    <string name="settings_monet_dynamic_color_desc">Use system wallpaper colors; disables manual theme color selection</string>
+    <string
+        name="settings_monet_dynamic_color_desc"
+    >Use system wallpaper colors; disables manual theme color selection</string>
     <string name="settings_theme_color">Theme Color</string>
     <string name="settings_theme_color_index_blue">Index Blue</string>
     <string name="settings_theme_color_index_green">Index Green</string>
@@ -143,10 +189,16 @@
     <string name="settings_language_zh_cn">简体中文</string>
     <string name="settings_language_zh_tw">繁體中文</string>
     <string name="settings_language_en">English</string>
-    <string name="settings_collapse_multiple">Collapse multiple items by default</string>
+    <string
+        name="settings_collapse_multiple"
+    >Collapse multiple items by default</string>
     <string name="settings_section_stats">Statistics</string>
-    <string name="settings_include_replies_stats">Include replies and comments</string>
-    <string name="settings_include_replies_stats_desc">Count replies and comments in local records, word counts, distribution, and streaks.</string>
+    <string
+        name="settings_include_replies_stats"
+    >Include replies and comments</string>
+    <string
+        name="settings_include_replies_stats_desc"
+    >Count replies and comments in local records, word counts, distribution, and streaks.</string>
     <string name="settings_section_record">Recording</string>
     <string name="settings_tweet_record_mode">Tweet recording mode</string>
     <string name="settings_weibo_record_mode">Weibo recording mode</string>
@@ -155,17 +207,27 @@
     <string name="settings_reddit_record_mode">Reddit recording mode</string>
     <string name="settings_mode_push">Push</string>
     <string name="settings_mode_read">Read</string>
-    <string name="settings_section_appearance_desc">Theme, language, collapse multiple items</string>
-    <string name="settings_section_stats_desc">Reply and comment counting rules</string>
-    <string name="settings_section_record_desc">Recording modes by platform</string>
+    <string
+        name="settings_section_appearance_desc"
+    >Theme, language, collapse multiple items</string>
+    <string
+        name="settings_section_stats_desc"
+    >Reply and comment counting rules</string>
+    <string
+        name="settings_section_record_desc"
+    >Recording modes by platform</string>
 
     <!-- LSPosed Card -->
     <string name="lsposed_active">%1$s Active</string>
     <string name="lsposed_inactive">LSPosed module inactive</string>
     <string name="lsposed_checking">Checking module status...</string>
     <string name="lsposed_active_scopes">%1$d active scopes%2$s</string>
-    <string name="lsposed_inactive_tip">Please enable module and select target apps in LSPosed Manager</string>
-    <string name="lsposed_connecting">Connecting to framework service...</string>
+    <string
+        name="lsposed_inactive_tip"
+    >Please enable module and select target apps in LSPosed Manager</string>
+    <string
+        name="lsposed_connecting"
+    >Connecting to framework service...</string>
     <string name="lsposed_expand_scopes">Expand scopes</string>
     <string name="lsposed_collapse_scopes">Collapse scopes</string>
     <string name="lsposed_status_activated">Active</string>
@@ -175,16 +237,30 @@
     <string name="stats_title">Statistics</string>
     <string name="stats_loading">Loading statistics…</string>
     <string name="stats_loading_content_desc">Loading statistics</string>
-    <string name="stats_reloading_with_previous">Reloading statistics, displaying previous result…</string>
-    <string name="stats_error_previous_hint">Displaying previous successful statistics; may not be up to date.</string>
-    <string name="stats_error_no_stats_hint">Statistics not yet loaded; numbers and charts are hidden.</string>
-    <string name="stats_auto_recover_hint">You can retry manually; it will auto-recover on local data update.</string>
+    <string
+        name="stats_reloading_with_previous"
+    >Reloading statistics, displaying previous result…</string>
+    <string
+        name="stats_error_previous_hint"
+    >Displaying previous successful statistics; may not be up to date.</string>
+    <string
+        name="stats_error_no_stats_hint"
+    >Statistics not yet loaded; numbers and charts are hidden.</string>
+    <string
+        name="stats_auto_recover_hint"
+    >You can retry manually; it will auto-recover on local data update.</string>
     <string name="stats_retry_button">Retry Loading Statistics</string>
-    <string name="stats_scope_with_replies">Scope: Primary content and read replies/comments. Counted per reading time and snapshot; repeated readings are counted.</string>
-    <string name="stats_scope_main_only">Scope: Primary content only, excluding replies and comments. Counted per reading time and snapshot; repeated readings are counted.</string>
+    <string
+        name="stats_scope_with_replies"
+    >Scope: Primary content and read replies/comments. Counted per reading time and snapshot; repeated readings are counted.</string>
+    <string
+        name="stats_scope_main_only"
+    >Scope: Primary content only, excluding replies and comments. Counted per reading time and snapshot; repeated readings are counted.</string>
     <string name="stats_scope_info_desc">Statistics scope info</string>
     <string name="stats_scope_dialog_title">Statistics Scope</string>
-    <string name="stats_scope_platforms_title">Included Entry Types by Platform</string>
+    <string
+        name="stats_scope_platforms_title"
+    >Included Entry Types by Platform</string>
     <string name="stats_scope_platform_item">%1$s: %2$s</string>
     <string name="stats_scope_type_separator">, </string>
     <string name="stats_today_reading">Today\'s Reading</string>
@@ -199,14 +275,22 @@
     <string name="stats_current_streak">Current Streak</string>
     <string name="stats_longest_streak">Longest Streak</string>
     <string name="stats_unit_days">" days"</string>
-    <string name="stats_heatmap_title">Reading Heatmap (Last %1$d Weeks)</string>
+    <string
+        name="stats_heatmap_title"
+    >Reading Heatmap (Last %1$d Weeks)</string>
     <string name="stats_heatmap_content_desc">Heatmap</string>
     <string name="stats_distribution_records">Record Distribution</string>
-    <string name="stats_distribution_records_content_desc">Record distribution</string>
+    <string
+        name="stats_distribution_records_content_desc"
+    >Record distribution</string>
     <string name="stats_distribution_total">Total %1$d items</string>
     <string name="stats_distribution_time">Hourly Distribution</string>
-    <string name="stats_distribution_time_content_desc">Hourly distribution</string>
-    <string name="stats_chart_no_record_period">No reading records during this period</string>
+    <string
+        name="stats_distribution_time_content_desc"
+    >Hourly distribution</string>
+    <string
+        name="stats_chart_no_record_period"
+    >No reading records during this period</string>
     <string name="stats_range_all">All</string>
     <string name="stats_range_year">Past Year</string>
     <string name="stats_range_month">Past Month</string>
@@ -216,29 +300,49 @@
 
     <!-- Details -->
     <string name="detail_reading_local">Reading local records…</string>
-    <string name="detail_local_recorded_count">Recorded %1$d items locally</string>
+    <string
+        name="detail_local_recorded_count"
+    >Recorded %1$d items locally</string>
     <string name="detail_history_btn">History</string>
-    <string name="detail_history_desc">View historical snapshots of this record</string>
+    <string
+        name="detail_history_desc"
+    >View historical snapshots of this record</string>
     <string name="detail_history_title">Historical Snapshots</string>
     <string name="detail_history_diff_title">Snapshot Diff · Old → New</string>
     <string name="detail_history_only_diff">Diff only</string>
     <string name="detail_history_show_all">Show all</string>
-    <string name="detail_history_no_content">No body cached in this snapshot</string>
-    <string name="detail_history_content_same">Body identical to current version</string>
+    <string
+        name="detail_history_no_content"
+    >No body cached in this snapshot</string>
+    <string
+        name="detail_history_content_same"
+    >Body identical to current version</string>
     <string name="detail_history_snapshot_time">Snapshot time: %1$s</string>
     <string name="detail_history_restore">Restore this snapshot</string>
-    <string name="detail_comments_more_uncollected">More replies exist on platform but not collected</string>
+    <string
+        name="detail_comments_more_uncollected"
+    >More replies exist on platform but not collected</string>
     <string name="detail_comments_sort_engagement">By Engagement</string>
     <string name="detail_comments_sort_latest">Latest</string>
     <string name="detail_comments_sort_agree">By Upvotes</string>
-    <string name="detail_comments_orphan_no_parent">Orphaned branch · Parent not recorded</string>
-    <string name="detail_comments_orphan_missing_parent">Orphaned branch · Missing parent: %1$s</string>
-    <string name="detail_comments_orphan_invalid">Orphaned branch · Invalid parent relation</string>
+    <string
+        name="detail_comments_orphan_no_parent"
+    >Orphaned branch · Parent not recorded</string>
+    <string
+        name="detail_comments_orphan_missing_parent"
+    >Orphaned branch · Missing parent: %1$s</string>
+    <string
+        name="detail_comments_orphan_invalid"
+    >Orphaned branch · Invalid parent relation</string>
     <string name="detail_question_title">Question Details</string>
     <string name="detail_question_no_title">(Title not cached)</string>
-    <string name="detail_question_no_excerpt">(Question details not cached)</string>
+    <string
+        name="detail_question_no_excerpt"
+    >(Question details not cached)</string>
     <string name="detail_question_answers">Answers (%1$d)</string>
-    <string name="detail_question_answer_not_cached">Answer not cached, unable to expand</string>
+    <string
+        name="detail_question_answer_not_cached"
+    >Answer not cached, unable to expand</string>
     <string name="detail_tieba_first_floor">Floor 1 · OP</string>
     <string name="detail_tieba_floor_num">Floor %1$d</string>
     <string name="detail_tieba_floor_unrecorded">Floor unrecorded</string>
@@ -249,9 +353,15 @@
     <string name="detail_tieba_floor_detail">Tieba · Floor Details</string>
     <string name="detail_tieba_body_unrecorded">Body not recorded</string>
     <string name="detail_tieba_reply_to">Reply to %1$s</string>
-    <string name="detail_tieba_view_all_replies">View all recorded replies</string>
-    <string name="detail_subject_empty_title">No reviews or discussions yet</string>
-    <string name="detail_subject_empty_desc">Browse reviews or discussions for this subject in the Douban app to archive them</string>
+    <string
+        name="detail_tieba_view_all_replies"
+    >View all recorded replies</string>
+    <string
+        name="detail_subject_empty_title"
+    >No reviews or discussions yet</string>
+    <string
+        name="detail_subject_empty_desc"
+    >Browse reviews or discussions for this subject in the Douban app to archive them</string>
     <string name="detail_subject_rating">Douban Rating</string>
     <string name="detail_subject_rating_count">%1$.1f ratings</string>
 
@@ -263,6 +373,9 @@
     <string name="platform_threads">Threads</string>
     <string name="platform_bluesky">Bluesky</string>
     <string name="platform_nga">NGA</string>
+    <string name="platform_bilibili">Bilibili</string>
+    <string name="type_video">Video</string>
+    <string name="type_opus">Opus post</string>
     <string name="platform_reddit">Reddit</string>
     <string name="platform_weibo">Weibo</string>
     <string name="platform_weibo_intl">Weibo International</string>
@@ -299,7 +412,9 @@
     <string name="update_manual">Manual</string>
     <string name="update_auto">Auto</string>
     <string name="update_skip_version">Skip</string>
-    <string name="update_install_permission_required">Please allow installing unknown apps first</string>
+    <string
+        name="update_install_permission_required"
+    >Please allow installing unknown apps first</string>
     <string name="update_download_failed">Download failed: %1$s</string>
     <string name="settings_auto_update">Auto check for updates</string>
     <string name="update_freq_every_launch">Every launch</string>
@@ -308,58 +423,102 @@
     <string name="update_freq_off">Off</string>
     <string name="update_downloading">Downloading…</string>
     <string name="settings_section_update">Update</string>
-    <string name="settings_section_update_desc">Auto-check frequency &amp; proxy</string>
+    <string
+        name="settings_section_update_desc"
+    >Auto-check frequency &amp; proxy</string>
     <string name="settings_use_github_proxy">Use GitHub proxy</string>
     <string name="settings_section_data">Data</string>
-    <string name="settings_section_data_desc">Export, import &amp; incremental merge</string>
+    <string
+        name="settings_section_data_desc"
+    >Export, import &amp; incremental merge</string>
     <string name="data_overview_title">Local database</string>
     <string name="data_overview_counts">%1$d records · %2$d snapshots</string>
-    <string name="data_overview_pending_raw">%1$d pending raw items (pull to refresh on Home before exporting)</string>
+    <string
+        name="data_overview_pending_raw"
+    >%1$d pending raw items (pull to refresh on Home before exporting)</string>
     <string name="data_overview_loading">Loading database summary…</string>
     <string name="data_export_title">Export database</string>
-    <string name="data_export_desc">Export records and snapshots to a backup archive (.zip)</string>
+    <string
+        name="data_export_desc"
+    >Export records and snapshots to a backup archive (.zip)</string>
     <string name="data_exporting">Exporting backup…</string>
     <string name="data_import_title">Import database</string>
-    <string name="data_import_desc">Incrementally merge records and snapshots from a backup without overwriting local data</string>
+    <string
+        name="data_import_desc"
+    >Incrementally merge records and snapshots from a backup without overwriting local data</string>
     <string name="data_importing">Importing and merging…</string>
     <string name="data_include_raw_title">Include pending raw payloads</string>
-    <string name="data_include_raw_desc">Also export unparsed or retained raw HTTP payloads; backups may be significantly larger.</string>
+    <string
+        name="data_include_raw_desc"
+    >Also export unparsed or retained raw HTTP payloads; backups may be significantly larger.</string>
     <string name="data_export_success_title">Export complete</string>
-    <string name="data_export_success_message">Exported %1$d records and %2$d history snapshots (%3$d raw payloads).</string>
+    <string
+        name="data_export_success_message"
+    >Exported %1$d records and %2$d history snapshots (%3$d raw payloads).</string>
     <string name="data_import_success_title">Import complete</string>
-    <string name="data_import_success_message">Records: %1$d added, %2$d merged, %3$d unchanged\nSnapshots: %4$d added, %5$d skipped</string>
-    <string name="data_import_raw_summary">\nRaw payloads: %1$d added, %2$d skipped</string>
+    <string
+        name="data_import_success_message"
+    >Records: %1$d added, %2$d merged, %3$d unchanged\nSnapshots: %4$d added, %5$d skipped</string>
+    <string
+        name="data_import_raw_summary"
+    >\nRaw payloads: %1$d added, %2$d skipped</string>
     <string name="data_operation_failed_title">Operation failed</string>
-    <string name="data_error_invalid_archive">The selected file is not a valid Index Record backup archive.</string>
-    <string name="data_error_unsupported_version">This backup version is not supported by the current app.</string>
-    <string name="data_error_corrupt_data">Backup data validation failed; no changes were applied.</string>
+    <string
+        name="data_error_invalid_archive"
+    >The selected file is not a valid Index Record backup archive.</string>
+    <string
+        name="data_error_unsupported_version"
+    >This backup version is not supported by the current app.</string>
+    <string
+        name="data_error_corrupt_data"
+    >Backup data validation failed; no changes were applied.</string>
     <string name="data_error_io">File operation failed: %1$s</string>
     <string name="data_clear_title">Clear all data</string>
-    <string name="data_clear_desc">Permanently delete all local records, snapshots, and pending cache. This cannot be undone.</string>
+    <string
+        name="data_clear_desc"
+    >Permanently delete all local records, snapshots, and pending cache. This cannot be undone.</string>
     <string name="data_clearing">Clearing data…</string>
     <string name="data_clear_confirm_title">Clear all local data?</string>
-    <string name="data_clear_confirm_message">This will permanently delete all %1$d local records, %2$d history snapshots, and pending cache. This action cannot be undone. App settings will be kept. Consider exporting a backup first.</string>
-    <string name="data_clear_confirm_message_generic">This will permanently delete all local records, history snapshots, and pending cache. This action cannot be undone. App settings will be kept. Consider exporting a backup first.</string>
+    <string
+        name="data_clear_confirm_message"
+    >This will permanently delete all %1$d local records, %2$d history snapshots, and pending cache. This action cannot be undone. App settings will be kept. Consider exporting a backup first.</string>
+    <string
+        name="data_clear_confirm_message_generic"
+    >This will permanently delete all local records, history snapshots, and pending cache. This action cannot be undone. App settings will be kept. Consider exporting a backup first.</string>
     <string name="data_clear_confirm_action">Delete everything</string>
     <string name="data_clear_success_title">Data cleared</string>
-    <string name="data_clear_success_message">Deleted %1$d records, %2$d history snapshots, and %3$d raw payloads.</string>
+    <string
+        name="data_clear_success_message"
+    >Deleted %1$d records, %2$d history snapshots, and %3$d raw payloads.</string>
 
     <!-- About -->
     <string name="settings_section_about">About</string>
-    <string name="settings_section_about_desc">Version, repository, and licenses</string>
+    <string
+        name="settings_section_about_desc"
+    >Version, repository, and licenses</string>
     <string name="about_app_name">Index Record</string>
     <string name="about_version_format">Version %1$s (%2$d)</string>
-    <string name="about_tagline">103,000 grimoires, all memorized in your mind</string>
+    <string
+        name="about_tagline"
+    >103,000 grimoires, all memorized in your mind</string>
     <string name="about_github">GitHub Repository</string>
-    <string name="about_github_url">https://github.com/zimya/index_record</string>
+    <string
+        name="about_github_url"
+    >https://github.com/zimya/index_record</string>
     <string name="about_telegram">Telegram Group</string>
     <string name="about_telegram_url">https://t.me/index_record_group</string>
     <string name="about_licenses">Open Source Licenses</string>
-    <string name="about_licenses_desc">Third-party open-source libraries and notices</string>
+    <string
+        name="about_licenses_desc"
+    >Third-party open-source libraries and notices</string>
     <string name="about_licenses_dialog_title">Open Source Licenses</string>
     <string name="about_app_license_title">App License</string>
-    <string name="about_app_license_desc">GNU General Public License v3.0 (GPL-3.0)</string>
-    <string name="about_third_party_licenses_title">Third-party Libraries</string>
+    <string
+        name="about_app_license_desc"
+    >GNU General Public License v3.0 (GPL-3.0)</string>
+    <string
+        name="about_third_party_licenses_title"
+    >Third-party Libraries</string>
     <string name="about_index_image_desc">Index Librorum Prohibitorum</string>
     <string name="about_link_copied">Link copied to clipboard</string>
 </resources>

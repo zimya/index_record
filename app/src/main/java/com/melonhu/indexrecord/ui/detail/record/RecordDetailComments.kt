@@ -115,6 +115,7 @@ internal fun RecordDetailCommentItem(
                     enableMath = body.enableMath
                 )
             }
+            RecordAttachments(body.images, onImageClick)
             RecordCommentStatistics(comment)
             Spacer(modifier = Modifier.height(8.dp))
             Text(displayPublishTime(comment.publishTime), style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.outline)

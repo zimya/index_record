@@ -6,6 +6,9 @@ import com.melonhu.indexrecord.R
 object PlatformCatalog {
     data class Platform(val id: String, val name: String, val defaultPackage: String)
 
+    internal const val BILIBILI_PACKAGE = "tv.danmaku.bili"
+    internal const val BILIBILI_INTERNATIONAL_PACKAGE = "com.bilibili.app.in"
+
     val platforms: List<Platform> = listOf(
         Platform("zhihu", "知乎", "com.zhihu.android"),
         Platform("douban", "豆瓣", "com.douban.frodo"),
@@ -18,11 +21,12 @@ object PlatformCatalog {
         Platform("hupu", "虎扑", "com.hupu.games"),
         Platform("xiaoheihe", "小黑盒", "com.max.xiaoheihe"),
         Platform("bluesky", "Bluesky", "xyz.blueskyweb.app"),
-        Platform("nga", "NGA", "gov.pianzong.androidnga")
+        Platform("nga", "NGA", "gov.pianzong.androidnga"),
+        Platform("bilibili", "Bilibili", BILIBILI_PACKAGE)
     )
     private val byId = platforms.associateBy { it.id }
     private val packageNames = platforms.associate { it.defaultPackage to it.name } +
-        ("com.weico.international" to "微博国际版")
+        mapOf("com.weico.international" to "微博国际版", BILIBILI_INTERNATIONAL_PACKAGE to "Bilibili 国际版")
     val hostPackages: List<String> = packageNames.keys.toList()
 
     fun displayName(platform: String): String = byId[platform]?.name
@@ -35,6 +39,7 @@ object PlatformCatalog {
 
     fun platformForPackage(packageName: String): String? {
         if (packageName == "com.weico.international") return "weibo"
+        if (packageName.equals(BILIBILI_INTERNATIONAL_PACKAGE, ignoreCase = true)) return "bilibili"
         return platforms.firstOrNull { it.defaultPackage.equals(packageName, ignoreCase = true) }?.id
             ?: byId[packageName]?.id
     }
@@ -44,7 +49,7 @@ object PlatformCatalog {
         "comment" to "评论", "lou" to "主帖", "thread" to "帖子", "floor" to "楼层",
         "topic" to "帖子", "post" to "帖子", "review" to "长评", "interest" to "短评",
         "subject" to "条目", "note" to "日记", "tweet" to "推文", "status" to "微博",
-        "feed" to "动态", "rating" to "点评", "feedArticle" to "图文"
+        "feed" to "动态", "rating" to "点评", "feedArticle" to "图文", "video" to "视频", "opus" to "图文"
     )
 
     fun typeLabel(platform: String, type: String): String = when {
@@ -65,6 +70,7 @@ object PlatformCatalog {
         "thread" -> "Threads 帖子"
         "tweet" -> "X 推文"
         "feed", "rating", "feedArticle" -> "酷安${typeLabel("coolapk", type)}"
+        "video", "opus" -> "Bilibili${typeLabel("bilibili", type)}"
         else -> typeLabel("", type)
     }
 
@@ -81,6 +87,7 @@ object PlatformCatalog {
         "xiaoheihe" -> R.string.platform_xiaoheihe
         "bluesky" -> R.string.platform_bluesky
         "nga" -> R.string.platform_nga
+        "bilibili" -> R.string.platform_bilibili
         else -> null
     }
 
@@ -106,6 +113,8 @@ object PlatformCatalog {
         type == "feed" -> R.string.type_feed
         type == "rating" -> R.string.type_rating
         type == "feedArticle" -> R.string.type_feed_article
+        type == "video" -> R.string.type_video
+        type == "opus" -> R.string.type_opus
         else -> null
     }
 }

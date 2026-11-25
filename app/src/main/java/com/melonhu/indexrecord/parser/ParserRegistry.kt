@@ -14,6 +14,7 @@ import com.melonhu.indexrecord.parser.hupu.HupuParser
 import com.melonhu.indexrecord.parser.xiaoheihe.XiaoheiheParser
 import com.melonhu.indexrecord.parser.bluesky.BlueskyParser
 import com.melonhu.indexrecord.parser.nga.NgaParser
+import com.melonhu.indexrecord.parser.bilibili.BilibiliParser
 
 /**
  * 平台解析器注册中心。
@@ -33,7 +34,8 @@ object ParserRegistry {
         HupuParser,
         XiaoheiheParser,
         BlueskyParser,
-        NgaParser
+        NgaParser,
+        BilibiliParser
     )
 
     fun findParser(cleanUrl: String, raw: RawData): RawDataParser? {

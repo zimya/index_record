@@ -5,6 +5,8 @@ import androidx.compose.material.icons.outlined.BookmarkBorder
 import androidx.compose.material.icons.outlined.ChatBubbleOutline
 import androidx.compose.material.icons.outlined.FormatQuote
 import androidx.compose.material.icons.outlined.Place
+import androidx.compose.material.icons.outlined.MonetizationOn
+import androidx.compose.material.icons.outlined.Subtitles
 import androidx.compose.material.icons.outlined.RemoveRedEye
 import androidx.compose.material.icons.outlined.Repeat
 import androidx.compose.material.icons.outlined.Share
@@ -60,4 +62,6 @@ internal fun statisticIcon(kind: StatisticKind): ImageVector = when (kind) {
     StatisticKind.BOOKMARK -> Icons.Outlined.BookmarkBorder
     StatisticKind.LOCATION -> Icons.Outlined.Place
     StatisticKind.FAVORITE -> Icons.Outlined.StarOutline
+    StatisticKind.DANMAKU -> Icons.Outlined.Subtitles
+    StatisticKind.COIN -> Icons.Outlined.MonetizationOn
 }

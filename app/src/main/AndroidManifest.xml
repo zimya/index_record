@@ -20,6 +20,8 @@
         <package android:name="com.max.xiaoheihe" />
         <package android:name="xyz.blueskyweb.app" />
         <package android:name="gov.pianzong.androidnga" />
+        <package android:name="tv.danmaku.bili" />
+        <package android:name="com.bilibili.app.in" />
     </queries>
 
     <application

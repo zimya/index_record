@@ -27,7 +27,7 @@ internal fun recordHeaderPresentation(record: RecordContent): RecordHeaderPresen
         ?: (metadata.coolapk?.ratingScore?.let { it / 2.0 } ?: 0.0)
     return RecordHeaderPresentation(
         title = record.title,
-        titleImage = metadata.zhihu?.titleImage ?: metadata.coolapk?.messageCover.orEmpty(),
+        titleImage = metadata.zhihu?.titleImage ?: metadata.coolapk?.messageCover ?: metadata.bilibili?.cover.orEmpty(),
         author = record.authorName.ifBlank { "作者未知" },
         authorHeadline = authorHeadline,
         starCount = starCount
@@ -37,12 +37,16 @@ internal fun recordHeaderPresentation(record: RecordContent): RecordHeaderPresen
 internal data class RecordBodyPresentation(
     val content: String,
     val contentFormat: MarkdownContentFormat,
-    val enableMath: Boolean
+    val enableMath: Boolean,
+    val images: List<String> = emptyList()
 )
 
 internal fun recordBodyPresentation(record: RecordContent): RecordBodyPresentation {
     val format = record.bodyFormat()
-    return RecordBodyPresentation(record.content, format.renderingFormat, format.enableMath)
+    val images = if (record.platform == "bilibili") {
+        PlatformMetadataAdapters(record.extraMetadata, record.platform).bilibili?.images.orEmpty()
+    } else emptyList()
+    return RecordBodyPresentation(record.content, format.renderingFormat, format.enableMath, images)
 }
 
 internal fun commentPlainText(record: RecordContent): String = record.bodyPlainText()

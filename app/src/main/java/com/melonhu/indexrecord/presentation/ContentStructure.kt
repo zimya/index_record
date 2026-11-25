@@ -15,7 +15,7 @@ internal fun contentStructure(record: RecordContent): ContentStructure = Content
     supportsLocalReplies = record.recordType in setOf(
         "answer", "article", "pin", "comment", "tweet", "status", "thread", "post",
         "topic", "review", "interest", "note", "lou", "floor",
-        "feed", "rating", "feedArticle", "question"
+        "feed", "rating", "feedArticle", "question", "video", "opus"
     ),
     hasRelatedContent = record.directRelation() != null
 )

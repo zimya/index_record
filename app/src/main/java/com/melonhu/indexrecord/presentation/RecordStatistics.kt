@@ -4,7 +4,7 @@ import com.melonhu.indexrecord.data.model.RecordContent
 
 internal enum class StatisticKind(val label: String) {
     LIKE("点赞"), DISLIKE("点踩"), REPLY("回复"), REPOST("转发"), VIEW("浏览"), SHARE("分享"),
-    QUOTE("引用"), BOOKMARK("书签"), LOCATION("发布地"), FAVORITE("收藏")
+    QUOTE("引用"), BOOKMARK("书签"), LOCATION("发布地"), FAVORITE("收藏"), DANMAKU("弹幕"), COIN("投币")
 }
 
 internal data class RecordStatistic(
@@ -46,7 +46,7 @@ internal fun recordStatistics(
         "tieba" -> "赞同"
         else -> "点赞"
     }
-    val replyLabel = if (record.platform in setOf("zhihu", "douban", "weibo") && !comment) "评论" else "回复"
+    val replyLabel = if (record.platform in setOf("zhihu", "douban", "weibo", "bilibili") && !comment) "评论" else "回复"
     return buildList {
         fun count(kind: StatisticKind, value: Long?, label: String = kind.label) {
             value?.let { add(RecordStatistic(kind, formatCount(it), label, it)) }
@@ -64,8 +64,10 @@ internal fun recordStatistics(
             count(StatisticKind.SHARE, counts.shareCount)
             count(StatisticKind.BOOKMARK, counts.bookmarkCount)
             count(StatisticKind.FAVORITE, counts.favoriteCount)
+            count(StatisticKind.COIN, metadata.bilibili?.coinCount)
         }
         count(StatisticKind.VIEW, counts.viewCount)
+        count(StatisticKind.DANMAKU, metadata.bilibili?.danmakuCount)
         if (surface == StatisticsSurface.DETAIL) {
             val location = metadata.zhihu?.ipInfo ?: metadata.douban?.ipInfo
                 ?: metadata.tieba?.ipAddress?.takeIf { it.isNotBlank() }

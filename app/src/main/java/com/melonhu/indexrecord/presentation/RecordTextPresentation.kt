@@ -15,6 +15,11 @@ internal fun recordDisplayTitle(
             "threads" -> if (record.recordType == "comment") "Threads 回复" else "${record.authorName.ifBlank { "Threads 用户" }}的帖子"
             "bluesky" -> if (record.recordType == "comment") "Bluesky 回复" else "${record.authorName.ifBlank { "Bluesky 用户" }}的帖子"
             "reddit" -> if (record.recordType == "comment") "Reddit 回复" else "${record.authorName.ifBlank { "Reddit 用户" }}的帖子"
+            "bilibili" -> when (record.recordType) {
+                "opus" -> "${record.authorName.ifBlank { "Bilibili 用户" }}的动态"
+                "comment" -> "Bilibili 评论"
+                else -> "无标题"
+            }
             "coolapk" -> "${record.authorName.ifBlank { "酷安用户" }}的动态"
             "douban" -> when {
                 record.recordType == "feed" ||
@@ -44,6 +49,12 @@ internal fun recordContext(
         metadata.coolapk?.ttitle?.takeIf { it.isNotBlank() }?.let { "#$it#" },
         metadata.coolapk?.deviceTitle?.takeIf { it.isNotBlank() }
     ).joinToString(" · ")
+    "bilibili" -> metadata.bilibili?.durationSeconds?.let { seconds ->
+        val hours = seconds / 3600
+        val minutes = seconds / 60 % 60
+        val remainder = (seconds % 60).toString().padStart(2, '0')
+        if (hours == 0L) "$minutes:$remainder" else "$hours:${minutes.toString().padStart(2, '0')}:$remainder"
+    }.orEmpty()
     else -> ""
 }
 

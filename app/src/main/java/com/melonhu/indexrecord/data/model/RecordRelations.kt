@@ -18,10 +18,8 @@ internal enum class RelatedTargetState {
 }
 
 /** The storage boundary is the only place that interprets the overloaded parentId column. */
-internal fun RecordContent.directRelation(): RecordRelation? = relationOf(platform, recordType, parentId)
+internal fun RecordContent.directRelation(): RecordRelation? {
 
-
-private fun relationOf(platform: String, recordType: String, parentId: String): RecordRelation? {
     if (parentId.isBlank()) return null
     val target = RecordIdentity.of(platform, parentId)
     return when {
@@ -32,6 +30,9 @@ private fun relationOf(platform: String, recordType: String, parentId: String): 
         platform == "douban" && recordType != "comment" && parentId.startsWith("douban_") ->
             RecordRelation.BelongsToSubject(target)
         platform == "tieba" && recordType == "floor" -> RecordRelation.FloorInThread(target)
+        platform == "bilibili" && recordType == "comment" -> BilibiliTopic.fromCommentId(platformId)
+            ?.takeIf { parentId != platformId && (parentId == it.parentId || it.ownsCommentId(parentId)) }
+            ?.let { RecordRelation.ReplyTo(target) }
         recordType == "comment" -> RecordRelation.ReplyTo(target)
         platform in setOf("weibo", "threads", "bluesky") -> RecordRelation.ReferencesContent(target)
         else -> null

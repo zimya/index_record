@@ -7,8 +7,8 @@ import org.junit.Test
 
 class PlatformCatalogTest {
     @Test fun knownPlatformsHaveUniqueDefaultPackages() {
-        assertEquals(12, PlatformCatalog.platforms.size)
-        assertEquals(12, PlatformCatalog.platforms.map { it.defaultPackage }.distinct().size)
+        assertEquals(13, PlatformCatalog.platforms.size)
+        assertEquals(13, PlatformCatalog.platforms.map { it.defaultPackage }.distinct().size)
         PlatformCatalog.platforms.forEach {
             assertEquals(it.name, PlatformCatalog.displayName(it.id))
             assertEquals(it.defaultPackage, PlatformCatalog.defaultPackage(it.id))
@@ -20,7 +20,9 @@ class PlatformCatalogTest {
         assertEquals("小黑盒", PlatformCatalog.packageLabel("com.max.xiaoheihe"))
         assertEquals("Bluesky", PlatformCatalog.packageLabel("xyz.blueskyweb.app"))
         assertEquals("NGA", PlatformCatalog.packageLabel("gov.pianzong.androidnga"))
-        assertEquals(13, PlatformCatalog.hostPackages.size)
+        assertEquals("Bilibili", PlatformCatalog.packageLabel("tv.danmaku.bili"))
+        assertEquals("Bilibili 国际版", PlatformCatalog.packageLabel("com.bilibili.app.in"))
+        assertEquals(15, PlatformCatalog.hostPackages.size)
     }
 
     @Test fun unknownValuesRemainLiteralAndBlankValuesAreExplicitlyUnknown() {

@@ -8,6 +8,7 @@ import coil.ImageLoaderFactory
 import coil.decode.GifDecoder
 import coil.decode.ImageDecoderDecoder
 import io.objectbox.android.AndroidObjectBrowser
+import okhttp3.HttpUrl
 import okhttp3.OkHttpClient
 
 class App : Application(), ImageLoaderFactory {
@@ -44,7 +45,8 @@ class App : Application(), ImageLoaderFactory {
                         .header("User-Agent", "Mozilla/5.0 (Linux; Android 14; 24129PN74C Build/UKQ1.231003.002; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/130.0.6723.107 Mobile Safari/537.36 #CoolMarket#14.5.3")
                         .build()
                 } else {
-                    request
+                    val imageUrl = secureBilibiliImageUrl(request.url)
+                    if (imageUrl == request.url) request else request.newBuilder().url(imageUrl).build()
                 }
                 chain.proceed(newReq)
             }
@@ -63,3 +65,11 @@ class App : Application(), ImageLoaderFactory {
             .build()
     }
 }
+
+// Bilibili still supplies HTTP CDN URLs in some captures. Upgrade at load time for old records too.
+internal fun secureBilibiliImageUrl(url: HttpUrl): HttpUrl =
+    if (!url.isHttps && url.port == 80 && url.host.endsWith(".hdslb.com")) {
+        url.newBuilder().scheme("https").port(443).build()
+    } else {
+        url
+    }

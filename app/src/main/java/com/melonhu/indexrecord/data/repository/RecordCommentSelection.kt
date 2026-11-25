@@ -1,6 +1,8 @@
 package com.melonhu.indexrecord.data.repository
 
+import com.melonhu.indexrecord.data.model.BilibiliTopic
 import com.melonhu.indexrecord.data.model.UniversalRecord
+import com.melonhu.indexrecord.data.model.bilibiliTopic
 import com.melonhu.indexrecord.data.model.RecordIdentity
 import com.melonhu.indexrecord.data.model.distinctRecordIdentities
 import com.melonhu.indexrecord.data.model.identity
@@ -26,6 +28,19 @@ internal fun collectRecordComments(
         frontier = added.map { it.identity }.toSet()
     }
     return selected
+}
+
+/** On a topic page, the explicit tuple also proves ownership when a direct parent was not captured. */
+internal fun selectBilibiliComments(
+    record: UniversalRecord, topic: BilibiliTopic, candidates: List<UniversalRecord>
+): List<UniversalRecord> {
+    val owned = candidates.filter {
+        it.recordType == "comment" && it.bilibiliTopic() == topic && it.replyTarget() != null
+    }
+    if (record.platformId == topic.parentId) return owned
+    // Sharing a topic does not prove descent from an individual reply.
+    val children = owned.groupBy { it.replyTarget() }
+    return collectRecordComments(record) { parents -> parents.flatMap { children[it].orEmpty() } }
 }
 
 /** Keep real descendants and, on post pages only, captured branches identified by post_id. */

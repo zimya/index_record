@@ -1,7 +1,9 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8" ?>
 <resources>
     <string name="app_name">小茵记录</string>
-    <string name="app_description">记录知乎、豆瓣、X、Threads、Reddit 和百度贴吧的浏览内容</string>
+    <string
+        name="app_description"
+    >记录知乎、豆瓣、X、Threads、Reddit 和百度贴吧的浏览内容</string>
 
     <!-- Navigation -->
     <string name="nav_home">首页</string>
@@ -39,13 +41,17 @@
     <string name="search_history_title">搜索历史</string>
     <string name="search_history_clear">清空</string>
     <string name="search_history_remove">删除历史记录</string>
-    <string name="search_idle_hint">支持精确词频检索、图片 OCR 识别与语义/画面混合搜索</string>
+    <string
+        name="search_idle_hint"
+    >支持精确词频检索、图片 OCR 识别与语义/画面混合搜索</string>
     <string name="search_ocr_snippet_label">图内文字 OCR</string>
     <string name="search_source_text_exact">文本匹配</string>
     <string name="search_source_ocr_exact">图内 OCR</string>
     <string name="search_source_text_semantic">文本语义</string>
     <string name="search_source_image_visual">图片画面</string>
-    <string name="search_visual_matched_image_hint">画面内容与搜索语义相符</string>
+    <string
+        name="search_visual_matched_image_hint"
+    >画面内容与搜索语义相符</string>
     <string name="search_visual_similarity_label">· 相似度 %1$d%%</string>
     <string name="search_text_semantic_hint">正文语义与搜索意图相符</string>
     <string name="search_index_stage_loading_model">正在加载向量模型…</string>
@@ -55,7 +61,9 @@
     <string name="search_index_stage_image">正在索引图片与 OCR…</string>
     <string name="search_index_stage_pending">等待处理索引任务</string>
     <string name="search_index_stage_ready">索引就绪</string>
-    <string name="search_index_counts">待处理 %1$d（文本 %2$d · 图片 %3$d）</string>
+    <string
+        name="search_index_counts"
+    >待处理 %1$d（文本 %2$d · 图片 %3$d）</string>
     <string name="search_index_pause">暂停索引</string>
     <string name="search_index_resume">继续索引</string>
     <string name="search_index_recheck">重试失败</string>
@@ -76,11 +84,17 @@
     <string name="search_pipeline_done">已完成</string>
     <string name="search_pipeline_ocr_count">OCR %1$d/%2$d</string>
     <string name="search_pipeline_pending_only">待处理 %1$d</string>
-    <string name="search_pipeline_pending_failed">待处理 %1$d · 失败 %2$d</string>
+    <string
+        name="search_pipeline_pending_failed"
+    >待处理 %1$d · 失败 %2$d</string>
     <string name="search_pipeline_need_model">需先下载语义模型</string>
     <string name="search_progress_model_needed_short">精确就绪</string>
-    <string name="search_model_section_title">语义模型 (EmbeddingGemma 2)</string>
-    <string name="search_model_not_downloaded">未下载（约 %1$s）。不下载也能使用文字匹配与图内 OCR；下载后可开启文本语义与以文搜图。</string>
+    <string
+        name="search_model_section_title"
+    >语义模型 (EmbeddingGemma 2)</string>
+    <string
+        name="search_model_not_downloaded"
+    >未下载（约 %1$s）。不下载也能使用文字匹配与图内 OCR；下载后可开启文本语义与以文搜图。</string>
     <string name="search_model_downloading">正在下载模型 (%1$s / %2$s)</string>
     <string name="search_model_paused">下载已暂停 (%1$s / %2$s)</string>
     <string name="search_model_verifying">正在校验模型完整性 (SHA-256)…</string>
@@ -91,7 +105,9 @@
     <string name="search_model_cancel_btn">取消</string>
     <string name="search_model_delete_btn">删除模型</string>
     <string name="search_model_retry_btn">重试下载</string>
-    <string name="search_model_required_error">尚未下载语义向量模型，请先下载模型，或在“搜索来源”中保留“文本匹配”或“图内 OCR”。</string>
+    <string
+        name="search_model_required_error"
+    >尚未下载语义向量模型，请先下载模型，或在“搜索来源”中保留“文本匹配”或“图内 OCR”。</string>
     <string name="home_empty_prompt">暂无记录，去刷刷社交网络吧！</string>
     <string name="home_empty_search">没有找到匹配的记录</string>
     <string name="filter_title">过滤器</string>
@@ -114,11 +130,19 @@
     <string name="filter_close">关闭过滤器</string>
     <string name="sync_hint_loaded">已加载 %1$d 条内容</string>
     <string name="sync_hint_empty">暂未收到新内容</string>
-    <string name="sync_retry_pending">待重试：剩余 %1$d 条原始数据已保留</string>
+    <string
+        name="sync_retry_pending"
+    >待重试：剩余 %1$d 条原始数据已保留</string>
     <string name="sync_completed">同步完成：本轮已加载 %1$d 条</string>
-    <string name="sync_in_progress_with_pending">同步中：剩余 %1$d 条 · 本轮已加载 %2$d 条</string>
-    <string name="sync_waiting_process">等待处理：剩余 %1$d 条 · 本轮已加载 %2$d 条</string>
-    <string name="sync_in_progress_waiting_more">同步中：本轮已加载 %1$d 条 · 等待后续数据…</string>
+    <string
+        name="sync_in_progress_with_pending"
+    >同步中：剩余 %1$d 条 · 本轮已加载 %2$d 条</string>
+    <string
+        name="sync_waiting_process"
+    >等待处理：剩余 %1$d 条 · 本轮已加载 %2$d 条</string>
+    <string
+        name="sync_in_progress_waiting_more"
+    >同步中：本轮已加载 %1$d 条 · 等待后续数据…</string>
 
     <!-- Settings -->
     <string name="settings_title">设置</string>
@@ -128,7 +152,9 @@
     <string name="settings_theme_light">明亮</string>
     <string name="settings_theme_dark">暗黑</string>
     <string name="settings_monet_dynamic_color">Monet 动态取色</string>
-    <string name="settings_monet_dynamic_color_desc">开启后将根据系统壁纸自动生成主题配色，无法手动选择主题色</string>
+    <string
+        name="settings_monet_dynamic_color_desc"
+    >开启后将根据系统壁纸自动生成主题配色，无法手动选择主题色</string>
     <string name="settings_theme_color">主题色</string>
     <string name="settings_theme_color_index_blue">小茵蓝</string>
     <string name="settings_theme_color_index_green">小茵绿</string>
@@ -147,7 +173,9 @@
     <string name="settings_collapse_multiple">多条目默认收起</string>
     <string name="settings_section_stats">统计</string>
     <string name="settings_include_replies_stats">统计回复和评论</string>
-    <string name="settings_include_replies_stats_desc">开启后将回复和评论纳入本地条目、字数、分布和连续天数统计。</string>
+    <string
+        name="settings_include_replies_stats_desc"
+    >开启后将回复和评论纳入本地条目、字数、分布和连续天数统计。</string>
     <string name="settings_section_record">记录</string>
     <string name="settings_tweet_record_mode">记录推文的形式</string>
     <string name="settings_weibo_record_mode">记录微博的形式</string>
@@ -156,7 +184,9 @@
     <string name="settings_reddit_record_mode">记录 Reddit 的形式</string>
     <string name="settings_mode_push">推送</string>
     <string name="settings_mode_read">阅读</string>
-    <string name="settings_section_appearance_desc">主题、语言、多条目默认收起</string>
+    <string
+        name="settings_section_appearance_desc"
+    >主题、语言、多条目默认收起</string>
     <string name="settings_section_stats_desc">回复和评论统计口径</string>
     <string name="settings_section_record_desc">各平台记录形式</string>
 
@@ -165,7 +195,9 @@
     <string name="lsposed_inactive">LSPosed 模块未激活</string>
     <string name="lsposed_checking">正在检测模块状态...</string>
     <string name="lsposed_active_scopes">已激活 %1$d 个作用域%2$s</string>
-    <string name="lsposed_inactive_tip">请在 LSPosed 管理器中启用模块并勾选目标应用</string>
+    <string
+        name="lsposed_inactive_tip"
+    >请在 LSPosed 管理器中启用模块并勾选目标应用</string>
     <string name="lsposed_connecting">正在连接框架服务...</string>
     <string name="lsposed_expand_scopes">展开作用域</string>
     <string name="lsposed_collapse_scopes">收起作用域</string>
@@ -176,13 +208,25 @@
     <string name="stats_title">统计</string>
     <string name="stats_loading">正在加载统计…</string>
     <string name="stats_loading_content_desc">正在加载统计</string>
-    <string name="stats_reloading_with_previous">正在重新读取统计，暂时显示上次成功结果…</string>
-    <string name="stats_error_previous_hint">当前显示上次成功的统计及其统计范围，可能不是最新结果。</string>
-    <string name="stats_error_no_stats_hint">尚未成功读取统计，暂不展示数字和图表。</string>
-    <string name="stats_auto_recover_hint">可手动重试；本地数据更新后也会自动尝试恢复。</string>
+    <string
+        name="stats_reloading_with_previous"
+    >正在重新读取统计，暂时显示上次成功结果…</string>
+    <string
+        name="stats_error_previous_hint"
+    >当前显示上次成功的统计及其统计范围，可能不是最新结果。</string>
+    <string
+        name="stats_error_no_stats_hint"
+    >尚未成功读取统计，暂不展示数字和图表。</string>
+    <string
+        name="stats_auto_recover_hint"
+    >可手动重试；本地数据更新后也会自动尝试恢复。</string>
     <string name="stats_retry_button">重试读取统计</string>
-    <string name="stats_scope_with_replies">统计范围：主内容及已阅读的回复、评论。按每次阅读的时间与快照统计，重复阅读也计数。</string>
-    <string name="stats_scope_main_only">统计范围：仅主内容，不含回复和评论。按每次阅读的时间与快照统计，重复阅读也计数。</string>
+    <string
+        name="stats_scope_with_replies"
+    >统计范围：主内容及已阅读的回复、评论。按每次阅读的时间与快照统计，重复阅读也计数。</string>
+    <string
+        name="stats_scope_main_only"
+    >统计范围：仅主内容，不含回复和评论。按每次阅读的时间与快照统计，重复阅读也计数。</string>
     <string name="stats_scope_info_desc">统计范围说明</string>
     <string name="stats_scope_dialog_title">统计范围说明</string>
     <string name="stats_scope_platforms_title">各平台统计条目类型</string>
@@ -228,18 +272,28 @@
     <string name="detail_history_content_same">正文与当前内容一致</string>
     <string name="detail_history_snapshot_time">快照时间：%1$s</string>
     <string name="detail_history_restore">还原此快照</string>
-    <string name="detail_comments_more_uncollected">平台仍有更多回复未采集</string>
+    <string
+        name="detail_comments_more_uncollected"
+    >平台仍有更多回复未采集</string>
     <string name="detail_comments_sort_engagement">按互动排序</string>
     <string name="detail_comments_sort_latest">最新</string>
     <string name="detail_comments_sort_agree">按赞同</string>
-    <string name="detail_comments_orphan_no_parent">孤立分支 · 父节点关系未记录</string>
-    <string name="detail_comments_orphan_missing_parent">孤立分支 · 回复对象本地缺失：%1$s</string>
-    <string name="detail_comments_orphan_invalid">孤立分支 · 父回复关系异常</string>
+    <string
+        name="detail_comments_orphan_no_parent"
+    >孤立分支 · 父节点关系未记录</string>
+    <string
+        name="detail_comments_orphan_missing_parent"
+    >孤立分支 · 回复对象本地缺失：%1$s</string>
+    <string
+        name="detail_comments_orphan_invalid"
+    >孤立分支 · 父回复关系异常</string>
     <string name="detail_question_title">问题详情</string>
     <string name="detail_question_no_title">（未缓存题目）</string>
     <string name="detail_question_no_excerpt">（问题详情未缓存）</string>
     <string name="detail_question_answers">回答 (%1$d)</string>
-    <string name="detail_question_answer_not_cached">未缓存该回答，无法展开</string>
+    <string
+        name="detail_question_answer_not_cached"
+    >未缓存该回答，无法展开</string>
     <string name="detail_tieba_first_floor">1 楼 · 首楼</string>
     <string name="detail_tieba_floor_num">%1$d 楼</string>
     <string name="detail_tieba_floor_unrecorded">楼号未记录</string>
@@ -252,7 +306,9 @@
     <string name="detail_tieba_reply_to">回复 %1$s</string>
     <string name="detail_tieba_view_all_replies">查看全部已记录回复</string>
     <string name="detail_subject_empty_title">暂无相关短评或讨论</string>
-    <string name="detail_subject_empty_desc">在豆瓣 App 中浏览该条目的短评、长评或讨论帖子即可自动收录归档</string>
+    <string
+        name="detail_subject_empty_desc"
+    >在豆瓣 App 中浏览该条目的短评、长评或讨论帖子即可自动收录归档</string>
     <string name="detail_subject_rating">豆瓣评分</string>
     <string name="detail_subject_rating_count">%1$.1f万人评价</string>
 
@@ -270,6 +326,9 @@
     <string name="platform_xiaoheihe">小黑盒</string>
     <string name="platform_bluesky">Bluesky</string>
     <string name="platform_nga">NGA</string>
+    <string name="platform_bilibili">Bilibili</string>
+    <string name="type_video">视频</string>
+    <string name="type_opus">图文</string>
 
     <string name="type_question">问题</string>
     <string name="type_answer">回答</string>
@@ -303,7 +362,9 @@
     <string name="update_manual">手动更新</string>
     <string name="update_auto">自动更新</string>
     <string name="update_skip_version">跳过该版本</string>
-    <string name="update_install_permission_required">请先开启“安装未知应用”权限</string>
+    <string
+        name="update_install_permission_required"
+    >请先开启“安装未知应用”权限</string>
     <string name="update_download_failed">下载失败：%1$s</string>
     <string name="settings_auto_update">自动检查更新</string>
     <string name="update_freq_every_launch">每次启动</string>
@@ -318,35 +379,63 @@
     <string name="settings_section_data_desc">导入导出与增量合并</string>
     <string name="data_overview_title">本地数据库</string>
     <string name="data_overview_counts">记录 %1$d 条 · 历史快照 %2$d 条</string>
-    <string name="data_overview_pending_raw">待重试原始数据 %1$d 条（建议导出前先回首页下拉同步）</string>
+    <string
+        name="data_overview_pending_raw"
+    >待重试原始数据 %1$d 条（建议导出前先回首页下拉同步）</string>
     <string name="data_overview_loading">正在统计本地数据…</string>
     <string name="data_export_title">导出数据库</string>
-    <string name="data_export_desc">导出为压缩备份文件（.zip），可用于跨设备迁移或存档</string>
+    <string
+        name="data_export_desc"
+    >导出为压缩备份文件（.zip），可用于跨设备迁移或存档</string>
     <string name="data_exporting">正在导出备份…</string>
     <string name="data_import_title">导入数据库</string>
-    <string name="data_import_desc">从备份压缩包增量合并记录与历史快照，不会覆盖现有数据</string>
+    <string
+        name="data_import_desc"
+    >从备份压缩包增量合并记录与历史快照，不会覆盖现有数据</string>
     <string name="data_importing">正在导入并合并…</string>
     <string name="data_include_raw_title">导出包含待重试原始数据</string>
-    <string name="data_include_raw_desc">开启后一并导出尚未解析或保留重试的原始网络响应，文件体积可能较大。</string>
+    <string
+        name="data_include_raw_desc"
+    >开启后一并导出尚未解析或保留重试的原始网络响应，文件体积可能较大。</string>
     <string name="data_export_success_title">导出完成</string>
-    <string name="data_export_success_message">已导出 %1$d 条记录、%2$d 条历史快照（含 %3$d 条原始数据）。</string>
+    <string
+        name="data_export_success_message"
+    >已导出 %1$d 条记录、%2$d 条历史快照（含 %3$d 条原始数据）。</string>
     <string name="data_import_success_title">导入完成</string>
-    <string name="data_import_success_message">记录：新增 %1$d 条，合并更新 %2$d 条，跳过重复 %3$d 条\n历史快照：新增 %4$d 条，跳过重复 %5$d 条</string>
-    <string name="data_import_raw_summary">\n原始数据：新增 %1$d 条，跳过重复 %2$d 条</string>
+    <string
+        name="data_import_success_message"
+    >记录：新增 %1$d 条，合并更新 %2$d 条，跳过重复 %3$d 条\n历史快照：新增 %4$d 条，跳过重复 %5$d 条</string>
+    <string
+        name="data_import_raw_summary"
+    >\n原始数据：新增 %1$d 条，跳过重复 %2$d 条</string>
     <string name="data_operation_failed_title">操作失败</string>
-    <string name="data_error_invalid_archive">所选文件不是有效的小茵记录备份压缩包。</string>
-    <string name="data_error_unsupported_version">该备份文件版本不受当前应用支持。</string>
-    <string name="data_error_corrupt_data">备份内容校验失败或已损坏，已回滚本次导入。</string>
+    <string
+        name="data_error_invalid_archive"
+    >所选文件不是有效的小茵记录备份压缩包。</string>
+    <string
+        name="data_error_unsupported_version"
+    >该备份文件版本不受当前应用支持。</string>
+    <string
+        name="data_error_corrupt_data"
+    >备份内容校验失败或已损坏，已回滚本次导入。</string>
     <string name="data_error_io">读写文件失败：%1$s</string>
     <string name="data_clear_title">清空所有数据</string>
-    <string name="data_clear_desc">永久删除本地全部记录、历史快照与待处理缓存，此操作不可恢复</string>
+    <string
+        name="data_clear_desc"
+    >永久删除本地全部记录、历史快照与待处理缓存，此操作不可恢复</string>
     <string name="data_clearing">正在清空数据…</string>
     <string name="data_clear_confirm_title">确认清空所有数据？</string>
-    <string name="data_clear_confirm_message">此操作将永久删除本地全部 %1$d 条记录、%2$d 条历史快照及待处理缓存，且无法恢复。应用设置将保留，建议在清空前先导出备份。</string>
-    <string name="data_clear_confirm_message_generic">此操作将永久删除本地全部记录、历史快照及待处理缓存，且无法恢复。应用设置将保留，建议在清空前先导出备份。</string>
+    <string
+        name="data_clear_confirm_message"
+    >此操作将永久删除本地全部 %1$d 条记录、%2$d 条历史快照及待处理缓存，且无法恢复。应用设置将保留，建议在清空前先导出备份。</string>
+    <string
+        name="data_clear_confirm_message_generic"
+    >此操作将永久删除本地全部记录、历史快照及待处理缓存，且无法恢复。应用设置将保留，建议在清空前先导出备份。</string>
     <string name="data_clear_confirm_action">确认清空</string>
     <string name="data_clear_success_title">数据已清空</string>
-    <string name="data_clear_success_message">已删除 %1$d 条记录、%2$d 条历史快照与 %3$d 条原始数据。</string>
+    <string
+        name="data_clear_success_message"
+    >已删除 %1$d 条记录、%2$d 条历史快照与 %3$d 条原始数据。</string>
 
     <!-- About -->
     <string name="settings_section_about">关于</string>
@@ -355,14 +444,18 @@
     <string name="about_version_format">版本 %1$s (%2$d)</string>
     <string name="about_tagline">十万三千本魔道书，全都记在脑海中</string>
     <string name="about_github">GitHub 仓库</string>
-    <string name="about_github_url">https://github.com/zimya/index_record</string>
+    <string
+        name="about_github_url"
+    >https://github.com/zimya/index_record</string>
     <string name="about_telegram">Telegram 群组</string>
     <string name="about_telegram_url">https://t.me/index_record_group</string>
     <string name="about_licenses">开源许可列表</string>
     <string name="about_licenses_desc">第三方开源库与许可证声明</string>
     <string name="about_licenses_dialog_title">开源许可列表</string>
     <string name="about_app_license_title">本应用许可</string>
-    <string name="about_app_license_desc">GNU General Public License v3.0 (GPL-3.0)</string>
+    <string
+        name="about_app_license_desc"
+    >GNU General Public License v3.0 (GPL-3.0)</string>
     <string name="about_third_party_licenses_title">第三方开源库</string>
     <string name="about_index_image_desc">茵蒂克丝</string>
     <string name="about_link_copied">链接已复制到剪贴板</string>

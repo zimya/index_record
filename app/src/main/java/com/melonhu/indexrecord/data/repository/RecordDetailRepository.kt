@@ -11,6 +11,7 @@ import com.melonhu.indexrecord.data.model.RecordRelation
 import com.melonhu.indexrecord.data.model.RelatedTargetState
 import com.melonhu.indexrecord.data.model.UniversalRecord
 import com.melonhu.indexrecord.data.model.UniversalRecord_
+import com.melonhu.indexrecord.data.model.bilibiliTopic
 import com.melonhu.indexrecord.data.model.directRelation
 
 import com.melonhu.indexrecord.data.model.identity
@@ -79,6 +80,13 @@ private class RecordDetailQueries(private val box: Box<UniversalRecord>, private
     }
 
     fun comments(record: UniversalRecord): List<UniversalRecord> {
+        if (platform == "bilibili") {
+            val topic = record.bilibiliTopic() ?: return emptyList()
+            val query = box.query().equal(UniversalRecord_.platform, platform, StringOrder.CASE_SENSITIVE)
+                .equal(UniversalRecord_.recordType, "comment", StringOrder.CASE_SENSITIVE)
+                .startsWith(UniversalRecord_.platformId, topic.commentPrefix, StringOrder.CASE_SENSITIVE).build()
+            return try { selectBilibiliComments(record, topic, query.find()) } finally { query.close() }
+        }
         if (platform == "reddit") {
             // Disconnected Reddit branches may identify their post only through post_id.
             val query = box.query().equal(UniversalRecord_.platform, platform, StringOrder.CASE_SENSITIVE)

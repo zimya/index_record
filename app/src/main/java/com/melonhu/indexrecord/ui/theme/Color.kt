@@ -82,6 +82,13 @@ val NgaLightText = Color(0xFF7A440F)
 val NgaDarkContainer = Color(0xFF3B2611)
 val NgaDarkText = Color(0xFFFFCA8A)
 
+// B 站粉
+val BilibiliPink = Color(0xFFFB7299)
+private val BilibiliLightContainer = Color(0xFFFFEDF3)
+private val BilibiliLightText = Color(0xFF97284D)
+private val BilibiliDarkContainer = Color(0xFF3B1D29)
+private val BilibiliDarkText = Color(0xFFFF9FBB)
+
 data class PlatformThemeColor(
     val brand: Color,
     val container: Color,
@@ -101,6 +108,7 @@ fun getPlatformBrandColor(platform: String): Color? {
         "xiaoheihe", "com.max.xiaoheihe" -> XiaoheiheDark
         "bluesky", "xyz.blueskyweb.app" -> ZhihuBlue
         "nga", "gov.pianzong.androidnga" -> NgaAmber
+        "bilibili", "tv.danmaku.bili", "com.bilibili.app.in" -> BilibiliPink
         else -> null
     }
 }
@@ -156,6 +164,11 @@ fun getPlatformThemeColor(platform: String, isDark: Boolean): PlatformThemeColor
             PlatformThemeColor(NgaAmber, NgaDarkContainer, NgaDarkText)
         } else {
             PlatformThemeColor(NgaAmber, NgaLightContainer, NgaLightText)
+        }
+        "bilibili", "tv.danmaku.bili", "com.bilibili.app.in" -> if (isDark) {
+            PlatformThemeColor(BilibiliPink, BilibiliDarkContainer, BilibiliDarkText)
+        } else {
+            PlatformThemeColor(BilibiliPink, BilibiliLightContainer, BilibiliLightText)
         }
         else -> if (isDark) {
             PlatformThemeColor(IndexBlue, Color(0xFF2A2B30), Color(0xFFD0D0D5))

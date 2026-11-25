@@ -61,6 +61,11 @@ public class IndexRecordModule extends XposedModule {
                 hook = new NgaHook();
                 hookTag = "NgaRecord: ";
                 break;
+            case BilibiliHook.HOST_APP:
+            case BilibiliHook.INTERNATIONAL:
+                hook = new BilibiliHook();
+                hookTag = "BilibiliRecord: ";
+                break;
             case "com.sina.weibo":
             case "com.weico.international":
                 hook = new WeiboHook();
@@ -71,7 +76,12 @@ public class IndexRecordModule extends XposedModule {
                 return;
         }
 
-        HookContext context = new HookContext(this, packageName, processName, hookTag);
+        HookContext context = new HookContext(
+            this,
+            packageName,
+            processName,
+            hookTag
+        );
         context.log("Loaded in " + packageName + " (" + processName + ")");
         hook.init(context, classLoader);
     }

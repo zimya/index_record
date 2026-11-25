@@ -56,6 +56,16 @@ internal class XiaoheiheRecordMetadata(values: JsonObject) {
     val linkId: String = values.metadataText("link_id")
 }
 
+internal class BilibiliRecordMetadata(values: JsonObject) {
+    val cover: String = values.metadataText("cover")
+    val durationSeconds: Long? = values.optionalEngagementCount("duration")
+    val danmakuCount: Long? = values.optionalEngagementCount("danmaku")
+    val coinCount: Long? = values.optionalEngagementCount("coin")
+    val images: List<String> = values.get("images")?.takeIf { it.isJsonArray }?.asJsonArray
+        ?.mapNotNull { it.takeIf { it.isJsonPrimitive && it.asJsonPrimitive.isString }?.asString }
+        .orEmpty()
+}
+
 /** Only the selected platform gets an adapter, even if the payload contains foreign keys. */
 internal class PlatformMetadataAdapters(values: JsonObject, platform: String) {
     constructor(extraMetadata: String, platform: String) : this(parseMetadataObject(extraMetadata), platform)
@@ -69,6 +79,7 @@ internal class PlatformMetadataAdapters(values: JsonObject, platform: String) {
     val coolapk: CoolapkRecordMetadata? = if (platform == "coolapk") CoolapkRecordMetadata(values) else null
     val hupu: HupuRecordMetadata? = if (platform == "hupu") HupuRecordMetadata(values) else null
     val xiaoheihe: XiaoheiheRecordMetadata? = if (platform == "xiaoheihe") XiaoheiheRecordMetadata(values) else null
+    val bilibili: BilibiliRecordMetadata? = if (platform == "bilibili") BilibiliRecordMetadata(values) else null
 }
 
 private fun JsonObject.metadataText(key: String): String =

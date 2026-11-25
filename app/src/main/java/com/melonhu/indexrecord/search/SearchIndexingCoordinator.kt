@@ -630,7 +630,7 @@ internal class SearchIndexingCoordinator(
         private const val TEXT_BATCH_SIZE = 25
         private const val IMAGE_VEC_BATCH_SIZE = 12
         private const val DOWNLOAD_BATCH_SIZE = 18
-        private const val DOWNLOAD_CONCURRENCY = 5
+        private const val DOWNLOAD_CONCURRENCY = 3
         private const val OCR_CONCURRENCY = 2
         private const val FLUSH_EVERY_N = 20
         private const val UI_REFRESH_EVERY_N = 5

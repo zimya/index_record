@@ -13,6 +13,7 @@ import com.melonhu.indexrecord.data.model.bodyFormat
 import com.melonhu.indexrecord.markdown.collectImageUrls
 import com.melonhu.indexrecord.markdown.contentToMdAst
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlinx.coroutines.withContext
 import okhttp3.OkHttpClient
@@ -20,6 +21,7 @@ import okhttp3.Request
 import java.io.ByteArrayOutputStream
 import java.io.File
 import java.io.FileOutputStream
+import java.io.IOException
 import java.security.MessageDigest
 import java.util.concurrent.TimeUnit
 import kotlin.coroutines.resume
@@ -58,7 +60,17 @@ internal class ImageSearchProcessor(context: Context) {
                         )
                         .build()
                 }
-                else -> request
+                url.contains("zhimg.com") || url.contains("zhihu.com") -> {
+                    request.newBuilder()
+                        .header("User-Agent", DEFAULT_BROWSER_USER_AGENT)
+                        .header("Referer", "https://www.zhihu.com/")
+                        .build()
+                }
+                else -> {
+                    request.newBuilder()
+                        .header("User-Agent", DEFAULT_BROWSER_USER_AGENT)
+                        .build()
+                }
             }
             chain.proceed(updated)
         }
@@ -80,51 +92,67 @@ internal class ImageSearchProcessor(context: Context) {
         }
 
         val tmp = File(cacheDir, "${target.name}.tmp")
-        try {
-            val request = Request.Builder().url(cleanUrl).get().build()
-            httpClient.newCall(request).execute().use { response ->
-                if (!response.isSuccessful) {
-                    Log.w(TAG, "Image download HTTP ${response.code} for $cleanUrl")
-                    return@withContext null
-                }
-                val body = response.body ?: return@withContext null
-                val contentLength = body.contentLength()
-                if (contentLength > MAX_DOWNLOAD_BYTES) {
-                    Log.w(TAG, "Image too large ($contentLength bytes) for $cleanUrl")
-                    return@withContext null
-                }
-                body.byteStream().use { input ->
-                    FileOutputStream(tmp).use { output ->
-                        val buffer = ByteArray(16 * 1024)
-                        var total = 0L
-                        while (true) {
-                            val read = input.read(buffer)
-                            if (read <= 0) break
-                            total += read
-                            if (total > MAX_DOWNLOAD_BYTES) {
-                                tmp.delete()
-                                return@withContext null
+        for (attempt in 1..MAX_DOWNLOAD_ATTEMPTS) {
+            var shouldRetry = false
+            try {
+                val request = Request.Builder().url(cleanUrl).get().build()
+                httpClient.newCall(request).execute().use { response ->
+                    if (!response.isSuccessful) {
+                        Log.w(TAG, "Image download HTTP ${response.code} (attempt $attempt) for $cleanUrl")
+                        shouldRetry = response.code == 429 || response.code >= 500
+                        if (!shouldRetry) return@withContext null
+                    } else {
+                        val body = response.body ?: return@withContext null
+                        val contentLength = body.contentLength()
+                        if (contentLength > MAX_DOWNLOAD_BYTES) {
+                            Log.w(TAG, "Image too large ($contentLength bytes) for $cleanUrl")
+                            return@withContext null
+                        }
+                        body.byteStream().use { input ->
+                            FileOutputStream(tmp).use { output ->
+                                val buffer = ByteArray(16 * 1024)
+                                var total = 0L
+                                while (true) {
+                                    val read = input.read(buffer)
+                                    if (read <= 0) break
+                                    total += read
+                                    if (total > MAX_DOWNLOAD_BYTES) {
+                                        tmp.delete()
+                                        return@withContext null
+                                    }
+                                    output.write(buffer, 0, read)
+                                }
                             }
-                            output.write(buffer, 0, read)
                         }
                     }
                 }
-            }
-            if (tmp.length() <= 0L) {
-                tmp.delete()
+                if (!shouldRetry) {
+                    if (tmp.length() <= 0L) {
+                        tmp.delete()
+                        return@withContext null
+                    }
+                    if (target.exists()) target.delete()
+                    if (!tmp.renameTo(target)) {
+                        tmp.copyTo(target, overwrite = true)
+                        tmp.delete()
+                    }
+                    return@withContext target
+                }
+            } catch (e: IOException) {
+                runCatching { tmp.delete() }
+                shouldRetry = attempt < MAX_DOWNLOAD_ATTEMPTS
+                Log.w(TAG, "Failed to download image (attempt $attempt): $cleanUrl", e)
+                if (!shouldRetry) return@withContext null
+            } catch (t: Throwable) {
+                runCatching { tmp.delete() }
+                Log.w(TAG, "Failed to download image: $cleanUrl", t)
                 return@withContext null
             }
-            if (target.exists()) target.delete()
-            if (!tmp.renameTo(target)) {
-                tmp.copyTo(target, overwrite = true)
-                tmp.delete()
+            if (shouldRetry && attempt < MAX_DOWNLOAD_ATTEMPTS) {
+                delay(RETRY_BASE_DELAY_MS * attempt)
             }
-            target
-        } catch (t: Throwable) {
-            runCatching { tmp.delete() }
-            Log.w(TAG, "Failed to download image: $cleanUrl", t)
-            null
         }
+        null
     }
 
     suspend fun extractOcrText(imageFile: File): String? {
@@ -258,6 +286,10 @@ internal class ImageSearchProcessor(context: Context) {
     companion object {
         private const val TAG = "ImageSearchProcessor"
         private const val MAX_DOWNLOAD_BYTES = 15L * 1024L * 1024L
+        private const val MAX_DOWNLOAD_ATTEMPTS = 3
+        private const val RETRY_BASE_DELAY_MS = 600L
+        private const val DEFAULT_BROWSER_USER_AGENT =
+            "Mozilla/5.0 (Linux; Android 14) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/130.0.0.0 Mobile Safari/537.36"
 
         fun extractImageUrls(record: UniversalRecord): List<String> {
             val urls = LinkedHashSet<String>()

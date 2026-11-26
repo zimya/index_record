@@ -114,6 +114,24 @@ class TiebaParserTest {
         assertEquals("昵称", main.authorName)
         assertEquals("", main.authorAvatar)
         assertEquals("portrait-token", meta(main).text("portrait"))
+
+        val liteBytes = page(post(100, 1, b(5, text("正文")), b(23, user())))
+        val liteRecords = TiebaParser.parse(
+            RawData(
+                url = pageUrl,
+                hostApp = com.melonhu.indexrecord.data.PlatformCatalog.TIEBA_LITE_PACKAGE,
+                json = com.melonhu.indexrecord.sync.RawPayloadCodec.encode(
+                    liteBytes,
+                    com.melonhu.indexrecord.data.PlatformCatalog.TIEBA_LITE_PACKAGE
+                ),
+                timestamp = 123456
+            ),
+            pageUrl
+        )
+        assertEquals(
+            "http://tb.himg.baidu.com/sys/portrait/item/portrait-token",
+            liteRecords.single { it.recordType == "lou" }.authorAvatar
+        )
         assertEquals(144L, meta(main).number("reply_count"))
         val floor = records.single { it.recordType == "floor" }
         assertEquals("tieba_post_$pid", floor.platformId)

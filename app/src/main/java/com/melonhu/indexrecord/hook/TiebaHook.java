@@ -13,6 +13,7 @@ import java.util.Set;
 public class TiebaHook implements PlatformHook {
 
     public static final String HOST_APP = "com.baidu.tieba";
+    public static final String TIEBA_LITE = "com.huanchengfly.tieba.post";
     private static final int MAX_BYTES = 16 * 1024 * 1024;
     private static final ThreadLocal<Boolean> inResponse = new ThreadLocal<>();
     private final Set<Class<?>> hookedClasses = Collections.synchronizedSet(new HashSet<>());
@@ -27,6 +28,21 @@ public class TiebaHook implements PlatformHook {
 
     private void installHooks(HookContext context, ClassLoader loader) {
         if (loader == null) return;
+        if (TIEBA_LITE.equals(context.getPackageName())) {
+            hookTiebaLiteAdapter(
+                context,
+                loader,
+                "com.huanchengfly.tieba.post.api.models.protos.pbPage.PbPageResponse",
+                "page"
+            );
+            hookTiebaLiteAdapter(
+                context,
+                loader,
+                "com.huanchengfly.tieba.post.api.models.protos.pbFloor.PbFloorResponse",
+                "floor"
+            );
+            return;
+        }
         hookResponse(
             context,
             loader,
@@ -40,6 +56,47 @@ public class TiebaHook implements PlatformHook {
             "floor"
         );
         hookWire(context, loader);
+    }
+
+    private void hookTiebaLiteAdapter(
+        HookContext context,
+        ClassLoader loader,
+        String responseClassName,
+        String endpoint
+    ) {
+        Class<?> responseClass = ReflectionHelper.findClassIfExists(responseClassName, loader);
+        if (responseClass == null) return;
+        try {
+            Object adapter = responseClass.getField("ADAPTER").get(null);
+            if (adapter == null || !hookedClasses.add(adapter.getClass())) return;
+            Method encodeMethod = adapter.getClass().getMethod("encode", Object.class);
+            for (Method m : adapter.getClass().getDeclaredMethods()) {
+                if (!"decode".equals(m.getName()) || m.getParameterCount() != 1 || m.isBridge() || m.isSynthetic()) {
+                    continue;
+                }
+                m.setAccessible(true);
+                context.getXposed().hook(m).intercept(chain -> {
+                    Object result = chain.proceed();
+                    if (result != null && responseClass.isInstance(result)) {
+                        try {
+                            byte[] encoded = (byte[]) encodeMethod.invoke(adapter, result);
+                            capture(
+                                context,
+                                encoded,
+                                "https://tiebac.baidu.com/c/f/pb/" + endpoint + "?format=protobuf",
+                                endpoint
+                            );
+                        } catch (Throwable t) {
+                            context.log("Failed to encode " + endpoint + ": " + t, t);
+                        }
+                    }
+                    return result;
+                });
+                context.log("Wire adapter hook installed: " + responseClassName);
+            }
+        } catch (Throwable e) {
+            context.log("Cannot hook TiebaLite adapter " + responseClassName + ": " + e, e);
+        }
     }
 
     private void hookWire(HookContext context, ClassLoader loader) {
@@ -124,7 +181,7 @@ public class TiebaHook implements PlatformHook {
             try {
                 HookCaptureClient client = context.getCaptureClient();
                 if (client != null) {
-                    client.enqueue(url, bytes, "application/x-protobuf", HOST_APP, capturedAt);
+                    client.enqueue(url, bytes, "application/x-protobuf", context.getPackageName(), capturedAt);
                     context.log("Captured " + endpoint + " protobuf: " + bytes.length + " bytes");
                     client.sync();
                 }
@@ -155,6 +212,10 @@ public class TiebaHook implements PlatformHook {
             }
         } catch (Throwable ignored) {}
         return "https://tiebac.baidu.com/c/f/pb/" + endpoint + "?format=protobuf";
+    }
+
+    public static boolean isTargetUrl(String url) {
+        return isEndpoint(url, "page") || isEndpoint(url, "floor") || isEndpoint(url, "list");
     }
 
     private static boolean isEndpoint(Object value, String endpoint) {

@@ -16,7 +16,7 @@ import java.util.regex.Pattern
  */
 object ZhihuArticleParser {
 
-    private val PATTERN_JSON_ARTICLE = Pattern.compile("https?://api\\.zhihu\\.com/articles/[^/]+/?")
+    private val PATTERN_JSON_ARTICLE = Pattern.compile("https?://(?:api\\.zhihu\\.com|(?:www\\.)?zhihu\\.com/api/v4)/articles/[^/]+/?")
     private val PATTERN_ZHIHU_ARTICLE_V2 = Pattern.compile("https?://api\\.zhihu\\.com/articles/v2/([^/]+)/?")
 
     private val gson = Gson()

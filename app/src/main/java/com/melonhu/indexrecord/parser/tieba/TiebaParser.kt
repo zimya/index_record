@@ -154,7 +154,11 @@ object TiebaParser : RawDataParser {
                 authorName = author.text("name_show", "nameShow").ifBlank { author.text("name") },
                 authorAvatar = sequenceOf(author.text("avatar_url", "avatarUrl"), author.text("portraith"), author.text("portrait"),
                     author.obj("user_show_info").obj("feed_head").obj("image_data").text("img_url"))
-                    .firstOrNull { webUrl(it) } ?: "",
+                    .firstOrNull { webUrl(it) }
+                    ?: author.text("portrait").takeIf {
+                        it.isNotBlank() && raw.hostApp == PlatformCatalog.TIEBA_LITE_PACKAGE
+                    }?.let { "http://tb.himg.baidu.com/sys/portrait/item/$it" }
+                    ?: "",
                 sourceUrl = "https://tieba.baidu.com/p/$tid" + if (isThread) "" else "?pid=$pid#$pid",
                 parentId = parent?.platformId ?: if (isThread) "" else threadId,
                 publishTime = if (time > 0 && time <= Long.MAX_VALUE / 1000) time * 1000 else 0,

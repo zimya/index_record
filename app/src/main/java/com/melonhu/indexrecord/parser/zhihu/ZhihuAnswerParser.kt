@@ -19,13 +19,16 @@ object ZhihuAnswerParser {
 
     private val PATTERN_HTML_ANSWER = Pattern.compile("https?://www\\.zhihu\\.com/appview/v2/answer/[^/]+/?")
     private val PATTERN_ZHIHU_ANSWER_V2 = Pattern.compile("https?://api\\.zhihu\\.com/answers/v2/([^/]+)/?")
+    private val PATTERN_ZHIHU_ANSWER_V4 = Pattern.compile("https?://(?:www\\.)?zhihu\\.com/api/v4/answers/(\\d+)/?")
 
     private val gson = Gson()
 
     internal fun isHtmlAnswerUrl(cleanUrl: String): Boolean = PATTERN_HTML_ANSWER.matcher(cleanUrl).matches()
 
     fun canHandle(cleanUrl: String): Boolean {
-        return PATTERN_ZHIHU_ANSWER_V2.matcher(cleanUrl).matches() || isHtmlAnswerUrl(cleanUrl)
+        return PATTERN_ZHIHU_ANSWER_V2.matcher(cleanUrl).matches() ||
+                PATTERN_ZHIHU_ANSWER_V4.matcher(cleanUrl).matches() ||
+                isHtmlAnswerUrl(cleanUrl)
     }
 
     fun parse(raw: RawData, cleanUrl: String): List<UniversalRecord> {
@@ -34,8 +37,62 @@ object ZhihuAnswerParser {
             val record = ZhihuItemV2Parser.parse(jsonParams, raw, defaultType = "answer")
             return listOfNotNull(record)
         }
+        if (PATTERN_ZHIHU_ANSWER_V4.matcher(cleanUrl).matches()) {
+            return listOf(parseJsonAnswerV4(raw, cleanUrl))
+        }
 
         return listOf(parseHtmlAnswerV1(raw, cleanUrl))
+    }
+
+    private fun parseJsonAnswerV4(raw: RawData, cleanUrl: String): UniversalRecord {
+        val jsonParams = JsonParser.parseString(raw.json).asJsonObject
+        val answerId = jsonParams.safeString("id").ifBlank { cleanUrl.trimEnd('/').substringAfterLast('/') }
+        val rawContent = jsonParams.safeString("content")
+        val content = zhihuHtmlToMarkdown(rawContent)
+
+        val authorObj = jsonParams.getAsJsonObject("author")
+        val authorName = authorObj?.safeString("name")?.ifBlank { "知乎用户" } ?: "知乎用户"
+        val authorId = authorObj?.safeString("id") ?: ""
+        val authorAvatar = authorObj?.safeString("avatar_url") ?: ""
+        val authorHeadline = authorObj?.safeString("headline") ?: ""
+
+        val questionData = jsonParams.getAsJsonObject("question")
+        val questionTitle = questionData?.safeString("title")?.ifBlank { "知乎回答 $answerId" } ?: "知乎回答 $answerId"
+        val questionId = questionData?.safeString("id") ?: ""
+
+        val extraJson = JsonObject()
+        for (field in listOf("voteup_count", "comment_count", "updated_time", "created_time", "ip_info")) {
+            if (jsonParams.has(field) && !jsonParams.get(field).isJsonNull) {
+                val targetField = when (field) {
+                    "updated_time" -> "updated"
+                    "created_time" -> "created"
+                    else -> field
+                }
+                extraJson.add(targetField, jsonParams.get(field))
+            }
+        }
+        if (authorHeadline.isNotBlank()) extraJson.addProperty("author_headline", authorHeadline)
+        if (questionId.isNotBlank()) extraJson.addProperty("question_id", questionId)
+
+        val createdTime = jsonParams.get("created_time")?.takeIf { !it.isJsonNull }?.asLong?.times(1000) ?: raw.timestamp
+        val updatedTime = jsonParams.get("updated_time")?.takeIf { !it.isJsonNull }?.asLong?.times(1000) ?: createdTime
+        return UniversalRecord(
+            contentFormat = RecordBodyFormat.MARKDOWN_MATH.storageValue,
+            platform = "zhihu",
+            recordType = "answer",
+            sourceApp = raw.hostApp,
+            platformId = "zhihu_answer_$answerId",
+            title = questionTitle,
+            content = content,
+            authorId = authorId,
+            authorName = authorName,
+            authorAvatar = authorAvatar,
+            sourceUrl = raw.url,
+            parentId = if (questionId.isNotBlank()) "zhihu_question_$questionId" else "",
+            publishTime = updatedTime,
+            captureTime = raw.timestamp,
+            extraMetadata = gson.toJson(extraJson)
+        )
     }
 
     private fun parseHtmlAnswerV1(raw: RawData, cleanUrl: String): UniversalRecord {

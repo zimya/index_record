@@ -19,7 +19,9 @@ object ZhihuQuestionParser {
     private val PATTERN_ZHIHU_QUESTION_DETAIL = Pattern.compile(
         "(?:https?://(?:www\\.)?zhihu\\.com/api/v4/questions/(\\d+)/?)|(?:https?://api\\.zhihu\\.com/(?:api/v4/)?questions/(\\d+)/?)"
     )
-    private val PATTERN_ZHIHU_QUESTION_FEEDS = Pattern.compile("https?://api\\.zhihu\\.com/questions/(\\d+)/feeds/?")
+    private val PATTERN_ZHIHU_QUESTION_FEEDS = Pattern.compile(
+        "(?:https?://(?:www\\.)?zhihu\\.com/api/v4/questions/(\\d+)/feeds/?)|(?:https?://api\\.zhihu\\.com/questions/(\\d+)/feeds/?)"
+    )
 
     private val gson = Gson()
 
@@ -112,7 +114,8 @@ object ZhihuQuestionParser {
     private fun parseZhihuQuestionFeeds(raw: RawData, cleanUrl: String): UniversalRecord {
         val matcher = PATTERN_ZHIHU_QUESTION_FEEDS.matcher(cleanUrl)
         if (!matcher.find()) throw Exception("Question feed id not found")
-        val questionId = matcher.group(1) ?: throw Exception("Question feed id not found")
+        val questionId = (matcher.group(1) ?: "").ifBlank { matcher.group(2) ?: "" }
+            .ifBlank { throw Exception("Question feed id not found") }
 
         val jsonParams = JsonParser.parseString(raw.json).asJsonObject
         val dataArray = jsonParams.getAsJsonArray("data")

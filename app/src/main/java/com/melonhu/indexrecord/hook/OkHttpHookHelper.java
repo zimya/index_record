@@ -15,6 +15,10 @@ public final class OkHttpHookHelper {
         boolean isTargetUrl(String url);
     }
 
+    public interface ContentTypeFilter {
+        boolean isTargetContentType(String contentType);
+    }
+
     public interface ResponseCaptureListener {
         void onResponse(String url, String contentType, byte[] bytes, Object response) throws Throwable;
     }
@@ -26,6 +30,30 @@ public final class OkHttpHookHelper {
         ClassLoader classLoader,
         String interceptorTag,
         TargetUrlFilter urlFilter,
+        long maxPeekBytes,
+        ResponseCaptureListener listener
+    ) {
+        return setupOkHttpHook(
+            context,
+            classLoader,
+            interceptorTag,
+            urlFilter,
+            contentType -> {
+                if (contentType == null) return false;
+                String ct = contentType.toLowerCase();
+                return ct.contains("json") || ct.contains("text");
+            },
+            maxPeekBytes,
+            listener
+        );
+    }
+
+    public boolean setupOkHttpHook(
+        HookContext context,
+        ClassLoader classLoader,
+        String interceptorTag,
+        TargetUrlFilter urlFilter,
+        ContentTypeFilter contentTypeFilter,
         long maxPeekBytes,
         ResponseCaptureListener listener
     ) {
@@ -48,7 +76,7 @@ public final class OkHttpHookHelper {
         try {
             context.getXposed().hook(buildMethod).intercept(chain -> {
                 Object builder = chain.getThisObject();
-                installInterceptor(context, builder, classLoader, interceptorTag, urlFilter, maxPeekBytes, listener);
+                installInterceptor(context, builder, classLoader, interceptorTag, urlFilter, contentTypeFilter, maxPeekBytes, listener);
                 return chain.proceed();
             });
             context.log("OkHttp hook installed for classLoader: " + classLoader);
@@ -66,6 +94,7 @@ public final class OkHttpHookHelper {
         ClassLoader classLoader,
         String interceptorTag,
         TargetUrlFilter urlFilter,
+        ContentTypeFilter contentTypeFilter,
         long maxPeekBytes,
         ResponseCaptureListener listener
     ) {
@@ -140,9 +169,7 @@ public final class OkHttpHookHelper {
                         try {
                             context.log("[Found URL] " + (url.length() > 100 ? url.substring(0, 100) : url));
                             String contentType = (String) ReflectionHelper.callMethod(response, "header", "Content-Type");
-                            if (contentType == null) return;
-                            String ct = contentType.toLowerCase();
-                            if (!ct.contains("json") && !ct.contains("text")) return;
+                            if (!contentTypeFilter.isTargetContentType(contentType)) return;
 
                             Object peekedBody = ReflectionHelper.callMethod(response, "peekBody", maxPeekBytes);
                             if (peekedBody == null) return;

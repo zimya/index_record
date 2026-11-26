@@ -11,12 +11,21 @@ class HookTargetUrlTest {
     @Test
     fun testZhihuTargetUrls() {
         assertTrue(ZhihuHook.isTargetUrl("https://api.zhihu.com/articles/12345"))
+        assertTrue(ZhihuHook.isTargetUrl("https://www.zhihu.com/api/v4/articles/12345"))
         assertTrue(ZhihuHook.isTargetUrl("https://api.zhihu.com/answers/67890"))
+        assertTrue(ZhihuHook.isTargetUrl("https://www.zhihu.com/api/v4/answers/67890"))
         assertTrue(ZhihuHook.isTargetUrl("https://api.zhihu.com/pins/v2/11111"))
+        assertTrue(ZhihuHook.isTargetUrl("https://www.zhihu.com/api/v4/pins/11111?include=topics"))
         assertTrue(ZhihuHook.isTargetUrl("https://api.zhihu.com/appview/v2/answer/22222"))
         assertTrue(ZhihuHook.isTargetUrl("https://api.zhihu.com/questions/33333"))
+        assertTrue(ZhihuHook.isTargetUrl("https://www.zhihu.com/api/v4/questions/33333"))
         assertTrue(ZhihuHook.isTargetUrl("https://api.zhihu.com/comment_v5/answers/67890/root_comment"))
+        assertTrue(ZhihuHook.isTargetUrl("https://www.zhihu.com/api/v4/comment_v5/answers/67890/root_comment"))
         assertTrue(ZhihuHook.isTargetUrl("https://www.zhihu.com/next-render"))
+
+        assertTrue(TiebaHook.isTargetUrl("https://tiebac.baidu.com/c/f/pb/page?cmd=302001&format=protobuf"))
+        assertTrue(TiebaHook.isTargetUrl("https://tiebac.baidu.com/c/f/pb/floor?cmd=302002&format=protobuf"))
+        assertFalse(TiebaHook.isTargetUrl("https://tiebac.baidu.com/c/f/frs/page?cmd=301001"))
 
         assertFalse(ZhihuHook.isTargetUrl("https://api.zhihu.com/user/profile"))
         assertFalse(ZhihuHook.isTargetUrl("https://example.com/answers/123"))

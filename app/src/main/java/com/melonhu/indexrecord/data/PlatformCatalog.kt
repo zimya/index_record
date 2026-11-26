@@ -8,6 +8,9 @@ object PlatformCatalog {
 
     internal const val BILIBILI_PACKAGE = "tv.danmaku.bili"
     internal const val BILIBILI_INTERNATIONAL_PACKAGE = "com.bilibili.app.in"
+    internal const val ZHIHU_PLUS_PACKAGE = "com.github.zly2006.zhplus"
+    internal const val ZHIHU_PLUS_LITE_PACKAGE = "com.github.zly2006.zhplus.lite"
+    internal const val TIEBA_LITE_PACKAGE = "com.huanchengfly.tieba.post"
 
     val platforms: List<Platform> = listOf(
         Platform("zhihu", "知乎", "com.zhihu.android"),
@@ -25,8 +28,13 @@ object PlatformCatalog {
         Platform("bilibili", "Bilibili", BILIBILI_PACKAGE)
     )
     private val byId = platforms.associateBy { it.id }
-    private val packageNames = platforms.associate { it.defaultPackage to it.name } +
-        mapOf("com.weico.international" to "微博国际版", BILIBILI_INTERNATIONAL_PACKAGE to "Bilibili 国际版")
+    private val packageNames = platforms.associate { it.defaultPackage to it.name } + mapOf(
+        "com.weico.international" to "微博国际版",
+        BILIBILI_INTERNATIONAL_PACKAGE to "Bilibili 国际版",
+        ZHIHU_PLUS_PACKAGE to "知乎++",
+        ZHIHU_PLUS_LITE_PACKAGE to "知乎++ Lite",
+        TIEBA_LITE_PACKAGE to "Tieba Lite"
+    )
     val hostPackages: List<String> = packageNames.keys.toList()
 
     fun displayName(platform: String): String = byId[platform]?.name
@@ -40,6 +48,10 @@ object PlatformCatalog {
     fun platformForPackage(packageName: String): String? {
         if (packageName == "com.weico.international") return "weibo"
         if (packageName.equals(BILIBILI_INTERNATIONAL_PACKAGE, ignoreCase = true)) return "bilibili"
+        if (packageName.equals(ZHIHU_PLUS_PACKAGE, ignoreCase = true) ||
+            packageName.equals(ZHIHU_PLUS_LITE_PACKAGE, ignoreCase = true)
+        ) return "zhihu"
+        if (packageName.equals(TIEBA_LITE_PACKAGE, ignoreCase = true)) return "tieba"
         return platforms.firstOrNull { it.defaultPackage.equals(packageName, ignoreCase = true) }?.id
             ?: byId[packageName]?.id
     }

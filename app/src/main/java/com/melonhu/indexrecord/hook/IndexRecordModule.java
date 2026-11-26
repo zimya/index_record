@@ -18,6 +18,8 @@ public class IndexRecordModule extends XposedModule {
 
         switch (packageName) {
             case ZhihuHook.HOST_APP:
+            case ZhihuHook.ZHIHU_PLUS:
+            case ZhihuHook.ZHIHU_PLUS_LITE:
                 hook = new ZhihuHook();
                 hookTag = "ZhihuRecord: ";
                 break;
@@ -38,6 +40,7 @@ public class IndexRecordModule extends XposedModule {
                 hookTag = "RedditRecord: ";
                 break;
             case TiebaHook.HOST_APP:
+            case TiebaHook.TIEBA_LITE:
                 hook = new TiebaHook();
                 hookTag = "TiebaRecord: ";
                 break;

@@ -97,9 +97,9 @@ data class PlatformThemeColor(
 
 fun getPlatformBrandColor(platform: String): Color? {
     return when (platform.lowercase()) {
-        "zhihu", "com.zhihu.android" -> ZhihuBlue
+        "zhihu", "com.zhihu.android", "com.github.zly2006.zhplus", "com.github.zly2006.zhplus.lite" -> ZhihuBlue
         "douban", "com.douban.frodo" -> DoubanGreen
-        "tieba", "com.baidu.tieba" -> TiebaBlue
+        "tieba", "com.baidu.tieba", "com.huanchengfly.tieba.post" -> TiebaBlue
         "weibo", "com.sina.weibo", "com.weico.international" -> WeiboOrange
         "twitter", "x", "com.twitter.android", "threads", "com.instagram.barcelona" -> XBlack
         "reddit", "com.reddit.frontpage" -> RedditOrange
@@ -115,7 +115,8 @@ fun getPlatformBrandColor(platform: String): Color? {
 
 fun getPlatformThemeColor(platform: String, isDark: Boolean): PlatformThemeColor {
     return when (platform.lowercase()) {
-        "zhihu", "com.zhihu.android", "bluesky", "xyz.blueskyweb.app" -> if (isDark) {
+        "zhihu", "com.zhihu.android", "com.github.zly2006.zhplus", "com.github.zly2006.zhplus.lite",
+        "bluesky", "xyz.blueskyweb.app" -> if (isDark) {
             PlatformThemeColor(ZhihuBlue, ZhihuBlueDarkContainer, ZhihuBlueDarkText)
         } else {
             PlatformThemeColor(ZhihuBlue, ZhihuBlueLightContainer, ZhihuBlueLightText)
@@ -125,7 +126,7 @@ fun getPlatformThemeColor(platform: String, isDark: Boolean): PlatformThemeColor
         } else {
             PlatformThemeColor(DoubanGreen, DoubanGreenLightContainer, DoubanGreenLightText)
         }
-        "tieba", "com.baidu.tieba" -> if (isDark) {
+        "tieba", "com.baidu.tieba", "com.huanchengfly.tieba.post" -> if (isDark) {
             PlatformThemeColor(TiebaBlue, TiebaDarkContainer, TiebaDarkText)
         } else {
             PlatformThemeColor(TiebaBlue, TiebaLightContainer, TiebaLightText)

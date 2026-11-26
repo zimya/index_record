@@ -211,7 +211,7 @@ internal class DatabaseBackupManager(
         cleared
     }.also {
         if (storage is ObjectBoxBackupStorage) {
-            com.melonhu.indexrecord.search.SearchRuntime.clearAllIndexes()
+            RecordStorageEvents.notifyDatabaseCleared()
         }
     }
 
@@ -352,7 +352,7 @@ internal class DatabaseBackupManager(
         }.also {
             val repo = storage.repository
             if (repo is ObjectBoxRecordRepository) {
-                com.melonhu.indexrecord.search.SearchRuntime.onRecordsPersisted(repo.drainPersisted())
+                RecordStorageEvents.notifyRecordsPersisted(repo.drainPersisted())
             }
         }
     }

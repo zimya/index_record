@@ -123,7 +123,7 @@ internal fun SearchScreen(viewModel: SearchViewModel = viewModel()) {
     val availableTypes by viewModel.availableTypesFlow.collectAsState(initial = emptyList())
     val indexingState by viewModel.indexingState.collectAsState()
     val uiState by viewModel.searchFlow.collectAsState(initial = SearchUiState())
-    val navigation: DetailNavigationViewModel = viewModel()
+    val navigation: DetailNavigationViewModel = viewModel(key = "search_detail_nav")
     val listState = rememberLazyListState()
     val keyboardController = LocalSoftwareKeyboardController.current
     var showProgressSheet by remember { mutableStateOf(false) }

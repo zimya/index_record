@@ -2,6 +2,9 @@ package com.melonhu.indexrecord.logic
 
 import android.util.Log
 import com.google.gson.JsonObject
+import io.objectbox.Box
+import io.objectbox.BoxStore
+import io.objectbox.reactive.DataSubscription
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
@@ -34,6 +37,12 @@ object DataProcessor {
     private val persistenceContext = RecordPersistenceContext()
     private val processingRequests = Channel<Unit>(Channel.CONFLATED)
     private val processingScope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
+    private val subscriptionLock = Any()
+    private var observedStore: BoxStore? = null
+    private var rawSubscription: DataSubscription? = null
+
+    @Volatile
+    private var lastObservedMaxRawId: Long = 0L
 
     init {
         processingScope.launch {
@@ -44,6 +53,42 @@ object DataProcessor {
                     Log.e(TAG, "Failed to process pending raw data; queued data is retained", e)
                 }
             }
+        }
+    }
+
+    /** Subscribes to newly inserted RawData so ingress providers need not depend on DataProcessor. */
+    fun start(store: BoxStore = ObjectBox.store) {
+        synchronized(subscriptionLock) {
+            if (observedStore === store && rawSubscription != null) return
+            rawSubscription?.cancel()
+            observedStore = store
+            lastObservedMaxRawId = 0L
+            rawSubscription = store.subscribe(RawData::class.java).observer {
+                onRawDataChanged(store)
+            }
+        }
+        onRawDataChanged(store)
+    }
+
+    private fun onRawDataChanged(store: BoxStore) {
+        val rawBox = store.boxFor(RawData::class.java)
+        if (rawBox.count() == 0L) {
+            lastObservedMaxRawId = 0L
+            return
+        }
+        val maxId = latestRawId(rawBox)
+        if (maxId > lastObservedMaxRawId) {
+            lastObservedMaxRawId = maxId
+            requestProcessing()
+        }
+    }
+
+    private fun latestRawId(rawBox: Box<RawData>): Long {
+        val query = rawBox.query().orderDesc(RawData_.id).build()
+        return try {
+            query.findFirst()?.id ?: 0L
+        } finally {
+            query.close()
         }
     }
 
@@ -59,6 +104,7 @@ object DataProcessor {
 
         val initialCount = rawBox.count().toInt()
         if (initialCount == 0) {
+            lastObservedMaxRawId = 0L
             _syncProgress.value = SyncProgress(isRunning = false, total = 0, processed = 0)
             return
         }
@@ -84,6 +130,11 @@ object DataProcessor {
                 val chunk = query.find(retainedOffset, CHUNK_SIZE)
                 if (chunk.isEmpty()) break
 
+                val chunkMaxId = chunk.maxOf { it.id }
+                if (chunkMaxId > lastObservedMaxRawId) {
+                    lastObservedMaxRawId = chunkMaxId
+                }
+
                 val parsedItems = chunk.map { raw ->
                     processing.parse(raw, persistence) { e -> Log.e(TAG, "Failed to process raw ID: ${raw.id}", e) }
                 }
@@ -93,7 +144,7 @@ object DataProcessor {
                     val processedRawIds = processing.persist(parsedItems, persistence)
                     if (processedRawIds.isNotEmpty()) rawBox.remove(*processedRawIds)
                 }
-                com.melonhu.indexrecord.search.SearchRuntime.onRecordsPersisted(recordRepository.drainPersisted())
+                RecordStorageEvents.notifyRecordsPersisted(recordRepository.drainPersisted())
                 retainedOffset += parsedItems.count { !it.result.consumeRaw }
                 parsedItems.filter { !it.result.consumeRaw }.forEach { item ->
                     val raw = chunk.firstOrNull { it.id == item.rawId }

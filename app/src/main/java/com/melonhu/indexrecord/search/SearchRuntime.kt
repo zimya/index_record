@@ -4,6 +4,8 @@ import android.content.Context
 import android.util.Log
 import com.melonhu.indexrecord.ObjectBox
 import com.melonhu.indexrecord.data.model.UniversalRecord
+import com.melonhu.indexrecord.logic.RecordStorageEvents
+import com.melonhu.indexrecord.logic.RecordStorageObserver
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -37,11 +39,22 @@ internal object SearchRuntime {
     private val _indexingState = MutableStateFlow(SearchIndexingState())
     val indexingState: StateFlow<SearchIndexingState> = _indexingState.asStateFlow()
 
+    private val storageObserver = object : RecordStorageObserver {
+        override fun onRecordsPersisted(records: List<UniversalRecord>) {
+            this@SearchRuntime.onRecordsPersisted(records)
+        }
+
+        override fun onDatabaseCleared() {
+            this@SearchRuntime.clearAllIndexes()
+        }
+    }
+
     @Synchronized
     fun init(context: Context) {
         if (appContext != null) return
         val ctx = context.applicationContext
         appContext = ctx
+        RecordStorageEvents.registerObserver(storageObserver)
         val deferred = CompletableDeferred<HybridSearchEngine?>()
         initDeferred = deferred
 

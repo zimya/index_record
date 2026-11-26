@@ -12,7 +12,6 @@ import android.util.Log
 import io.objectbox.Box
 import com.melonhu.indexrecord.ObjectBox
 import com.melonhu.indexrecord.data.model.RawData
-import com.melonhu.indexrecord.logic.DataProcessor
 import java.io.FileInputStream
 
 
@@ -106,7 +105,6 @@ object RecordSyncBridge : Binder() {
                 timestamp = if (timestamp > 0) timestamp else System.currentTimeMillis()
             )
             box.put(entity)
-            DataProcessor.requestProcessing()
             true
         } catch (e: Exception) {
             Log.e(TAG, "Error inserting RawData entity", e)

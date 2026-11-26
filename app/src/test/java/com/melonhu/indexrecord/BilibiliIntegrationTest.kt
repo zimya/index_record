@@ -3,6 +3,7 @@ package com.melonhu.indexrecord
 import com.melonhu.indexrecord.data.PlatformCatalog
 import com.melonhu.indexrecord.data.model.*
 import com.melonhu.indexrecord.data.repository.RecordDetailRepository
+import com.melonhu.indexrecord.network.secureBilibiliImageUrl
 import com.melonhu.indexrecord.parser.ParseResult
 import com.melonhu.indexrecord.parser.ParserRegistry
 import com.melonhu.indexrecord.presentation.*

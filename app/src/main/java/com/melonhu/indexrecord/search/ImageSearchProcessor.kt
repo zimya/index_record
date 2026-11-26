@@ -12,6 +12,7 @@ import com.melonhu.indexrecord.data.model.UniversalRecord
 import com.melonhu.indexrecord.data.model.bodyFormat
 import com.melonhu.indexrecord.markdown.collectImageUrls
 import com.melonhu.indexrecord.markdown.contentToMdAst
+import com.melonhu.indexrecord.network.PlatformImageInterceptor
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.suspendCancellableCoroutine
@@ -39,41 +40,7 @@ internal class ImageSearchProcessor(context: Context) {
     private val httpClient: OkHttpClient = OkHttpClient.Builder()
         .connectTimeout(10, TimeUnit.SECONDS)
         .readTimeout(15, TimeUnit.SECONDS)
-        .addInterceptor { chain ->
-            val request = chain.request()
-            val url = request.url.toString()
-            val updated = when {
-                url.contains("doubanio.com") || url.contains("douban.com") -> {
-                    request.newBuilder()
-                        .header(
-                            "User-Agent",
-                            "api-client/1 com.douban.frodo/7.132.0(360) Android/36 udid/db87f91e63b18b9f94b50c897f792525533f0517"
-                        )
-                        .header("Referer", "https://frodo.douban.com/")
-                        .build()
-                }
-                url.contains("coolapk.com") -> {
-                    request.newBuilder()
-                        .header(
-                            "User-Agent",
-                            "Mozilla/5.0 (Linux; Android 14; 24129PN74C Build/UKQ1.231003.002; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/130.0.6723.107 Mobile Safari/537.36 #CoolMarket#14.5.3"
-                        )
-                        .build()
-                }
-                url.contains("zhimg.com") || url.contains("zhihu.com") -> {
-                    request.newBuilder()
-                        .header("User-Agent", DEFAULT_BROWSER_USER_AGENT)
-                        .header("Referer", "https://www.zhihu.com/")
-                        .build()
-                }
-                else -> {
-                    request.newBuilder()
-                        .header("User-Agent", DEFAULT_BROWSER_USER_AGENT)
-                        .build()
-                }
-            }
-            chain.proceed(updated)
-        }
+        .addInterceptor(PlatformImageInterceptor)
         .build()
 
     private val ocrRecognizer by lazy {
@@ -288,8 +255,6 @@ internal class ImageSearchProcessor(context: Context) {
         private const val MAX_DOWNLOAD_BYTES = 15L * 1024L * 1024L
         private const val MAX_DOWNLOAD_ATTEMPTS = 3
         private const val RETRY_BASE_DELAY_MS = 600L
-        private const val DEFAULT_BROWSER_USER_AGENT =
-            "Mozilla/5.0 (Linux; Android 14) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/130.0.0.0 Mobile Safari/537.36"
 
         fun extractImageUrls(record: UniversalRecord): List<String> {
             val urls = LinkedHashSet<String>()

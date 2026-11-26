@@ -4,9 +4,13 @@ import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.withContext
+import com.melonhu.indexrecord.ObjectBox
 import com.melonhu.indexrecord.data.model.UniversalRecord
 import com.melonhu.indexrecord.data.repository.HomeRecordRepository
+import com.melonhu.indexrecord.logic.DataProcessor
 import com.melonhu.indexrecord.presentation.HomeQueryFilter
 import com.melonhu.indexrecord.presentation.RecordContentPolicy
 import com.melonhu.indexrecord.sync.HomeSyncCoordinator
@@ -25,9 +29,15 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
     }
 
     private val repository = HomeRecordRepository()
-    private val syncCoordinator = HomeSyncCoordinator(application, viewModelScope)
+    private val recordBox = ObjectBox.store.boxFor(UniversalRecord::class.java)
+    private val syncCoordinator = HomeSyncCoordinator(
+        application = application,
+        scope = viewModelScope,
+        drainPending = DataProcessor::processPendingData
+    )
 
     init {
+        DataProcessor.requestProcessing()
         syncCoordinator.start()
     }
 
@@ -57,7 +67,7 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
     val availablePlatformsFlow = repository.availablePlatforms
     val availableTypesFlow = repository.availableTypes
     val rawPendingCountFlow = repository.rawPendingCount
-    val syncProgress = syncCoordinator.syncProgress
+    val syncProgress = DataProcessor.syncProgress
 
 
     private val _isInitialLoaded = MutableStateFlow(false)
@@ -75,5 +85,9 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
             initialValue = emptyList()
         )
 
-    suspend fun refreshData(): Int = syncCoordinator.refresh()
+    suspend fun refreshData(): Int = withContext(Dispatchers.IO) {
+        val beforeCount = recordBox.count()
+        if (!syncCoordinator.refresh()) return@withContext 0
+        (recordBox.count() - beforeCount).coerceAtLeast(0).toInt()
+    }
 }

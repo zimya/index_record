@@ -7,7 +7,6 @@ import androidx.lifecycle.viewModelScope
 import com.melonhu.indexrecord.BuildConfig
 import com.melonhu.indexrecord.logic.BackupErrorReason
 import com.melonhu.indexrecord.logic.BackupException
-import com.melonhu.indexrecord.logic.DataProcessor
 import com.melonhu.indexrecord.logic.DatabaseBackupManager
 import com.melonhu.indexrecord.logic.DatabaseClearResult
 import com.melonhu.indexrecord.logic.DatabaseExportResult
@@ -117,9 +116,6 @@ internal class DataBackupViewModel(application: Application) : AndroidViewModel(
             }
             outcome.fold(
                 onSuccess = { result ->
-                    if (result.rawDataInserted > 0) {
-                        DataProcessor.requestProcessing()
-                    }
                     _operationState.value = DataBackupOperationState.ImportSuccess(result)
                     refreshOverview()
                 },

@@ -46,6 +46,9 @@
 
 ## 解析与持久化边界
 
+- `DataProcessor.start(store)` 在应用启动时订阅 `RawData` 表变更，按已见最大 `RawData.id` 自动触发异步处理（避免坏数据保留导致的重复自激）。`HookDataProvider`、`RecordSyncBridge` 与 `HomeSyncCoordinator` 只负责唤醒宿主、写入或等待 `RawData`，不反向依赖 `DataProcessor` 或 `UniversalRecord`；`HomeViewModel` / `StatsViewModel` 在刷新时注入 `DataProcessor::processPendingData` 并直接消费 `DataProcessor.syncProgress`。
+- `logic/RecordStorageEvents.kt`（`RecordStorageObserver`）解耦持久化层与检索索引等下游消费者：`DataProcessor` 与 `DatabaseBackupManager` 提交事务后仅发布 `onRecordsPersisted` / `onDatabaseCleared` 事件，不直接引用 `SearchRuntime`；单个观察者异常不影响处理或备份主流程。
+- `network/PlatformImageInterceptor.kt` 统一图片防盗链请求头（豆瓣、酷安、知乎与默认浏览器 UA）及 Bilibili `http://*.hdslb.com` HTTPS 升级策略，`App.newImageLoader()` 与 `ImageSearchProcessor` 共用同一拦截器，不在多处重复维护请求头。
 - 生产处理使用 `RawDataParser.parseResult()` / `ParserRegistry.parseResult()`，不根据列表型 `parse()` 的空结果决定原始数据删除。`Success`（包括合法空响应）与带原因的 `Ignored` 可消费原文；`Failure` 保留原文；`Partial` 写入有效记录但保留完整原文及诊断。诊断不复制原始 payload。此契约不等于完整的字段级 schema 校验，既有安全读取和主动跳过规则仍由各平台定义。
 - 保留的原文下次处理时可重试；一次处理按 ID 顺序扫描，跳过本轮已尝试的保留项，不因坏数据阻塞后续捕获。暂不提供持久化隔离、重试上限或诊断管理界面；部分成功的重试可能再次进入合并流程。
 - 默认结果入口校验 JSON 对象；知乎 appview HTML、Threads 流式响应、Reddit 批响应和贴吧二进制信封由平台入口处理，不能一律要求 JSON 对象。

@@ -25,7 +25,7 @@ fun HomeScreen(viewModel: HomeViewModel = viewModel()) {
     val rawPendingCount by viewModel.rawPendingCountFlow.collectAsState(initial = 0L)
     val syncProgress by viewModel.syncProgress.collectAsState()
 
-    val navigation: DetailNavigationViewModel = viewModel()
+    val navigation: DetailNavigationViewModel = viewModel(key = "home_detail_nav")
     val homeListState = rememberLazyListState()
     var showFilterSheet by remember { mutableStateOf(false) }
 

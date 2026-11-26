@@ -13,10 +13,13 @@ import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.withContext
+import com.melonhu.indexrecord.ObjectBox
 import com.melonhu.indexrecord.data.model.UniversalRecord
 import com.melonhu.indexrecord.data.repository.HomeRecordRepository
 import com.melonhu.indexrecord.data.repository.RecordHistoryRepository
 import com.melonhu.indexrecord.logic.ComputedStats
+import com.melonhu.indexrecord.logic.DataProcessor
 import com.melonhu.indexrecord.logic.DistributionRange
 import com.melonhu.indexrecord.logic.StatsCalculator
 import com.melonhu.indexrecord.settings.RecordSettings
@@ -37,7 +40,12 @@ class StatsViewModel(application: Application) : AndroidViewModel(application) {
 
     private val historyRepository = RecordHistoryRepository()
     private val homeRecordRepository = HomeRecordRepository()
-    private val syncCoordinator = HomeSyncCoordinator(application, viewModelScope)
+    private val recordBox = ObjectBox.store.boxFor(UniversalRecord::class.java)
+    private val syncCoordinator = HomeSyncCoordinator(
+        application = application,
+        scope = viewModelScope,
+        drainPending = DataProcessor::processPendingData
+    )
     private val zone = ZoneId.systemDefault()
 
     private val selectedRangeFlow = MutableStateFlow(DistributionRange.LAST_30_DAYS)
@@ -45,14 +53,16 @@ class StatsViewModel(application: Application) : AndroidViewModel(application) {
     private val reads = DetailRetry { historyRepository.observeAllResult() }
     val isRetrying = reads.isRetrying
     val rawPendingCountFlow = homeRecordRepository.rawPendingCount
-    val syncProgress = syncCoordinator.syncProgress
+    val syncProgress = DataProcessor.syncProgress
     fun retry() = reads.retry()
 
-    suspend fun refreshData(): Int {
+    suspend fun refreshData(): Int = withContext(Dispatchers.IO) {
         if (state.value.errorMessage != null) {
             retry()
         }
-        return syncCoordinator.refresh()
+        val beforeCount = recordBox.count()
+        if (!syncCoordinator.refresh()) return@withContext 0
+        (recordBox.count() - beforeCount).coerceAtLeast(0).toInt()
     }
 
     private val computedStatsFlow = statsStates(

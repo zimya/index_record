@@ -106,9 +106,37 @@ class SearchFtsStoreTest {
                     platform = "zhihu",
                     recordType = "comment",
                     sourceApp = "com.zhihu.android"
+                ),
+                RecordTextInput(
+                    recordId = 104L,
+                    title = "B站国内版大模型",
+                    author = "作者D",
+                    bodyText = "国内版正文",
+                    imageUrls = emptyList(),
+                    captureTime = 4000L,
+                    platform = "bilibili",
+                    recordType = "video",
+                    sourceApp = "tv.danmaku.bili"
+                ),
+                RecordTextInput(
+                    recordId = 105L,
+                    title = "B站国际版大模型",
+                    author = "作者E",
+                    bodyText = "国际版正文",
+                    imageUrls = emptyList(),
+                    captureTime = 5000L,
+                    platform = "bilibili",
+                    recordType = "video",
+                    sourceApp = "com.bilibili.app.in"
                 )
             )
         )
+
+        val bilibiliFiltered = store.searchTextExact(
+            query = "大模型",
+            filter = SearchFilter(platforms = setOf("bilibili"))
+        )
+        assertEquals(setOf(104L, 105L), bilibiliFiltered.map { it.recordId }.toSet())
 
         val timeFiltered = store.searchTextExact(
             query = "大模型",
@@ -116,18 +144,18 @@ class SearchFtsStoreTest {
         )
         assertEquals(listOf(102L), timeFiltered.map { it.recordId })
 
-        val appAndTypeFiltered = store.searchTextExact(
+        val platformAndTypeFiltered = store.searchTextExact(
             query = "大模型",
             filter = SearchFilter(
-                apps = setOf("com.zhihu.android"),
+                platforms = setOf("zhihu"),
                 types = setOf("zhihu:answer")
             )
         )
-        assertEquals(listOf(101L), appAndTypeFiltered.map { it.recordId })
+        assertEquals(listOf(101L), platformAndTypeFiltered.map { it.recordId })
 
         val filteredIds = store.filterRecordIds(
             recordIds = listOf(101L, 102L, 103L),
-            filter = SearchFilter(apps = setOf("com.zhihu.android"), startMillis = 2000L)
+            filter = SearchFilter(platforms = setOf("zhihu"), startMillis = 2000L)
         )
         assertEquals(setOf(103L), filteredIds)
 
@@ -137,7 +165,7 @@ class SearchFtsStoreTest {
 
         val candidateRecordIds = store.getMatchingRecordIds(
             SearchFilter(
-                apps = setOf("com.zhihu.android"),
+                platforms = setOf("zhihu"),
                 types = setOf("zhihu:comment")
             )
         )

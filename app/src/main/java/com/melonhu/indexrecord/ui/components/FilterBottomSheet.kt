@@ -60,18 +60,18 @@ import java.util.Locale
 @Composable
 fun FilterBottomSheet(
     filter: HomeViewModel.HomeFilter,
-    availableApps: List<String>,
+    availablePlatforms: List<String>,
     availableTypes: List<String>,
     onDismiss: () -> Unit,
-    onApply: (startMillis: Long?, endMillis: Long?, apps: Set<String>, types: Set<String>) -> Unit,
+    onApply: (startMillis: Long?, endMillis: Long?, platforms: Set<String>, types: Set<String>) -> Unit,
     onClear: () -> Unit
 ) {
     FilterBottomSheet(
         initialStartMillis = filter.startMillis,
         initialEndMillis = filter.endMillis,
-        initialApps = filter.apps,
+        initialPlatforms = filter.platforms,
         initialTypes = filter.types,
-        availableApps = availableApps,
+        availablePlatforms = availablePlatforms,
         availableTypes = availableTypes,
         onDismiss = onDismiss,
         onApply = onApply,
@@ -84,12 +84,12 @@ fun FilterBottomSheet(
 fun FilterBottomSheet(
     initialStartMillis: Long?,
     initialEndMillis: Long?,
-    initialApps: Set<String>,
+    initialPlatforms: Set<String>,
     initialTypes: Set<String>,
-    availableApps: List<String>,
+    availablePlatforms: List<String>,
     availableTypes: List<String>,
     onDismiss: () -> Unit,
-    onApply: (startMillis: Long?, endMillis: Long?, apps: Set<String>, types: Set<String>) -> Unit,
+    onApply: (startMillis: Long?, endMillis: Long?, platforms: Set<String>, types: Set<String>) -> Unit,
     onClear: () -> Unit
 ) {
     val context = LocalContext.current
@@ -100,17 +100,16 @@ fun FilterBottomSheet(
 
     var startMillis by remember { mutableStateOf(initialStartMillis) }
     var endMillis by remember { mutableStateOf(initialEndMillis) }
-    var selectedApps by remember { mutableStateOf(initialApps) }
+    var selectedPlatforms by remember { mutableStateOf(initialPlatforms) }
     var selectedTypes by remember {
-        val initialPlatforms = initialApps.mapNotNull { PlatformCatalog.platformForPackage(it) }.toSet()
         mutableStateOf(
             if (initialPlatforms.isEmpty()) emptySet()
             else initialTypes.filter { RecordContentPolicy.platformFromFilterTypeKey(it) in initialPlatforms }.toSet()
         )
     }
 
-    val visibleTypes = remember(availableTypes, selectedApps) {
-        filterTypesForApps(availableTypes, selectedApps)
+    val visibleTypes = remember(availableTypes, selectedPlatforms) {
+        filterTypesForPlatforms(availableTypes, selectedPlatforms)
     }
 
     var pickingStart by remember { mutableStateOf(true) }
@@ -163,9 +162,9 @@ fun FilterBottomSheet(
 
                 Spacer(modifier = Modifier.height(12.dp))
 
-                Text(stringResource(R.string.filter_app), style = MaterialTheme.typography.labelLarge, color = MaterialTheme.colorScheme.onSurface)
+                Text(stringResource(R.string.filter_platform), style = MaterialTheme.typography.labelLarge, color = MaterialTheme.colorScheme.onSurface)
                 Spacer(modifier = Modifier.height(8.dp))
-                if (availableApps.isEmpty()) {
+                if (availablePlatforms.isEmpty()) {
                     Text(stringResource(R.string.common_no_data), color = MaterialTheme.colorScheme.outline)
                 } else {
                     FlowRow(
@@ -173,19 +172,18 @@ fun FilterBottomSheet(
                         horizontalArrangement = Arrangement.spacedBy(8.dp),
                         verticalArrangement = Arrangement.spacedBy(8.dp)
                     ) {
-                        for (p in availableApps) {
-                            val selected = p in selectedApps
+                        for (p in availablePlatforms) {
+                            val selected = p in selectedPlatforms
                             FilterChipWithCheck(
                                 selected = selected,
                                 onClick = {
-                                    val newApps = if (selected) selectedApps - p else selectedApps + p
-                                    selectedApps = newApps
-                                    val newPlatforms = newApps.mapNotNull { PlatformCatalog.platformForPackage(it) }.toSet()
+                                    val newPlatforms = if (selected) selectedPlatforms - p else selectedPlatforms + p
+                                    selectedPlatforms = newPlatforms
                                     selectedTypes = selectedTypes.filter {
                                         RecordContentPolicy.platformFromFilterTypeKey(it) in newPlatforms
                                     }.toSet()
                                 },
-                                label = filterAppLabel(p),
+                                label = filterPlatformLabel(p),
                                 themeColor = getPlatformThemeColor(p, isDark)
                             )
                         }
@@ -196,8 +194,8 @@ fun FilterBottomSheet(
 
                 Text(stringResource(R.string.filter_type), style = MaterialTheme.typography.labelLarge, color = MaterialTheme.colorScheme.onSurface)
                 Spacer(modifier = Modifier.height(8.dp))
-                if (selectedApps.isEmpty()) {
-                    Text(stringResource(R.string.filter_select_app_first), color = MaterialTheme.colorScheme.outline)
+                if (selectedPlatforms.isEmpty()) {
+                    Text(stringResource(R.string.filter_select_platform_first), color = MaterialTheme.colorScheme.outline)
                 } else if (visibleTypes.isEmpty()) {
                     Text(stringResource(R.string.common_no_data), color = MaterialTheme.colorScheme.outline)
                 } else {
@@ -234,7 +232,7 @@ fun FilterBottomSheet(
                 ) { Text(stringResource(R.string.filter_clear)) }
 
                 Button(
-                    onClick = { onApply(startMillis, endMillis, selectedApps, selectedTypes) },
+                    onClick = { onApply(startMillis, endMillis, selectedPlatforms, selectedTypes) },
                     modifier = Modifier.weight(1f)
                 ) { Text(stringResource(R.string.filter_apply)) }
             }
@@ -324,22 +322,20 @@ private fun formatDateTime(millis: Long?): String? {
     return sdf.format(Date(millis))
 }
 
-internal fun filterAppLabel(pkg: String): String {
-    return com.melonhu.indexrecord.data.PlatformCatalog.packageLabel(pkg)
-        ?: com.melonhu.indexrecord.data.PlatformCatalog.knownDisplayName(pkg)
-        ?: pkg
+internal fun filterPlatformLabel(platform: String): String {
+    return PlatformCatalog.knownDisplayName(platform)
+        ?: PlatformCatalog.packageLabel(platform)
+        ?: platform
 }
 
 internal fun typeLabel(type: String): String {
     return com.melonhu.indexrecord.presentation.RecordContentPolicy.filterTypeLabel(type)
 }
 
-internal fun filterTypesForApps(
+internal fun filterTypesForPlatforms(
     types: List<String>,
-    selectedApps: Set<String>
+    selectedPlatforms: Set<String>
 ): List<String> {
-    if (selectedApps.isEmpty()) return emptyList()
-    val selectedPlatforms = selectedApps.mapNotNull { PlatformCatalog.platformForPackage(it) }.toSet()
     if (selectedPlatforms.isEmpty()) return emptyList()
     return types.filter { RecordContentPolicy.platformFromFilterTypeKey(it) in selectedPlatforms }
 }

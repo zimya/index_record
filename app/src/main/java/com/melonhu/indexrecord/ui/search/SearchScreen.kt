@@ -98,7 +98,7 @@ import com.melonhu.indexrecord.search.SearchIndexingState
 import com.melonhu.indexrecord.search.SearchMatchSource
 import com.melonhu.indexrecord.ui.components.ImageViewerDialog
 import com.melonhu.indexrecord.ui.components.MainTopAppBar
-import com.melonhu.indexrecord.ui.components.filterAppLabel
+import com.melonhu.indexrecord.ui.components.filterPlatformLabel
 import com.melonhu.indexrecord.ui.detail.DetailOverlayHost
 import com.melonhu.indexrecord.viewmodel.DetailNavigationViewModel
 import com.melonhu.indexrecord.viewmodel.SearchUiState
@@ -119,7 +119,7 @@ internal fun SearchScreen(viewModel: SearchViewModel = viewModel()) {
     val query by viewModel.query.collectAsState()
     val filter by viewModel.filter.collectAsState()
     val searchHistory by viewModel.searchHistory.collectAsState()
-    val availableApps by viewModel.availableAppsFlow.collectAsState(initial = emptyList())
+    val availablePlatforms by viewModel.availablePlatformsFlow.collectAsState(initial = emptyList())
     val availableTypes by viewModel.availableTypesFlow.collectAsState(initial = emptyList())
     val indexingState by viewModel.indexingState.collectAsState()
     val uiState by viewModel.searchFlow.collectAsState(initial = SearchUiState())
@@ -203,7 +203,7 @@ internal fun SearchScreen(viewModel: SearchViewModel = viewModel()) {
 
                 SearchFilterBar(
                     filter = filter,
-                    availableApps = availableApps,
+                    availablePlatforms = availablePlatforms,
                     availableTypes = availableTypes,
                     onPickStartTime = {
                         keyboardController?.hide()
@@ -215,7 +215,7 @@ internal fun SearchScreen(viewModel: SearchViewModel = viewModel()) {
                         pickingStart = false
                         showDatePicker = true
                     },
-                    onToggleApp = viewModel::toggleApp,
+                    onTogglePlatform = viewModel::togglePlatform,
                     onToggleType = viewModel::toggleType,
                     onToggleSource = viewModel::toggleSource,
                     onClearMetadataFilter = viewModel::clearMetadataFilter
@@ -519,24 +519,24 @@ private fun SearchHistorySection(
 @Composable
 private fun SearchFilterBar(
     filter: SearchFilter,
-    availableApps: List<String>,
+    availablePlatforms: List<String>,
     availableTypes: List<String>,
     onPickStartTime: () -> Unit,
     onPickEndTime: () -> Unit,
-    onToggleApp: (String) -> Unit,
+    onTogglePlatform: (String) -> Unit,
     onToggleType: (String) -> Unit,
     onToggleSource: (SearchMatchSource) -> Unit,
     onClearMetadataFilter: () -> Unit
 ) {
-    var showAppMenu by remember { mutableStateOf(false) }
+    var showPlatformMenu by remember { mutableStateOf(false) }
     var showTypeMenu by remember { mutableStateOf(false) }
     var showSourceMenu by remember { mutableStateOf(false) }
 
-    val appLabel = remember(filter.apps) {
-        when (filter.apps.size) {
+    val platformLabel = remember(filter.platforms) {
+        when (filter.platforms.size) {
             0 -> null
-            1 -> filterAppLabel(filter.apps.first())
-            else -> "${filterAppLabel(filter.apps.first())} +${filter.apps.size - 1}"
+            1 -> filterPlatformLabel(filter.platforms.first())
+            else -> "${filterPlatformLabel(filter.platforms.first())} +${filter.platforms.size - 1}"
         }
     } ?: stringResource(R.string.search_filter_platform)
 
@@ -559,12 +559,11 @@ private fun SearchFilterBar(
         )
     }
 
-    val visibleTypes = remember(availableTypes, filter.apps) {
-        if (filter.apps.isEmpty()) {
+    val visibleTypes = remember(availableTypes, filter.platforms) {
+        if (filter.platforms.isEmpty()) {
             availableTypes
         } else {
-            val selectedPlatforms = filter.apps.mapNotNull { PlatformCatalog.platformForPackage(it) }.toSet()
-            availableTypes.filter { RecordContentPolicy.platformFromFilterTypeKey(it) in selectedPlatforms }
+            availableTypes.filter { RecordContentPolicy.platformFromFilterTypeKey(it) in filter.platforms }
         }
     }
 
@@ -631,9 +630,9 @@ private fun SearchFilterBar(
         item(key = "platform") {
             Box {
                 FilterChip(
-                    selected = filter.apps.isNotEmpty(),
-                    onClick = { showAppMenu = true },
-                    label = { Text(appLabel, maxLines = 1) },
+                    selected = filter.platforms.isNotEmpty(),
+                    onClick = { showPlatformMenu = true },
+                    label = { Text(platformLabel, maxLines = 1) },
                     trailingIcon = {
                         Icon(
                             imageVector = Icons.Default.ArrowDropDown,
@@ -644,28 +643,28 @@ private fun SearchFilterBar(
                 )
 
                 DropdownMenu(
-                    expanded = showAppMenu,
-                    onDismissRequest = { showAppMenu = false },
+                    expanded = showPlatformMenu,
+                    onDismissRequest = { showPlatformMenu = false },
                     modifier = Modifier.heightIn(max = 320.dp)
                 ) {
-                    if (availableApps.isEmpty()) {
+                    if (availablePlatforms.isEmpty()) {
                         DropdownMenuItem(
                             text = { Text(stringResource(R.string.common_no_data)) },
                             enabled = false,
                             onClick = {}
                         )
                     } else {
-                        availableApps.forEach { pkg ->
-                            val checked = pkg in filter.apps
+                        availablePlatforms.forEach { platform ->
+                            val checked = platform in filter.platforms
                             DropdownMenuItem(
-                                text = { Text(filterAppLabel(pkg)) },
+                                text = { Text(filterPlatformLabel(platform)) },
                                 leadingIcon = {
                                     Checkbox(
                                         checked = checked,
                                         onCheckedChange = null
                                     )
                                 },
-                                onClick = { onToggleApp(pkg) }
+                                onClick = { onTogglePlatform(platform) }
                             )
                         }
                     }

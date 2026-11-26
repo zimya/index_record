@@ -2,7 +2,7 @@ package com.melonhu.indexrecord
 
 import com.melonhu.indexrecord.data.model.UniversalRecord
 import com.melonhu.indexrecord.logic.StatsCalculator
-import com.melonhu.indexrecord.ui.components.filterAppLabel
+import com.melonhu.indexrecord.ui.components.filterPlatformLabel
 import com.melonhu.indexrecord.ui.stats.appLabel
 import com.melonhu.indexrecord.ui.stats.colorFromPackage
 import com.melonhu.indexrecord.ui.theme.CoolapkGreen
@@ -18,7 +18,7 @@ class HupuUiIntegrationTest {
     fun platformAndPackageUseTheSameHupuNameAndTheme() {
         for (key in listOf("hupu", "com.hupu.games")) {
             assertEquals("虎扑", appLabel(key))
-            assertEquals("虎扑", filterAppLabel(key))
+            assertEquals("虎扑", filterPlatformLabel(key))
             assertEquals(HupuRed, colorFromPackage(key))
             assertEquals(HupuRed, getPlatformBrandColor(key))
         }
@@ -39,7 +39,7 @@ class HupuUiIntegrationTest {
     fun coolapkPlatformAndPackageUseTheSameNameAndTheme() {
         for (key in listOf("coolapk", "com.coolapk.market")) {
             assertEquals("酷安", appLabel(key))
-            assertEquals("酷安", filterAppLabel(key))
+            assertEquals("酷安", filterPlatformLabel(key))
             assertEquals(CoolapkGreen, colorFromPackage(key))
             assertEquals(CoolapkGreen, getPlatformBrandColor(key))
         }

@@ -55,7 +55,7 @@ internal class SearchViewModel(application: Application) : AndroidViewModel(appl
     private val _searchTrigger = MutableStateFlow(0L)
 
     val indexingState: StateFlow<SearchIndexingState> = SearchRuntime.indexingState
-    val availableAppsFlow = optionRepository.availableApps
+    val availablePlatformsFlow = optionRepository.availablePlatforms
     val availableTypesFlow = optionRepository.availableTypes
 
     private val _uiState = MutableStateFlow(SearchUiState())
@@ -174,7 +174,7 @@ internal class SearchViewModel(application: Application) : AndroidViewModel(appl
     fun applyMetadataFilter(
         startMillis: Long?,
         endMillis: Long?,
-        apps: Set<String>,
+        platforms: Set<String>,
         types: Set<String>
     ) {
         val normalized = if (startMillis != null && endMillis != null && startMillis > endMillis) {
@@ -182,14 +182,13 @@ internal class SearchViewModel(application: Application) : AndroidViewModel(appl
         } else {
             startMillis to endMillis
         }
-        val platforms = apps.mapNotNull { PlatformCatalog.platformForPackage(it) }.toSet()
         val validTypes = if (platforms.isEmpty()) types else {
             types.filter { RecordContentPolicy.platformFromFilterTypeKey(it) in platforms }.toSet()
         }
         _filter.value = _filter.value.copy(
             startMillis = normalized.first,
             endMillis = normalized.second,
-            apps = apps,
+            platforms = platforms,
             types = validTypes
         )
     }
@@ -198,7 +197,7 @@ internal class SearchViewModel(application: Application) : AndroidViewModel(appl
         _filter.value = _filter.value.copy(
             startMillis = null,
             endMillis = null,
-            apps = emptySet(),
+            platforms = emptySet(),
             types = emptySet()
         )
     }
@@ -229,21 +228,20 @@ internal class SearchViewModel(application: Application) : AndroidViewModel(appl
         )
     }
 
-    fun toggleApp(pkg: String) {
-        val currentApps = _filter.value.apps
-        val nextApps = if (pkg in currentApps) currentApps - pkg else currentApps + pkg
-        val platforms = nextApps.mapNotNull { PlatformCatalog.platformForPackage(it) }.toSet()
-        val validTypes = if (platforms.isEmpty()) _filter.value.types else {
-            _filter.value.types.filter { RecordContentPolicy.platformFromFilterTypeKey(it) in platforms }.toSet()
+    fun togglePlatform(platform: String) {
+        val currentPlatforms = _filter.value.platforms
+        val nextPlatforms = if (platform in currentPlatforms) currentPlatforms - platform else currentPlatforms + platform
+        val validTypes = if (nextPlatforms.isEmpty()) _filter.value.types else {
+            _filter.value.types.filter { RecordContentPolicy.platformFromFilterTypeKey(it) in nextPlatforms }.toSet()
         }
         _filter.value = _filter.value.copy(
-            apps = nextApps,
+            platforms = nextPlatforms,
             types = validTypes
         )
     }
 
-    fun clearApps() {
-        _filter.value = _filter.value.copy(apps = emptySet())
+    fun clearPlatforms() {
+        _filter.value = _filter.value.copy(platforms = emptySet())
     }
 
     fun toggleType(typeKey: String) {

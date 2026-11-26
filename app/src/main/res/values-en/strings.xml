@@ -136,8 +136,8 @@
     <string name="filter_time_end">End: %1$s</string>
     <string name="filter_time_unlimited">Any</string>
     <string name="filter_type">Type</string>
-    <string name="filter_app">App</string>
-    <string name="filter_select_app_first">Please select an app first</string>
+    <string name="filter_platform">Platform</string>
+    <string name="filter_select_platform_first">Please select a platform first</string>
     <string name="filter_clear">Clear</string>
     <string name="filter_apply">Apply</string>
     <string name="filter_select_all">Select All</string>

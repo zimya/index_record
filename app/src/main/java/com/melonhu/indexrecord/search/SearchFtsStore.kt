@@ -760,13 +760,13 @@ internal class SearchFtsStore(
             conditions.add("$alias.capture_time <= ?")
             binders.add { stmt, idx -> stmt.bindLong(idx, end); idx + 1 }
         }
-        if (filter.apps.isNotEmpty()) {
-            val placeholders = filter.apps.joinToString(",") { "?" }
-            conditions.add("$alias.source_app IN ($placeholders)")
-            val appList = filter.apps.toList()
+        if (filter.platforms.isNotEmpty()) {
+            val placeholders = filter.platforms.joinToString(",") { "?" }
+            conditions.add("$alias.platform IN ($placeholders)")
+            val platformList = filter.platforms.toList()
             binders.add { stmt, startIdx ->
                 var idx = startIdx
-                for (app in appList) stmt.bindText(idx++, app)
+                for (platform in platformList) stmt.bindText(idx++, platform)
                 idx
             }
         }

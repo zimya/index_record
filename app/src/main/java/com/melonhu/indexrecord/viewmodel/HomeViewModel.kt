@@ -5,7 +5,6 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 
 import kotlinx.coroutines.flow.*
-import com.melonhu.indexrecord.data.PlatformCatalog
 import com.melonhu.indexrecord.data.model.UniversalRecord
 import com.melonhu.indexrecord.data.repository.HomeRecordRepository
 import com.melonhu.indexrecord.presentation.HomeQueryFilter
@@ -17,10 +16,10 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
     data class HomeFilter(
         val startMillis: Long? = null,
         val endMillis: Long? = null,
-        val apps: Set<String> = emptySet(),
+        val platforms: Set<String> = emptySet(),
         val types: Set<String> = emptySet()
     ) {
-        internal fun queryFilter() = HomeQueryFilter(startMillis, endMillis, apps, types)
+        internal fun queryFilter() = HomeQueryFilter(startMillis, endMillis, platforms, types)
         val isActive: Boolean
             get() = queryFilter().isActive
     }
@@ -39,12 +38,11 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
         _filter.value = _filter.value.copy(startMillis = startMillis, endMillis = endMillis)
     }
 
-    fun updateApps(apps: Set<String>) {
-        val platforms = apps.mapNotNull { PlatformCatalog.platformForPackage(it) }.toSet()
+    fun updatePlatforms(platforms: Set<String>) {
         val validTypes = if (platforms.isEmpty()) emptySet() else {
             _filter.value.types.filter { RecordContentPolicy.platformFromFilterTypeKey(it) in platforms }.toSet()
         }
-        _filter.value = _filter.value.copy(apps = apps, types = validTypes)
+        _filter.value = _filter.value.copy(platforms = platforms, types = validTypes)
     }
 
     fun updateTypes(types: Set<String>) {
@@ -56,7 +54,7 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
     }
 
     val isRefreshing = syncCoordinator.isRefreshing
-    val availableAppsFlow = repository.availableApps
+    val availablePlatformsFlow = repository.availablePlatforms
     val availableTypesFlow = repository.availableTypes
     val rawPendingCountFlow = repository.rawPendingCount
     val syncProgress = syncCoordinator.syncProgress

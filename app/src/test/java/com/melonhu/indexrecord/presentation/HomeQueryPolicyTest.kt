@@ -39,15 +39,22 @@ class HomeQueryPolicyTest {
         assertTrue(HomeQueryPolicy.apply(all, HomeQueryFilter(endMillis = 99L)).isEmpty())
     }
 
-    @Test fun appFilterEnablesRepliesAndResolvesMissingSourceApp() {
+    @Test fun platformFilterEnablesRepliesAndMatchesAllAppsOfPlatform() {
         val expected = all.filter { it.platform == "tieba" }
-        val filter = HomeQueryFilter(apps = setOf("com.baidu.tieba"))
+        val filter = HomeQueryFilter(platforms = setOf("tieba"))
         assertEquals(expected, HomeQueryPolicy.apply(all, filter))
-        val alternate = record("weibo", "comment").copy(sourceApp = "com.weico.international")
-        assertEquals(listOf(alternate), HomeQueryPolicy.apply(listOf(alternate),
-            HomeQueryFilter(apps = setOf("com.weico.international"))))
-        assertTrue(HomeQueryPolicy.apply(listOf(alternate),
-            HomeQueryFilter(apps = setOf("com.sina.weibo"))).isEmpty())
+        val weiboMain = record("weibo", "status").copy(sourceApp = "com.sina.weibo")
+        val weiboIntl = record("weibo", "comment").copy(sourceApp = "com.weico.international")
+        assertEquals(
+            listOf(weiboMain, weiboIntl),
+            HomeQueryPolicy.apply(listOf(weiboMain, weiboIntl), HomeQueryFilter(platforms = setOf("weibo")))
+        )
+        val biliMain = record("bilibili", "video").copy(sourceApp = "tv.danmaku.bili")
+        val biliIntl = record("bilibili", "comment").copy(sourceApp = "com.bilibili.app.in")
+        assertEquals(
+            listOf(biliMain, biliIntl),
+            HomeQueryPolicy.apply(listOf(biliMain, biliIntl), HomeQueryFilter(platforms = setOf("bilibili")))
+        )
     }
 
     @Test fun typeKeysSeparatePlatformsWithoutChangingStorageTypes() {
@@ -70,7 +77,7 @@ class HomeQueryPolicyTest {
 
     @Test fun combinedConditionsRemainConjunctiveAndClearingRestoresDefault() {
         val filter = HomeQueryFilter(startMillis = 100L, endMillis = 100L,
-            apps = setOf("com.baidu.tieba"), types = setOf("tieba:floor", "reddit:comment"))
+            platforms = setOf("tieba"), types = setOf("tieba:floor", "reddit:comment"))
         assertEquals(listOf(record("tieba", "floor")), HomeQueryPolicy.apply(all, filter))
         assertEquals(primary, HomeQueryPolicy.apply(all, HomeQueryFilter()))
     }

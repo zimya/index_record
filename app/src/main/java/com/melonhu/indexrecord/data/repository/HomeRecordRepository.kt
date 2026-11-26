@@ -40,14 +40,13 @@ class HomeRecordRepository(private val store: BoxStore = ObjectBox.store) {
     private fun <T> observeOptions(snapshot: () -> T): Flow<T> = observeRecordSnapshots(store, snapshot)
         .map { it.getOrThrow() }
 
-    val availableApps: Flow<List<String>> = observeOptions {
+    val availablePlatforms: Flow<List<String>> = observeOptions {
         val query = recordBox.query().build()
         try {
-            val direct = query.property(UniversalRecord_.sourceApp).distinct().findStrings().orEmpty()
+            query.property(UniversalRecord_.platform).distinct().findStrings().orEmpty()
                 .filter { !it.isNullOrBlank() }
-            val fallback = query.property(UniversalRecord_.platform).distinct().findStrings().orEmpty()
-                .map(PlatformCatalog::defaultPackage)
-            (direct + fallback).filter { it.isNotBlank() }.distinct().sorted()
+                .distinct()
+                .sorted()
         } finally {
             query.close()
         }

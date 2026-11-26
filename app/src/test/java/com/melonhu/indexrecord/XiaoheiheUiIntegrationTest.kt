@@ -2,7 +2,7 @@ package com.melonhu.indexrecord
 
 import com.melonhu.indexrecord.data.model.UniversalRecord
 import com.melonhu.indexrecord.logic.StatsCalculator
-import com.melonhu.indexrecord.ui.components.filterAppLabel
+import com.melonhu.indexrecord.ui.components.filterPlatformLabel
 import com.melonhu.indexrecord.ui.stats.appLabel
 import com.melonhu.indexrecord.ui.stats.colorFromPackage
 import com.melonhu.indexrecord.ui.theme.XiaoheiheDark
@@ -17,7 +17,7 @@ class XiaoheiheUiIntegrationTest {
     fun platformAndPackageUseTheSameXiaoheiheNameAndTheme() {
         for (key in listOf("xiaoheihe", "com.max.xiaoheihe")) {
             assertEquals("小黑盒", appLabel(key))
-            assertEquals("小黑盒", filterAppLabel(key))
+            assertEquals("小黑盒", filterPlatformLabel(key))
             assertEquals(XiaoheiheDark, colorFromPackage(key))
             assertEquals(XiaoheiheDark, getPlatformBrandColor(key))
         }

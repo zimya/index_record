@@ -3,7 +3,7 @@ package com.melonhu.indexrecord
 import com.melonhu.indexrecord.data.PlatformCatalog
 import com.melonhu.indexrecord.data.model.UniversalRecord
 import com.melonhu.indexrecord.presentation.RecordContentPolicy
-import com.melonhu.indexrecord.ui.components.filterTypesForApps
+import com.melonhu.indexrecord.ui.components.filterTypesForPlatforms
 import com.melonhu.indexrecord.ui.components.typeLabel
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
@@ -95,34 +95,37 @@ class RecordFilterTypeTest {
     }
 
     @Test
-    fun filterTypesForAppsOnlyShowsTypesOfSelectedApps() {
+    fun filterTypesForPlatformsOnlyShowsTypesOfSelectedPlatforms() {
         val allTypes = listOf(
             "zhihu:question", "zhihu:answer", "zhihu:article",
             "douban:topic", "douban:review",
             "tieba:lou", "tieba:floor",
-            "twitter:tweet", "weibo:status"
+            "twitter:tweet", "weibo:status",
+            "bilibili:video", "bilibili:opus"
         )
 
-        // No app selected -> empty types
-        assertTrue(filterTypesForApps(allTypes, emptySet()).isEmpty())
+        // No platform selected -> empty types
+        assertTrue(filterTypesForPlatforms(allTypes, emptySet()).isEmpty())
 
-        // Single app selected (zhihu)
-        val zhihuTypes = filterTypesForApps(allTypes, setOf("com.zhihu.android"))
+        // Single platform selected (zhihu)
+        val zhihuTypes = filterTypesForPlatforms(allTypes, setOf("zhihu"))
         assertEquals(listOf("zhihu:question", "zhihu:answer", "zhihu:article"), zhihuTypes)
 
-        // Multiple apps selected (zhihu + tieba)
-        val zhihuTiebaTypes = filterTypesForApps(allTypes, setOf("com.zhihu.android", "com.baidu.tieba"))
+        // Multiple platforms selected (zhihu + tieba)
+        val zhihuTiebaTypes = filterTypesForPlatforms(allTypes, setOf("zhihu", "tieba"))
         assertEquals(
             listOf("zhihu:question", "zhihu:answer", "zhihu:article", "tieba:lou", "tieba:floor"),
             zhihuTiebaTypes
         )
 
-        // Weibo international package
-        val weiboTypes = filterTypesForApps(allTypes, setOf("com.weico.international"))
+        // Weibo / Bilibili platforms
+        val weiboTypes = filterTypesForPlatforms(allTypes, setOf("weibo"))
         assertEquals(listOf("weibo:status"), weiboTypes)
+        val bilibiliTypes = filterTypesForPlatforms(allTypes, setOf("bilibili"))
+        assertEquals(listOf("bilibili:video", "bilibili:opus"), bilibiliTypes)
 
         // Unselecting zhihu leaves tieba
-        val remainingTieba = filterTypesForApps(allTypes, setOf("com.baidu.tieba"))
+        val remainingTieba = filterTypesForPlatforms(allTypes, setOf("tieba"))
         assertEquals(listOf("tieba:lou", "tieba:floor"), remainingTieba)
 
         // Pruning logic: previously selected zhihu types do not belong to tieba

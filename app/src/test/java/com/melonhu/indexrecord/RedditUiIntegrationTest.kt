@@ -7,7 +7,7 @@ import com.melonhu.indexrecord.logic.StatsCalculator
 import com.melonhu.indexrecord.presentation.RedditMetadata
 import com.melonhu.indexrecord.presentation.PlatformMetadataAdapters
 import com.melonhu.indexrecord.presentation.recordPreviewText
-import com.melonhu.indexrecord.ui.components.filterAppLabel
+import com.melonhu.indexrecord.ui.components.filterPlatformLabel
 import com.melonhu.indexrecord.ui.components.recordTypeLabel
 import com.melonhu.indexrecord.presentation.redditPreviewText
 import com.melonhu.indexrecord.presentation.relatedRecordLabel
@@ -113,7 +113,7 @@ class RedditUiIntegrationTest {
     fun platformAndPackageUseTheSameRedditNameAndTheme() {
         for (key in listOf("reddit", "com.reddit.frontpage")) {
             assertEquals("Reddit", appLabel(key))
-            assertEquals("Reddit", filterAppLabel(key))
+            assertEquals("Reddit", filterPlatformLabel(key))
             assertEquals(RedditOrange, colorFromPackage(key))
         }
         for (dark in listOf(false, true)) {

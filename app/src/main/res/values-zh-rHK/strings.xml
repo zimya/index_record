@@ -102,8 +102,8 @@
     <string name="filter_time_end">結束：%1$s</string>
     <string name="filter_time_unlimited">不限</string>
     <string name="filter_type">類型</string>
-    <string name="filter_app">應用程式</string>
-    <string name="filter_select_app_first">請先選擇應用程式</string>
+    <string name="filter_platform">平台</string>
+    <string name="filter_select_platform_first">請先選擇平台</string>
     <string name="filter_clear">清除</string>
     <string name="filter_apply">確定</string>
     <string name="filter_select_all">全選</string>

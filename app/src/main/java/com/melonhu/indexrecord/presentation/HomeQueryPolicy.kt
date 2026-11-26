@@ -6,11 +6,11 @@ import com.melonhu.indexrecord.data.model.UniversalRecord
 data class HomeQueryFilter(
     val startMillis: Long? = null,
     val endMillis: Long? = null,
-    val apps: Set<String> = emptySet(),
+    val platforms: Set<String> = emptySet(),
     val types: Set<String> = emptySet()
 ) {
     val isActive: Boolean
-        get() = startMillis != null || endMillis != null || apps.isNotEmpty() || types.isNotEmpty()
+        get() = startMillis != null || endMillis != null || platforms.isNotEmpty() || types.isNotEmpty()
 }
 
 object HomeQueryPolicy {
@@ -23,7 +23,7 @@ object HomeQueryPolicy {
             RecordContentPolicy.isEligibleForHome(record, includeSecondary) &&
                 (filter.startMillis == null || record.captureTime >= filter.startMillis) &&
                 (filter.endMillis == null || record.captureTime <= filter.endMillis) &&
-                (filter.apps.isEmpty() || RecordContentPolicy.sourceApp(record) in filter.apps) &&
+                (filter.platforms.isEmpty() || record.platform in filter.platforms) &&
                 (filter.types.isEmpty() || RecordContentPolicy.filterTypeKey(record) in filter.types)
         }
     }

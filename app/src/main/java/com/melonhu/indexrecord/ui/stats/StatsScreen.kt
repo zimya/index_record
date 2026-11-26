@@ -26,8 +26,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
-import androidx.compose.material3.TopAppBar
-import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -49,6 +47,7 @@ import com.melonhu.indexrecord.R
 import com.melonhu.indexrecord.data.PlatformCatalog
 import com.melonhu.indexrecord.logic.DistributionRange
 import com.melonhu.indexrecord.presentation.RecordContentPolicy
+import com.melonhu.indexrecord.ui.components.MainTopAppBar
 import com.melonhu.indexrecord.ui.components.SyncPullRefreshContainer
 import com.melonhu.indexrecord.viewmodel.StatsViewModel
 
@@ -77,14 +76,8 @@ fun StatsScreen(viewModel: StatsViewModel = viewModel()) {
     Scaffold(
         contentWindowInsets = WindowInsets(0, 0, 0, 0),
         topBar = {
-            TopAppBar(
-                title = {
-                    Text(
-                        stringResource(R.string.stats_title),
-                        style = MaterialTheme.typography.titleLarge,
-                        fontWeight = FontWeight.Bold
-                    )
-                },
+            MainTopAppBar(
+                title = stringResource(R.string.stats_title),
                 actions = {
                     IconButton(onClick = { showScopeDialog = true }) {
                         Icon(
@@ -93,11 +86,7 @@ fun StatsScreen(viewModel: StatsViewModel = viewModel()) {
                             tint = MaterialTheme.colorScheme.primary
                         )
                     }
-                },
-                colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = Color.Transparent,
-                    titleContentColor = MaterialTheme.colorScheme.primary,
-                )
+                }
             )
         }
     ) { padding ->

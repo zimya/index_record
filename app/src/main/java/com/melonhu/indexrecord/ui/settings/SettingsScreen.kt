@@ -38,8 +38,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBar
-import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -59,6 +57,7 @@ import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.melonhu.indexrecord.R
+import com.melonhu.indexrecord.ui.components.MainTopAppBar
 import com.melonhu.indexrecord.ui.components.SyncPullRefreshContainer
 import com.melonhu.indexrecord.update.UpdateSettingsScreen
 import com.melonhu.indexrecord.viewmodel.SettingsViewModel
@@ -123,13 +122,7 @@ fun SettingsScreen(viewModel: SettingsViewModel = viewModel()) {
         Scaffold(
             contentWindowInsets = WindowInsets(0, 0, 0, 0),
             topBar = {
-                TopAppBar(
-                    title = { Text(stringResource(R.string.settings_title)) },
-                    colors = TopAppBarDefaults.topAppBarColors(
-                        containerColor = Color.Transparent,
-                        titleContentColor = MaterialTheme.colorScheme.primary,
-                    )
-                )
+                MainTopAppBar(title = stringResource(R.string.settings_title))
             }
         ) { padding ->
             SyncPullRefreshContainer(

@@ -65,8 +65,6 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
-import androidx.compose.material3.TopAppBar
-import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.rememberDatePickerState
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
@@ -99,6 +97,7 @@ import com.melonhu.indexrecord.search.SearchFilter
 import com.melonhu.indexrecord.search.SearchIndexingState
 import com.melonhu.indexrecord.search.SearchMatchSource
 import com.melonhu.indexrecord.ui.components.ImageViewerDialog
+import com.melonhu.indexrecord.ui.components.MainTopAppBar
 import com.melonhu.indexrecord.ui.components.filterAppLabel
 import com.melonhu.indexrecord.ui.detail.DetailOverlayHost
 import com.melonhu.indexrecord.viewmodel.DetailNavigationViewModel
@@ -141,19 +140,15 @@ internal fun SearchScreen(viewModel: SearchViewModel = viewModel()) {
         Scaffold(
             contentWindowInsets = WindowInsets(0, 0, 0, 0),
             topBar = {
-                TopAppBar(
-                    title = { Text(stringResource(R.string.nav_search)) },
+                MainTopAppBar(
+                    title = stringResource(R.string.nav_search),
                     actions = {
                         IndexingProgressEntryButton(
                             state = indexingState,
                             onClick = { showProgressSheet = true }
                         )
                         Spacer(modifier = Modifier.width(12.dp))
-                    },
-                    colors = TopAppBarDefaults.topAppBarColors(
-                        containerColor = Color.Transparent,
-                        titleContentColor = MaterialTheme.colorScheme.primary
-                    )
+                    }
                 )
             }
         ) { padding ->

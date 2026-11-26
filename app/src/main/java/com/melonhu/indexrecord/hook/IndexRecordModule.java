@@ -66,6 +66,10 @@ public class IndexRecordModule extends XposedModule {
                 hook = new BilibiliHook();
                 hookTag = "BilibiliRecord: ";
                 break;
+            case PiliPlusHook.HOST_APP:
+                hook = new PiliPlusHook();
+                hookTag = "PiliPlusRecord: ";
+                break;
             case "com.sina.weibo":
             case "com.weico.international":
                 hook = new WeiboHook();

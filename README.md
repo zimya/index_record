@@ -94,14 +94,19 @@
 - [x] **NGA玩家社区**
     - [x] 帖子
     - [x] 回复
+- [x] **哔哩哔哩（国内版 / 国际版）**
+    - [x] 图文
+    - [x] 评论
+    - [x] 视频详情
+- [x] **PiliPlus（实验支持）**
+    - [x] 评论
+    - [x] 视频详情评论
+    - [ ] 楼中楼
 - [ ] 微信读书
 - [ ] Lofter
 - [ ] Mastodon(长毛象)
 - [ ] Medium
 - [ ] Goodreads
-- [x] **哔哩哔哩（国内版 / 国际版）**
-    - [x] 图文（标题、正文、图片链接）和已加载的评论
-    - [x] 视频详情（标题、简介、封面、时长和客户端返回的互动统计）及已加载的评论，不下载视频
 - [ ] 网易云音乐评论区
 - [ ] DCard
 
@@ -109,7 +114,7 @@
 
 ## 技术栈
 
-- **Android**: Kotlin, Jetpack Compose, Material 3
+- **Android**: Kotlin, Jetpack Compose, Material 3。构建时需要 Android NDK `28.2.13676358`（PiliPlus 原生桥接）。
 - **Hooking**: Xposed Framework
 - **Database**: ObjectBox
 - **Networking**: OkHttp

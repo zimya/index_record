@@ -22,7 +22,10 @@ class PlatformCatalogTest {
         assertEquals("NGA", PlatformCatalog.packageLabel("gov.pianzong.androidnga"))
         assertEquals("Bilibili", PlatformCatalog.packageLabel("tv.danmaku.bili"))
         assertEquals("Bilibili 国际版", PlatformCatalog.packageLabel("com.bilibili.app.in"))
-        assertEquals(15, PlatformCatalog.hostPackages.size)
+        assertEquals("PiliPlus", PlatformCatalog.packageLabel("com.example.piliplus"))
+        assertEquals("bilibili", PlatformCatalog.platformForPackage("com.example.piliplus"))
+        assertTrue("com.example.piliplus" in PlatformCatalog.hostPackages)
+        assertEquals(16, PlatformCatalog.hostPackages.size)
     }
 
     @Test fun unknownValuesRemainLiteralAndBlankValuesAreExplicitlyUnknown() {

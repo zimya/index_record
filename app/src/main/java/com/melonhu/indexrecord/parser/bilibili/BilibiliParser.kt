@@ -14,7 +14,7 @@ import com.melonhu.indexrecord.parser.ParseResult
 import com.melonhu.indexrecord.parser.RawDataParser
 import java.net.URI
 
-/** The hook supplies normalized JSON, not gRPC wire data or REST response shapes. */
+/** Converts the official hook's and other adapters' normalized data to Bilibili records. */
 object BilibiliParser : RawDataParser {
     override val platform = "bilibili"
     private const val BASE = "https://grpc.biliapi.net/"
@@ -38,12 +38,16 @@ object BilibiliParser : RawDataParser {
         if (!canHandle(cleanUrl, raw)) return@attempt ParseResult.Ignored("Not a Bilibili capture route")
         val url = raw.url.ifEmpty { cleanUrl }
         val envelope = JsonParser.parseString(raw.json).asJsonObject
-        val kind = kindsByUrl.getValue(url)
+        parseNormalized(raw, url, kindsByUrl.getValue(url), envelope)
+    }
+
+    internal fun parseNormalized(raw: RawData, url: String, kind: String, envelope: JsonObject): ParseResult {
         require(envelope.text("kind") == kind) { "Expected normalized $kind envelope" }
-        when (kind) {
+        return when (kind) {
             "video" -> ParseResult.Success(listOf(parseVideo(raw, envelope)))
             "opus" -> ParseResult.Success(listOf(parseOpus(raw, envelope)))
-            else -> parseComments(raw, url, envelope)
+            "comments" -> parseComments(raw, url, envelope)
+            else -> error("Unsupported normalized Bilibili kind")
         }
     }
 

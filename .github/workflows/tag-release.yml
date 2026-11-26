@@ -55,6 +55,9 @@ jobs:
                   echo "$SIGNING_KEYSTORE_BASE64" | tr -d '\n\r ' | base64 -d > "${{ runner.temp }}/release.jks"
                   echo "SIGNING_KEYSTORE_PATH=${{ runner.temp }}/release.jks" >> "$GITHUB_ENV"
 
+            - name: Install Android NDK
+              run: sdkmanager 'ndk;28.2.13676358'
+
             - name: Build Release APK
               env:
                   SIGNING_STORE_PASSWORD: ${{ secrets.SIGNING_STORE_PASSWORD }}

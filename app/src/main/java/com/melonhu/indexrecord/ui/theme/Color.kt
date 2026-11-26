@@ -108,7 +108,7 @@ fun getPlatformBrandColor(platform: String): Color? {
         "xiaoheihe", "com.max.xiaoheihe" -> XiaoheiheDark
         "bluesky", "xyz.blueskyweb.app" -> ZhihuBlue
         "nga", "gov.pianzong.androidnga" -> NgaAmber
-        "bilibili", "tv.danmaku.bili", "com.bilibili.app.in" -> BilibiliPink
+        "bilibili", "tv.danmaku.bili", "com.bilibili.app.in", "com.example.piliplus" -> BilibiliPink
         else -> null
     }
 }
@@ -165,7 +165,7 @@ fun getPlatformThemeColor(platform: String, isDark: Boolean): PlatformThemeColor
         } else {
             PlatformThemeColor(NgaAmber, NgaLightContainer, NgaLightText)
         }
-        "bilibili", "tv.danmaku.bili", "com.bilibili.app.in" -> if (isDark) {
+        "bilibili", "tv.danmaku.bili", "com.bilibili.app.in", "com.example.piliplus" -> if (isDark) {
             PlatformThemeColor(BilibiliPink, BilibiliDarkContainer, BilibiliDarkText)
         } else {
             PlatformThemeColor(BilibiliPink, BilibiliLightContainer, BilibiliLightText)

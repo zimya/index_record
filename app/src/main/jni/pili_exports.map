@@ -1,0 +1,6 @@
+{
+    global:
+        native_init;
+        Java_com_melonhu_indexrecord_hook_PiliPlusHook_nativeStart;
+    local: *;
+};

@@ -34,6 +34,13 @@ kapt {
 android {
     namespace = "com.melonhu.indexrecord"
     compileSdk = 34
+    ndkVersion = "28.2.13676358"
+
+    externalNativeBuild {
+        ndkBuild {
+            path = file("src/main/jni/Android.mk")
+        }
+    }
 
     defaultConfig {
         applicationId = "com.melonhu.indexrecord"
@@ -41,6 +48,12 @@ android {
         targetSdk = 34
         versionCode = getGitCommitCount()
         versionName = "0.9.0"
+        externalNativeBuild {
+            ndkBuild {
+                // Only the bridge is arm64; keep the existing APK ABI splits.
+                abiFilters.add("arm64-v8a")
+            }
+        }
         resourceConfigurations += listOf("zh", "zh-rCN", "zh-rTW", "zh-rHK", "en")
     }
 
@@ -103,7 +116,8 @@ android {
             isShrinkResources = true
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
-                "proguard-rules.pro"
+                "proguard-rules.pro",
+                "src/main/jni/pili-jni.pro"
             )
             signingConfig = signingConfigs.findByName("release")
                 ?: signingConfigs.getByName("debug")

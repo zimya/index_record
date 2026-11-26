@@ -17,6 +17,7 @@ class App : Application(), ImageLoaderFactory {
         super.onCreate()
 
         com.melonhu.indexrecord.settings.RecordSettings.init(this)
+        com.melonhu.indexrecord.viewmodel.LsposedServiceMonitor.init()
 
         // 初始化数据库
         ObjectBox.init(this)

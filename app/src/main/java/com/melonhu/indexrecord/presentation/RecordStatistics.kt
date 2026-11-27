@@ -46,7 +46,7 @@ internal fun recordStatistics(
         "tieba" -> "赞同"
         else -> "点赞"
     }
-    val replyLabel = if (record.platform in setOf("zhihu", "douban", "weibo", "bilibili") && !comment) "评论" else "回复"
+    val replyLabel = if (record.platform in setOf("zhihu", "douban", "weibo", "bilibili", "netease") && !comment) "评论" else "回复"
     return buildList {
         fun count(kind: StatisticKind, value: Long?, label: String = kind.label) {
             value?.let { add(RecordStatistic(kind, formatCount(it), label, it)) }
@@ -73,6 +73,7 @@ internal fun recordStatistics(
                 ?: metadata.tieba?.ipAddress?.takeIf { it.isNotBlank() }
                 ?: metadata.hupu?.location?.takeIf { it.isNotBlank() }
                 ?: metadata.xiaoheihe?.ipLocation?.takeIf { it.isNotBlank() }
+                ?: metadata.netease?.ipLocation?.takeIf { it.isNotBlank() }
             location?.let { add(RecordStatistic(StatisticKind.LOCATION, it)) }
         }
     }

@@ -176,6 +176,25 @@ class HookTargetUrlTest {
     }
 
     @Test
+    fun testNeteaseTargetUrls() {
+        assertTrue(NeteaseCloudMusicHook.isTargetUrl("https://interface3.music.163.com/eapi/batch"))
+        assertTrue(NeteaseCloudMusicHook.isTargetUrl("https://interface3.music.163.com/eapi/v2/resource/comments"))
+        assertTrue(NeteaseCloudMusicHook.isTargetUrl("https://interface3.music.163.com/eapi/v2/resource/comment/floor/get"))
+        assertTrue(NeteaseCloudMusicHook.isTargetUrl("https://interface3.music.163.com/eapi/resource/comments/reply/preload"))
+        assertTrue(NeteaseCloudMusicHook.isTargetUrl("https://interface3.music.163.com/eapi/v3/song/detail"))
+        assertTrue(NeteaseCloudMusicHook.isTargetUrl("https://interface3.music.163.com/eapi/v6/playlist/detail?id=2936255937&t=0"))
+        assertTrue(NeteaseCloudMusicHook.isTargetUrl("https://interface3.music.163.com/eapi/album/v3/detail?cache_key=abc"))
+        assertTrue(NeteaseCloudMusicHook.isTargetUrl("https://interface3.music.163.com/eapi/dj/program/detail"))
+
+        assertFalse(NeteaseCloudMusicHook.isTargetUrl("https://clientlogsf.music.163.com/api/clientlog/encrypt/upload"))
+        assertFalse(NeteaseCloudMusicHook.isTargetUrl("http://httpdns.music.163.com/httpdns/v2/d"))
+        assertFalse(NeteaseCloudMusicHook.isTargetUrl("https://interface3.music.163.com/eapi/ad/get"))
+        assertFalse(NeteaseCloudMusicHook.isTargetUrl("https://interface3.music.163.com/eapi/playlist/v4/detail?id=3779629"))
+        assertFalse(NeteaseCloudMusicHook.isTargetUrl("https://example.com/eapi/v3/song/detail"))
+        assertFalse(NeteaseCloudMusicHook.isTargetUrl(null))
+    }
+
+    @Test
     fun testReflectionHelper() {
         assertEquals(java.lang.Integer::class.java, ReflectionHelper.wrapPrimitive(Int::class.javaPrimitiveType))
         assertEquals(java.lang.Boolean::class.java, ReflectionHelper.wrapPrimitive(Boolean::class.javaPrimitiveType))

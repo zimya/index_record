@@ -329,6 +329,11 @@
     <string name="platform_bilibili">Bilibili</string>
     <string name="type_video">视频</string>
     <string name="type_opus">图文</string>
+    <string name="platform_netease">网易云音乐</string>
+    <string name="type_song">歌曲</string>
+    <string name="type_playlist">歌单</string>
+    <string name="type_album">专辑</string>
+    <string name="type_program">播客</string>
 
     <string name="type_question">问题</string>
     <string name="type_answer">回答</string>

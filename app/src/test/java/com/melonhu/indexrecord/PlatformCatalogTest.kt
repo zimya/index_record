@@ -7,8 +7,8 @@ import org.junit.Test
 
 class PlatformCatalogTest {
     @Test fun knownPlatformsHaveUniqueDefaultPackages() {
-        assertEquals(13, PlatformCatalog.platforms.size)
-        assertEquals(13, PlatformCatalog.platforms.map { it.defaultPackage }.distinct().size)
+        assertEquals(14, PlatformCatalog.platforms.size)
+        assertEquals(14, PlatformCatalog.platforms.map { it.defaultPackage }.distinct().size)
         PlatformCatalog.platforms.forEach {
             assertEquals(it.name, PlatformCatalog.displayName(it.id))
             assertEquals(it.defaultPackage, PlatformCatalog.defaultPackage(it.id))
@@ -22,13 +22,14 @@ class PlatformCatalogTest {
         assertEquals("NGA", PlatformCatalog.packageLabel("gov.pianzong.androidnga"))
         assertEquals("Bilibili", PlatformCatalog.packageLabel("tv.danmaku.bili"))
         assertEquals("Bilibili 国际版", PlatformCatalog.packageLabel("com.bilibili.app.in"))
+        assertEquals("网易云音乐", PlatformCatalog.packageLabel("com.netease.cloudmusic"))
         assertEquals("知乎++", PlatformCatalog.packageLabel("com.github.zly2006.zhplus"))
         assertEquals("知乎++ Lite", PlatformCatalog.packageLabel("com.github.zly2006.zhplus.lite"))
         assertEquals("Tieba Lite", PlatformCatalog.packageLabel("com.huanchengfly.tieba.post"))
         assertEquals("zhihu", PlatformCatalog.platformForPackage("com.github.zly2006.zhplus"))
         assertEquals("zhihu", PlatformCatalog.platformForPackage("com.github.zly2006.zhplus.lite"))
         assertEquals("tieba", PlatformCatalog.platformForPackage("com.huanchengfly.tieba.post"))
-        assertEquals(18, PlatformCatalog.hostPackages.size)
+        assertEquals(19, PlatformCatalog.hostPackages.size)
     }
 
     @Test fun unknownValuesRemainLiteralAndBlankValuesAreExplicitlyUnknown() {

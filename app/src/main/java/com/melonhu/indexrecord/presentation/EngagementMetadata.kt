@@ -86,6 +86,10 @@ internal fun platformEngagement(platform: String, values: JsonObject): Engagemen
             likeCount = count("like"), replyCount = count("reply"), viewCount = count("view"),
             favoriteCount = count("favorite"), shareCount = count("share")
         )
+        "netease" -> EngagementMetadata(
+            likeCount = count("like"), replyCount = count("reply"), viewCount = count("view"),
+            favoriteCount = count("favorite"), shareCount = count("share")
+        )
         "nga" -> EngagementMetadata(
             likeCount = count("vote_good"),
             replyCount = count("replies")

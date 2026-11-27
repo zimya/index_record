@@ -22,7 +22,7 @@ object PlatformImageInterceptor : Interceptor {
     }
 
     internal fun rewrite(request: Request): Request {
-        val upgradedUrl = secureBilibiliImageUrl(request.url)
+        val upgradedUrl = secureNeteaseImageUrl(secureBilibiliImageUrl(request.url))
         val url = upgradedUrl.toString()
         val builder = if (upgradedUrl == request.url) {
             request.newBuilder()
@@ -52,6 +52,14 @@ object PlatformImageInterceptor : Interceptor {
 // Bilibili still supplies HTTP CDN URLs in some captures. Upgrade at load time for old records too.
 internal fun secureBilibiliImageUrl(url: HttpUrl): HttpUrl =
     if (!url.isHttps && url.port == 80 && url.host.endsWith(".hdslb.com")) {
+        url.newBuilder().scheme("https").port(443).build()
+    } else {
+        url
+    }
+
+// NetEase Cloud Music supplies HTTP p*.music.126.net URLs for user avatars and covers.
+internal fun secureNeteaseImageUrl(url: HttpUrl): HttpUrl =
+    if (!url.isHttps && url.port == 80 && url.host.endsWith(".music.126.net")) {
         url.newBuilder().scheme("https").port(443).build()
     } else {
         url

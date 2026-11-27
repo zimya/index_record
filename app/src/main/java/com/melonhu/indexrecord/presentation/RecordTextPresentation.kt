@@ -20,6 +20,10 @@ internal fun recordDisplayTitle(
                 "comment" -> "Bilibili 评论"
                 else -> "无标题"
             }
+            "netease" -> when (record.recordType) {
+                "comment" -> "网易云音乐评论"
+                else -> "无标题"
+            }
             "coolapk" -> "${record.authorName.ifBlank { "酷安用户" }}的动态"
             "douban" -> when {
                 record.recordType == "feed" ||
@@ -49,14 +53,21 @@ internal fun recordContext(
         metadata.coolapk?.ttitle?.takeIf { it.isNotBlank() }?.let { "#$it#" },
         metadata.coolapk?.deviceTitle?.takeIf { it.isNotBlank() }
     ).joinToString(" · ")
-    "bilibili" -> metadata.bilibili?.durationSeconds?.let { seconds ->
-        val hours = seconds / 3600
-        val minutes = seconds / 60 % 60
-        val remainder = (seconds % 60).toString().padStart(2, '0')
-        if (hours == 0L) "$minutes:$remainder" else "$hours:${minutes.toString().padStart(2, '0')}:$remainder"
-    }.orEmpty()
+    "bilibili" -> formatDuration(metadata.bilibili?.durationSeconds)
+    "netease" -> listOfNotNull(
+        metadata.netease?.albumName?.takeIf { it.isNotBlank() },
+        metadata.netease?.radioName?.takeIf { it.isNotBlank() },
+        formatDuration(metadata.netease?.durationSeconds).takeIf { it.isNotBlank() }
+    ).joinToString(" · ")
     else -> ""
 }
+
+private fun formatDuration(durationSeconds: Long?): String = durationSeconds?.let { seconds ->
+    val hours = seconds / 3600
+    val minutes = seconds / 60 % 60
+    val remainder = (seconds % 60).toString().padStart(2, '0')
+    if (hours == 0L) "$minutes:$remainder" else "$hours:${minutes.toString().padStart(2, '0')}:$remainder"
+}.orEmpty()
 
 internal fun recordPreviewText(
     record: RecordContent,

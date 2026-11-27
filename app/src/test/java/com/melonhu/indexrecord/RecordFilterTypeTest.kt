@@ -77,6 +77,7 @@ class RecordFilterTypeTest {
         assertEquals("xiaoheihe", PlatformCatalog.platformForPackage("com.max.xiaoheihe"))
         assertEquals("bluesky", PlatformCatalog.platformForPackage("xyz.blueskyweb.app"))
         assertEquals("nga", PlatformCatalog.platformForPackage("gov.pianzong.androidnga"))
+        assertEquals("netease", PlatformCatalog.platformForPackage("com.netease.cloudmusic"))
         assertEquals("zhihu", PlatformCatalog.platformForPackage("zhihu"))
         assertEquals(null, PlatformCatalog.platformForPackage("com.unknown.package"))
     }

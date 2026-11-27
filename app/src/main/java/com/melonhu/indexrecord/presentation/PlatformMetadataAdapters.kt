@@ -66,6 +66,17 @@ internal class BilibiliRecordMetadata(values: JsonObject) {
         .orEmpty()
 }
 
+internal class NeteaseRecordMetadata(values: JsonObject) {
+    val cover: String = values.metadataText("cover")
+    val albumName: String = values.metadataText("album_name")
+    val radioName: String = values.metadataText("radio_name")
+    val durationSeconds: Long? = values.optionalEngagementCount("duration")
+    val ipLocation: String = values.metadataText("ip_location")
+    val images: List<String> = values.get("images")?.takeIf { it.isJsonArray }?.asJsonArray
+        ?.mapNotNull { it.takeIf { it.isJsonPrimitive && it.asJsonPrimitive.isString }?.asString }
+        .orEmpty()
+}
+
 /** Only the selected platform gets an adapter, even if the payload contains foreign keys. */
 internal class PlatformMetadataAdapters(values: JsonObject, platform: String) {
     constructor(extraMetadata: String, platform: String) : this(parseMetadataObject(extraMetadata), platform)
@@ -80,6 +91,7 @@ internal class PlatformMetadataAdapters(values: JsonObject, platform: String) {
     val hupu: HupuRecordMetadata? = if (platform == "hupu") HupuRecordMetadata(values) else null
     val xiaoheihe: XiaoheiheRecordMetadata? = if (platform == "xiaoheihe") XiaoheiheRecordMetadata(values) else null
     val bilibili: BilibiliRecordMetadata? = if (platform == "bilibili") BilibiliRecordMetadata(values) else null
+    val netease: NeteaseRecordMetadata? = if (platform == "netease") NeteaseRecordMetadata(values) else null
 }
 
 private fun JsonObject.metadataText(key: String): String =

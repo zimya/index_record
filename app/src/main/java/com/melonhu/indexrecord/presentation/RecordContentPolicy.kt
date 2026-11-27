@@ -18,7 +18,8 @@ object RecordContentPolicy {
         "xiaoheihe" to listOf("post"),
         "bluesky" to listOf("post"),
         "nga" to listOf("post"),
-        "bilibili" to listOf("video", "opus")
+        "bilibili" to listOf("video", "opus"),
+        "netease" to listOf("song", "playlist", "album", "program")
     )
 
     private val secondaryTypesByPlatform: Map<String, List<String>> = mapOf(
@@ -34,7 +35,8 @@ object RecordContentPolicy {
         "xiaoheihe" to listOf("comment"),
         "bluesky" to listOf("comment"),
         "nga" to listOf("comment"),
-        "bilibili" to listOf("comment")
+        "bilibili" to listOf("comment"),
+        "netease" to listOf("comment")
     )
 
     fun isPrimaryContent(record: UniversalRecord): Boolean =
@@ -66,6 +68,7 @@ object RecordContentPolicy {
             "status" -> "weibo"
             "feed", "rating", "feedArticle" -> "coolapk"
             "video", "opus" -> "bilibili"
+            "song", "playlist", "album", "program" -> "netease"
             else -> key
         }
     }

@@ -1,8 +1,10 @@
 package com.melonhu.indexrecord.data.repository
 
 import com.melonhu.indexrecord.data.model.BilibiliTopic
+import com.melonhu.indexrecord.data.model.NeteaseThread
 import com.melonhu.indexrecord.data.model.UniversalRecord
 import com.melonhu.indexrecord.data.model.bilibiliTopic
+import com.melonhu.indexrecord.data.model.neteaseThread
 import com.melonhu.indexrecord.data.model.RecordIdentity
 import com.melonhu.indexrecord.data.model.distinctRecordIdentities
 import com.melonhu.indexrecord.data.model.identity
@@ -39,6 +41,18 @@ internal fun selectBilibiliComments(
     }
     if (record.platformId == topic.parentId) return owned
     // Sharing a topic does not prove descent from an individual reply.
+    val children = owned.groupBy { it.replyTarget() }
+    return collectRecordComments(record) { parents -> parents.flatMap { children[it].orEmpty() } }
+}
+
+/** On a NetEase resource page, thread_id proves ownership even when intermediate replies are missing. */
+internal fun selectNeteaseComments(
+    record: UniversalRecord, thread: NeteaseThread, candidates: List<UniversalRecord>
+): List<UniversalRecord> {
+    val owned = candidates.filter {
+        it.recordType == "comment" && it.neteaseThread() == thread && it.replyTarget() != null
+    }
+    if (record.platformId == thread.parentId) return owned
     val children = owned.groupBy { it.replyTarget() }
     return collectRecordComments(record) { parents -> parents.flatMap { children[it].orEmpty() } }
 }

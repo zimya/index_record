@@ -376,6 +376,11 @@
     <string name="platform_bilibili">Bilibili</string>
     <string name="type_video">Video</string>
     <string name="type_opus">Opus post</string>
+    <string name="platform_netease">NetEase Cloud Music</string>
+    <string name="type_song">Song</string>
+    <string name="type_playlist">Playlist</string>
+    <string name="type_album">Album</string>
+    <string name="type_program">Podcast</string>
     <string name="platform_reddit">Reddit</string>
     <string name="platform_weibo">Weibo</string>
     <string name="platform_weibo_intl">Weibo International</string>

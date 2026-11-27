@@ -8,6 +8,7 @@ object PlatformCatalog {
 
     internal const val BILIBILI_PACKAGE = "tv.danmaku.bili"
     internal const val BILIBILI_INTERNATIONAL_PACKAGE = "com.bilibili.app.in"
+    internal const val NETEASE_PACKAGE = "com.netease.cloudmusic"
     internal const val ZHIHU_PLUS_PACKAGE = "com.github.zly2006.zhplus"
     internal const val ZHIHU_PLUS_LITE_PACKAGE = "com.github.zly2006.zhplus.lite"
     internal const val TIEBA_LITE_PACKAGE = "com.huanchengfly.tieba.post"
@@ -25,7 +26,8 @@ object PlatformCatalog {
         Platform("xiaoheihe", "小黑盒", "com.max.xiaoheihe"),
         Platform("bluesky", "Bluesky", "xyz.blueskyweb.app"),
         Platform("nga", "NGA", "gov.pianzong.androidnga"),
-        Platform("bilibili", "Bilibili", BILIBILI_PACKAGE)
+        Platform("bilibili", "Bilibili", BILIBILI_PACKAGE),
+        Platform("netease", "网易云音乐", NETEASE_PACKAGE)
     )
     private val byId = platforms.associateBy { it.id }
     private val packageNames = platforms.associate { it.defaultPackage to it.name } + mapOf(
@@ -61,7 +63,8 @@ object PlatformCatalog {
         "comment" to "评论", "lou" to "主帖", "thread" to "帖子", "floor" to "楼层",
         "topic" to "帖子", "post" to "帖子", "review" to "长评", "interest" to "短评",
         "subject" to "条目", "note" to "日记", "tweet" to "推文", "status" to "微博",
-        "feed" to "动态", "rating" to "点评", "feedArticle" to "图文", "video" to "视频", "opus" to "图文"
+        "feed" to "动态", "rating" to "点评", "feedArticle" to "图文", "video" to "视频", "opus" to "图文",
+        "song" to "歌曲", "playlist" to "歌单", "album" to "专辑", "program" to "播客"
     )
 
     fun typeLabel(platform: String, type: String): String = when {
@@ -83,6 +86,7 @@ object PlatformCatalog {
         "tweet" -> "X 推文"
         "feed", "rating", "feedArticle" -> "酷安${typeLabel("coolapk", type)}"
         "video", "opus" -> "Bilibili${typeLabel("bilibili", type)}"
+        "song", "playlist", "album", "program" -> "网易云音乐${typeLabel("netease", type)}"
         else -> typeLabel("", type)
     }
 
@@ -100,6 +104,7 @@ object PlatformCatalog {
         "bluesky" -> R.string.platform_bluesky
         "nga" -> R.string.platform_nga
         "bilibili" -> R.string.platform_bilibili
+        "netease" -> R.string.platform_netease
         else -> null
     }
 
@@ -127,6 +132,10 @@ object PlatformCatalog {
         type == "feedArticle" -> R.string.type_feed_article
         type == "video" -> R.string.type_video
         type == "opus" -> R.string.type_opus
+        type == "song" -> R.string.type_song
+        type == "playlist" -> R.string.type_playlist
+        type == "album" -> R.string.type_album
+        type == "program" -> R.string.type_program
         else -> null
     }
 }

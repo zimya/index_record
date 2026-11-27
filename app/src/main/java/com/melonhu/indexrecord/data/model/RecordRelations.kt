@@ -33,6 +33,9 @@ internal fun RecordContent.directRelation(): RecordRelation? {
         platform == "bilibili" && recordType == "comment" -> BilibiliTopic.fromCommentId(platformId)
             ?.takeIf { parentId != platformId && (parentId == it.parentId || it.ownsCommentId(parentId)) }
             ?.let { RecordRelation.ReplyTo(target) }
+        platform == "netease" && recordType == "comment" -> NeteaseThread.fromCommentId(platformId)
+            ?.takeIf { parentId != platformId && (parentId == it.parentId || it.ownsCommentId(parentId)) }
+            ?.let { RecordRelation.ReplyTo(target) }
         recordType == "comment" -> RecordRelation.ReplyTo(target)
         platform in setOf("weibo", "threads", "bluesky") -> RecordRelation.ReferencesContent(target)
         else -> null

@@ -89,6 +89,13 @@ private val BilibiliLightText = Color(0xFF97284D)
 private val BilibiliDarkContainer = Color(0xFF3B1D29)
 private val BilibiliDarkText = Color(0xFFFF9FBB)
 
+// 网易云音乐红
+val NeteaseRed = Color(0xFFEC4141)
+private val NeteaseLightContainer = Color(0xFFFFECEC)
+private val NeteaseLightText = Color(0xFFA81D1D)
+private val NeteaseDarkContainer = Color(0xFF3E1818)
+private val NeteaseDarkText = Color(0xFFFF9B9B)
+
 data class PlatformThemeColor(
     val brand: Color,
     val container: Color,
@@ -109,6 +116,7 @@ fun getPlatformBrandColor(platform: String): Color? {
         "bluesky", "xyz.blueskyweb.app" -> ZhihuBlue
         "nga", "gov.pianzong.androidnga" -> NgaAmber
         "bilibili", "tv.danmaku.bili", "com.bilibili.app.in" -> BilibiliPink
+        "netease", "com.netease.cloudmusic" -> NeteaseRed
         else -> null
     }
 }
@@ -170,6 +178,11 @@ fun getPlatformThemeColor(platform: String, isDark: Boolean): PlatformThemeColor
             PlatformThemeColor(BilibiliPink, BilibiliDarkContainer, BilibiliDarkText)
         } else {
             PlatformThemeColor(BilibiliPink, BilibiliLightContainer, BilibiliLightText)
+        }
+        "netease", "com.netease.cloudmusic" -> if (isDark) {
+            PlatformThemeColor(NeteaseRed, NeteaseDarkContainer, NeteaseDarkText)
+        } else {
+            PlatformThemeColor(NeteaseRed, NeteaseLightContainer, NeteaseLightText)
         }
         else -> if (isDark) {
             PlatformThemeColor(IndexBlue, Color(0xFF2A2B30), Color(0xFFD0D0D5))

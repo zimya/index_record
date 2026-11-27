@@ -74,6 +74,10 @@ public class IndexRecordModule extends XposedModule {
                 hook = new WeiboHook();
                 hookTag = "WeiboRecord: ";
                 break;
+            case NeteaseCloudMusicHook.HOST_APP:
+                hook = new NeteaseCloudMusicHook();
+                hookTag = "NeteaseRecord: ";
+                break;
             default:
                 detach();
                 return;

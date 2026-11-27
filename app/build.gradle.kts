@@ -40,7 +40,7 @@ android {
         minSdk = 26
         targetSdk = 34
         versionCode = getGitCommitCount()
-        versionName = "0.9.0"
+        versionName = "0.10.0"
         resourceConfigurations += listOf("zh", "zh-rCN", "zh-rTW", "zh-rHK", "en")
     }
 
